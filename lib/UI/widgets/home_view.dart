@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:blood_collector/UI/widgets/map_view.dart';
+import 'package:blood_collector/UI/widgets/settings.dart';
+
+
+
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -85,13 +90,73 @@ class _HomePageState extends State<HomePage> {
               ListTile(
                 title: Text("Home"),
                 leading: Icon(Icons.home),
+                onTap: (){
+                   Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
+                },
+              ),
+              ListTile(
+                title: Text("History"),
+                leading: Icon(Icons.history),
+                onTap: (){
+                  Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ListView()));
+                },
+              ),
+              ListTile(
+                title: Text("Map"),
+                leading: Icon(Icons.map),
+                onTap: (){
+                   Navigator.push(
+              context, MaterialPageRoute(builder: (context) => MapView()));
+                },
+              ),
+              ListTile(
+                title: Text("Setting"),
+                leading: Icon(Icons.settings),
+                onTap: (){
+                   Navigator.push(
+              context, MaterialPageRoute(builder: (context) => SettingView()));
+                },
+              ),
+              Divider(thickness: 1.0,),
+              Container(
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text("FAQ's"),
+                      onTap: (){
+
+                      },
+                    ),
+                    ListTile(
+                      title: Text("How to use"),
+                      onTap: (){},
+                    ),
+                    ListTile(
+                      title: Text("Terms of services"),
+                      onTap: (){},
+                    ),
+                    ListTile(
+                      title: Text("Privacy Policy"),
+                      onTap: (){},
+                    ),
+                    ListTile(
+                      title: Text("Log Out"),
+                      onTap: (){},
+                    ),
+                  ],
+                ),
               )
             ],
           ),
         ),
+
       body: Container(
-        child: Text('this is home'),
+        child:Center()
       ),
+
+      
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentTab,
           type: BottomNavigationBarType.fixed,
@@ -109,7 +174,9 @@ class _HomePageState extends State<HomePage> {
           onTap: (int index) {
             setState(() {
               _currentTab = index;
+               
             });
+            
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
