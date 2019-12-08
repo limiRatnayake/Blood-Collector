@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/map_view.dart';
 import 'package:blood_collector/UI/widgets/settings.dart';
-
-
+import 'package:blood_collector/UI/widgets/List_view.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,8 +11,22 @@ class HomePage extends StatefulWidget {
   }
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with TickerProviderStateMixin<HomePage> {
   int _currentTab = 0;
+
+  final List<Widget> _children = [
+    ListPage(),
+    ListPage(),
+    MapView(),
+    SettingView()
+  ];
+
+  void onTappedBar(int index) {
+    setState(() {
+      _currentTab = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,126 +53,116 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      drawer: 
-      // Theme(
-      //   data: ThemeData(
-      //     canvasColor:
-      //         Colors.red, //This will change the drawer background to red.
-      //   ),
-        Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              Container(
-                  padding: EdgeInsets.zero,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/drawer.PNG"),
-                        fit: BoxFit.fill),
-                  ),
-                  child: DrawerHeader(
-                    child: Container(
-                      child: Column(
-                        children: <Widget>[
-                          CircleAvatar(
-                            backgroundImage: AssetImage("assets/person.jpg"),
-                            radius: 50.0,
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Center(
-                            child: Column(
-                              children: <Widget>[
-                                Text(
-                                  "Aurélien Salomon",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                Text(
-                                  "@aureliensalomon",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 10.0),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )),
-              ListTile(
-                title: Text("Home"),
-                leading: Icon(Icons.home),
-                onTap: (){
-                   Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
-                },
-              ),
-              ListTile(
-                title: Text("History"),
-                leading: Icon(Icons.history),
-                onTap: (){
-                  Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ListView()));
-                },
-              ),
-              ListTile(
-                title: Text("Map"),
-                leading: Icon(Icons.map),
-                onTap: (){
-                   Navigator.push(
-              context, MaterialPageRoute(builder: (context) => MapView()));
-                },
-              ),
-              ListTile(
-                title: Text("Setting"),
-                leading: Icon(Icons.settings),
-                onTap: (){
-                   Navigator.push(
-              context, MaterialPageRoute(builder: (context) => SettingView()));
-                },
-              ),
-              Divider(thickness: 1.0,),
-              Container(
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text("FAQ's"),
-                      onTap: (){
-
-                      },
-                    ),
-                    ListTile(
-                      title: Text("How to use"),
-                      onTap: (){},
-                    ),
-                    ListTile(
-                      title: Text("Terms of services"),
-                      onTap: (){},
-                    ),
-                    ListTile(
-                      title: Text("Privacy Policy"),
-                      onTap: (){},
-                    ),
-                    ListTile(
-                      title: Text("Log Out"),
-                      onTap: (){},
-                    ),
-                  ],
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            Container(
+                padding: EdgeInsets.zero,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("assets/drawer.PNG"), fit: BoxFit.fill),
                 ),
-              )
-            ],
-          ),
+                child: DrawerHeader(
+                  child: Container(
+                    child: Column(
+                      children: <Widget>[
+                        CircleAvatar(
+                          backgroundImage: AssetImage("assets/person.jpg"),
+                          radius: 50.0,
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Center(
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                "Aurélien Salomon",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                "@aureliensalomon",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 10.0),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )),
+            ListTile(
+              title: Text("Home"),
+              leading: Icon(Icons.home),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomePage()));
+              },
+            ),
+            ListTile(
+              title: Text("History"),
+              leading: Icon(Icons.history),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ListView()));
+              },
+            ),
+            ListTile(
+              title: Text("Map"),
+              leading: Icon(Icons.map),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MapView()));
+              },
+            ),
+            ListTile(
+              title: Text("Setting"),
+              leading: Icon(Icons.settings),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingView()));
+              },
+            ),
+            Divider(
+              thickness: 1.0,
+            ),
+            Container(
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    title: Text("FAQ's"),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: Text("How to use"),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: Text("Terms of services"),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: Text("Privacy Policy"),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    title: Text("Log Out"),
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
-
-      body: Container(
-        child:Center()
       ),
 
-      
+      body: _children[_currentTab],
+
       bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentTab,
           type: BottomNavigationBarType.fixed,
+          currentIndex: _currentTab,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -171,13 +174,8 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.settings), title: Text('Settings')),
           ],
-          onTap: (int index) {
-            setState(() {
-              _currentTab = index;
-               
-            });
-            
-          }),
+          onTap: onTappedBar),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
