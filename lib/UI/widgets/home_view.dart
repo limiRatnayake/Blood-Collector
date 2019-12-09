@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:blood_collector/UI/widgets/map_view.dart';
 import 'package:blood_collector/UI/widgets/settings.dart';
 import 'package:blood_collector/UI/widgets/List_view.dart';
-
+ 
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -169,7 +169,7 @@ class _HomePageState extends State<HomePage>
               title: Text('Home'),
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.list), title: Text('List')),
+                icon: Icon(Icons.list), title: Text('Request List')),
             BottomNavigationBarItem(icon: Icon(Icons.map), title: Text('Map')),
             BottomNavigationBarItem(
                 icon: Icon(Icons.settings), title: Text('Settings')),
