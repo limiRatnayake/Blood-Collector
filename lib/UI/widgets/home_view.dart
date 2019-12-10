@@ -1,9 +1,12 @@
+
+import 'package:blood_collector/UI/widgets/request_View.dart';
 import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/map_view.dart';
 import 'package:blood_collector/UI/widgets/settings.dart';
 import 'package:blood_collector/UI/widgets/List_view.dart';
- 
+
+
 class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -178,7 +181,9 @@ class _HomePageState extends State<HomePage>
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => RequestView()));
+        },
         child: Icon(Icons.add),
         tooltip: 'Add a post',
       ),
