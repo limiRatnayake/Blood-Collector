@@ -92,6 +92,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: TextFormField(
+              maxLines: 5,
               decoration: InputDecoration(
                   hintText:
                       "I need a B+ blood group donor Mr. Kasun. it's urgent need.Bring your National ID or Pastpost ",
