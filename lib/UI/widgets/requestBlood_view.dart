@@ -34,40 +34,37 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   }
 
   Widget _bloodGroupTextField() {
-    return Column(
-      children: <Widget>[
+    return
         Container(
           width: double.infinity,
           height: 58,
           margin: EdgeInsets.symmetric(horizontal: 15.0),
           decoration: _boxDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-            child: Column(
-              children: <Widget>[
-                DropdownButtonFormField(
-                  value: _countries,
-                  decoration: InputDecoration(
-                      hintText: 'Blood Type',
-                      hintStyle:
-                          TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
-                      enabledBorder: InputBorder.none),
-                  onChanged: (String value) {
-                    something(value);
-                  },
-                  items: countries.map((String value) {
-                    return DropdownMenuItem(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                )
-              ],
+          child: SingleChildScrollView(
+            
+            padding: EdgeInsets.only(left: 24.0, right: 24.0),
+            child: DropdownButtonFormField(
+                        value: _countries,
+                        decoration: InputDecoration(
+                            hintText: 'Blood Type',
+                            hintStyle:
+                                TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
+                            enabledBorder: InputBorder.none),
+                        onChanged: (String value) {
+                          something(value);
+                        },
+                        items: countries.map((String value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                
             ),
           ),
-        ),
-      ],
-    );
+        );
+      
+    
   }
 
   Widget _replacementTextField() {
@@ -254,6 +251,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Padding(
         padding: const EdgeInsets.only(top: 18.0),
         child: SingleChildScrollView(
