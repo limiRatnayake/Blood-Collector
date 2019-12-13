@@ -34,203 +34,173 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   }
 
   Widget _bloodGroupTextField() {
-    return
-        Container(
-          width: double.infinity,
-          height: 58,
-          margin: EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: _boxDecoration(),
-          child: SingleChildScrollView(
-            
-            padding: EdgeInsets.only(left: 24.0, right: 24.0),
-            child: DropdownButtonFormField(
-                        value: _countries,
-                        decoration: InputDecoration(
-                            hintText: 'Blood Type',
-                            hintStyle:
-                                TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
-                            enabledBorder: InputBorder.none),
-                        onChanged: (String value) {
-                          something(value);
-                        },
-                        items: countries.map((String value) {
-                          return DropdownMenuItem(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                
-            ),
-          ),
-        );
-      
-    
+    return Container(
+      width: double.infinity,
+      height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 15.0),
+      decoration: _boxDecoration(),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(left: 24.0, right: 24.0),
+        child: DropdownButtonFormField(
+          value: _countries,
+          decoration: InputDecoration(
+              hintText: 'Blood Type',
+              hintStyle: TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
+              enabledBorder: InputBorder.none),
+          onChanged: (String value) {
+            something(value);
+          },
+          items: countries.map((String value) {
+            return DropdownMenuItem(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 
   Widget _replacementTextField() {
-    return Column(
-      children: <Widget>[
-        Container(
-          width: double.infinity,
-          height: 58,
-          margin: EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: _boxDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  hintText: "Not available",
-                  hintStyle: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Roboto",
-                  ),
-                  enabledBorder: InputBorder.none),
-              validator: (value) => value.isEmpty ? ' cannot be blank' : null,
-              onSaved: (String value) {
-                _formData['bloodgroup'] = value;
-              },
-            ),
-          ),
+    return Container(
+      width: double.infinity,
+      height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 15.0),
+      decoration: _boxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          decoration: InputDecoration(
+              hintText: "Not available",
+              hintStyle: TextStyle(
+                fontSize: 16.0,
+                fontFamily: "Roboto",
+              ),
+              enabledBorder: InputBorder.none),
+          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          onSaved: (String value) {
+            _formData['bloodgroup'] = value;
+          },
         ),
-      ],
+      ),
     );
   }
 
   Widget _unitOfBloodTextField() {
-    return Column(
-      children: <Widget>[
-        Container(
-          width: double.infinity,
-          height: 58,
-          margin: EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: _boxDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  hintText: "1",
-                  hintStyle: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Roboto",
-                  ),
-                  enabledBorder: InputBorder.none),
-              validator: (value) => value.isEmpty ? ' cannot be blank' : null,
-              onSaved: (String value) {
-                _formData['bloodgroup'] = value;
-              },
-            ),
-          ),
+    return Container(
+      width: double.infinity,
+      height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 15.0),
+      decoration: _boxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          decoration: InputDecoration(
+              hintText: "1",
+              hintStyle: TextStyle(
+                fontSize: 16.0,
+                fontFamily: "Roboto",
+              ),
+              enabledBorder: InputBorder.none),
+          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          onSaved: (String value) {
+            _formData['bloodgroup'] = value;
+          },
         ),
-      ],
+      ),
     );
   }
 
   Widget _conditionTextField() {
-    return Column(
-      children: <Widget>[
-        Container(
-            width: double.infinity,
-            height: 58,
-            margin: EdgeInsets.symmetric(horizontal: 15.0),
-            // decoration: _boxDecoration(),
-            child: CheckboxListTile(
-              title: Text("Is Critical"),
-              value: _criticalState,
-              onChanged: (bool value) {
-                setState(() {
-                  _criticalState = value;
-                });
-              },
-              controlAffinity: ListTileControlAffinity.leading,
-            )),
-      ],
-    );
+    return Container(
+        width: double.infinity,
+        height: 58,
+        margin: EdgeInsets.symmetric(horizontal: 15.0),
+        // decoration: _boxDecoration(),
+        child: CheckboxListTile(
+          title: Text("Is Critical"),
+          value: _criticalState,
+          onChanged: (bool value) {
+            setState(() {
+              _criticalState = value;
+            });
+          },
+          controlAffinity: ListTileControlAffinity.leading,
+        ));
   }
 
   Widget _dateTextField() {
-    return Column(
-      children: <Widget>[
-        Container(
-          width: double.infinity,
-          height: 58,
-          margin: EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: _boxDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  hintText: "DD/MM/YY",
-                  hintStyle: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Roboto",
-                  ),
-                  enabledBorder: InputBorder.none),
-              validator: (value) => value.isEmpty ? ' cannot be blank' : null,
-              onSaved: (String value) {
-                _formData['bloodgroup'] = value;
-              },
-            ),
-          ),
+    return Container(
+      width: double.infinity,
+      height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 15.0),
+      decoration: _boxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          decoration: InputDecoration(
+              hintText: "DD/MM/YY",
+              hintStyle: TextStyle(
+                fontSize: 16.0,
+                fontFamily: "Roboto",
+              ),
+              enabledBorder: InputBorder.none),
+          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          onSaved: (String value) {
+            _formData['bloodgroup'] = value;
+          },
         ),
-      ],
+      ),
     );
   }
 
   Widget _availableDateTextField() {
-    return Column(
-      children: <Widget>[
-        Container(
-          width: double.infinity,
-          height: 58,
-          margin: EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: _boxDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  hintText: "Live Till",
-                  hintStyle: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Roboto",
-                  ),
-                  enabledBorder: InputBorder.none),
-              validator: (value) => value.isEmpty ? ' cannot be blank' : null,
-              onSaved: (String value) {
-                _formData['bloodgroup'] = value;
-              },
-            ),
-          ),
+    return Container(
+      width: double.infinity,
+      height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 15.0),
+      decoration: _boxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          decoration: InputDecoration(
+              hintText: "Live Till",
+              hintStyle: TextStyle(
+                fontSize: 16.0,
+                fontFamily: "Roboto",
+              ),
+              enabledBorder: InputBorder.none),
+          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          onSaved: (String value) {
+            _formData['bloodgroup'] = value;
+          },
         ),
-      ],
+      ),
     );
   }
 
   Widget _hospitalNameTextField() {
-    return Column(
-      children: <Widget>[
-        Container(
-          width: double.infinity,
-          height: 58,
-          margin: EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: _boxDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  hintText: "Enter the hospital name",
-                  hintStyle: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Roboto",
-                  ),
-                  enabledBorder: InputBorder.none),
-              validator: (value) => value.isEmpty ? ' cannot be blank' : null,
-              onSaved: (String value) {
-                _formData['bloodgroup'] = value;
-              },
-            ),
-          ),
+    return Container(
+      width: double.infinity,
+      height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 15.0),
+      decoration: _boxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          decoration: InputDecoration(
+              hintText: "Enter the hospital name",
+              hintStyle: TextStyle(
+                fontSize: 16.0,
+                fontFamily: "Roboto",
+              ),
+              enabledBorder: InputBorder.none),
+          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          onSaved: (String value) {
+            _formData['bloodgroup'] = value;
+          },
         ),
-      ],
+      ),
     );
   }
 
