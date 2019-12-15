@@ -1,9 +1,7 @@
-
 import 'package:blood_collector/UI/widgets/addcampaign_view.dart';
 import 'package:blood_collector/UI/widgets/requestBlood_view.dart';
 
 import 'package:flutter/material.dart';
-
 
 class RequestView extends StatefulWidget {
   @override
@@ -17,19 +15,24 @@ class _RequestViewState extends State<RequestView> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Colors.white,
           bottom: TabBar(
+            indicatorColor: Colors.red,
+           indicatorWeight: 3.0,
+            labelColor: Colors.black,
             tabs: <Widget>[
-              Tab(text: 'Request Blood',),
-              Tab(text:'Add Campaigns')
+              Tab(text: 'Request Blood'),
+              Tab(text: 'Add Campaigns')
             ],
           ),
-          title:Text(' Add Details', style: TextStyle(fontFamily:"Roboto" ),),
+          title: Text(
+            ' Add Details',
+            style: TextStyle(fontFamily: "Roboto", color: Colors.black),
+          ),
         ),
         body: TabBarView(
-          children: <Widget>[
-              RequestBloodView(),
-              AddCampaignsView()
-          ],
+          children: <Widget>[RequestBloodView(), AddCampaignsView()],
         ),
       ),
     );
