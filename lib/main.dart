@@ -20,8 +20,13 @@ class _MyAppState extends State<MyApp>{
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-       
+        canvasColor: Colors.white,
         brightness: Brightness.light,
+        primaryColor: Colors.white,
+        appBarTheme: AppBarTheme(
+          color: Colors.white,
+          elevation: 0
+        )
       ),
       initialRoute:'/',
       onGenerateRoute: Router.generateRoute,

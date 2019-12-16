@@ -1,5 +1,5 @@
 
-import 'package:blood_collector/UI/widgets/request_View.dart';
+import 'package:blood_collector/UI/widgets/add_details_view.dart';
 import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/map_view.dart';
@@ -36,9 +36,9 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       // backgroundColor: Colors.white70,
       appBar: AppBar(
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.grey),
-        backgroundColor: Colors.white,
+        // elevation: 0,
+        // iconTheme: IconThemeData(color: Colors.grey),
+        // backgroundColor: Colors.white,
         title: Text(
           'Home',
           style: TextStyle(color: Colors.redAccent),
@@ -164,6 +164,7 @@ class _HomePageState extends State<HomePage>
       body: _children[_currentTab],
 
       bottomNavigationBar: BottomNavigationBar(
+        fixedColor: Colors.black,
           type: BottomNavigationBarType.fixed,
           currentIndex: _currentTab,
           items: <BottomNavigationBarItem>[
