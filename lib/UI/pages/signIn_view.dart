@@ -1,8 +1,8 @@
+import 'package:blood_collector/UI/pages/home_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../widgets/home_view.dart';
 
 class SigninPage extends StatefulWidget {
   @override

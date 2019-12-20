@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 
-import 'package:blood_collector/UI/widgets/auth_view.dart';
+import 'package:blood_collector/UI/pages/auth_view.dart';
 
 
 class SplashPage extends StatefulWidget {

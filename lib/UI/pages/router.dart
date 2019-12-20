@@ -1,12 +1,13 @@
-import 'package:blood_collector/UI/widgets/home_view.dart';
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 
-import 'package:blood_collector/UI/widgets/auth_view.dart';
-import 'package:blood_collector/UI/widgets/signIn_view.dart';
-import 'package:blood_collector/UI/widgets/splash_view.dart';
-
+import 'package:blood_collector/UI/pages/home_view.dart';
+import 'package:blood_collector/UI/pages/auth_view.dart';
+import 'package:blood_collector/UI/pages/signIn_view.dart';
+import 'package:blood_collector/UI/pages/splash_view.dart';
 
 
 class Router{

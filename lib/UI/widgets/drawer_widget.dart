@@ -1,62 +1,15 @@
-
-import 'package:blood_collector/UI/widgets/add_details_view.dart';
 import 'package:flutter/material.dart';
 
-import 'package:blood_collector/UI/widgets/map_view.dart';
-import 'package:blood_collector/UI/widgets/settings.dart';
-import 'package:blood_collector/UI/widgets/List_view.dart';
+
+import 'package:blood_collector/UI/pages/settings.dart';
+import 'package:blood_collector/UI/pages/home_view.dart';
+import 'package:blood_collector/UI/pages/map_view.dart';
 
 
-class HomePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _HomePageState();
-  }
-}
-
-class _HomePageState extends State<HomePage>
-    with TickerProviderStateMixin<HomePage> {
-  int _currentTab = 0;
-
-  final List<Widget> _children = [
-    ListPage(),
-    ListPage(),
-    MapView(),
-    SettingView()
-  ];
-
-  void onTappedBar(int index) {
-    setState(() {
-      _currentTab = index;
-    });
-  }
-
+class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // backgroundColor: Colors.white70,
-      appBar: AppBar(
-        // elevation: 0,
-        // iconTheme: IconThemeData(color: Colors.grey),
-        // backgroundColor: Colors.white,
-        title: Text(
-          'Home',
-          style: TextStyle(color: Colors.redAccent),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.favorite),
-            color: Colors.grey,
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.notifications),
-            color: Colors.grey,
-            onPressed: () {},
-          ),
-        ],
-      ),
-      drawer: Drawer(
+    return Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
@@ -159,35 +112,6 @@ class _HomePageState extends State<HomePage>
             )
           ],
         ),
-      ),
-
-      body: _children[_currentTab],
-
-      bottomNavigationBar: BottomNavigationBar(
-        fixedColor: Colors.black,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _currentTab,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.list), title: Text('Request List')),
-            BottomNavigationBarItem(icon: Icon(Icons.map), title: Text('Map')),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings), title: Text('Settings')),
-          ],
-          onTap: onTappedBar),
-
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => RequestView()));
-        },
-        child: Icon(Icons.add),
-        tooltip: 'Add a post',
-      ),
-    );
+      );
   }
 }

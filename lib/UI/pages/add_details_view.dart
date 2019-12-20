@@ -1,7 +1,10 @@
-import 'package:blood_collector/UI/widgets/addcampaign_view.dart';
-import 'package:blood_collector/UI/widgets/requestBlood_view.dart';
+
 
 import 'package:flutter/material.dart';
+
+import 'package:blood_collector/UI/pages/addcampaign_view.dart';
+import 'package:blood_collector/UI/pages/requestBlood_view.dart';
+
 
 class RequestView extends StatefulWidget {
   @override

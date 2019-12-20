@@ -4,7 +4,7 @@ import 'package:after_layout/after_layout.dart';
 class PostView extends StatefulWidget {
   final double _expandedBottomSheetBottomPosition = 0;
   final double _collapsedBottomSheetBottomPosition = -250;
-  final double _completeCollapsedBottomSheetBottomPosition = -330;
+  // final double _completeCollapsedBottomSheetBottomPosition = -330;
 
   @override
   _PostViewState createState() => _PostViewState();
@@ -31,7 +31,7 @@ class _PostViewState extends State<PostView> with AfterLayoutMixin<PostView> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    // final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(

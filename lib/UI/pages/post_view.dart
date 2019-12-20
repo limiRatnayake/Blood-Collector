@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class PostView extends StatefulWidget {
   final double _expandedBottomSheetBottomPosition = 0;
   final double _collapsedBottomSheetBottomPosition = -150;
-  final double _completeCollapsedBottomSheetBottomPosition = -330;
+  // final double _completeCollapsedBottomSheetBottomPosition = -330;
 
   @override
   _PostViewState createState() => _PostViewState();

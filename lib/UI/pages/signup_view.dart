@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/widgets/signin_view.dart';
+import 'package:blood_collector/UI/pages/signin_view.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatefulWidget {
