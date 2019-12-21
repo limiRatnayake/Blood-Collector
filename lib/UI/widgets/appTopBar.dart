@@ -1,3 +1,4 @@
+import 'package:blood_collector/UI/pages/notificationView.dart';
 import 'package:flutter/material.dart';
 
 class AppTopBar extends StatefulWidget {
@@ -28,10 +29,13 @@ class _AppTopBarState extends State<AppTopBar>{
           IconButton(
             icon: Icon(Icons.notifications),
             color: Colors.grey,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificationView()));
+            },
           ),
         ],
       ),
+    
     );
   }
 }

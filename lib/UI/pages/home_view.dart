@@ -44,23 +44,6 @@ class _HomePageState extends State<HomePage>
           child: AppTopBar(title:"Home")),
         drawer: DrawerWidget(),
         body: BottomNavigationWidget(),
-        // body: _children[_currentTab],
-        // bottomNavigationBar:BottomNavigationBar(
-        // fixedColor: Colors.black,
-        //   type: BottomNavigationBarType.fixed,
-        //   currentIndex: _currentTab,
-        //   items: <BottomNavigationBarItem>[
-        //     BottomNavigationBarItem(
-        //       icon: Icon(Icons.home),
-        //       title: Text('Home'),
-        //     ),
-        //     BottomNavigationBarItem(
-        //         icon: Icon(Icons.list), title: Text('Request List')),
-        //     BottomNavigationBarItem(icon: Icon(Icons.map), title: Text('Map')),
-        //     BottomNavigationBarItem(
-        //         icon: Icon(Icons.settings), title: Text('Settings')),
-        //   ],
-        //   onTap: onTappedBar),
 
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(

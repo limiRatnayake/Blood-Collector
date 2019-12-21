@@ -11,23 +11,22 @@ class _RequestHistoryState extends State<RequestHistory>
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      child: new Scaffold(
-          appBar: new PreferredSize(
+      child: Scaffold(
+          appBar: PreferredSize(
             preferredSize: Size.fromHeight(35.0),
-            child: new Container(
-              child: new SafeArea(
+            child: Container(
+              child: SafeArea(
                 child: Column(
                   children: <Widget>[
-                    new Expanded(child: new Container()),
-                    new TabBar(
+                    Expanded(child: Container()),
+                    TabBar(
                       indicatorColor: Colors.red,
                       tabs: [
-                        new Text(
+                        Text(
                           "Donated Request",
                           style: TextStyle(fontSize: 16.0),
                         ),
-                        new Text("Raised Request",
-                            style: TextStyle(fontSize: 16.0))
+                        Text("Raised Request", style: TextStyle(fontSize: 16.0))
                       ],
                     ),
                   ],
@@ -35,7 +34,7 @@ class _RequestHistoryState extends State<RequestHistory>
               ),
             ),
           ),
-          body: new TabBarView(children: <Widget>[
+          body: TabBarView(children: <Widget>[
             Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               const ListTile(
                 leading: Icon(Icons.verified_user),
