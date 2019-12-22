@@ -1,8 +1,8 @@
-import 'package:blood_collector/UI/pages/home_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:blood_collector/UI/widgets/homeWidget.dart';
 
 class SigninPage extends StatefulWidget {
   @override
@@ -91,7 +91,7 @@ class _SigninPageState extends State<SigninPage> {
       print('Form is vaild');
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => HomePageView()),
       );
     } else {
       print('Form is invaild');

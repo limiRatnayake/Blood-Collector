@@ -1,5 +1,9 @@
+import 'package:blood_collector/UI/pages/editProfileView.dart';
 import 'package:flutter/material.dart';
-import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+
+import 'package:blood_collector/UI/pages/notificationView.dart';
+import 'package:blood_collector/UI/widgets/appTopBar.dart';
+import 'package:blood_collector/UI/widgets/drawer_widget.dart';
 
 class SettingView extends StatefulWidget {
   @override
@@ -11,6 +15,10 @@ class _SettingViewState extends State<SettingView> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: PreferredSize(
+            preferredSize: const Size(double.infinity, kToolbarHeight),
+            child: AppTopBar(title: "Settings")),
+        drawer: DrawerWidget(),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -20,10 +28,10 @@ class _SettingViewState extends State<SettingView> {
                   child: Column(
                     children: <Widget>[
                       ListTile(
-                        // leading: CircularProfileAvatar(
-                        //   // 'https://avatars0.githubusercontent.com/u/8264639?s=460&v=4',
-                        //   radius: 30,
-                        // ),
+                        leading: CircleAvatar(
+                          backgroundImage: AssetImage("assets/person.jpg"),
+                          radius: 30,
+                        ),
                         contentPadding: EdgeInsets.only(left: 35.0, top: 15.0),
                         title: Text("Tom Riddle \n+941578444"),
                         subtitle: Text("Email"),
@@ -31,24 +39,67 @@ class _SettingViewState extends State<SettingView> {
                       ButtonTheme(
                         child: FlatButton(
                           child: Text("Edit"),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> EditProfileView()));
+                          },
                         ),
                       )
                     ],
                   ),
                 ),
                 Card(
-                  child: ListTile(
-                    leading: Icon(Icons.picture_in_picture),
-                    title: Text("Name"),
-                    subtitle: Text("Reason"),
-                  ),
+                  child: Column(children: <Widget>[
+                    ListTile(
+                      title: Text("Notification"),
+                      leading: Icon(Icons.notifications),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NotificationView()));
+                      },
+                    ),
+                    ListTile(
+                      title: Text("Privacy/Security"),
+                      leading: Icon(Icons.lock_outline),
+                      onTap: () {},
+                    ),
+                    ListTile(
+                      title: Text("Help"),
+                      leading: Icon(Icons.help_outline),
+                      onTap: () {},
+                    ),
+                    ListTile(
+                      title: Text("About"),
+                      leading: Icon(Icons.info_outline),
+                      onTap: () {},
+                    ),
+                  ]),
                 ),
                 Card(
-                  child: ListTile(
-                    leading: Icon(Icons.picture_in_picture),
-                    title: Text("Name"),
-                    subtitle: Text("Reason"),
+                  child: Column(
+                    children: <Widget>[
+                      ListTile(
+                        title: Text("FAQ's"),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: Text("How to use"),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: Text("Terms of services"),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: Text("Privacy Policy"),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: Text("Log Out"),
+                        onTap: () {},
+                      ),
+                    ],
                   ),
                 )
               ],

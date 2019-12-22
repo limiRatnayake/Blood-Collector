@@ -1,3 +1,5 @@
+import 'package:blood_collector/UI/widgets/appTopBar.dart';
+import 'package:blood_collector/UI/widgets/drawer_widget.dart';
 import 'package:flutter/material.dart';
 
 class RequestHistory extends StatefulWidget {
@@ -13,27 +15,27 @@ class _RequestHistoryState extends State<RequestHistory>
       length: 2,
       child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(35.0),
-            child: Container(
-              child: SafeArea(
-                child: Column(
-                  children: <Widget>[
-                    Expanded(child: Container()),
-                    TabBar(
-                      indicatorColor: Colors.red,
-                      tabs: [
-                        Text(
-                          "Donated Request",
-                          style: TextStyle(fontSize: 16.0),
-                        ),
-                        Text("Raised Request", style: TextStyle(fontSize: 16.0))
-                      ],
+            preferredSize: Size.fromHeight(95.0),
+            child: Column(
+              children: <Widget>[
+                AppTopBar(title: "Request List"),
+                SizedBox(
+                  height: 10.0,
+                ),
+                TabBar(
+                  indicatorColor: Colors.red,
+                  tabs: [
+                    Text(
+                      "Donated Request",
+                      style: TextStyle(fontSize: 16.0),
                     ),
+                    Text("Raised Request", style: TextStyle(fontSize: 16.0))
                   ],
                 ),
-              ),
+              ],
             ),
           ),
+          drawer: DrawerWidget(),
           body: TabBarView(children: <Widget>[
             Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
               const ListTile(

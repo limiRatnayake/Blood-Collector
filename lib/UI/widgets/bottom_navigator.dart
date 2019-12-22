@@ -1,10 +1,9 @@
-
 import 'package:flutter/material.dart';
 
+import 'package:blood_collector/UI/pages/homeView.dart';
 import 'package:blood_collector/UI/pages/map_view.dart';
 import 'package:blood_collector/UI/pages/requestHistory.dart';
 import 'package:blood_collector/UI/pages/settingView.dart';
-
 
 class BottomNavigationWidget extends StatefulWidget {
   @override
@@ -21,7 +20,7 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
   }
 
   final List<Widget> _children = [
-    MapView(),
+    HomeView(),
     RequestHistory(),
     MapView(),
     SettingView()
