@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 
 class SettingView extends StatefulWidget {
   @override
@@ -19,11 +20,10 @@ class _SettingViewState extends State<SettingView> {
                   child: Column(
                     children: <Widget>[
                       ListTile(
-                        leading: CircleAvatar(
-                            radius: 30,
-                            backgroundImage: AssetImage("assets/backgroundImage.jpg"),
-                            
-                            ),
+                        // leading: CircularProfileAvatar(
+                        //   // 'https://avatars0.githubusercontent.com/u/8264639?s=460&v=4',
+                        //   radius: 30,
+                        // ),
                         contentPadding: EdgeInsets.only(left: 35.0, top: 15.0),
                         title: Text("Tom Riddle \n+941578444"),
                         subtitle: Text("Email"),
