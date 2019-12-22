@@ -10,11 +10,11 @@ class AppTopBar extends StatefulWidget {
   _AppTopBarState createState() => _AppTopBarState();
 }
 
-class _AppTopBarState extends State<AppTopBar>{
+class _AppTopBarState extends State<AppTopBar> {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-    preferredSize: const Size(double.infinity, kToolbarHeight),
+      preferredSize: const Size(double.infinity, kToolbarHeight),
       child: AppBar(
         title: Text(
           widget.title,
@@ -30,12 +30,12 @@ class _AppTopBarState extends State<AppTopBar>{
             icon: Icon(Icons.notifications),
             color: Colors.grey,
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificationView()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => NotificationView()));
             },
           ),
         ],
       ),
-    
     );
   }
 }

@@ -20,7 +20,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   after_layout: ^1.0.7+2
   curved_navigation_bar: ^0.3.1
-
+  circular_profile_avatar: ^1.0.6
   flutter:
     sdk: flutter
   
