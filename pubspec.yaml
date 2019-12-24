@@ -20,8 +20,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   after_layout: ^1.0.7+2
   curved_navigation_bar: ^0.3.1
-  
-
+ 
   
   flutter:
     sdk: flutter
@@ -58,6 +57,7 @@ flutter:
     - assets/backgroundImage.jpg
     - assets/drawer.PNG
     - assets/person.jpg
+    - assets/cam2.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
