@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/pages/settingView.dart';
+
 import 'package:flutter/material.dart';
 
 class PreventDoubleTap extends StatefulWidget {

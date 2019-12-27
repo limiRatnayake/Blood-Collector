@@ -1,4 +1,5 @@
-import 'package:blood_collector/Modules/technician.dart';
+import 'package:blood_collector/Modules/bloodRequester.dart';
+// import 'package:blood_collector/Modules/technician.dart';
 import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
@@ -15,7 +16,7 @@ class MapView extends StatelessWidget {
         body: Stack(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.only(top: 550, bottom: 50),
+              padding: EdgeInsets.only(top: 480.0, bottom: 40.0),
               child: ListView(
                 padding: EdgeInsets.only(left: 20),
                 children: getTechniciansInArea(),
@@ -27,106 +28,74 @@ class MapView extends StatelessWidget {
   }
 }
 
-List<Technician> getTechices() {
-  List<Technician> techies = [];
+List<BloodRequester> getTechices() {
+  List<BloodRequester> techies = [];
   for (int i = 0; i < 10; i++) {
     AssetImage profilePic = new AssetImage("assets/person.jpg");
-    Technician myTechy = new Technician(
-        'Carlos teller',
-        'First road 23 elm street',
-        'Electrician',
-        '070-379-031',
-        profilePic,
-        529.3,
-        4,
-        'Available');
+    BloodRequester myTechy = new BloodRequester('Carlos teller',
+        'First road 23 elm street', '070-379-031', profilePic, 'B+');
     techies.add(myTechy);
   }
   return techies;
 }
 
 List<Widget> getTechniciansInArea() {
-  List<Technician> techies = getTechices();
+  List<BloodRequester> techies = getTechices();
   List<Widget> cards = [];
-  for (Technician techy in techies) {
+  for (BloodRequester techy in techies) {
     cards.add(technicianCard(techy));
   }
   return cards;
 }
 
-Widget technicianCard(Technician technician) {
+Widget technicianCard(BloodRequester bloodRequester) {
   return Container(
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.only(right: 20),
-      width: 180,
-      // height: 150,
+      width: 250,
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(20)),
           boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 20.0)]),
       child: Column(
         children: <Widget>[
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Container(
-                  child: CircleAvatar(
-                    backgroundImage: technician.profilePic,
+          Container(
+            height: 80.0,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(
+                      'assets/backgroundImage.jpg',
+                    ),
+                    fit: BoxFit.fill)),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    height: 60.0,
+                    width: 60.0,
+                    child: CircleAvatar(
+                      backgroundImage: bloodRequester.profilePic,
+                    ),
                   ),
-                ),
+                ]),
+          ),
+          Container(
+            child: Row(
+              children: <Widget>[
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(technician.name),
-                    Text(technician.occupation),
+                    Text(bloodRequester.name),
+                    // Text(technician.occupation),
+                    Text(
+                      "Blood Group:   " + bloodRequester.bType,
+                    ),
                   ],
                 ),
-              ]),
-          Container(
-            margin: EdgeInsets.only(top: 30),
-            child: Row(
-              children: <Widget>[
-                Text("Status:   "),
-                Text(technician.status),
               ],
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 40),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text("Rating:  " + technician.rating.toString())
-                  ],
-                ),
-                Row(
-                  children: getRatings(technician),
-                )
-              ],
-            ),
-          )
         ],
       ));
-}
-
-List<Widget> getRatings(Technician techy) {
-  List<Widget> ratings = [];
-  for (int i = 0; i < 5; i++) {
-    if (i < techy.rating) {
-      ratings.add(Icon(
-        Icons.star,
-        color: Colors.yellow,
-      ));
-    } else {
-      ratings.add(
-        Icon(
-          Icons.star_border,
-          color: Colors.black,
-        ),
-      );
-    }
-  }
-  return ratings;
 }
