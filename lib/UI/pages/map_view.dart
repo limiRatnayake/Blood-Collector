@@ -1,9 +1,8 @@
-import 'package:blood_collector/Modules/bloodRequester.dart';
-// import 'package:blood_collector/Modules/technician.dart';
 import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
+import 'package:blood_collector/Modules/bloodRequester.dart';
 
 class MapView extends StatelessWidget {
   @override
