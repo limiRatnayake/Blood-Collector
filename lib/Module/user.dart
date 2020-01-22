@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 
-class BloodRequester {
+
+class User {
   String name;
   String phoneNum;
   String address;
   String bType;
   AssetImage profilePic;
-  
 
-  BloodRequester(
-    this.name,
-    this.address,
-    this.phoneNum,
-    this.profilePic,
-    this.bType
-  );
+  User(this.name, this.address, this.phoneNum, this.profilePic, this.bType);
 }

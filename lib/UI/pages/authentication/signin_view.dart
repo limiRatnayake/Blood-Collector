@@ -1,57 +1,51 @@
+import 'package:blood_collector/UI/pages/authentication/signup_view.dart';
+import 'package:blood_collector/UI/widgets/homeWidget.dart';
+import 'package:blood_collector/services/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:blood_collector/UI/widgets/homeWidget.dart';
+import 'package:blood_collector/shared/constant.dart';
+// import 'package:blood_collector/UI/widgets/homeWidget.dart';
 
-class SigninPage extends StatefulWidget {
+class SignInPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _SigninPageState();
+    return _SignInPageState();
   }
 }
 
-class _SigninPageState extends State<SigninPage> {
-  final Map<String, dynamic> _formData = {'email': null, 'password': null};
+class _SignInPageState extends State<SignInPage> {
+  // final Map<String, dynamic> _formData = {'email': null, 'password': null};
 
   final _formKey = GlobalKey<FormState>();
+  final AuthServices _auth = AuthServices();
 
-  BoxDecoration _boxDecoration() {
-    return BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(40),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(3, 6)) //BoxShadow
-        ]);
-  }
+  String email = '';
+  String password = '';
+  String error = '';
 
   Widget _emailTextField() {
     return Container(
       width: double.infinity,
       height: 58,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
-      decoration: _boxDecoration(),
+      decoration: boxDecoration, //import from shared
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
-          decoration: InputDecoration(
-              hintText: "Username",
-              hintStyle: TextStyle(
-                fontSize: 16.0,
-                fontFamily: "Roboto",
-              ),
-              enabledBorder: InputBorder.none),
+          decoration: inputDecoration.copyWith(hintText: "Username"),
           keyboardType: TextInputType.emailAddress,
           validator: (value) => value.isEmpty ||
                   !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                       .hasMatch(value)
               ? 'Email cannot be blank'
               : null,
-          onSaved: (String value) {
-            _formData['email'] = value;
+          onChanged: (value) {
+            // _formData['email'] = value;
+            setState(() {
+              email = value;
+            });
           },
         ),
       ),
@@ -63,40 +57,24 @@ class _SigninPageState extends State<SigninPage> {
       width: double.infinity,
       height: 58,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
-      decoration: _boxDecoration(),
+      decoration: boxDecoration,
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
-          decoration: InputDecoration(
-              hintText: "Password",
-              hintStyle: TextStyle(
-                fontSize: 16.0,
-                fontFamily: "Roboto",
-              ),
-              enabledBorder: InputBorder.none),
+          decoration: inputDecoration.copyWith(hintText: "Password"),
           validator: (value) => value.isEmpty || value.length < 6
               ? 'Password cannot be blank'
               : null,
-          onSaved: (String value) {
-            _formData['password'] = value;
+          obscureText: true,
+          onChanged: (value) {
+            // _formData['password'] = value;
+            setState(() {
+              password = value;
+            });
           },
         ),
       ),
     );
-  }
-
-  void _submitTheForm() {
-    final _form = _formKey.currentState;
-    if (_form.validate()) {
-      print('Form is vaild');
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePageView()),
-      );
-    } else {
-      print('Form is invaild');
-    }
-    _formKey.currentState.save();
   }
 
   @override
@@ -164,7 +142,7 @@ class _SigninPageState extends State<SigninPage> {
                           width: double.infinity,
                           height: 58,
                           margin: EdgeInsets.symmetric(horizontal: 30.0),
-                          decoration: _boxDecoration(),
+                          decoration: boxDecoration,
                           child: ButtonTheme(
                             child: RaisedButton(
                               elevation: 0.0,
@@ -177,7 +155,24 @@ class _SigninPageState extends State<SigninPage> {
                               color: Colors.white,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(25.5)),
-                              onPressed: () => _submitTheForm(),
+                              onPressed: () async {
+                                if (_formKey.currentState.validate()) {
+                                  dynamic result =
+                                      await _auth.signinWithEmailAndPassword(
+                                          email, password);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePageView()),
+                                  );
+                                  if (result == null) {
+                                    setState(() {
+                                      error =
+                                          'Could not sign in with those cridentials';
+                                    });
+                                  }
+                                }
+                              },
                             ),
                           ),
                         ),
@@ -186,7 +181,7 @@ class _SigninPageState extends State<SigninPage> {
                           width: double.infinity,
                           height: 58,
                           margin: EdgeInsets.symmetric(horizontal: 30.0),
-                          decoration: _boxDecoration(),
+                          decoration: boxDecoration,
                           child: ButtonTheme(
                             child: RaisedButton(
                               elevation: 0.0,
@@ -208,7 +203,7 @@ class _SigninPageState extends State<SigninPage> {
                           width: double.infinity,
                           height: 58,
                           margin: EdgeInsets.symmetric(horizontal: 30.0),
-                          decoration: _boxDecoration(),
+                          decoration: boxDecoration,
                           child: ButtonTheme(
                             child: RaisedButton(
                               elevation: 0.0,
@@ -238,12 +233,16 @@ class _SigninPageState extends State<SigninPage> {
                               style: TextStyle(
                                   fontSize: 15.0, fontFamily: "Roboto"),
                             ),
-                            InkWell(
-                              child: Text(
-                                "SIGN UP",
-                                style: TextStyle(color: Colors.red),
-                              ),
-                              onTap: () {},
+                            FlatButton.icon(
+                              icon: Icon(Icons.person),
+                              label: Text('Sign Up'),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SignUpPage()),
+                                ); 
+                              },
                             )
                           ],
                         )))

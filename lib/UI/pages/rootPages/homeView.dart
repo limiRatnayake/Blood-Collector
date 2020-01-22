@@ -1,4 +1,5 @@
-import 'package:blood_collector/UI/pages/viewDetails.dart';
+import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/appTopBar.dart';

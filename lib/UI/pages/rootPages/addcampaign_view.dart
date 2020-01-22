@@ -1,5 +1,6 @@
-import 'package:blood_collector/UI/pages/create_post_view.dart';
+
 // import 'package:blood_collector/UI/widgets/post_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/create_post_view.dart';
 import 'package:flutter/material.dart';
 
 
@@ -248,7 +249,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
       print('Form is vaild');
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PostView()),
+        MaterialPageRoute(builder: (context) => CreatePostView()),
       );
     } else {
       print('Form is invaild');

@@ -1,10 +1,6 @@
-
-
+import 'package:blood_collector/UI/pages/rootPages/addcampaign_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/requestBlood_view.dart';
 import 'package:flutter/material.dart';
-
-import 'package:blood_collector/UI/pages/addcampaign_view.dart';
-import 'package:blood_collector/UI/pages/requestBlood_view.dart';
-
 
 class RequestView extends StatefulWidget {
   @override
@@ -22,7 +18,7 @@ class _RequestViewState extends State<RequestView> {
           backgroundColor: Colors.white,
           bottom: TabBar(
             indicatorColor: Colors.red,
-           indicatorWeight: 3.0,
+            indicatorWeight: 3.0,
             labelColor: Colors.black,
             tabs: <Widget>[
               Tab(text: 'Request Blood'),

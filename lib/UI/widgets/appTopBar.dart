@@ -1,4 +1,5 @@
-import 'package:blood_collector/UI/pages/notificationView.dart';
+
+import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
 import 'package:flutter/material.dart';
 
 class AppTopBar extends StatefulWidget {

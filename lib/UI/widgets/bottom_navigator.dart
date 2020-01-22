@@ -1,9 +1,9 @@
+import 'package:blood_collector/UI/pages/rootPages/homeView.dart';
+import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/requestHistory.dart';
+import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:flutter/material.dart';
 
-import 'package:blood_collector/UI/pages/homeView.dart';
-import 'package:blood_collector/UI/pages/map_view.dart';
-import 'package:blood_collector/UI/pages/requestHistory.dart';
-import 'package:blood_collector/UI/pages/settingView.dart';
 
 class BottomNavigationWidget extends StatefulWidget {
   @override

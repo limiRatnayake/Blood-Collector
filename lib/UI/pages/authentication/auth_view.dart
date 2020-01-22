@@ -1,8 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import './signin_view.dart';
-import './signup_view.dart';
+
+import 'package:blood_collector/UI/pages/authentication/signup_view.dart';
+
+import 'package:blood_collector/UI/pages/authentication/signin_view.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -39,13 +42,13 @@ class _AuthPageState extends State<AuthPage> {
   void _buildNavigateSignInPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SigninPage()),
+      MaterialPageRoute(builder: (context) => SignInPage()),
     );
   }
   void _buildNavigateSignUpPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SignupPage()),
+      MaterialPageRoute(builder: (context) => SignUpPage()),
     );
   }
 
@@ -98,7 +101,6 @@ class _AuthPageState extends State<AuthPage> {
                     button("Sign In", () {
                       _buildNavigateSignInPage();
                     }),
-
                     SizedBox(
                       height: 25.0,
                     ),

@@ -1,9 +1,7 @@
-
+import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:flutter/material.dart';
 
-
-import 'package:blood_collector/UI/pages/settingView.dart';
-import 'package:blood_collector/UI/pages/map_view.dart';
 import 'package:blood_collector/UI/widgets/homeWidget.dart';
 
 class DrawerWidget extends StatelessWidget {
@@ -53,8 +51,8 @@ class DrawerWidget extends StatelessWidget {
             title: Text("Home"),
             leading: Icon(Icons.home),
             onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => HomePageView()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomePageView()));
             },
           ),
           ListTile(

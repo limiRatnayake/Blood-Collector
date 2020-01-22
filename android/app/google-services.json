@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "707195683377",
+    "firebase_url": "https://final-year-project-a89ff.firebaseio.com",
+    "project_id": "final-year-project-a89ff",
+    "storage_bucket": "final-year-project-a89ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707195683377:android:b82025b70ab5193ce8cb10",
+        "android_client_info": {
+          "package_name": "com.finalyearproject.blood_collector"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707195683377-7l44v64k869u9aerua32g55uk67ppt91.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkCjzUMsh1FCs2ByCXnFaht4IO4dQKgJ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707195683377-7l44v64k869u9aerua32g55uk67ppt91.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
-import 'package:blood_collector/Modules/bloodRequester.dart';
+import 'package:blood_collector/Module/user.dart';
 
 class MapView extends StatelessWidget {
   @override
@@ -27,11 +27,11 @@ class MapView extends StatelessWidget {
   }
 }
 
-List<BloodRequester> getTechices() {
-  List<BloodRequester> techies = [];
+List<User> getTechices() {
+  List<User> techies = [];
   for (int i = 0; i < 10; i++) {
     AssetImage profilePic = new AssetImage("assets/person.jpg");
-    BloodRequester myTechy = new BloodRequester('Carlos teller',
+    User myTechy = new User('Carlos teller',
         'First road 23 elm street', '070-379-031', profilePic, 'B+');
     techies.add(myTechy);
   }
@@ -39,15 +39,15 @@ List<BloodRequester> getTechices() {
 }
 
 List<Widget> getTechniciansInArea() {
-  List<BloodRequester> techies = getTechices();
+  List<User> techies = getTechices();
   List<Widget> cards = [];
-  for (BloodRequester techy in techies) {
+  for (User techy in techies) {
     cards.add(technicianCard(techy));
   }
   return cards;
 }
 
-Widget technicianCard(BloodRequester bloodRequester) {
+Widget technicianCard(User bloodRequester) {
   return Container(
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.only(right: 20),

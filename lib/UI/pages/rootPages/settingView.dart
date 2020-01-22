@@ -1,7 +1,9 @@
-import 'package:blood_collector/UI/pages/editProfileView.dart';
+import 'package:blood_collector/UI/pages/authentication/signin_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
+import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
+import 'package:blood_collector/services/auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:blood_collector/UI/pages/notificationView.dart';
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
 
@@ -11,6 +13,8 @@ class SettingView extends StatefulWidget {
 }
 
 class _SettingViewState extends State<SettingView> {
+  final AuthServices _auth = AuthServices();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -58,25 +62,23 @@ class _SettingViewState extends State<SettingView> {
                                   SizedBox(
                                     height: 10.0,
                                   ),
-                                  
                                 ],
                               ),
-                              
                             ],
                           ),
                           InkWell(
-                                    child: Text(
-                                      "Edit",
-                                      style: TextStyle(color: Colors.blue, fontSize: 18.0),
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditProfileView()));
-                                    },
-                                  ),
+                            child: Text(
+                              "Edit",
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 18.0),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditProfileView()));
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -163,7 +165,14 @@ class _SettingViewState extends State<SettingView> {
                       ),
                       ListTile(
                         title: Text("Log Out"),
-                        onTap: () {},
+                        onTap: () async {
+                          await _auth.logOut();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignInPage()),
+                          );
+                        },
                       ),
                     ],
                   ),

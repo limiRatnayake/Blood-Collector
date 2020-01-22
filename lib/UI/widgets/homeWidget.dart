@@ -1,6 +1,7 @@
+import 'package:blood_collector/UI/pages/rootPages/add_details_view.dart';
 import 'package:flutter/material.dart';
 
-import 'package:blood_collector/UI/pages/add_details_view.dart';
+
 
 import 'package:blood_collector/UI/widgets/bottom_navigator.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
@@ -18,7 +19,6 @@ class _HomePageState extends State<HomePageView>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        
         drawer: DrawerWidget(),
         body: BottomNavigationWidget(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
 
-class PostView extends StatefulWidget {
+class CreatePostView extends StatefulWidget {
   final double _expandedBottomSheetBottomPosition = 0;
   final double _collapsedBottomSheetBottomPosition = -250;
   // final double _completeCollapsedBottomSheetBottomPosition = -330;
@@ -25,7 +25,7 @@ Widget _descriptionTextField() {
   );
 }
 
-class _PostViewState extends State<PostView> with AfterLayoutMixin<PostView> {
+class _PostViewState extends State<CreatePostView> with AfterLayoutMixin<CreatePostView> {
   double _bottomSheetBottomPosition = -330;
   bool isCollapsed = false;
 

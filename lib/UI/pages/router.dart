@@ -1,9 +1,10 @@
+import 'package:blood_collector/UI/pages/authentication/auth_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:blood_collector/UI/widgets/homeWidget.dart';
-import 'package:blood_collector/UI/pages/auth_view.dart';
-import 'package:blood_collector/UI/pages/signIn_view.dart';
+
+import 'package:blood_collector/UI/pages/authentication/signin_view.dart';
 import 'package:blood_collector/UI/pages/splash_view.dart';
 
 class Router {
@@ -14,7 +15,7 @@ class Router {
       case 'Login':
         return MaterialPageRoute(builder: (_) => AuthPage());
       case 'Signin':
-        return MaterialPageRoute(builder: (_) => SigninPage());
+        return MaterialPageRoute(builder: (_) => SignInPage());
       case 'HomePage':
         return MaterialPageRoute(builder: (_) => HomePageView());
       default:
