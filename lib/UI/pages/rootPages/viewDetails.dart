@@ -86,7 +86,17 @@ class _ViewDetailsState extends State<ViewDetails> {
         ),
       ),
       bottomSheet: Padding(
-          padding: const EdgeInsets.all(8.0), child: PreventDoubleTap()),
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              PreventDoubleTap(),
+              FlatButton.icon(
+                icon: Icon(Icons.message),
+                onPressed: () {},
+                label: Text("Message"),
+              ),
+            ],
+          )),
     );
   }
 }

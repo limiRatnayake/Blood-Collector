@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 
 import 'package:blood_collector/UI/widgets/bottom_navigator.dart';
-import 'package:blood_collector/UI/widgets/drawer_widget.dart';
 
 class HomePageView extends StatefulWidget {
   @override
@@ -19,7 +18,6 @@ class _HomePageState extends State<HomePageView>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        drawer: DrawerWidget(),
         body: BottomNavigationWidget(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(
