@@ -1,13 +1,10 @@
-import 'package:blood_collector/UI/widgets/homeWidget.dart';
+import 'package:blood_collector/UI/pages/authentication/signin_view.dart';
+
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/constant.dart';
 import 'package:flutter/material.dart';
 
-// import 'package:blood_collector/UI/pages/authentication/signin_view.dart';
-
 class SignUpPage extends StatefulWidget {
-  final Function toggleViewPera;
-  SignUpPage({this.toggleViewPera});
   @override
   State<StatefulWidget> createState() {
     return _SignUpPageState();
@@ -18,9 +15,16 @@ class _SignUpPageState extends State<SignUpPage> {
   final AuthServices _auth = AuthServices();
   final _formKey = GlobalKey<FormState>();
 
+  String name = '';
+  String bloodGroup = '';
+  String mobileNo = '';
+  String city = '';
+  String address = '';
   String email = '';
   String password = '';
+
   String error = '';
+  String uid = '';
 
   Widget _nameTextField() {
     return Container(
@@ -32,11 +36,11 @@ class _SignUpPageState extends State<SignUpPage> {
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
           decoration: inputDecoration.copyWith(hintText: "Name"),
-          keyboardType: TextInputType.emailAddress,
+          keyboardType: TextInputType.text,
           validator: (value) => value.isEmpty ? 'Name should be filled' : null,
           onChanged: (val) {
             setState(() {
-              email = val;
+              name = val;
             });
           },
         ),
@@ -44,7 +48,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _orgnaizationNameField() {
+  Widget _bloodGroupTextField() {
     return Container(
       width: double.infinity,
       height: 58,
@@ -53,9 +57,15 @@ class _SignUpPageState extends State<SignUpPage> {
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
-          decoration: inputDecoration.copyWith(hintText: "Oraganization Name"),
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) => value.isEmpty ? 'Name should be filled' : null,
+          decoration: inputDecoration.copyWith(hintText: "Blood Group"),
+          keyboardType: TextInputType.text,
+          validator: (value) =>
+              value.isEmpty ? 'Blood Group should be filled' : null,
+          onChanged: (val) {
+            setState(() {
+              bloodGroup = val;
+            });
+          },
         ),
       ),
     );
@@ -71,8 +81,14 @@ class _SignUpPageState extends State<SignUpPage> {
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
           decoration: inputDecoration.copyWith(hintText: "Mobile No:"),
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) => value.isEmpty ? 'Name should be filled' : null,
+          keyboardType: TextInputType.phone,
+          validator: (value) =>
+              value.isEmpty || (value.length != 10) ? 'Mobile No should be filled' : null,
+          onChanged: (val) {
+            setState(() {
+              mobileNo = val;
+            });
+          },
         ),
       ),
     );
@@ -94,8 +110,13 @@ class _SignUpPageState extends State<SignUpPage> {
                 fontFamily: "Roboto",
               ),
               enabledBorder: InputBorder.none),
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) => value.isEmpty ? 'Name should be filled' : null,
+          keyboardType: TextInputType.text,
+          validator: (value) => value.isEmpty ? 'City should be filled' : null,
+          onChanged: (val) {
+            setState(() {
+              city = val;
+            });
+          },
         ),
       ),
     );
@@ -111,8 +132,40 @@ class _SignUpPageState extends State<SignUpPage> {
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
           decoration: inputDecoration.copyWith(hintText: "Postal Address"),
+          keyboardType: TextInputType.multiline,
+          validator: (value) =>
+              value.isEmpty ? 'Address should be filled' : null,
+          onChanged: (val) {
+            setState(() {
+              address = val;
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _emailTextField() {
+    return Container(
+      width: double.infinity,
+      height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 30.0),
+      decoration: boxDecoration,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          decoration: inputDecoration.copyWith(hintText: "Email Address"),
           keyboardType: TextInputType.emailAddress,
-          validator: (value) => value.isEmpty ? 'Name should be filled' : null,
+          validator: (value) => value.isEmpty ||
+                  !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                      .hasMatch(value)
+              ? 'Email cannot be blank'
+              : null,
+          onChanged: (val) {
+            setState(() {
+              email = val;
+            });
+          },
         ),
       ),
     );
@@ -128,8 +181,10 @@ class _SignUpPageState extends State<SignUpPage> {
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
           decoration: inputDecoration.copyWith(hintText: "Password"),
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) => value.isEmpty ? 'Name should be filled' : null,
+          keyboardType: TextInputType.visiblePassword,
+          validator: (value) => value.isEmpty || value.length < 6
+              ? 'Password cannot be blank'
+              : null,
           obscureText: true,
           onChanged: (val) {
             setState(() {
@@ -143,10 +198,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void _submitTheForm() async {
     if (_formKey.currentState.validate()) {
-      dynamic result = await _auth.signupWithEmailAndPassword(email, password);
-      Navigator.push(
+      dynamic result = await _auth.signupWithEmailAndPassword(
+          email, password, uid, name, mobileNo, bloodGroup, city, address);
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePageView()),
+        MaterialPageRoute(builder: (context) => SignInPage()),
       );
       if (result == null) {
         setState(() {
@@ -197,76 +253,70 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         Container(
           child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  _nameTextField(),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  _orgnaizationNameField(),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  _mobileNoField(),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  _cityField(),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  _postalAddressField(),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  _passwordField(),
-                  SizedBox(
-                    height: 30.0,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 58,
-                    margin: EdgeInsets.symmetric(horizontal: 30.0),
-                    decoration: boxDecoration,
-                    child: ButtonTheme(
-                      child: RaisedButton(
-                        elevation: 0.0,
-                        child: Text("SIGNUP",
-                            style: TextStyle(
-                                fontFamily: "Roboto",
-                                fontSize: 18.0,
-                                color: Colors.black)),
-                        textColor: Colors.black,
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.5)),
-                        onPressed: () async {
-                          _submitTheForm();
-                          
-                        },
+            child: Padding(
+              padding: EdgeInsets.only(
+             bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  
+                  children: <Widget>[
+                    _nameTextField(),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    _bloodGroupTextField(),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    _mobileNoField(),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    _cityField(),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    _postalAddressField(),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    _emailTextField(),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    _passwordField(),
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: 58,
+                      margin: EdgeInsets.symmetric(horizontal: 30.0),
+                      decoration: boxDecoration,
+                      child: ButtonTheme(
+                        child: RaisedButton(
+                          elevation: 0.0,
+                          child: Text("SIGNUP",
+                              style: TextStyle(
+                                  fontFamily: "Roboto",
+                                  fontSize: 18.0,
+                                  color: Colors.black)),
+                          textColor: Colors.black,
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25.5)),
+                          onPressed: () async {
+                            _submitTheForm();
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 25.0,
-                  ),
-                  FlatButton.icon(
-                    icon: Icon(Icons.person),
-                    label: Text('Sign in'),
-                    onPressed: () {
-                      widget.toggleViewPera();
-                    },
-                  ),
-                  SizedBox(
-                    height: 25.0,
-                  ),
-                  Text(
-                    error,
-                    style: TextStyle(color: Colors.red, fontSize: 14.0),
-                  )
-                ],
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

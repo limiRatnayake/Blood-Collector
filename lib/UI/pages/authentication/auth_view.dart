@@ -43,12 +43,14 @@ class _AuthPageState extends State<AuthPage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SignInPage()),
+       
     );
   }
   void _buildNavigateSignUpPage() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SignUpPage()),
+     
     );
   }
 

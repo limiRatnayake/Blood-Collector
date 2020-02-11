@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
-import 'package:blood_collector/Module/user.dart';
+import 'package:blood_collector/models/user.dart';
 
 class MapView extends StatelessWidget {
   @override
@@ -31,9 +31,9 @@ List<User> getTechices() {
   List<User> techies = [];
   for (int i = 0; i < 10; i++) {
     AssetImage profilePic = new AssetImage("assets/person.jpg");
-    User myTechy = new User('Carlos teller',
-        'First road 23 elm street', '070-379-031', profilePic, 'B+');
-    techies.add(myTechy);
+    // User myTechy = new User('Carlos teller',
+    //     'First road 23 elm street', '070-379-031', profilePic, 'B+');
+    // techies.add(myTechy);
   }
   return techies;
 }
@@ -74,7 +74,7 @@ Widget technicianCard(User bloodRequester) {
                     height: 60.0,
                     width: 60.0,
                     child: CircleAvatar(
-                      backgroundImage: bloodRequester.profilePic,
+                      // backgroundImage: bloodRequester.profilePic,
                     ),
                   ),
                 ]),
@@ -87,9 +87,9 @@ Widget technicianCard(User bloodRequester) {
                   children: <Widget>[
                     Text(bloodRequester.name),
                     // Text(technician.occupation),
-                    Text(
-                      "Blood Group:   " + bloodRequester.bType,
-                    ),
+                    // Text(
+                      // "Blood Group:   " + bloodRequester.bType,
+                    // ),
                   ],
                 ),
               ],
