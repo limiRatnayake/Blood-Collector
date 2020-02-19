@@ -6,6 +6,8 @@ import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
 
 class HomeView extends StatelessWidget {
+
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,4 +84,6 @@ class HomeView extends StatelessWidget {
           ),
         ));
   }
+
+  
 }

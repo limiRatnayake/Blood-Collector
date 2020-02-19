@@ -1,16 +1,17 @@
 import 'package:blood_collector/models/user.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class AuthServices {
+  String uid;
+  AuthServices({this.uid});
   
   final FirebaseAuth _auth = FirebaseAuth.instance;
   //Create a collection as user in cloud firestore 
   final CollectionReference _ref = Firestore.instance.collection("users");
-
-
-// //create user object base on firebase user-frm anymous uid/customer user
+  
+//reate user object base on firebase user-frm anymous uid/customer user
   FirebaseUser _userFromFirebaseUser(FirebaseUser user) {
     return user != null ? user : null;
   }
@@ -76,6 +77,11 @@ class AuthServices {
       print(error.toString());
       return null;
     }
+  }
+
+
+Future<FirebaseUser> getUser() async {
+    return await _auth.currentUser();
   }
 
   

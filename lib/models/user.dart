@@ -1,11 +1,11 @@
 class User {
-  String uid;
-  String name;
-  String email;
-  String mobileNo;
-  String address;
-  String bloodGroup;
-  String city;
+ final String uid;
+ final String name;
+ final String email;
+  final String mobileNo;
+  final String address;
+ final  String bloodGroup;
+  final String city;
 
 
   User(this.uid, this.name,this.email, this.address, this.mobileNo, this.bloodGroup,

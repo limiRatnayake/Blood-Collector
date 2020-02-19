@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/pages/authentication/signin_view.dart';
+import 'package:blood_collector/UI/widgets/homeWidget.dart';
 
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/constant.dart';
@@ -14,6 +14,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final AuthServices _auth = AuthServices();
   final _formKey = GlobalKey<FormState>();
+  // final Map<String, dynamic> _formData = {'bloodgroup': null};
 
   String name = '';
   String bloodGroup = '';
@@ -25,6 +26,15 @@ class _SignUpPageState extends State<SignUpPage> {
 
   String error = '';
   String uid = '';
+
+  List<String> bloodGroupType = ['A', 'A+', 'A-'];
+  String _bloodGroup = 'A';
+
+  void something(String value) {
+    setState(() {
+      _bloodGroup = value;
+    });
+  }
 
   Widget _nameTextField() {
     return Container(
@@ -56,16 +66,26 @@ class _SignUpPageState extends State<SignUpPage> {
       decoration: boxDecoration,
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-        child: TextFormField(
-          decoration: inputDecoration.copyWith(hintText: "Blood Group"),
-          keyboardType: TextInputType.text,
+        child: DropdownButtonFormField(
+          value: _bloodGroup,
+          decoration: InputDecoration(
+              hintText: 'Blood Type',
+              hintStyle: TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
+              enabledBorder: InputBorder.none),
           validator: (value) =>
               value.isEmpty ? 'Blood Group should be filled' : null,
-          onChanged: (val) {
+          onChanged: (value) {
             setState(() {
-              bloodGroup = val;
+              bloodGroup = value;
             });
+            something(value);
           },
+          items: bloodGroupType.map((String value) {
+            return DropdownMenuItem(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
         ),
       ),
     );
@@ -82,8 +102,9 @@ class _SignUpPageState extends State<SignUpPage> {
         child: TextFormField(
           decoration: inputDecoration.copyWith(hintText: "Mobile No:"),
           keyboardType: TextInputType.phone,
-          validator: (value) =>
-              value.isEmpty || (value.length != 10) ? 'Mobile No should be filled' : null,
+          validator: (value) => value.isEmpty || (value.length != 10)
+              ? 'Mobile No should be filled'
+              : null,
           onChanged: (val) {
             setState(() {
               mobileNo = val;
@@ -196,132 +217,141 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  void _submitTheForm() async {
-    if (_formKey.currentState.validate()) {
-      dynamic result = await _auth.signupWithEmailAndPassword(
-          email, password, uid, name, mobileNo, bloodGroup, city, address);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => SignInPage()),
-      );
-      if (result == null) {
-        setState(() {
-          error = 'Please supply vaild email';
-        });
-      }
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      backgroundColor: Colors.white,
-      body: ListView(children: <Widget>[
-        Center(
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 180.0,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage("assets/backgroundImage.jpg"),
-                      fit: BoxFit.cover),
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.elliptical(45.0, 15.0),
-                      bottomRight: Radius.elliptical(45.0, 15.0)),
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomPadding: false,
+        backgroundColor: Colors.white,
+        body: ListView(children: <Widget>[
+          Center(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 180.0,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("assets/backgroundImage.jpg"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.elliptical(45.0, 15.0),
+                        bottomRight: Radius.elliptical(45.0, 15.0)),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          child: Text('Smart Donor',
+                              style: TextStyle(
+                                  fontFamily: "Raleway", fontSize: 35.0)),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                child: Center(
+                SizedBox(
+                  height: 25.0,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: Form(
+                  key: _formKey,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
+                      _nameTextField(),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      _bloodGroupTextField(),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      _mobileNoField(),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      _cityField(),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      _postalAddressField(),
+                      SizedBox(
+                        height: 30.0,
+                      ),
+                      _emailTextField(),
+                      SizedBox(
+                        height: 30.0,
+                      ),
+                      _passwordField(),
+                      SizedBox(
+                        height: 30.0,
+                      ),
                       Container(
-                        child: Text('Blood Collector',
-                            style: TextStyle(
-                                fontFamily: "Raleway", fontSize: 35.0)),
+                        width: double.infinity,
+                        height: 58,
+                        margin: EdgeInsets.symmetric(horizontal: 30.0),
+                        decoration: boxDecoration,
+                        child: ButtonTheme(
+                          child: RaisedButton(
+                            elevation: 0.0,
+                            child: Text("SIGNUP",
+                                style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 18.0,
+                                    color: Colors.black)),
+                            textColor: Colors.black,
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.5)),
+                            onPressed: () async {
+                              if (_formKey.currentState.validate()) {
+                                dynamic result =
+                                    await _auth.signupWithEmailAndPassword(
+                                        email,
+                                        password,
+                                        uid,
+                                        name,
+                                        mobileNo,
+                                        bloodGroup,
+                                        city,
+                                        address);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomePageView()),
+                                );
+                                if (result == null) {
+                                  setState(() {
+                                    error =
+                                        'Could not sign in with those cridentials';
+                                  });
+                                }
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 25.0,
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(
-                height: 25.0,
-              ),
-            ],
-          ),
-        ),
-        Container(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(
-             bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  
-                  children: <Widget>[
-                    _nameTextField(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    _bloodGroupTextField(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    _mobileNoField(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    _cityField(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    _postalAddressField(),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    _emailTextField(),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    _passwordField(),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: 58,
-                      margin: EdgeInsets.symmetric(horizontal: 30.0),
-                      decoration: boxDecoration,
-                      child: ButtonTheme(
-                        child: RaisedButton(
-                          elevation: 0.0,
-                          child: Text("SIGNUP",
-                              style: TextStyle(
-                                  fontFamily: "Roboto",
-                                  fontSize: 18.0,
-                                  color: Colors.black)),
-                          textColor: Colors.black,
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25.5)),
-                          onPressed: () async {
-                            _submitTheForm();
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25.0,
-                    ),
-                  ],
-                ),
-              ),
             ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }

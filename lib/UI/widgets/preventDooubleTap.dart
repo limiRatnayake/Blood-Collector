@@ -55,7 +55,7 @@ class _PreventDoubleTapState extends State<PreventDoubleTap> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 250.0,
+      width: double.infinity,
       height: 58.0,
       margin: EdgeInsets.symmetric(horizontal: 15.0),
       decoration: _boxDecoration(),

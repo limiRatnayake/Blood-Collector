@@ -33,72 +33,74 @@ class _PostViewState extends State<CreatePostView> with AfterLayoutMixin<CreateP
   Widget build(BuildContext context) {
     // final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Create Post",
-        ),
-        elevation: 0.3,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: InkWell(
-              child: Text(
-                "POST",
-                style: TextStyle(color: Colors.black, fontSize: 16.0),
-              ),
-              onTap: () {},
-            ),
-          )
-        ],
-      ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          SingleChildScrollView(
-            child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                    padding: const EdgeInsets.only(top: 8.0, left: 12),
-                    child: _descriptionTextField()),
-              ],
-            ),
+    return SafeArea(
+          child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Create Post",
           ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.decelerate,
-            bottom: _bottomSheetBottomPosition,
-            left: 0,
-            right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(40),
+          elevation: 0.3,
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: InkWell(
+                child: Text(
+                  "POST",
+                  style: TextStyle(color: Colors.black, fontSize: 16.0),
                 ),
+                onTap: () {},
               ),
+            )
+          ],
+        ),
+        body: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  InkWell(
-                    onTap: _onTap,
-                    child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 32),
-                        height: 80,
-                        child: Icon(Icons.keyboard_arrow_up)),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: _clipsWidget(),
-                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 8.0, left: 12),
+                      child: _descriptionTextField()),
                 ],
               ),
             ),
-          ),
-        ],
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.decelerate,
+              bottom: _bottomSheetBottomPosition,
+              left: 0,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    InkWell(
+                      onTap: _onTap,
+                      child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          height: 80,
+                          child: Icon(Icons.keyboard_arrow_up)),
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: _clipsWidget(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

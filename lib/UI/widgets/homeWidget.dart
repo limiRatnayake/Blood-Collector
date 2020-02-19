@@ -1,4 +1,5 @@
 import 'package:blood_collector/UI/pages/rootPages/add_details_view.dart';
+
 import 'package:flutter/material.dart';
 
 
@@ -14,6 +15,8 @@ class HomePageView extends StatefulWidget {
 
 class _HomePageState extends State<HomePageView>
     with TickerProviderStateMixin<HomePageView> {
+
+    
   @override
   Widget build(BuildContext context) {
     return SafeArea(

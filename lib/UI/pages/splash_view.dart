@@ -29,38 +29,40 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.redAccent,
-        ),//box decoration - add image to background
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-             new Container(
-                    width: 220.0,
-                    height: 220.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withOpacity(0.6),
-                    ),
-                    child: Center(
-                      child: Text(
-                              "Blood Collector",
-                              style: TextStyle(
-                                fontFamily: "Raleway",
-                                fontSize: 25.0,
+    return SafeArea(
+          child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            color: Colors.redAccent,
+          ),//box decoration - add image to background
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+               new Container(
+                      width: 220.0,
+                      height: 220.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.6),
+                      ),
+                      child: Center(
+                        child: Text(
+                                "Smart Donor",
+                                style: TextStyle(
+                                  fontFamily: "Raleway",
+                                  fontSize: 25.0,
+                                ),
                               ),
-                            ),
-                    ),
-                ),
-            ],
+                      ),
+                  ),
+              ],
+            ),
           ),
         ),
-      ),
 
+      ),
     );
   }
 }

@@ -13,12 +13,12 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   bool _criticalState = false;
 
   final _formKey = GlobalKey<FormState>();
-  List<String> countries = ['A', 'A+', 'A-'];
-  String _countries = 'A';
+  List<String> bloodGroup = ['A', 'A+', 'A-'];
+  String _bloodGroup = 'A';
 
   void something(String value) {
     setState(() {
-      _countries = value;
+      _bloodGroup = value;
     });
   }
 
@@ -43,7 +43,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
       child: SingleChildScrollView(
         padding: EdgeInsets.only(left: 24.0, right: 24.0),
         child: DropdownButtonFormField(
-          value: _countries,
+          value: _bloodGroup,
           decoration: InputDecoration(
               hintText: 'Blood Type',
               hintStyle: TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
@@ -51,7 +51,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
           onChanged: (String value) {
             something(value);
           },
-          items: countries.map((String value) {
+          items: bloodGroup.map((String value) {
             return DropdownMenuItem(
               value: value,
               child: Text(value),
