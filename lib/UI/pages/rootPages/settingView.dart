@@ -1,11 +1,14 @@
-import 'package:blood_collector/UI/pages/authentication/signin_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/shared/appConstant.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
+import 'package:provider/provider.dart';
 
 class SettingView extends StatefulWidget {
   @override
@@ -13,10 +16,9 @@ class SettingView extends StatefulWidget {
 }
 
 class _SettingViewState extends State<SettingView> {
-  final AuthServices _auth = AuthServices();
-
   @override
   Widget build(BuildContext context) {
+    final AuthServices _authServices = Provider.of<AuthServices>(context);
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -84,37 +86,6 @@ class _SettingViewState extends State<SettingView> {
                     ),
                   ),
                 ),
-                // Card(
-                //   child: Column(
-                //     children: <Widget>[
-
-                //       ListTile(
-                //         leading: Container(
-                //           child: CircleAvatar(
-                //             backgroundImage: AssetImage("assets/person.jpg"),
-                //             backgroundColor: Colors.black,
-                //             minRadius: 55,
-                //             maxRadius: 80,
-                //           ),
-                //         ),
-                //         // contentPadding: EdgeInsets.only(left: 35.0, top: 15.0),
-                //         title: Text("Tom Riddle \n+941578444"),
-                //         subtitle: Text("Email"),
-                //       ),
-                //       ButtonTheme(
-                //         child: FlatButton(
-                //           child: Text("Edit"),
-                //           onPressed: () {
-                //             Navigator.push(
-                //                 context,
-                //                 MaterialPageRoute(
-                //                     builder: (context) => EditProfileView()));
-                //           },
-                //         ),
-                //       )
-                //     ],
-                //   ),
-                // ),
                 Card(
                   child: Column(children: <Widget>[
                     ListTile(
@@ -164,16 +135,14 @@ class _SettingViewState extends State<SettingView> {
                         onTap: () {},
                       ),
                       ListTile(
-                        title: Text("Log Out"),
-                        onTap: () async {
-                          await _auth.logOut();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignInPage()),
-                          );
-                        },
-                      ),
+                          title: Text("Log Out"),
+                          onTap: () async{
+                           
+                             await  _authServices.logOut();
+                              Navigator.pushReplacementNamed(
+                                  context, AppConstants.SPLASH);
+                            
+                          }),
                     ],
                   ),
                 )
@@ -183,5 +152,7 @@ class _SettingViewState extends State<SettingView> {
         ),
       ),
     );
+
+    
   }
 }

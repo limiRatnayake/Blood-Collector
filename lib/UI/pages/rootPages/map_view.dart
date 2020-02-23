@@ -30,7 +30,7 @@ class MapView extends StatelessWidget {
 List<User> getTechices() {
   List<User> techies = [];
   for (int i = 0; i < 10; i++) {
-    AssetImage profilePic = new AssetImage("assets/person.jpg");
+    // AssetImage profilePic = new AssetImage("assets/person.jpg");
     // User myTechy = new User('Carlos teller',
     //     'First road 23 elm street', '070-379-031', profilePic, 'B+');
     // techies.add(myTechy);

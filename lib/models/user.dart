@@ -1,20 +1,19 @@
 class User {
- final String uid;
- final String name;
- final String email;
+  final String uid;
+  final String name;
+  final String email;
   final String mobileNo;
   final String address;
- final  String bloodGroup;
+  final String bloodGroup;
   final String city;
 
-
-  User(this.uid, this.name,this.email, this.address, this.mobileNo, this.bloodGroup,
-      this.city );
+  User(this.uid, this.name, this.email, this.address, this.mobileNo,
+      this.bloodGroup, this.city);
 
   User.fromMap(Map snapshot)
       : name = snapshot['name'] ?? "", //if the value is not there it is empty
         uid = snapshot['uid'] ?? "",
-        email =snapshot['email'] ??"",
+        email = snapshot['email'] ?? "",
         mobileNo = snapshot['mobileNo'] ?? "",
         address = snapshot['address'] ?? "",
         bloodGroup = snapshot['bloodGroup'] ?? "",
@@ -28,7 +27,7 @@ class User {
       "address": address,
       "bloodGroup": bloodGroup,
       "city": city,
-      "email":email,
+      "email": email,
     };
   }
 }

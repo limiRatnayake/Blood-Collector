@@ -19,20 +19,20 @@ class _HomePageState extends State<HomePageView>
     
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: BottomNavigationWidget(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.redAccent,
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => RequestView()));
-          },
-          child: Icon(Icons.add),
-          tooltip: 'Add a post',
+    return  SafeArea(
+        child: Scaffold(
+          body: BottomNavigationWidget(),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.redAccent,
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => RequestView()));
+            },
+            child: Icon(Icons.add),
+            tooltip: 'Add a post',
+          ),
         ),
-      ),
-    );
+      );
   }
 }

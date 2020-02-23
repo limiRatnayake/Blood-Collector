@@ -1,7 +1,9 @@
 
-import 'package:blood_collector/UI/pages/router.dart';
+
+
+import 'package:blood_collector/UI/router.dart';
 import 'package:blood_collector/services/auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:blood_collector/shared/appConstant.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,8 +24,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<FirebaseUser>.value(
-      value: AuthServices().user,
+    return MultiProvider(
+       providers: [
+          ChangeNotifierProvider(
+          create: (_) => AuthServices(),
+        ),
+         
+       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -32,7 +39,7 @@ class _MyAppState extends State<MyApp> {
             primaryColor: Colors.white,
             appBarTheme: AppBarTheme(color: Colors.white, elevation: 0)),
         // home: Wrapper(),
-        initialRoute: '/',
+        initialRoute: AppConstants.SPLASH,
         onGenerateRoute: Router.generateRoute,
       ),
     );

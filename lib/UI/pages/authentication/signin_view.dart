@@ -1,12 +1,13 @@
-import 'package:blood_collector/UI/pages/authentication/signup_view.dart';
-import 'package:blood_collector/UI/widgets/homeWidget.dart';
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/shared/appConstant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:blood_collector/shared/constant.dart';
-// import 'package:blood_collector/UI/widgets/homeWidget.dart';
+import 'package:provider/provider.dart';
+
 
 class SignInPage extends StatefulWidget {
   @override
@@ -17,7 +18,8 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
-  final AuthServices _auth = AuthServices();
+
+  bool _isLoading = false;
 
   String email = '';
   String password = '';
@@ -62,7 +64,7 @@ class _SignInPageState extends State<SignInPage> {
           validator: (value) => value.isEmpty || value.length < 6
               ? 'Password cannot be blank'
               : null,
-          obscureText: true,
+          obscureText: true, //visibiity of the password
           onChanged: (value) {
             setState(() {
               password = value;
@@ -75,8 +77,10 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthServices _authService = Provider.of<AuthServices>(context);
+
     return SafeArea(
-          child: Scaffold(
+      child: Scaffold(
           resizeToAvoidBottomPadding: false,
           backgroundColor: Colors.white,
           body: ListView(
@@ -140,96 +144,87 @@ class _SignInPageState extends State<SignInPage> {
                                 SizedBox(
                                   height: 20.0,
                                 ),
-                                new Container(
+                                Container(
                                   width: double.infinity,
                                   height: 58,
-                                  margin: EdgeInsets.symmetric(horizontal: 30.0),
+                                  margin:
+                                      EdgeInsets.symmetric(horizontal: 30.0),
                                   decoration: boxDecoration,
                                   child: ButtonTheme(
-                                    child: RaisedButton(
-                                      elevation: 0.0,
-                                      child: Text("SIGNIN",
-                                          style: TextStyle(
-                                            fontFamily: "Roboto",
-                                            fontSize: 18.0,
-                                          )),
-                                      textColor: Colors.black,
-                                      color: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(25.5)),
-                                      onPressed: () async {
-                                        if (_formKey.currentState.validate()) {
-                                          dynamic result = await _auth
-                                              .signinWithEmailAndPassword(
-                                                  email, password);
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    HomePageView()),
-                                          );
-                                          if (result == null) {
-                                            setState(() {
-                                              error =
-                                                  'Could not sign in with those cridentials';
-                                            });
-                                          }
-                                        }
-                                      },
-                                    ),
+                                    child: _isLoading
+                                        ? Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : RaisedButton(
+                                            elevation: 0.0,
+                                            child: Text("SIGNIN",
+                                                style: TextStyle(
+                                                  fontFamily: "Roboto",
+                                                  fontSize: 18.0,
+                                                )),
+                                            textColor: Colors.black,
+                                            color: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        25.5)),
+                                            onPressed: () {
+                                              if (_formKey.currentState
+                                                  .validate()) {
+                                                setState(() {
+                                                  _isLoading = true;
+                                                });
+                                                _authService
+                                                    .signIn(email, password)
+                                                    .then(
+                                                      
+                                                  (FirebaseUser user) {
+                                                    if (user != null) {
+                                                      Navigator
+                                                          .pushReplacementNamed(
+                                                        context,
+                                                        AppConstants.HOME,
+                                                      );
+                                                    } else {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          // returns a object of type Dialog
+                                                          return AlertDialog(
+                                                            title: new Text(
+                                                                "User Login Error"),
+                                                            content: new Text(
+                                                                "This user not found"),
+                                                            actions: <Widget>[
+                                                              new FlatButton(
+                                                                child: new Text(
+                                                                    "Close"),
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                    setState(() =>
+                                                        _isLoading = false);
+                                                  },
+                                                ).catchError((e) {
+                                                  setState(() {
+                                                    _isLoading = false;
+                                                    print(e);
+                                                  });
+                                                });
+                                              }
+                                            },
+                                          ),
                                   ),
                                 ),
-                                SizedBox(height: 18.0),
-                                // Container(
-                                //   width: double.infinity,
-                                //   height: 58,
-                                //   margin: EdgeInsets.symmetric(horizontal: 30.0),
-                                //   decoration: boxDecoration,
-                                //   child: ButtonTheme(
-                                //     child: RaisedButton(
-                                //       elevation: 0.0,
-                                //       child: Text("GOOGLE",
-                                //           style: TextStyle(
-                                //               fontFamily: "Roboto",
-                                //               fontSize: 18.0,
-                                //               color: Colors.red)),
-                                //       textColor: Colors.black,
-                                //       color: Colors.white,
-                                //       shape: RoundedRectangleBorder(
-                                //           borderRadius:
-                                //               BorderRadius.circular(25.5)),
-                                //       onPressed: () => null,
-                                //     ),
-                                //   ),
-                                // ),
-                                // SizedBox(height: 15.0),
-                                // Container(
-                                //   width: double.infinity,
-                                //   height: 58,
-                                //   margin: EdgeInsets.symmetric(horizontal: 30.0),
-                                //   decoration: boxDecoration,
-                                //   child: ButtonTheme(
-                                //     child: RaisedButton(
-                                //       elevation: 0.0,
-                                //       child: Text("FACEBOOK",
-                                //           style: TextStyle(
-                                //               fontFamily: "Roboto",
-                                //               fontSize: 18.0,
-                                //               color: Colors.blueAccent)),
-                                //       textColor: Colors.black,
-                                //       color: Colors.white,
-                                //       shape: RoundedRectangleBorder(
-                                //           borderRadius:
-                                //               BorderRadius.circular(25.5)),
-                                //       onPressed: () => null,
-                                //     ),
-                                //   ),
-                                // ),
-                                SizedBox(
-                                  height: 15.0,
-                                ),
-                                new Container(
+                                SizedBox(height: 33.0),
+                                Container(
                                     child: Center(
                                         child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -243,10 +238,9 @@ class _SignInPageState extends State<SignInPage> {
                                       icon: Icon(Icons.person),
                                       label: Text('Sign Up'),
                                       onPressed: () {
-                                        Navigator.push(
+                                        Navigator.pushReplacementNamed(
                                           context,
-                                          MaterialPageRoute(
-                                              builder: (context) => SignUpPage()),
+                                          AppConstants.SIGN_UP,
                                         );
                                       },
                                     )

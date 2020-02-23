@@ -1,8 +1,12 @@
-import 'package:blood_collector/UI/widgets/homeWidget.dart';
+
+
 
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/constant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -12,9 +16,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final AuthServices _auth = AuthServices();
   final _formKey = GlobalKey<FormState>();
-  // final Map<String, dynamic> _formData = {'bloodgroup': null};
+  
 
   String name = '';
   String bloodGroup = '';
@@ -26,9 +29,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
   String error = '';
   String uid = '';
+  bool _isLoading = false;
 
-  List<String> bloodGroupType = ['A', 'A+', 'A-'];
-  String _bloodGroup = 'A';
+  List<String> bloodGroupType = [ 'Select Blood Type','A+', 'O+', 'B+','AB+','A-','O-','B-','AB-'];
+  String _bloodGroup = 'Select Blood Type';
 
   void something(String value) {
     setState(() {
@@ -59,6 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _bloodGroupTextField() {
+    
     return Container(
       width: double.infinity,
       height: 58,
@@ -73,7 +78,7 @@ class _SignUpPageState extends State<SignUpPage> {
               hintStyle: TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
               enabledBorder: InputBorder.none),
           validator: (value) =>
-              value.isEmpty ? 'Blood Group should be filled' : null,
+              value == "Select Blood Type" ? 'Blood Type should be selected' : null,
           onChanged: (value) {
             setState(() {
               bloodGroup = value;
@@ -90,6 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+
 
   Widget _mobileNoField() {
     return Container(
@@ -217,10 +223,10 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
+    final AuthServices _authService = Provider.of<AuthServices>(context);
+
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
@@ -296,51 +302,62 @@ class _SignUpPageState extends State<SignUpPage> {
                       SizedBox(
                         height: 30.0,
                       ),
-                      Container(
-                        width: double.infinity,
-                        height: 58,
-                        margin: EdgeInsets.symmetric(horizontal: 30.0),
-                        decoration: boxDecoration,
-                        child: ButtonTheme(
-                          child: RaisedButton(
-                            elevation: 0.0,
-                            child: Text("SIGNUP",
-                                style: TextStyle(
-                                    fontFamily: "Roboto",
-                                    fontSize: 18.0,
-                                    color: Colors.black)),
-                            textColor: Colors.black,
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25.5)),
-                            onPressed: () async {
-                              if (_formKey.currentState.validate()) {
-                                dynamic result =
-                                    await _auth.signupWithEmailAndPassword(
-                                        email,
-                                        password,
-                                        uid,
-                                        name,
-                                        mobileNo,
-                                        bloodGroup,
-                                        city,
-                                        address);
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomePageView()),
-                                );
-                                if (result == null) {
-                                  setState(() {
-                                    error =
-                                        'Could not sign in with those cridentials';
-                                  });
-                                }
-                              }
-                            },
-                          ),
-                        ),
-                      ),
+                      _isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Container(
+                              width: double.infinity,
+                              height: 58,
+                              margin: EdgeInsets.symmetric(horizontal: 30.0),
+                              decoration: boxDecoration,
+                              child: ButtonTheme(
+                                child: RaisedButton(
+                                  elevation: 0.0,
+                                  child: Text("SIGNUP",
+                                      style: TextStyle(
+                                          fontFamily: "Roboto",
+                                          fontSize: 18.0,
+                                          color: Colors.black)),
+                                  textColor: Colors.black,
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(25.5)),
+                                  onPressed: () async {
+                                    if (_formKey.currentState.validate()) {
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
+                                      _authService
+                                          .signupWithEmailAndPassword(
+                                              email,
+                                              password,
+                                              uid,
+                                              name,
+                                              mobileNo,
+                                              bloodGroup,
+                                              city,
+                                              address)
+                                          .then(
+                                        (FirebaseUser user) {
+                                          setState(() => _isLoading = false);
+                                          Navigator.pushReplacementNamed(
+                                            context,
+                                            AppConstants.SIGN_IN,
+                                          );
+                                        },
+                                      ).catchError(
+                                        (e) {
+                                          setState(() => _isLoading = false);
+                                          print(e);
+                                        },
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
                       SizedBox(
                         height: 25.0,
                       ),

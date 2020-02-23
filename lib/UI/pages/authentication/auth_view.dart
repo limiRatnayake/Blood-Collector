@@ -1,9 +1,7 @@
+import 'package:blood_collector/shared/appConstant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import 'package:blood_collector/UI/pages/authentication/signup_view.dart';
 
-import 'package:blood_collector/UI/pages/authentication/signin_view.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -36,16 +34,16 @@ Widget button(String label, Function onTap) {
 
 class _AuthPageState extends State<AuthPage> {
   void _buildNavigateSignInPage() {
-    Navigator.push(
+    Navigator.pushReplacementNamed(
       context,
-      MaterialPageRoute(builder: (context) => SignInPage()),
+      AppConstants.SIGN_IN
     );
   }
 
   void _buildNavigateSignUpPage() {
-    Navigator.push(
+    Navigator.pushReplacementNamed(
       context,
-      MaterialPageRoute(builder: (context) => SignUpPage()),
+      AppConstants.SIGN_UP
     );
   }
 
@@ -117,13 +115,3 @@ class _AuthPageState extends State<AuthPage> {
   }
 }
 
-void main() {
-  setPortraitOrientation();
-
-  runApp(AuthPage());
-}
-
-setPortraitOrientation() async {
-  await SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-}

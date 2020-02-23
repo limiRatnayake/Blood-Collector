@@ -2,27 +2,23 @@ import 'package:blood_collector/models/user.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
-class AuthServices {
-  String uid;
-  AuthServices({this.uid});
-  
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  //Create a collection as user in cloud firestore 
+class AuthServices extends ChangeNotifier {
+  final FirebaseAuth _auth;
+  FirebaseUser _user;
+
+  AuthServices() : _auth = FirebaseAuth.instance {
+    _auth.onAuthStateChanged.listen(_onAuthStateChange); // get the auth changes 
+  }
+
+  //Create a collection as user in cloud firestore
   final CollectionReference _ref = Firestore.instance.collection("users");
-  
-//reate user object base on firebase user-frm anymous uid/customer user
-  FirebaseUser _userFromFirebaseUser(FirebaseUser user) {
-    return user != null ? user : null;
-  }
 
-  //auth changes user stream
-  Stream<FirebaseUser> get user {
-    return _auth.onAuthStateChanged.map(_userFromFirebaseUser);
-  }
+ 
 
 //signup with email and password and register
-  Future signupWithEmailAndPassword(
+  Future<FirebaseUser> signupWithEmailAndPassword(
       String email,
       String password,
       String uid,
@@ -45,10 +41,10 @@ class AuthServices {
         bloodGroup,
         city,
       );
-      
+
       //create a new document for the user with the uid
       await newRef.setData(userMod.toJson());
-      return _userFromFirebaseUser(user);
+      return user;
     } catch (error) {
       print(error);
       return null;
@@ -56,33 +52,46 @@ class AuthServices {
   }
 
 //Sign in with email and password
-  Future signinWithEmailAndPassword(String email, String password) async {
+  Future<FirebaseUser> signIn(
+      String email, String password) async {
     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      FirebaseUser user = result.user;
-
-      return _userFromFirebaseUser(user);
-    } catch (error) {
-      print(error.toString());
-      return null;
+      _user = (await _auth.signInWithEmailAndPassword(email: email, password: password)).user;
+      print("Sign in" + _user.displayName);
+    } catch (e) {
+      print(e);
     }
+    notifyListeners();
+    return _user; 
   }
+
+  //get current user 
+  Future<FirebaseUser> getCurrentFirebaseUser() async {
+    FirebaseUser user = await _auth.currentUser();
+    return user;
+  }
+
 
   //Log out
-  Future logOut() async {
+   Future<void> logOut() async {
     try {
-      return await _auth.signOut();
+
+      _user = null;
+      await _auth.signOut();
     } catch (error) {
       print(error.toString());
-      return null;
     }
+    notifyListeners();
   }
 
-
-Future<FirebaseUser> getUser() async {
-    return await _auth.currentUser();
+  //Check auth chnages 
+  Future<void> _onAuthStateChange(FirebaseUser firebaseUser) async {
+    print(firebaseUser);
+    if (firebaseUser == null) {
+      print("No User");
+    } else {
+      print("Has User");
+      _user = firebaseUser;
+    }
+    notifyListeners();
   }
-
-  
 }
