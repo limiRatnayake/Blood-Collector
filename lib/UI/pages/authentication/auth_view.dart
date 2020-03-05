@@ -1,8 +1,6 @@
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:flutter/material.dart';
 
-
-
 class AuthPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -12,8 +10,9 @@ class AuthPage extends StatefulWidget {
 
 Widget button(String label, Function onTap) {
   return Material(
-    color: Colors.white.withOpacity(0.6),
+    color: Colors.red.withOpacity(0.9),
     borderRadius: BorderRadius.circular(30.0),
+    
     child: InkWell(
       onTap: onTap,
       splashColor: Colors.white24,
@@ -34,27 +33,23 @@ Widget button(String label, Function onTap) {
 
 class _AuthPageState extends State<AuthPage> {
   void _buildNavigateSignInPage() {
-    Navigator.pushReplacementNamed(
-      context,
-      AppConstants.SIGN_IN
-    );
+    Navigator.pushReplacementNamed(context, AppConstants.SIGN_IN);
   }
 
   void _buildNavigateSignUpPage() {
-    Navigator.pushReplacementNamed(
-      context,
-      AppConstants.SIGN_UP
-    );
+    Navigator.pushReplacementNamed(context, AppConstants.SIGN_UP);
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-          child: Scaffold(
+      child: Scaffold(
         body: Container(
           decoration: BoxDecoration(
               image: DecorationImage(
             image: AssetImage("assets/backgroundImage.jpg"),
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(0.2), BlendMode.dstATop),
             fit: BoxFit.cover,
           )), //box decoration - add image to background
           child: Center(
@@ -63,21 +58,14 @@ class _AuthPageState extends State<AuthPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 new Container(
-                    width: 290.0,
-                    height: 290.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withOpacity(0.6),
+                  width: 290.0,
+                  height: 290.0,
+                  child: Center(
+                    child: Image.asset(
+                      "assets/logo.png",
                     ),
-                    child: Center(
-                      child: Text(
-                        "Smart Donor",
-                        style: TextStyle(
-                          fontFamily: "Raleway",
-                          fontSize: 35.0,
-                        ),
-                      ),
-                    )), // container - circle & center text
+                  ),
+                ), // container - circle & center text
                 SizedBox(
                   height: 125.0,
                 ),
@@ -89,7 +77,7 @@ class _AuthPageState extends State<AuthPage> {
                     children: <Widget>[
                       Text(
                         'Continue with: ',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.black),
                       ),
                       SizedBox(
                         height: 10.0,
@@ -114,4 +102,3 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 }
-

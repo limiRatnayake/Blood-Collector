@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:blood_collector/shared/constant.dart';
 import 'package:provider/provider.dart';
 
-
 class SignInPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -90,26 +89,14 @@ class _SignInPageState extends State<SignInPage> {
                   children: <Widget>[
                     Container(
                       height: 280.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage("assets/backgroundImage.jpg"),
-                            fit: BoxFit.cover),
-                        borderRadius: new BorderRadius.only(
-                            bottomRight: Radius.elliptical(55.0, 35.0),
-                            bottomLeft: Radius.elliptical(55.0, 35.0)),
-                      ),
                       child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            new Container(
-                              child: Text(
-                                "Smart Donor",
-                                style: TextStyle(
-                                  fontFamily: "Raleway",
-                                  fontSize: 35.0,
-                                ),
+                            Container(
+                              child: Center(
+                                child: Image.asset("assets/logo_name.png"),
                               ),
                             )
                           ],
@@ -163,7 +150,7 @@ class _SignInPageState extends State<SignInPage> {
                                                   fontSize: 18.0,
                                                 )),
                                             textColor: Colors.black,
-                                            color: Colors.white,
+                                            color: Colors.red.withOpacity(0.9),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(
@@ -177,7 +164,6 @@ class _SignInPageState extends State<SignInPage> {
                                                 _authService
                                                     .signIn(email, password)
                                                     .then(
-                                                      
                                                   (FirebaseUser user) {
                                                     if (user != null) {
                                                       Navigator
@@ -201,7 +187,9 @@ class _SignInPageState extends State<SignInPage> {
                                                                 child: new Text(
                                                                     "Close"),
                                                                 onPressed: () {
-                                                                  Navigator.of(context).pop();
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
                                                                 },
                                                               ),
                                                             ],

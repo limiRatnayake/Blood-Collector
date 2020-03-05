@@ -44,9 +44,6 @@ class _SplashPageState extends State<SplashPage> {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
-            color: Colors.redAccent,
-          ), //box decoration - add image to background
           child: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,18 +52,8 @@ class _SplashPageState extends State<SplashPage> {
                 new Container(
                   width: 220.0,
                   height: 220.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.6),
-                  ),
                   child: Center(
-                    child: Text(
-                      "Smart Donor",
-                      style: TextStyle(
-                        fontFamily: "Raleway",
-                        fontSize: 25.0,
-                      ),
-                    ),
+                    child: Image.asset("assets/logo.png"),
                   ),
                 ),
               ],

@@ -1,6 +1,3 @@
-
-
-
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/constant.dart';
@@ -17,7 +14,6 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
-  
 
   String name = '';
   String bloodGroup = '';
@@ -30,9 +26,18 @@ class _SignUpPageState extends State<SignUpPage> {
   String error = '';
   String uid = '';
   bool _isLoading = false;
-
-  List<String> bloodGroupType = [ 'Select Blood Type','A+', 'O+', 'B+','AB+','A-','O-','B-','AB-'];
   String _bloodGroup = 'Select Blood Type';
+  List<String> bloodGroupType = [
+    'Select Blood Type',
+    'A+',
+    'O+',
+    'B+',
+    'AB+',
+    'A-',
+    'O-',
+    'B-',
+    'AB-'
+  ];
 
   void something(String value) {
     setState(() {
@@ -63,7 +68,6 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _bloodGroupTextField() {
-    
     return Container(
       width: double.infinity,
       height: 58,
@@ -77,8 +81,9 @@ class _SignUpPageState extends State<SignUpPage> {
               hintText: 'Blood Type',
               hintStyle: TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
               enabledBorder: InputBorder.none),
-          validator: (value) =>
-              value == "Select Blood Type" ? 'Blood Type should be selected' : null,
+          validator: (value) => value == "Select Blood Type"
+              ? 'Blood Type should be selected'
+              : null,
           onChanged: (value) {
             setState(() {
               bloodGroup = value;
@@ -95,7 +100,6 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-
 
   Widget _mobileNoField() {
     return Container(
@@ -237,24 +241,15 @@ class _SignUpPageState extends State<SignUpPage> {
               children: <Widget>[
                 Container(
                   height: 180.0,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/backgroundImage.jpg"),
-                        fit: BoxFit.cover),
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.elliptical(45.0, 15.0),
-                        bottomRight: Radius.elliptical(45.0, 15.0)),
-                  ),
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          child: Text('Smart Donor',
-                              style: TextStyle(
-                                  fontFamily: "Raleway", fontSize: 35.0)),
-                        ),
+                            child: Center(
+                          child: Image.asset("assets/logo_name.png"),
+                        )),
                       ],
                     ),
                   ),
@@ -320,7 +315,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                           fontSize: 18.0,
                                           color: Colors.black)),
                                   textColor: Colors.black,
-                                  color: Colors.white,
+                                  color: Colors.red.withOpacity(0.9),
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(25.5)),
@@ -358,9 +353,28 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               ),
                             ),
-                      SizedBox(
-                        height: 25.0,
-                      ),
+                      Container(
+                          child: Center(
+                              child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "If you already have an account !  ",
+                            style:
+                                TextStyle(fontSize: 15.0, fontFamily: "Roboto"),
+                          ),
+                          FlatButton.icon(
+                            icon: Icon(Icons.person),
+                            label: Text('Sign In'),
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(
+                                context,
+                                AppConstants.SIGN_IN,
+                              );
+                            },
+                          )
+                        ],
+                      )))
                     ],
                   ),
                 ),
