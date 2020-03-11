@@ -1,5 +1,5 @@
 import 'package:blood_collector/UI/pages/rootPages/addcampaign_view.dart';
-import 'package:blood_collector/UI/pages/rootPages/requestBlood_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/addrequest_view.dart';
 import 'package:flutter/material.dart';
 
 class RequestView extends StatefulWidget {

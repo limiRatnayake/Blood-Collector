@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
-import 'package:blood_collector/models/user.dart';
+import 'package:blood_collector/models/user_model.dart';
 
 class MapView extends StatelessWidget {
   @override

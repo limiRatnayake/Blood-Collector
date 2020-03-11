@@ -1,6 +1,4 @@
-
-
-import 'package:blood_collector/UI/pages/rootPages/post_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/addpost_view.dart';
 import 'package:flutter/material.dart';
 
 class RequestBloodView extends StatefulWidget {
@@ -9,14 +7,34 @@ class RequestBloodView extends StatefulWidget {
 }
 
 class _RequestBloodViewState extends State<RequestBloodView> {
-  final Map<String, dynamic> _formData = {'bloodgroup': null};
+  final _formKey = GlobalKey<FormState>();
+  List<String> bloodGroupType = [
+    'Select Blood Type',
+    'A+',
+    'O+',
+    'B+',
+    'AB+',
+    'A-',
+    'O-',
+    'B-',
+    'AB-'
+  ];
+
+  String bloodGroup = '';
+  // String availability = '';
+  String unit = '';
+  // String condition = '';
+  String requiredUpto = '';
+  String requestClose = '';
+  String hospitalDetails = '';
+
   bool _criticalState = false;
 
-  final _formKey = GlobalKey<FormState>();
-  List<String> bloodGroup = ['A', 'A+', 'A-'];
-  String _bloodGroup = 'A';
+  int radioValue = -1;
+  String _bloodGroup = 'Select Blood Type';
+ 
 
-  void something(String value) {
+  void selectBloodType(String value) {
     setState(() {
       _bloodGroup = value;
     });
@@ -37,21 +55,27 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   Widget _bloodGroupTextField() {
     return Container(
       width: double.infinity,
-      height: 58,
+      height: 80,
       margin: EdgeInsets.symmetric(horizontal: 15.0),
       decoration: _boxDecoration(),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.only(left: 24.0, right: 24.0),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: DropdownButtonFormField(
           value: _bloodGroup,
           decoration: InputDecoration(
               hintText: 'Blood Type',
               hintStyle: TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
               enabledBorder: InputBorder.none),
-          onChanged: (String value) {
-            something(value);
+          validator: (value) => value == "Select Blood Type"
+              ? 'Blood Type should be selected'
+              : null,
+          onChanged: (value) {
+            selectBloodType(value);
+            setState(() {
+              bloodGroup = value;
+            });
           },
-          items: bloodGroup.map((String value) {
+          items: bloodGroupType.map((String value) {
             return DropdownMenuItem(
               value: value,
               child: Text(value),
@@ -64,27 +88,46 @@ class _RequestBloodViewState extends State<RequestBloodView> {
 
   Widget _replacementTextField() {
     return Container(
-      width: double.infinity,
-      height: 58,
-      margin: EdgeInsets.symmetric(horizontal: 15.0),
-      decoration: _boxDecoration(),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-        child: TextFormField(
-          decoration: InputDecoration(
-              hintText: "Not available",
-              hintStyle: TextStyle(
-                fontSize: 16.0,
-                fontFamily: "Roboto",
-              ),
-              enabledBorder: InputBorder.none),
-          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
-          onSaved: (String value) {
-            _formData['bloodgroup'] = value;
-          },
-        ),
-      ),
-    );
+          // width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: SizedBox(
+                    height: 30.0,
+                    child: RadioListTile<int>(
+                      title: Text("Yes"),
+                      value: 2,
+                      groupValue: radioValue,
+                      onChanged: (val) {
+                        setState(() {
+                          radioValue = val;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                 Expanded(
+                  child: SizedBox(
+                    height: 30.0,
+                    child: RadioListTile<int>(
+                      title: Text("No"),
+                      value: 1,
+                      groupValue: radioValue,
+                      onChanged: (val) {
+                        setState(() {
+                          radioValue = val;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
   }
 
   Widget _unitOfBloodTextField() {
@@ -96,6 +139,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
+          keyboardType: TextInputType.phone,
           decoration: InputDecoration(
               hintText: "1",
               hintStyle: TextStyle(
@@ -105,7 +149,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
               enabledBorder: InputBorder.none),
           validator: (value) => value.isEmpty ? ' cannot be blank' : null,
           onSaved: (String value) {
-            _formData['bloodgroup'] = value;
+            unit = value;
           },
         ),
       ),
@@ -148,7 +192,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
               enabledBorder: InputBorder.none),
           validator: (value) => value.isEmpty ? ' cannot be blank' : null,
           onSaved: (String value) {
-            _formData['bloodgroup'] = value;
+            requiredUpto = value;
           },
         ),
       ),
@@ -173,7 +217,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
               enabledBorder: InputBorder.none),
           validator: (value) => value.isEmpty ? ' cannot be blank' : null,
           onSaved: (String value) {
-            _formData['bloodgroup'] = value;
+            requestClose = value;
           },
         ),
       ),
@@ -198,7 +242,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
               enabledBorder: InputBorder.none),
           validator: (value) => value.isEmpty ? ' cannot be blank' : null,
           onSaved: (String value) {
-            _formData['bloodgroup'] = value;
+            hospitalDetails = value;
           },
         ),
       ),
@@ -335,8 +379,22 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                   ),
                 ),
                 _hospitalNameTextField(),
-                SizedBox(
-                  height: 20.0,
+                Divider(
+                  height: 50.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 25.0),
+                  child: Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: Text(
+                          "Your contacts details",
+                          style:
+                              TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Container(
                   width: double.infinity,
