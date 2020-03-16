@@ -88,7 +88,6 @@ class _RequestBloodViewState extends State<RequestBloodView> {
 
   Widget _replacementTextField() {
     return Container(
-          // width: double.infinity,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Row(

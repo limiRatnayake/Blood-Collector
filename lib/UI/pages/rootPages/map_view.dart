@@ -85,7 +85,7 @@ Widget technicianCard(User bloodRequester) {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(bloodRequester.name),
+                    Text(bloodRequester.firstName),
                     // Text(technician.occupation),
                     // Text(
                       // "Blood Group:   " + bloodRequester.bType,

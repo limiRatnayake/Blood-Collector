@@ -22,7 +22,10 @@ class AuthServices extends ChangeNotifier {
       String email,
       String password,
       String uid,
-      String name,
+      String firstName,
+      String lastName,
+      String birthDate,
+      String gender,
       String mobileNo,
       String bloodGroup,
       String city,
@@ -34,11 +37,14 @@ class AuthServices extends ChangeNotifier {
       DocumentReference newRef = _ref.document(user.uid);
       User userMod = new User(
         user.uid,
-        name,
+        firstName,
+        lastName,
+        gender,
         email,
         address,
         mobileNo,
         bloodGroup,
+        birthDate,
         city,
       );
 

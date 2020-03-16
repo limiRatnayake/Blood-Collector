@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -13,9 +16,13 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  DateTime currentDate = DateTime.now();
   final _formKey = GlobalKey<FormState>();
 
-  String name = '';
+  String firstName = '';
+  String lastName = '';
+  String gender = "";
+  String birthDate = "";
   String bloodGroup = '';
   String mobileNo = '';
   String city = '';
@@ -25,7 +32,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
   String error = '';
   String uid = '';
+  int _radioValue = 1;
   bool _isLoading = false;
+  // String dateOfBirth = "Select BirthDate";
   String _bloodGroup = 'Select Blood Type';
   List<String> bloodGroupType = [
     'Select Blood Type',
@@ -45,7 +54,27 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-  Widget _nameTextField() {
+  selectDate(BuildContext context, DateTime initialDateTime,
+      {DateTime lastDate}) async {
+    Completer completer = Completer();
+
+    showDatePicker(
+            context: context,
+            initialDate: currentDate,
+            firstDate: DateTime(1965),
+            lastDate: lastDate == null
+                ? DateTime(initialDateTime.year + 10)
+                : lastDate)
+        .then((temp) {
+      if (temp == null) return null;
+      completer.complete(temp);
+      setState(() {});
+    });
+
+    return completer.future;
+  }
+
+  Widget _firstNameTextField() {
     return Container(
       width: double.infinity,
       height: 58,
@@ -54,12 +83,12 @@ class _SignUpPageState extends State<SignUpPage> {
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
-          decoration: inputDecoration.copyWith(hintText: "Name"),
+          decoration: inputDecoration.copyWith(hintText: "First Name"),
           keyboardType: TextInputType.text,
           validator: (value) => value.isEmpty ? 'Name should be filled' : null,
           onChanged: (val) {
             setState(() {
-              name = val;
+              firstName = val;
             });
           },
         ),
@@ -67,10 +96,121 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  Widget _lastNameTextField() {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 30.0),
+      decoration: boxDecoration,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          decoration: inputDecoration.copyWith(hintText: "Last Name"),
+          keyboardType: TextInputType.text,
+          validator: (value) => value.isEmpty ? 'Name should be filled' : null,
+          onChanged: (val) {
+            setState(() {
+              lastName = val;
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _genderRadioButton() {
+    return Container(
+      width: 370.0,
+      height: 58,
+      decoration: boxDecoration,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              "Gender:",
+              style: TextStyle(
+                  fontSize: 16, fontFamily: "Roboto", color: Colors.black54),
+            ),
+            Expanded(
+              child: SizedBox(
+                child: RadioListTile<int>(
+                  title: Text("Male"),
+                  value: 1,
+                  groupValue: _radioValue,
+                  onChanged: (val) {
+                    setState(() {
+                      _radioValue = val;
+                      switch (val) {
+                        case 1:
+                          String value = "Male";
+                          gender = value;
+                      }
+                    });
+                  },
+                ),
+              ),
+            ),
+            Expanded(
+              child: SizedBox(
+                child: RadioListTile<int>(
+                  title: Text("Female"),
+                  value: 2,
+                  groupValue: _radioValue,
+                  onChanged: (val) {
+                    setState(() {
+                      _radioValue = val;
+                      switch (val) {
+                        case 2:
+                          String value = "Female";
+                          gender = value;
+                      }
+                    });
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _birthDateSelector() {
+    return Container(
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(horizontal: 30.0),
+        decoration: boxDecoration,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
+          child: Row(
+            children: <Widget>[
+              Text("$birthDate",
+                  style: TextStyle(
+                      fontSize: 16, fontFamily: "Roboto", color: Colors.black)),
+              SizedBox(width: 155.0),
+              IconButton(
+                icon: Icon(Icons.calendar_today),
+                onPressed: () async {
+                  DateTime birthDate = await selectDate(
+                      context, DateTime.now(),
+                      lastDate: DateTime.now());
+                  final df = new DateFormat('dd-MMM-yyyy');
+                  this.birthDate = df.format(birthDate);
+                  setState(() {
+                    birthDate = birthDate;
+                  });
+                },
+              )
+            ],
+          ),
+        ));
+  }
+
   Widget _bloodGroupTextField() {
     return Container(
       width: double.infinity,
-      height: 58,
+      height: 66,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
@@ -79,7 +219,8 @@ class _SignUpPageState extends State<SignUpPage> {
           value: _bloodGroup,
           decoration: InputDecoration(
               hintText: 'Blood Type',
-              hintStyle: TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
+              hintStyle: TextStyle(
+                  fontSize: 16.0, fontFamily: "Roboto", color: Colors.black54),
               enabledBorder: InputBorder.none),
           validator: (value) => value == "Select Blood Type"
               ? 'Blood Type should be selected'
@@ -255,7 +396,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 25.0,
+                  height: 10.0,
                 ),
               ],
             ),
@@ -269,34 +410,26 @@ class _SignUpPageState extends State<SignUpPage> {
                   key: _formKey,
                   child: Column(
                     children: <Widget>[
-                      _nameTextField(),
-                      SizedBox(
-                        height: 20.0,
-                      ),
+                      _firstNameTextField(),
+                      SizedBox(height: 20.0),
+                      _lastNameTextField(),
+                      SizedBox(height: 20.0),
+                      _genderRadioButton(),
+                      SizedBox(height: 20.0),
+                      _birthDateSelector(),
+                      SizedBox(height: 20.0),
                       _bloodGroupTextField(),
-                      SizedBox(
-                        height: 20.0,
-                      ),
+                      SizedBox(height: 20.0),
                       _mobileNoField(),
-                      SizedBox(
-                        height: 20.0,
-                      ),
+                      SizedBox(height: 20.0),
                       _cityField(),
-                      SizedBox(
-                        height: 20.0,
-                      ),
+                      SizedBox(height: 20.0),
                       _postalAddressField(),
-                      SizedBox(
-                        height: 30.0,
-                      ),
+                      SizedBox(height: 20.0),
                       _emailTextField(),
-                      SizedBox(
-                        height: 30.0,
-                      ),
+                      SizedBox(height: 20.0),
                       _passwordField(),
-                      SizedBox(
-                        height: 30.0,
-                      ),
+                      SizedBox(height: 20.0),
                       _isLoading
                           ? Center(
                               child: CircularProgressIndicator(),
@@ -329,7 +462,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                               email,
                                               password,
                                               uid,
-                                              name,
+                                              firstName,
+                                              lastName,
+                                              gender,
+                                              birthDate,
                                               mobileNo,
                                               bloodGroup,
                                               city,
@@ -386,3 +522,24 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 }
+
+//function that calculate age
+// calculateAge(DateTime birthDate) {
+//   DateTime currentDate = DateTime.now();
+//   int age = currentDate.year - birthDate.year;
+//   int month1 = currentDate.month;
+//   int month2 = birthDate.month;
+//   if (month2 > month1) {
+//     age--;
+//     print("month $age");
+//   } else if (month1 == month2) {
+//     int day1 = currentDate.day;
+//     int day2 = birthDate.day;
+//     if (day2 > day1) {
+//       age--;
+//       print(" helo $age");
+//     }
+//     print("correct $age");
+//   }
+//   return age;
+// }
