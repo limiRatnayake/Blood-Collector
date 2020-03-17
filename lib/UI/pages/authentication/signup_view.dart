@@ -32,10 +32,12 @@ class _SignUpPageState extends State<SignUpPage> {
 
   String error = '';
   String uid = '';
+  String _radioItemHolder = "Male";
   int _radioValue = 1;
   bool _isLoading = false;
-  // String dateOfBirth = "Select BirthDate";
   String _bloodGroup = 'Select Blood Type';
+
+  TextEditingController _birthDate = TextEditingController();
   List<String> bloodGroupType = [
     'Select Blood Type',
     'A+',
@@ -48,31 +50,25 @@ class _SignUpPageState extends State<SignUpPage> {
     'AB-'
   ];
 
+  List<GenderList> radioButtonList =[
+    GenderList(index: 1, title: "Male"),
+    GenderList(index: 2, title: "Female")
+  ];
+
   void something(String value) {
     setState(() {
       _bloodGroup = value;
     });
   }
 
-  selectDate(BuildContext context, DateTime initialDateTime,
-      {DateTime lastDate}) async {
-    Completer completer = Completer();
-
-    showDatePicker(
-            context: context,
-            initialDate: currentDate,
-            firstDate: DateTime(1965),
-            lastDate: lastDate == null
-                ? DateTime(initialDateTime.year + 10)
-                : lastDate)
-        .then((temp) {
-      if (temp == null) return null;
-      completer.complete(temp);
-      setState(() {});
+@override
+initState(){
+  setState(() {
+      gender = _radioItemHolder;
     });
+    super.initState();
+}
 
-    return completer.future;
-  }
 
   Widget _firstNameTextField() {
     return Container(
@@ -120,7 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _genderRadioButton() {
     return Container(
       width: 370.0,
-      height: 58,
+      // height: 58,
       decoration: boxDecoration,
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 5),
@@ -132,44 +128,57 @@ class _SignUpPageState extends State<SignUpPage> {
               style: TextStyle(
                   fontSize: 16, fontFamily: "Roboto", color: Colors.black54),
             ),
-            Expanded(
+             Expanded(
               child: SizedBox(
-                child: RadioListTile<int>(
-                  title: Text("Male"),
-                  value: 1,
+                child: Column(children: radioButtonList.map( (data) =>
+                RadioListTile(
+                  title: Text("${data.title}"),
+                  value: data.index,
                   groupValue: _radioValue,
                   onChanged: (val) {
                     setState(() {
-                      _radioValue = val;
-                      switch (val) {
-                        case 1:
-                          String value = "Male";
-                          gender = value;
-                      }
+                      _radioItemHolder = data.title;
+                      _radioValue = data.index;
+                      print(_radioItemHolder);
+                    gender = _radioItemHolder;
                     });
-                  },
-                ),
+                   
+                  }
+                )).toList())
               ),
             ),
-            Expanded(
-              child: SizedBox(
-                child: RadioListTile<int>(
-                  title: Text("Female"),
-                  value: 2,
-                  groupValue: _radioValue,
-                  onChanged: (val) {
-                    setState(() {
-                      _radioValue = val;
-                      switch (val) {
-                        case 2:
-                          String value = "Female";
-                          gender = value;
-                      }
-                    });
-                  },
-                ),
-              ),
-            ),
+            // Expanded(
+            //   child: SizedBox(
+            //     child: RadioListTile<int>(
+            //       title: Text("Male"),
+            //       value: 1,
+            //       groupValue: _radioValue,
+            //       onChanged: (int i) => setState(() {
+            //         _radioValue = i;
+            //         print(i);
+            //         String value = "Gender";
+            //         gender = value;
+            //         print(value);
+            //       }),
+            //     ),
+            //   ),
+            // ),
+            // Expanded(
+            //   child: SizedBox(
+            //     child: RadioListTile<int>(
+            //       title: Text("Female"),
+            //       value: 2,
+            //       groupValue: _radioValue,
+            //       onChanged: (int i) => setState(() {
+            //         _radioValue = i;
+            //         print(i);
+            //         String value = "Female";
+            //         gender = value;
+            //         print(value);
+            //       }),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -178,33 +187,28 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _birthDateSelector() {
     return Container(
-        width: double.infinity,
-        margin: EdgeInsets.symmetric(horizontal: 30.0),
-        decoration: boxDecoration,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
-          child: Row(
-            children: <Widget>[
-              Text("$birthDate",
-                  style: TextStyle(
-                      fontSize: 16, fontFamily: "Roboto", color: Colors.black)),
-              SizedBox(width: 155.0),
-              IconButton(
-                icon: Icon(Icons.calendar_today),
-                onPressed: () async {
-                  DateTime birthDate = await selectDate(
-                      context, DateTime.now(),
-                      lastDate: DateTime.now());
-                  final df = new DateFormat('dd-MMM-yyyy');
-                  this.birthDate = df.format(birthDate);
-                  setState(() {
-                    birthDate = birthDate;
-                  });
-                },
-              )
-            ],
-          ),
-        ));
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 30.0),
+      decoration: boxDecoration,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
+        child: TextFormField(
+          controller: _birthDate,
+          decoration: inputDecoration.copyWith(
+              hintText: "Date Of Birth",
+              suffixIcon: Icon(
+                Icons.calendar_today,
+                color: Colors.black,
+              )),
+          // keyboardType: TextInputType.datetime,
+          validator: (value) => value.isEmpty ? 'Name should be filled' : null,
+
+          onTap: () async {
+            _selectBDate(context, _birthDate);
+          },
+        ),
+      ),
+    );
   }
 
   Widget _bloodGroupTextField() {
@@ -464,8 +468,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                               uid,
                                               firstName,
                                               lastName,
-                                              gender,
                                               birthDate,
+                                              gender,
                                               mobileNo,
                                               bloodGroup,
                                               city,
@@ -521,25 +525,54 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+
+  Future<Null> _selectBDate(context, ctrl) async {
+    DateFormat dateFormat = DateFormat('yyyy-MMM-dd');
+    DateTime _selectedBDate =
+        ctrl.text != "" ? dateFormat.parse(ctrl.text) : DateTime.now();
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: _selectedBDate,
+        firstDate: DateTime(1960, 1),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != _selectedBDate)
+      ctrl.text = DateFormat('yyyy-MMM-dd').format(picked);
+    setState(() {
+      birthDate = ctrl.text;
+    });
+  }
+
+  // void _handleRadioValueChange(int value) {
+  //   setState(() {
+  //     _radioValue = value;
+
+  //     switch (_radioValue) {
+  //       case -1:
+  //         Text("data");
+  //         break;
+  //       case 1:
+  //         String value = "Male";
+  //         gender = value;
+  //         break;
+  //       case 2:
+  //         String value = "Female";
+  //         gender = value;
+  //         break;
+  //     }
+  //   });
+  // }
+
+  // void _radioButtonVaild(){
+  //   if (_radioValue == -1){
+  //     Text("data")
+  //   }
+  // }
 }
 
-//function that calculate age
-// calculateAge(DateTime birthDate) {
-//   DateTime currentDate = DateTime.now();
-//   int age = currentDate.year - birthDate.year;
-//   int month1 = currentDate.month;
-//   int month2 = birthDate.month;
-//   if (month2 > month1) {
-//     age--;
-//     print("month $age");
-//   } else if (month1 == month2) {
-//     int day1 = currentDate.day;
-//     int day2 = birthDate.day;
-//     if (day2 > day1) {
-//       age--;
-//       print(" helo $age");
-//     }
-//     print("correct $age");
-//   }
-//   return age;
-// }
+
+class GenderList {
+  String title;
+  int index;
+  GenderList({this.title,this.index});
+  
+}

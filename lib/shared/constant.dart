@@ -15,5 +15,7 @@ const inputDecoration = InputDecoration(
     hintStyle: TextStyle(
       fontSize: 16.0,
       fontFamily: "Roboto",
+      
     ),
+    border: InputBorder.none,
     enabledBorder: InputBorder.none);

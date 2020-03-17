@@ -4,38 +4,49 @@ class User {
   final String lastName;
   final String gender;
   final String birthDate;
-  final String email;
-  final String mobileNo;
-  final String address;
   final String bloodGroup;
+  final String mobileNo;
   final String city;
+  final String address;
+  final String email;
 
-  User(this.uid, this.firstName, this.lastName, this.birthDate, this.gender, this.email, this.address,
-      this.mobileNo, this.bloodGroup, this.city);
+  User(
+    this.uid,
+    this.firstName,
+    this.lastName,
+    this.gender,
+    this.birthDate,
+    this.bloodGroup,
+    this.mobileNo,
+    this.city,
+    this.address,
+    this.email,
+  );
 
   User.fromMap(Map snapshot)
-      : firstName = snapshot['firstName'] ?? "",
-        lastName = snapshot['lastName'] ?? "", //if the value is not there it is empty
+      : uid = snapshot['uid'] ?? "",
+        firstName = snapshot['firstName'] ?? "",
+        lastName =
+            snapshot['lastName'] ?? "", //if the value is not there it is empty
         gender = snapshot['gender'] ?? "",
-        uid = snapshot['uid'] ?? "",
-        email = snapshot['email'] ?? "",
-        mobileNo = snapshot['mobileNo'] ?? "",
-        address = snapshot['address'] ?? "",
         birthDate = snapshot['birthDate'] ?? "",
         bloodGroup = snapshot['bloodGroup'] ?? "",
-        city = snapshot['city'] ?? "";
+        mobileNo = snapshot['mobileNo'] ?? "",
+        city = snapshot['city'] ?? "",
+        address = snapshot['address'] ?? "",
+        email = snapshot['email'] ?? "";
 
   toJson() {
     return {
+      "uid": uid,
       "firstName": firstName,
       "lastName": lastName,
-      "gender" : gender,
-      "uid": uid,
-      "mobileNo": mobileNo,
-      "address": address,
+      "gender": gender,
+      "birthDate": birthDate,
       "bloodGroup": bloodGroup,
-      "birthDate" : birthDate,
+      "mobileNo": mobileNo,
       "city": city,
+      "address": address,
       "email": email,
     };
   }

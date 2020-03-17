@@ -9,13 +9,11 @@ class AuthServices extends ChangeNotifier {
   FirebaseUser _user;
 
   AuthServices() : _auth = FirebaseAuth.instance {
-    _auth.onAuthStateChanged.listen(_onAuthStateChange); // get the auth changes 
+    _auth.onAuthStateChanged.listen(_onAuthStateChange); // get the auth changes
   }
 
   //Create a collection as user in cloud firestore
   final CollectionReference _ref = Firestore.instance.collection("users");
-
- 
 
 //signup with email and password and register
   Future<FirebaseUser> signupWithEmailAndPassword(
@@ -40,12 +38,12 @@ class AuthServices extends ChangeNotifier {
         firstName,
         lastName,
         gender,
-        email,
-        address,
-        mobileNo,
-        bloodGroup,
         birthDate,
+        bloodGroup,
+        mobileNo,
         city,
+        address,
+        email,
       );
 
       //create a new document for the user with the uid
@@ -58,29 +56,28 @@ class AuthServices extends ChangeNotifier {
   }
 
 //Sign in with email and password
-  Future<FirebaseUser> signIn(
-      String email, String password) async {
+  Future<FirebaseUser> signIn(String email, String password) async {
     try {
-      _user = (await _auth.signInWithEmailAndPassword(email: email, password: password)).user;
+      _user = (await _auth.signInWithEmailAndPassword(
+              email: email, password: password))
+          .user;
       print("Sign in" + _user.displayName);
     } catch (e) {
       print(e);
     }
     notifyListeners();
-    return _user; 
+    return _user;
   }
 
-  //get current user 
+  //get current user
   Future<FirebaseUser> getCurrentFirebaseUser() async {
     FirebaseUser user = await _auth.currentUser();
     return user;
   }
 
-
   //Log out
-   Future<void> logOut() async {
+  Future<void> logOut() async {
     try {
-
       _user = null;
       await _auth.signOut();
     } catch (error) {
@@ -89,7 +86,7 @@ class AuthServices extends ChangeNotifier {
     notifyListeners();
   }
 
-  //Check auth chnages 
+  //Check auth chnages
   Future<void> _onAuthStateChange(FirebaseUser firebaseUser) async {
     print(firebaseUser);
     if (firebaseUser == null) {
