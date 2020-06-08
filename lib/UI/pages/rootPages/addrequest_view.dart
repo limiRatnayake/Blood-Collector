@@ -1,5 +1,9 @@
 import 'package:blood_collector/UI/pages/rootPages/addpost_view.dart';
+import 'package:blood_collector/models/hospital_model.dart';
+import 'package:blood_collector/services/hospital_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RequestBloodView extends StatefulWidget {
   @override
@@ -7,9 +11,11 @@ class RequestBloodView extends StatefulWidget {
 }
 
 class _RequestBloodViewState extends State<RequestBloodView> {
+  var selectedType;
+
   final _formKey = GlobalKey<FormState>();
-  List<String> bloodGroupType = [
-    'Select Blood Type',
+  List<String> _bloodGroupType = [
+    "Select Blood Type",
     'A+',
     'O+',
     'B+',
@@ -21,19 +27,15 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   ];
 
   String bloodGroup = '';
-  // String availability = '';
+  var selectedHospital;
   String unit = '';
-  // String condition = '';
   String requiredUpto = '';
   String requestClose = '';
   String hospitalDetails = '';
-
   bool _criticalState = false;
-
   int radioValue = -1;
   String _bloodGroup = 'Select Blood Type';
- 
-
+  TextEditingController addressController = new TextEditingController();
   void selectBloodType(String value) {
     setState(() {
       _bloodGroup = value;
@@ -45,21 +47,19 @@ class _RequestBloodViewState extends State<RequestBloodView> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.0),
         boxShadow: [
-          BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(3, 6)) //BoxShadow
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(3, 6)),
+          //BoxShadow
         ]);
   }
 
   Widget _bloodGroupTextField() {
     return Container(
       width: double.infinity,
-      height: 80,
+      height: 65,
       margin: EdgeInsets.symmetric(horizontal: 15.0),
       decoration: _boxDecoration(),
       child: Padding(
-        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        padding: const EdgeInsets.only(top: 7, left: 24, right: 16),
         child: DropdownButtonFormField(
           value: _bloodGroup,
           decoration: InputDecoration(
@@ -75,7 +75,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
               bloodGroup = value;
             });
           },
-          items: bloodGroupType.map((String value) {
+          items: _bloodGroupType.map((String value) {
             return DropdownMenuItem(
               value: value,
               child: Text(value),
@@ -88,45 +88,45 @@ class _RequestBloodViewState extends State<RequestBloodView> {
 
   Widget _replacementTextField() {
     return Container(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: SizedBox(
-                    height: 30.0,
-                    child: RadioListTile<int>(
-                      title: Text("Yes"),
-                      value: 2,
-                      groupValue: radioValue,
-                      onChanged: (val) {
-                        setState(() {
-                          radioValue = val;
-                        });
-                      },
-                    ),
-                  ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Expanded(
+              child: SizedBox(
+                height: 30.0,
+                child: RadioListTile<int>(
+                  title: Text("Yes"),
+                  value: 2,
+                  groupValue: radioValue,
+                  onChanged: (val) {
+                    setState(() {
+                      radioValue = val;
+                    });
+                  },
                 ),
-                 Expanded(
-                  child: SizedBox(
-                    height: 30.0,
-                    child: RadioListTile<int>(
-                      title: Text("No"),
-                      value: 1,
-                      groupValue: radioValue,
-                      onChanged: (val) {
-                        setState(() {
-                          radioValue = val;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        );
+            Expanded(
+              child: SizedBox(
+                height: 30.0,
+                child: RadioListTile<int>(
+                  title: Text("No"),
+                  value: 1,
+                  groupValue: radioValue,
+                  onChanged: (val) {
+                    setState(() {
+                      radioValue = val;
+                    });
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _unitOfBloodTextField() {
@@ -223,31 +223,6 @@ class _RequestBloodViewState extends State<RequestBloodView> {
     );
   }
 
-  Widget _hospitalNameTextField() {
-    return Container(
-      width: double.infinity,
-      height: 58,
-      margin: EdgeInsets.symmetric(horizontal: 15.0),
-      decoration: _boxDecoration(),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-        child: TextFormField(
-          decoration: InputDecoration(
-              hintText: "Enter the hospital name",
-              hintStyle: TextStyle(
-                fontSize: 16.0,
-                fontFamily: "Roboto",
-              ),
-              enabledBorder: InputBorder.none),
-          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
-          onSaved: (String value) {
-            hospitalDetails = value;
-          },
-        ),
-      ),
-    );
-  }
-
   void _submitTheForm() {
     final _form = _formKey.currentState;
     if (_form.validate()) {
@@ -264,6 +239,8 @@ class _RequestBloodViewState extends State<RequestBloodView> {
 
   @override
   Widget build(BuildContext context) {
+    final HospitalDetailsServices _hospitalDetailsServices =
+        Provider.of<HospitalDetailsServices>(context);
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: Padding(
@@ -377,7 +354,78 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                     ],
                   ),
                 ),
-                _hospitalNameTextField(),
+                FutureBuilder(
+                    future: _hospitalDetailsServices.getHospitals(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Text("Loading..");
+                      } else {
+                        List<HospitalListModel> hospitalItems = snapshot.data;
+                        List<DropdownMenuItem> dropDownItems = [];
+                         HospitalListModel _dropdownValue;
+                        for (int i = 0; i < hospitalItems.length; i++) {
+                          dropDownItems.add(DropdownMenuItem(
+                            child: Text(hospitalItems[i].bloodBankName),
+                            value: "${hospitalItems[i].bloodBankName}",
+                          ));
+                         
+                        }
+                          _dropdownValue = hospitalItems[0];
+                          addressController.text = _dropdownValue.bloodBankAddress;
+                        
+                        return Column(children: <Widget>[
+                          Container(
+                            // width: double.infinity,
+                            // height: 65,
+                            margin: EdgeInsets.symmetric(horizontal: 15.0),
+                            decoration: _boxDecoration(),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 7, left: 24, right: 16),
+                              child: DropdownButtonFormField(
+                                items: dropDownItems,
+                                decoration: InputDecoration(
+                                  hintText: 'Select a Hospital ',
+                                  hintStyle: TextStyle(
+                                      fontSize: 16.0, fontFamily: "Roboto"),
+                                  enabledBorder: InputBorder.none,
+                                ),
+                                onChanged: (hospitalValue) {
+                                  // _dropdownValue =hospitalValue;
+                                  
+                                  print(hospitalValue);
+                                  final snackBar = SnackBar(
+                                    content: Text(
+                                        'Selected Hospital is $hospitalValue',
+                                        style:
+                                            TextStyle(color: Colors.blueGrey)),
+                                  );
+                                  Scaffold.of(context).showSnackBar(snackBar);
+
+                                  setState(() {
+                                    selectedHospital = hospitalValue;
+                                   
+                                  });
+                                },
+                                value: selectedHospital,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 15.0,
+                          ),
+                          TextFormField(
+                            controller: addressController,
+                            enabled: false,
+                            decoration: InputDecoration(
+                              filled: false,
+                              labelText: 'code',
+                              hintText: "Country code",
+                            ),
+                          )
+                        ]);
+                      }
+                    }),
                 Divider(
                   height: 50.0,
                 ),

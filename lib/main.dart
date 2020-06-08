@@ -1,11 +1,10 @@
 import 'package:blood_collector/UI/router.dart';
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/hospital_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-
 
 void main() {
   runApp(MyApp());
@@ -22,12 +21,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-       providers: [
-          ChangeNotifierProvider(
-          create: (_) => AuthServices(),
-        ),
-         
-       ],
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthServices()),
+        ChangeNotifierProvider(create: (_) => HospitalDetailsServices()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -42,5 +39,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-

@@ -1,4 +1,5 @@
 import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/shared/appConstant.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +14,7 @@ class AuthServices extends ChangeNotifier {
   }
 
   //Create a collection as user in cloud firestore
-  final CollectionReference _ref = Firestore.instance.collection("users");
+  final CollectionReference _ref = Firestore.instance.collection(AppConstants.USERS_COLLECTION);
 
 //signup with email and password and register
   Future<FirebaseUser> signupWithEmailAndPassword(

@@ -68,6 +68,7 @@ class _SettingViewState extends State<SettingView> {
                               ),
                             ],
                           ),
+                          
                           InkWell(
                             child: Text(
                               "Edit",
