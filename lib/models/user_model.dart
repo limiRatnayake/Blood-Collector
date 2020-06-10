@@ -1,4 +1,4 @@
-class User {
+class UserModel {
   final String uid;
   final String firstName;
   final String lastName;
@@ -10,7 +10,7 @@ class User {
   final String address;
   final String email;
 
-  User(
+  UserModel(
     this.uid,
     this.firstName,
     this.lastName,
@@ -23,7 +23,7 @@ class User {
     this.email,
   );
 
-  User.fromMap(Map snapshot)
+  UserModel.fromMap(Map snapshot)
       : uid = snapshot['uid'] ?? "",
         firstName = snapshot['firstName'] ?? "",
         lastName =

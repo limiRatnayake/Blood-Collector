@@ -1,6 +1,9 @@
 import 'package:blood_collector/UI/pages/rootPages/addpost_view.dart';
 import 'package:blood_collector/models/hospital_model.dart';
+import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/hospital_service.dart';
+import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +28,10 @@ class _RequestBloodViewState extends State<RequestBloodView> {
     'B-',
     'AB-'
   ];
+  TextEditingController addressController = new TextEditingController();
+  TextEditingController userFNameController = new TextEditingController();
+  TextEditingController userLNameController = new TextEditingController();
+  TextEditingController userPhoneNoController = new TextEditingController();
 
   String bloodGroup = '';
   var selectedHospital;
@@ -32,10 +39,13 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   String requiredUpto = '';
   String requestClose = '';
   String hospitalDetails = '';
+  String userFName = '';
+  String userLName = '';
+  String userPhoneNumber = '';
   bool _criticalState = false;
   int radioValue = -1;
   String _bloodGroup = 'Select Blood Type';
-  TextEditingController addressController = new TextEditingController();
+
   void selectBloodType(String value) {
     setState(() {
       _bloodGroup = value;
@@ -223,6 +233,84 @@ class _RequestBloodViewState extends State<RequestBloodView> {
     );
   }
 
+  Widget _userFNameDeatils() {
+    return Container(
+      width: double.infinity,
+      height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 15.0),
+      decoration: _boxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          controller: userFNameController,
+          decoration: InputDecoration(
+              hintText: "First Name",
+              hintStyle: TextStyle(
+                fontSize: 16.0,
+                fontFamily: "Roboto",
+              ),
+              enabledBorder: InputBorder.none),
+          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          onSaved: (String value) {
+            userFName = value;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _userLNameDeatils() {
+    return Container(
+      width: double.infinity,
+      height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 15.0),
+      decoration: _boxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          controller: userLNameController,
+          decoration: InputDecoration(
+              hintText: "Last Name",
+              hintStyle: TextStyle(
+                fontSize: 16.0,
+                fontFamily: "Roboto",
+              ),
+              enabledBorder: InputBorder.none),
+          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          onSaved: (String value) {
+            userLName = value;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _userPhoneNumber() {
+    return Container(
+      width: double.infinity,
+      height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 15.0),
+      decoration: _boxDecoration(),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          controller: userPhoneNoController,
+          decoration: InputDecoration(
+              hintText: "Phone number",
+              hintStyle: TextStyle(
+                fontSize: 16.0,
+                fontFamily: "Roboto",
+              ),
+              enabledBorder: InputBorder.none),
+          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          onSaved: (String value) {
+            userPhoneNumber = value;
+          },
+        ),
+      ),
+    );
+  }
+
   void _submitTheForm() {
     final _form = _formKey.currentState;
     if (_form.validate()) {
@@ -239,8 +327,11 @@ class _RequestBloodViewState extends State<RequestBloodView> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthServices _authService = Provider.of<AuthServices>(context);
     final HospitalDetailsServices _hospitalDetailsServices =
         Provider.of<HospitalDetailsServices>(context);
+    final UserService _userService = Provider.of<UserService>(context);
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: Padding(
@@ -340,6 +431,9 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                 SizedBox(
                   height: 10.0,
                 ),
+                Divider(
+                  height: 50.0,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 25.0),
                   child: Row(
@@ -347,12 +441,17 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                       Flexible(
                         child: Text(
                           "Hospital Name & Address will help Blood Donors to navigate easily",
-                          style:
-                              TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 16.0,
+                              color: Colors.black54),
                         ),
                       ),
                     ],
                   ),
+                ),
+                SizedBox(
+                  height: 10.0,
                 ),
                 FutureBuilder(
                     future: _hospitalDetailsServices.getHospitals(),
@@ -362,18 +461,25 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                       } else {
                         List<HospitalListModel> hospitalItems = snapshot.data;
                         List<DropdownMenuItem> dropDownItems = [];
-                         HospitalListModel _dropdownValue;
                         for (int i = 0; i < hospitalItems.length; i++) {
                           dropDownItems.add(DropdownMenuItem(
                             child: Text(hospitalItems[i].bloodBankName),
                             value: "${hospitalItems[i].bloodBankName}",
                           ));
-                         
                         }
-                          _dropdownValue = hospitalItems[0];
-                          addressController.text = _dropdownValue.bloodBankAddress;
-                        
                         return Column(children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25.0),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  "Near by Hospital Name",
+                                  style: TextStyle(
+                                      fontFamily: 'Roboto', fontSize: 16.0),
+                                ),
+                              ],
+                            ),
+                          ),
                           Container(
                             // width: double.infinity,
                             // height: 65,
@@ -391,8 +497,6 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                                   enabledBorder: InputBorder.none,
                                 ),
                                 onChanged: (hospitalValue) {
-                                  // _dropdownValue =hospitalValue;
-                                  
                                   print(hospitalValue);
                                   final snackBar = SnackBar(
                                     content: Text(
@@ -402,9 +506,18 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                                   );
                                   Scaffold.of(context).showSnackBar(snackBar);
 
+                                  for (var i = 0;
+                                      i < hospitalItems.length;
+                                      i++) {
+                                    if (hospitalValue ==
+                                        hospitalItems[i].bloodBankName) {
+                                      addressController.text =
+                                          hospitalItems[i].bloodBankAddress;
+                                    }
+                                  }
+
                                   setState(() {
                                     selectedHospital = hospitalValue;
-                                   
                                   });
                                 },
                                 value: selectedHospital,
@@ -414,34 +527,137 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                           SizedBox(
                             height: 15.0,
                           ),
-                          TextFormField(
-                            controller: addressController,
-                            enabled: false,
-                            decoration: InputDecoration(
-                              filled: false,
-                              labelText: 'code',
-                              hintText: "Country code",
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25.0),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  "Near by Hospital Address",
+                                  style: TextStyle(
+                                      fontFamily: 'Roboto', fontSize: 16.0),
+                                ),
+                              ],
                             ),
-                          )
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 58,
+                            margin: EdgeInsets.symmetric(horizontal: 15.0),
+                            decoration: _boxDecoration(),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 4, left: 24, right: 16),
+                              child: TextFormField(
+                                controller: addressController,
+                                enabled: false,
+                                decoration: InputDecoration(
+                                    filled: false,
+                                    labelText: 'Hospital Address',
+                                    hintText: "Hospital Address",
+                                    disabledBorder: InputBorder.none),
+                              ),
+                            ),
+                          ),
                         ]);
                       }
                     }),
                 Divider(
                   height: 50.0,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 25.0),
-                  child: Row(
-                    children: <Widget>[
-                      Flexible(
-                        child: Text(
-                          "Your contacts details",
-                          style:
-                              TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
-                        ),
-                      ),
-                    ],
-                  ),
+                FutureBuilder<DocumentSnapshot>(
+                    future:
+                        _userService.requestUserDetails(_authService.user.uid),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                          return Text(
+                            'Press the button to fetch data',
+                            textAlign: TextAlign.center,
+                          );
+                        case ConnectionState.active:
+                        case ConnectionState.waiting:
+                          return CircularProgressIndicator();
+                        default:
+                          if (snapshot.hasError)
+                            return Text(
+                              'Error:\n\n${snapshot.error}',
+                              textAlign: TextAlign.center,
+                            );
+                          UserModel data =
+                              UserModel.fromMap(snapshot.data.data);
+                          userFNameController.text = data.firstName;
+                          userLNameController.text = data.lastName;
+                          userPhoneNoController.text = data.mobileNo;
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Flexible(
+                                      child: Text(
+                                        "Your contacts details",
+                                        style: TextStyle(
+                                            fontFamily: 'Roboto',
+                                            fontSize: 16.0,
+                                            color: Colors.black54),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 15.0),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      "Your First Name",
+                                      style: TextStyle(
+                                          fontFamily: 'Roboto', fontSize: 16.0),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              _userFNameDeatils(),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      "Your Last Name",
+                                      style: TextStyle(
+                                          fontFamily: 'Roboto', fontSize: 16.0),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              _userLNameDeatils(),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      "Your Mobile Number ",
+                                      style: TextStyle(
+                                          fontFamily: 'Roboto', fontSize: 16.0),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              _userPhoneNumber()
+                            ],
+                          );
+                      }
+                    }),
+                SizedBox(
+                  height: 10.0,
                 ),
                 Container(
                   width: double.infinity,

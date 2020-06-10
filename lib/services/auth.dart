@@ -16,6 +16,8 @@ class AuthServices extends ChangeNotifier {
   //Create a collection as user in cloud firestore
   final CollectionReference _ref = Firestore.instance.collection(AppConstants.USERS_COLLECTION);
 
+FirebaseUser get user => _user;
+
 //signup with email and password and register
   Future<FirebaseUser> signupWithEmailAndPassword(
       String email,
@@ -34,7 +36,7 @@ class AuthServices extends ChangeNotifier {
           email: email, password: password);
       FirebaseUser user = result.user;
       DocumentReference newRef = _ref.document(user.uid);
-      User userMod = new User(
+      UserModel userMod = new UserModel(
         user.uid,
         firstName,
         lastName,
@@ -91,11 +93,12 @@ class AuthServices extends ChangeNotifier {
   Future<void> _onAuthStateChange(FirebaseUser firebaseUser) async {
     print(firebaseUser);
     if (firebaseUser == null) {
-      print("No User");
+      print("No UserModel");
     } else {
-      print("Has User");
+      print("Has UserModel");
       _user = firebaseUser;
     }
     notifyListeners();
   }
+
 }

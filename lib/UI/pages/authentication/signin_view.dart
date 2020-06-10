@@ -179,7 +179,7 @@ class _SignInPageState extends State<SignInPage> {
                                                           // returns a object of type Dialog
                                                           return AlertDialog(
                                                             title: new Text(
-                                                                "User Login Error"),
+                                                                "UserModel Login Error"),
                                                             content: new Text(
                                                                 "This user not found"),
                                                             actions: <Widget>[

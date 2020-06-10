@@ -27,11 +27,11 @@ class MapView extends StatelessWidget {
   }
 }
 
-List<User> getTechices() {
-  List<User> techies = [];
+List<UserModel> getTechices() {
+  List<UserModel> techies = [];
   for (int i = 0; i < 10; i++) {
     // AssetImage profilePic = new AssetImage("assets/person.jpg");
-    // User myTechy = new User('Carlos teller',
+    // UserModel myTechy = new UserModel('Carlos teller',
     //     'First road 23 elm street', '070-379-031', profilePic, 'B+');
     // techies.add(myTechy);
   }
@@ -39,15 +39,15 @@ List<User> getTechices() {
 }
 
 List<Widget> getTechniciansInArea() {
-  List<User> techies = getTechices();
+  List<UserModel> techies = getTechices();
   List<Widget> cards = [];
-  for (User techy in techies) {
+  for (UserModel techy in techies) {
     cards.add(technicianCard(techy));
   }
   return cards;
 }
 
-Widget technicianCard(User bloodRequester) {
+Widget technicianCard(UserModel bloodRequester) {
   return Container(
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.only(right: 20),
