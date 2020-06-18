@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/pages/rootPages/addpost_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/create_post_view.dart';
 import 'package:blood_collector/models/hospital_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -15,7 +15,7 @@ class RequestBloodView extends StatefulWidget {
 
 class _RequestBloodViewState extends State<RequestBloodView> {
   var selectedType;
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   List<String> _bloodGroupType = [
     "Select Blood Type",
@@ -33,6 +33,8 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   TextEditingController userLNameController = new TextEditingController();
   TextEditingController userPhoneNoController = new TextEditingController();
 
+  String gender = "";
+
   String bloodGroup = '';
   var selectedHospital;
   String unit = '';
@@ -43,13 +45,23 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   String userLName = '';
   String userPhoneNumber = '';
   bool _criticalState = false;
-  int radioValue = -1;
+  int _radioValue = 1;
   String _bloodGroup = 'Select Blood Type';
+  bool _formValidate = false;
+  String _radioItemHolder = "Yes";
 
   void selectBloodType(String value) {
     setState(() {
       _bloodGroup = value;
     });
+  }
+
+  @override
+  initState() {
+    setState(() {
+      gender = _radioItemHolder;
+    });
+    super.initState();
   }
 
   BoxDecoration _boxDecoration() {
@@ -62,10 +74,15 @@ class _RequestBloodViewState extends State<RequestBloodView> {
         ]);
   }
 
+  List<AvailabilityList> radioButtonList = [
+    AvailabilityList(index: 1, title: "Yes"),
+    AvailabilityList(index: 2, title: "No")
+  ];
+
   Widget _bloodGroupTextField() {
     return Container(
       width: double.infinity,
-      height: 65,
+      height: 68,
       margin: EdgeInsets.symmetric(horizontal: 15.0),
       decoration: _boxDecoration(),
       child: Padding(
@@ -74,11 +91,9 @@ class _RequestBloodViewState extends State<RequestBloodView> {
           value: _bloodGroup,
           decoration: InputDecoration(
               hintText: 'Blood Type',
-              hintStyle: TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
+              hintStyle: TextStyle(fontSize: 14.0, fontFamily: "Roboto"),
               enabledBorder: InputBorder.none),
-          validator: (value) => value == "Select Blood Type"
-              ? 'Blood Type should be selected'
-              : null,
+          validator: validateBloodGroup,
           onChanged: (value) {
             selectBloodType(value);
             setState(() {
@@ -105,34 +120,55 @@ class _RequestBloodViewState extends State<RequestBloodView> {
           children: <Widget>[
             Expanded(
               child: SizedBox(
-                height: 30.0,
-                child: RadioListTile<int>(
-                  title: Text("Yes"),
-                  value: 2,
-                  groupValue: radioValue,
-                  onChanged: (val) {
-                    setState(() {
-                      radioValue = val;
-                    });
-                  },
-                ),
-              ),
+                  width: 30.0,
+                  child: Column(
+                      children: radioButtonList
+                          .map((data) => RadioListTile(
+                              title: Text("${data.title}"),
+                              value: data.index,
+                              groupValue: _radioValue,
+                              onChanged: (val) {
+                                setState(() {
+                                  _radioItemHolder = data.title;
+                                  _radioValue = data.index;
+                                  val = _radioItemHolder;
+                                  print(val);
+
+                                  gender = val;
+                                });
+                              }))
+                          .toList())),
             ),
-            Expanded(
-              child: SizedBox(
-                height: 30.0,
-                child: RadioListTile<int>(
-                  title: Text("No"),
-                  value: 1,
-                  groupValue: radioValue,
-                  onChanged: (val) {
-                    setState(() {
-                      radioValue = val;
-                    });
-                  },
-                ),
-              ),
-            ),
+            // Expanded(
+            //   child: SizedBox(
+            //     height: 30.0,
+            //     child: RadioListTile<int>(
+            //       title: Text("Yes"),
+            //       value: 2,
+            //       groupValue: radioValue,
+            //       onChanged: (val) {
+            //         setState(() {
+            //           radioValue = val;
+            //         });
+            //       },
+            //     ),
+            //   ),
+            // ),
+            // Expanded(
+            //   child: SizedBox(
+            //     height: 30.0,
+            //     child: RadioListTile<int>(
+            //       title: Text("No"),
+            //       value: 1,
+            //       groupValue: radioValue,
+            //       onChanged: (val) {
+            //         setState(() {
+            //           radioValue = val;
+            //         });
+            //       },
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -156,7 +192,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                 fontFamily: "Roboto",
               ),
               enabledBorder: InputBorder.none),
-          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          validator: validateFormData,
           onSaved: (String value) {
             unit = value;
           },
@@ -199,7 +235,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                 fontFamily: "Roboto",
               ),
               enabledBorder: InputBorder.none),
-          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          validator: validateFormData,
           onSaved: (String value) {
             requiredUpto = value;
           },
@@ -224,7 +260,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                 fontFamily: "Roboto",
               ),
               enabledBorder: InputBorder.none),
-          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          validator: validateFormData,
           onSaved: (String value) {
             requestClose = value;
           },
@@ -250,7 +286,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                 fontFamily: "Roboto",
               ),
               enabledBorder: InputBorder.none),
-          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          validator: validateFormData,
           onSaved: (String value) {
             userFName = value;
           },
@@ -276,7 +312,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                 fontFamily: "Roboto",
               ),
               enabledBorder: InputBorder.none),
-          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          validator: validateFormData,
           onSaved: (String value) {
             userLName = value;
           },
@@ -302,7 +338,8 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                 fontFamily: "Roboto",
               ),
               enabledBorder: InputBorder.none),
-          validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+          keyboardType: TextInputType.phone,
+          validator: validateMobile,
           onSaved: (String value) {
             userPhoneNumber = value;
           },
@@ -314,13 +351,19 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   void _submitTheForm() {
     final _form = _formKey.currentState;
     if (_form.validate()) {
+      if (_radioValue < 0) {
+        print("Hello error");
+      }
       print('Form is vaild');
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PostView()),
+        MaterialPageRoute(builder: (context) => CreatePostView()),
       );
     } else {
       print('Form is invaild');
+      setState(() {
+        _formValidate = true;
+      });
     }
     _formKey.currentState.save();
   }
@@ -339,6 +382,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
+            autovalidate: _formValidate,
             child: Column(
               children: <Widget>[
                 Padding(
@@ -490,6 +534,8 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                                   top: 7, left: 24, right: 16),
                               child: DropdownButtonFormField(
                                 items: dropDownItems,
+                                validator: (value) =>
+                                    value == null ? 'field required' : null,
                                 decoration: InputDecoration(
                                   hintText: 'Select a Hospital ',
                                   hintStyle: TextStyle(
@@ -690,4 +736,39 @@ class _RequestBloodViewState extends State<RequestBloodView> {
       ),
     );
   }
+
+  String validateBloodGroup(String value) {
+    if (value == "Select Blood Type") {
+      return 'Blood Type should be selected';
+    }
+    return null;
+  }
+  String validateFormData(String value) {
+    String pattern = r'(^[a-zA-Z ]*$)';
+    RegExp regExp = RegExp(pattern);
+    if (value.length == 0) {
+      return "Name is required ";
+    } else if (!regExp.hasMatch(value)) {
+      return "Name must be a-z and A-Z";
+    }
+    return null;
+  }
+
+   String validateMobile(String value) {
+    String pattern = r'(^[0-9]*$)';
+    RegExp regExp = RegExp(pattern);
+    if (value.length != 10) {
+      return 'Mobile Number must be of 10 digit';
+    } else if (!regExp.hasMatch(value)) {
+      return "Name must be a-z and A-Z";
+    }
+    return null;
+  }
+}
+
+
+class AvailabilityList {
+  String title;
+  int index;
+  AvailabilityList({this.title, this.index});
 }

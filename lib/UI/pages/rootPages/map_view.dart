@@ -1,100 +1,71 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:collection';
 
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
-import 'package:blood_collector/models/user_model.dart';
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MapView extends StatelessWidget {
+class MapView extends StatefulWidget {
+  @override
+  _MapViewState createState() => _MapViewState();
+}
+
+class _MapViewState extends State<MapView> {
+  Set<Marker> _markers = HashSet<Marker>();
+  Completer<GoogleMapController> _controller = Completer();
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+
+    // setState(() {
+    //   _markers.add(Marker(
+    //       onTap: () {
+    //         print('Tapped');
+    //       },
+    //       draggable: true,
+    //       markerId: MarkerId("0"),
+    //       position: LatLng(6.927079, 79.861244),
+    //       onDragEnd: (value) {
+    //         print(value.latitude);
+    //         print(value.longitude);
+    //       }));
+    // });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _markers = Set.from([]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: PreferredSize(
             preferredSize: const Size(double.infinity, kToolbarHeight),
-            child: AppTopBar(title: "Map")),
+            child: AppTopBar(title: "Map View")),
         drawer: DrawerWidget(),
-        body: Stack(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: 480.0, bottom: 40.0),
-              child: ListView(
-                padding: EdgeInsets.only(left: 20),
-                children: getTechniciansInArea(),
-                scrollDirection: Axis.horizontal,
-              ),
-            ),
-          ],
-        ));
+        body: Stack(children: [
+          GoogleMap(
+            onMapCreated: _onMapCreated,
+            //set the initial camera position to colombo
+            initialCameraPosition:
+                CameraPosition(target: LatLng(6.927079, 79.861244), zoom: 18),
+            markers: _markers,
+            myLocationEnabled: true,
+            onTap: (position){
+              Marker mark1 = Marker(
+                markerId: MarkerId('"1"'),
+                position: position
+                );
+                setState(() {
+                  _markers.add(mark1);
+                });
+            },
+            // myLocationButtonEnabled: true,
+          )
+        ]));
   }
-}
-
-List<UserModel> getTechices() {
-  List<UserModel> techies = [];
-  for (int i = 0; i < 10; i++) {
-    // AssetImage profilePic = new AssetImage("assets/person.jpg");
-    // UserModel myTechy = new UserModel('Carlos teller',
-    //     'First road 23 elm street', '070-379-031', profilePic, 'B+');
-    // techies.add(myTechy);
-  }
-  return techies;
-}
-
-List<Widget> getTechniciansInArea() {
-  List<UserModel> techies = getTechices();
-  List<Widget> cards = [];
-  for (UserModel techy in techies) {
-    cards.add(technicianCard(techy));
-  }
-  return cards;
-}
-
-Widget technicianCard(UserModel bloodRequester) {
-  return Container(
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.only(right: 20),
-      width: 250,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 20.0)]),
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: 80.0,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(
-                      'assets/backgroundImage.jpg',
-                    ),
-                    fit: BoxFit.fill)),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                    height: 60.0,
-                    width: 60.0,
-                    child: CircleAvatar(
-                      // backgroundImage: bloodRequester.profilePic,
-                    ),
-                  ),
-                ]),
-          ),
-          Container(
-            child: Row(
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(bloodRequester.firstName),
-                    // Text(technician.occupation),
-                    // Text(
-                      // "Blood Group:   " + bloodRequester.bType,
-                    // ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ));
 }

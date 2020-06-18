@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/constant.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -35,7 +35,10 @@ class _SignUpPageState extends State<SignUpPage> {
   String _radioItemHolder = "Male";
   int _radioValue = 1;
   bool _isLoading = false;
+  String _errorMessage;
   String _bloodGroup = 'Select Blood Type';
+  bool _formValidate = false;
+  bool _obscureText = true;
 
   TextEditingController _birthDate = TextEditingController();
   List<String> bloodGroupType = [
@@ -50,10 +53,16 @@ class _SignUpPageState extends State<SignUpPage> {
     'AB-'
   ];
 
-  List<GenderList> radioButtonList =[
+  List<GenderList> radioButtonList = [
     GenderList(index: 1, title: "Male"),
     GenderList(index: 2, title: "Female")
   ];
+
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   void something(String value) {
     setState(() {
@@ -61,14 +70,13 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-@override
-initState(){
-  setState(() {
+  @override
+  initState() {
+    setState(() {
       gender = _radioItemHolder;
     });
     super.initState();
-}
-
+  }
 
   Widget _firstNameTextField() {
     return Container(
@@ -79,9 +87,10 @@ initState(){
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
-          decoration: inputDecoration.copyWith(hintText: "First Name"),
+          decoration:
+              inputDecoration.copyWith(hintText: "Enter First Name here"),
           keyboardType: TextInputType.text,
-          validator: (value) => value.isEmpty ? 'Name should be filled' : null,
+          validator: validateName,
           onChanged: (val) {
             setState(() {
               firstName = val;
@@ -100,9 +109,10 @@ initState(){
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
-          decoration: inputDecoration.copyWith(hintText: "Last Name"),
+          decoration:
+              inputDecoration.copyWith(hintText: "Enter Last Name here"),
           keyboardType: TextInputType.text,
-          validator: (value) => value.isEmpty ? 'Name should be filled' : null,
+          validator: validateName,
           onChanged: (val) {
             setState(() {
               lastName = val;
@@ -115,7 +125,7 @@ initState(){
 
   Widget _genderRadioButton() {
     return Container(
-      width: 370.0,
+      width: 370,
       // height: 58,
       decoration: boxDecoration,
       child: Padding(
@@ -123,62 +133,27 @@ initState(){
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(
-              "Gender:",
-              style: TextStyle(
-                  fontSize: 16, fontFamily: "Roboto", color: Colors.black54),
-            ),
-             Expanded(
+            Expanded(
               child: SizedBox(
-                child: Column(children: radioButtonList.map( (data) =>
-                RadioListTile(
-                  title: Text("${data.title}"),
-                  value: data.index,
-                  groupValue: _radioValue,
-                  onChanged: (val) {
-                    setState(() {
-                      _radioItemHolder = data.title;
-                      _radioValue = data.index;
-                      print(_radioItemHolder);
-                    gender = _radioItemHolder;
-                    });
-                   
-                  }
-                )).toList())
-              ),
+                  width: 30.0,
+                  child: Column(
+                      children: radioButtonList
+                          .map((data) => RadioListTile(
+                              title: Text("${data.title}"),
+                              value: data.index,
+                              groupValue: _radioValue,
+                              onChanged: (val) {
+                                setState(() {
+                                  _radioItemHolder = data.title;
+                                  _radioValue = data.index;
+                                  val = _radioItemHolder;
+                                  print(val);
+
+                                  gender = val;
+                                });
+                              }))
+                          .toList())),
             ),
-            // Expanded(
-            //   child: SizedBox(
-            //     child: RadioListTile<int>(
-            //       title: Text("Male"),
-            //       value: 1,
-            //       groupValue: _radioValue,
-            //       onChanged: (int i) => setState(() {
-            //         _radioValue = i;
-            //         print(i);
-            //         String value = "Gender";
-            //         gender = value;
-            //         print(value);
-            //       }),
-            //     ),
-            //   ),
-            // ),
-            // Expanded(
-            //   child: SizedBox(
-            //     child: RadioListTile<int>(
-            //       title: Text("Female"),
-            //       value: 2,
-            //       groupValue: _radioValue,
-            //       onChanged: (int i) => setState(() {
-            //         _radioValue = i;
-            //         print(i);
-            //         String value = "Female";
-            //         gender = value;
-            //         print(value);
-            //       }),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
@@ -195,15 +170,14 @@ initState(){
         child: TextFormField(
           controller: _birthDate,
           decoration: inputDecoration.copyWith(
-              hintText: "Date Of Birth",
+              hintText: "mm/dd/yyyy",
               suffixIcon: Icon(
                 Icons.calendar_today,
                 color: Colors.black,
               )),
-          // keyboardType: TextInputType.datetime,
           validator: (value) => value.isEmpty ? 'Name should be filled' : null,
-
           onTap: () async {
+            FocusScope.of(context).requestFocus(new FocusNode());
             _selectBDate(context, _birthDate);
           },
         ),
@@ -226,9 +200,7 @@ initState(){
               hintStyle: TextStyle(
                   fontSize: 16.0, fontFamily: "Roboto", color: Colors.black54),
               enabledBorder: InputBorder.none),
-          validator: (value) => value == "Select Blood Type"
-              ? 'Blood Type should be selected'
-              : null,
+          validator: validateBloodGroup,
           onChanged: (value) {
             setState(() {
               bloodGroup = value;
@@ -255,42 +227,14 @@ initState(){
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
-          decoration: inputDecoration.copyWith(hintText: "Mobile No:"),
+          decoration: inputDecoration.copyWith(
+            hintText: "Enter Mobile Number here",
+          ),
           keyboardType: TextInputType.phone,
-          validator: (value) => value.isEmpty || (value.length != 10)
-              ? 'Mobile No should be filled'
-              : null,
+          validator: validateMobile,
           onChanged: (val) {
             setState(() {
               mobileNo = val;
-            });
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _cityField() {
-    return Container(
-      width: double.infinity,
-      height: 58,
-      margin: EdgeInsets.symmetric(horizontal: 30.0),
-      decoration: boxDecoration,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-        child: TextFormField(
-          decoration: InputDecoration(
-              hintText: "City",
-              hintStyle: TextStyle(
-                fontSize: 16.0,
-                fontFamily: "Roboto",
-              ),
-              enabledBorder: InputBorder.none),
-          keyboardType: TextInputType.text,
-          validator: (value) => value.isEmpty ? 'City should be filled' : null,
-          onChanged: (val) {
-            setState(() {
-              city = val;
             });
           },
         ),
@@ -332,11 +276,7 @@ initState(){
         child: TextFormField(
           decoration: inputDecoration.copyWith(hintText: "Email Address"),
           keyboardType: TextInputType.emailAddress,
-          validator: (value) => value.isEmpty ||
-                  !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                      .hasMatch(value)
-              ? 'Email cannot be blank'
-              : null,
+          validator: validateEmailAddress,
           onChanged: (val) {
             setState(() {
               email = val;
@@ -350,23 +290,35 @@ initState(){
   Widget _passwordField() {
     return Container(
       width: double.infinity,
-      height: 58,
+      // height: 58,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
-        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-        child: TextFormField(
-          decoration: inputDecoration.copyWith(hintText: "Password"),
-          keyboardType: TextInputType.visiblePassword,
-          validator: (value) => value.isEmpty || value.length < 6
-              ? 'Password cannot be blank'
-              : null,
-          obscureText: true,
-          onChanged: (val) {
-            setState(() {
-              password = val;
-            });
-          },
+        padding: const EdgeInsets.only(top: 4, left: 24),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                decoration: inputDecoration.copyWith(
+                  hintText: "Password",
+                ),
+                keyboardType: TextInputType.visiblePassword,
+                validator: validatePassword,
+                obscureText: _obscureText,
+                onChanged: (val) {
+                  setState(() {
+                    password = val;
+                  });
+                },
+              ),
+            ),
+            FlatButton(
+              onPressed: _toggle,
+              child: _obscureText
+                  ? Icon(Icons.visibility_off)
+                  : Icon(Icons.visibility),
+            )
+          ],
         ),
       ),
     );
@@ -375,7 +327,6 @@ initState(){
   @override
   Widget build(BuildContext context) {
     final AuthServices _authService = Provider.of<AuthServices>(context);
-
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
@@ -412,28 +363,148 @@ initState(){
                     bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Form(
                   key: _formKey,
+                  autovalidate: _formValidate,
                   child: Column(
                     children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "First Name",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto', fontSize: 16.0),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
                       _firstNameTextField(),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Last Name",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto', fontSize: 16.0),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
                       _lastNameTextField(),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Select a gender",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto', fontSize: 16.0),
+                            ),
+                          ],
+                        ),
+                      ),
                       _genderRadioButton(),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Select Date of Birth",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto', fontSize: 16.0),
+                            ),
+                          ],
+                        ),
+                      ),
                       _birthDateSelector(),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Select Blood Type",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto', fontSize: 16.0),
+                            ),
+                          ],
+                        ),
+                      ),
                       _bloodGroupTextField(),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Mobile Number",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto', fontSize: 16.0),
+                            ),
+                          ],
+                        ),
+                      ),
                       _mobileNoField(),
-                      SizedBox(height: 20.0),
-                      _cityField(),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Postal Address",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto', fontSize: 16.0),
+                            ),
+                          ],
+                        ),
+                      ),
                       _postalAddressField(),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Email Address",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto', fontSize: 16.0),
+                            ),
+                          ],
+                        ),
+                      ),
                       _emailTextField(),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Password",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto', fontSize: 16.0),
+                            ),
+                          ],
+                        ),
+                      ),
                       _passwordField(),
                       SizedBox(height: 20.0),
+                      _errorMessage != null
+                          ? Container(
+                              padding: EdgeInsets.only(bottom: 10),
+                              width: double.infinity,
+                              child: Text(
+                                _errorMessage,
+                                style: TextStyle(color: Colors.redAccent),
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          : Container(),
                       _isLoading
                           ? Center(
                               child: CircularProgressIndicator(),
@@ -459,10 +530,11 @@ initState(){
                                   onPressed: () async {
                                     if (_formKey.currentState.validate()) {
                                       setState(() {
+                                        _errorMessage = "";
                                         _isLoading = true;
                                       });
-                                      _authService
-                                          .signupWithEmailAndPassword(
+                                      String response =
+                                          await _authService.createUser(
                                               email,
                                               password,
                                               uid,
@@ -472,22 +544,54 @@ initState(){
                                               gender,
                                               mobileNo,
                                               bloodGroup,
-                                              city,
-                                              address)
-                                          .then(
-                                        (FirebaseUser user) {
-                                          setState(() => _isLoading = false);
-                                          Navigator.pushReplacementNamed(
-                                            context,
-                                            AppConstants.SIGN_IN,
-                                          );
-                                        },
-                                      ).catchError(
-                                        (e) {
-                                          setState(() => _isLoading = false);
-                                          print(e);
-                                        },
-                                      );
+                                              address);
+                                      if (response != "Success") {
+                                        setState(() {
+                                          _isLoading = false;
+                                          _errorMessage = response;
+                                        });
+                                      } else {
+                                        Alert(
+                                            context: context,
+                                            type: AlertType.success,
+                                            title: "Your account is created",
+                                            style: AlertStyle(
+                                                backgroundColor: Colors.black,
+                                                alertBorder:
+                                                    RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        side: BorderSide(
+                                                            color:
+                                                                Colors.white)),
+                                                titleStyle: TextStyle(
+                                                    color: Colors.blueAccent)),
+                                            buttons: [
+                                              DialogButton(
+                                                  width: 120,
+                                                  child: Text(
+                                                    "ok",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator
+                                                        .pushReplacementNamed(
+                                                      context,
+                                                      AppConstants.HOME,
+                                                    );
+                                                  })
+                                            ]).show();
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                      }
+                                    } else {
+                                      setState(() {
+                                        _formValidate = true;
+                                      });
                                     }
                                   },
                                 ),
@@ -542,33 +646,62 @@ initState(){
     });
   }
 
-  // void _handleRadioValueChange(int value) {
-  //   setState(() {
-  //     _radioValue = value;
+  String validateName(String value) {
+    String pattern = r'(^[a-zA-Z ]*$)';
+    RegExp regExp = RegExp(pattern);
+    if (value.length == 0) {
+      return "Name is required ";
+    } else if (!regExp.hasMatch(value)) {
+      return "Name must be a-z and A-Z";
+    }
+    return null;
+  }
 
-  //     switch (_radioValue) {
-  //       case -1:
-  //         Text("data");
-  //         break;
-  //       case 1:
-  //         String value = "Male";
-  //         gender = value;
-  //         break;
-  //       case 2:
-  //         String value = "Female";
-  //         gender = value;
-  //         break;
-  //     }
-  //   });
-  // }
+  String validateBloodGroup(String value) {
+    if (value == "Select Blood Type") {
+      return 'Blood Type should be selected';
+    }
+    return null;
+  }
 
- 
+  String validateMobile(String value) {
+    String pattern = r'(^[0-9]*$)';
+    RegExp regExp = RegExp(pattern);
+    if (value.length != 10) {
+      return 'Mobile Number must be of 10 digit';
+    } else if (!regExp.hasMatch(value)) {
+      return "Name must be a-z and A-Z";
+    }
+    return null;
+  }
+
+  String validateEmailAddress(String value) {
+    String pattern =
+        r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+    RegExp regExp = RegExp(pattern);
+    if (value.isEmpty) {
+      return 'Email Address is required.';
+    } else if (!regExp.hasMatch(value)) {
+      return "Invailed email address!";
+    }
+    return null;
+  }
+
+  String validatePassword(String value) {
+    var strongRegex = new RegExp(
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+
+    if (value.isEmpty) {
+      return "Password is required";
+    } else if (!strongRegex.hasMatch(value)) {
+      return "Password is not strong enough!";
+    }
+    return null;
+  }
 }
-
 
 class GenderList {
   String title;
   int index;
-  GenderList({this.title,this.index});
-  
+  GenderList({this.title, this.index});
 }

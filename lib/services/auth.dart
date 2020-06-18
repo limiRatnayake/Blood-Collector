@@ -14,12 +14,13 @@ class AuthServices extends ChangeNotifier {
   }
 
   //Create a collection as user in cloud firestore
-  final CollectionReference _ref = Firestore.instance.collection(AppConstants.USERS_COLLECTION);
+  final CollectionReference _ref =
+      Firestore.instance.collection(AppConstants.USERS_COLLECTION);
 
-FirebaseUser get user => _user;
+  FirebaseUser get user => _user;
 
 //signup with email and password and register
-  Future<FirebaseUser> signupWithEmailAndPassword(
+  Future<String> createUser(
       String email,
       String password,
       String uid,
@@ -29,8 +30,8 @@ FirebaseUser get user => _user;
       String gender,
       String mobileNo,
       String bloodGroup,
-      String city,
       String address) async {
+    String message = "";
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -44,18 +45,20 @@ FirebaseUser get user => _user;
         birthDate,
         bloodGroup,
         mobileNo,
-        city,
         address,
         email,
       );
 
       //create a new document for the user with the uid
       await newRef.setData(userMod.toJson());
-      return user;
+      message = "Success";
+      // return user;
     } catch (error) {
       print(error);
-      return null;
+      if (error != null && error.message != null) message = error.message;
     }
+    notifyListeners();
+    return message;
   }
 
 //Sign in with email and password
@@ -100,5 +103,4 @@ FirebaseUser get user => _user;
     }
     notifyListeners();
   }
-
 }

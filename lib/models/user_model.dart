@@ -6,7 +6,6 @@ class UserModel {
   final String birthDate;
   final String bloodGroup;
   final String mobileNo;
-  final String city;
   final String address;
   final String email;
 
@@ -18,7 +17,6 @@ class UserModel {
     this.birthDate,
     this.bloodGroup,
     this.mobileNo,
-    this.city,
     this.address,
     this.email,
   );
@@ -32,7 +30,6 @@ class UserModel {
         birthDate = snapshot['birthDate'] ?? "",
         bloodGroup = snapshot['bloodGroup'] ?? "",
         mobileNo = snapshot['mobileNo'] ?? "",
-        city = snapshot['city'] ?? "",
         address = snapshot['address'] ?? "",
         email = snapshot['email'] ?? "";
 
@@ -45,7 +42,6 @@ class UserModel {
       "birthDate": birthDate,
       "bloodGroup": bloodGroup,
       "mobileNo": mobileNo,
-      "city": city,
       "address": address,
       "email": email,
     };

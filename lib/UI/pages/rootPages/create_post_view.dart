@@ -1,179 +1,200 @@
+import 'dart:io';
+
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:after_layout/after_layout.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreatePostView extends StatefulWidget {
-  final double _expandedBottomSheetBottomPosition = 0;
-  final double _collapsedBottomSheetBottomPosition = -250;
-  // final double _completeCollapsedBottomSheetBottomPosition = -330;
-
   @override
   _PostViewState createState() => _PostViewState();
 }
 
-Widget _descriptionTextField() {
-  return Column(
-    children: <Widget>[
-      Padding(
-          padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-          child: TextField(
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            decoration: InputDecoration.collapsed(
-                border: InputBorder.none, hintText: "What's your need?"),
-          ))
-    ],
-  );
-}
+class _PostViewState extends State<CreatePostView> {
+  final _formKey = GlobalKey<FormState>();
 
-class _PostViewState extends State<CreatePostView> with AfterLayoutMixin<CreatePostView> {
-  double _bottomSheetBottomPosition = -330;
-  bool isCollapsed = false;
+  File _image;
+  final picker = ImagePicker();
+  String description = '';
+  BoxDecoration _boxDecoration() {
+    return BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(3, 6)),
+          //BoxShadow
+        ]);
+  }
+
+  Widget _eventDescription() {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: TextField(
+          minLines: 10,
+          maxLines: 15,
+          autocorrect: false,
+          decoration: InputDecoration(
+            hintText: 'Write your status here',
+            filled: true,
+            fillColor: Colors.white,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _submitTheForm() {
+    final _form = _formKey.currentState;
+    if (_form.validate()) {
+      print('Form is vaild');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CreatePostView()),
+      );
+    } else {
+      print('Form is invaild');
+    }
+    _formKey.currentState.save();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // final screenHeight = MediaQuery.of(context).size.height;
-
     return SafeArea(
-          child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Create Post",
-          ),
-          elevation: 0.3,
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: InkWell(
-                child: Text(
-                  "POST",
-                  style: TextStyle(color: Colors.black, fontSize: 16.0),
-                ),
-                onTap: () {},
-              ),
-            )
-          ],
+        child: Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Create Post",
         ),
-        body: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            SingleChildScrollView(
-              child: Column(
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8.0, left: 12),
-                      child: _descriptionTextField()),
-                ],
+        elevation: 0.3,
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: InkWell(
+              child: Text(
+                "POST",
+                style: TextStyle(color: Colors.black, fontSize: 16.0),
               ),
+              onTap: () {},
             ),
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.decelerate,
-              bottom: _bottomSheetBottomPosition,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    InkWell(
-                      onTap: _onTap,
-                      child: Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          height: 80,
-                          child: Icon(Icons.keyboard_arrow_up)),
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: _clipsWidget(),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _clipsWidget() {
-    return Container(
-      height: 250,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              roundedContainer(Colors.redAccent),
-              SizedBox(width: 15),
-              roundedContainer(Colors.greenAccent),
-            ],
-          ),
-          SizedBox(height: 6),
-          Row(
-            children: <Widget>[
-              roundedContainer(Colors.orangeAccent),
-              SizedBox(width: 15),
-              roundedContainer(Colors.purple),
-            ],
-          ),
-          // SizedBox(height: 16),
-          // Row(
-          //   children: <Widget>[
-          //     roundedContainer(Colors.grey),
-          //     SizedBox(height: 20),
-          //     roundedContainer(Colors.blueGrey),
-          //   ],
-          // ),
-          // SizedBox(height: 16),
-          // Row(
-          //   children: <Widget>[
-          //     roundedContainer(Colors.lightGreenAccent),
-          //     SizedBox(height: 20),
-          //     roundedContainer(Colors.pinkAccent),
-          //   ],
-          // ),
+          )
         ],
       ),
-    );
+      body: SingleChildScrollView(
+          child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 25.0, left: 18.0, bottom: 8.0),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          "Add a description",
+                          style:
+                              TextStyle(fontFamily: 'Roboto', fontSize: 17.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _eventDescription(),
+                  SizedBox(height: 15.0),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 25.0, left: 18.0, bottom: 8.0, right: 18.0),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          "Upload a image",
+                          style:
+                              TextStyle(fontFamily: 'Roboto', fontSize: 17.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 25.0, left: 18.0, bottom: 8.0, right: 18.0),
+                      child: _image == null
+                          ? DottedBorder(
+                              color: Colors.black,
+                              padding: EdgeInsets.only(
+                                top: 30,
+                                right: 150,
+                                bottom: 30,
+                                left: 150,
+                              ),
+                              strokeWidth: 2,
+                              radius: Radius.circular(12),
+                              dashPattern: [6, 6],
+                              child: Center(
+                                child: Icon(
+                                  Icons.backup,
+                                  size: 90,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            )
+                          : Container(
+                              // height: 150,
+                              width: double.infinity,
+                              child: Image.file(_image, fit: BoxFit.fitHeight)),
+                    ),
+                    onTap: () {
+                      _settingModalBottomSheet(context);
+                    },
+                  ),
+                ],
+              ))),
+    ));
   }
 
-  Widget roundedContainer(Color color) {
-    return Container(
-      width: 100,
-      height: 100,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.all(Radius.circular(20)),  
-      ),
-    );
+  void _settingModalBottomSheet(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext buildContext) {
+          return Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('Camera'),
+                    onTap: () => {Navigator.pop(context), _getImage(true)}),
+                new ListTile(
+                  leading: new Icon(Icons.photo_library),
+                  title: new Text('Gallery'),
+                  onTap: () => {Navigator.pop(context), _getImage(false)},
+                ),
+              ],
+            ),
+          );
+        });
   }
 
-  _onTap() {
-    setState(() {
-      _bottomSheetBottomPosition = isCollapsed
-          ? widget._expandedBottomSheetBottomPosition
-          : widget._collapsedBottomSheetBottomPosition;
-      isCollapsed = !isCollapsed;
-    });
-  }
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    Future.delayed(const Duration(milliseconds: 500), () {
-      setState(() {
-        isCollapsed = true;
-        _bottomSheetBottomPosition = widget._collapsedBottomSheetBottomPosition;
-      });
-    });
+  Future _getImage(bool isCamera) async {
+    try {
+      if (isCamera) {
+        final pickedFile = await picker.getImage(source: ImageSource.camera);
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      } else {
+        final pickedFile = await picker.getImage(source: ImageSource.gallery);
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
