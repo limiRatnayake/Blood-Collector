@@ -133,42 +133,11 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                                   _radioValue = data.index;
                                   val = _radioItemHolder;
                                   print(val);
-
                                   gender = val;
                                 });
                               }))
                           .toList())),
             ),
-            // Expanded(
-            //   child: SizedBox(
-            //     height: 30.0,
-            //     child: RadioListTile<int>(
-            //       title: Text("Yes"),
-            //       value: 2,
-            //       groupValue: radioValue,
-            //       onChanged: (val) {
-            //         setState(() {
-            //           radioValue = val;
-            //         });
-            //       },
-            //     ),
-            //   ),
-            // ),
-            // Expanded(
-            //   child: SizedBox(
-            //     height: 30.0,
-            //     child: RadioListTile<int>(
-            //       title: Text("No"),
-            //       value: 1,
-            //       groupValue: radioValue,
-            //       onChanged: (val) {
-            //         setState(() {
-            //           radioValue = val;
-            //         });
-            //       },
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

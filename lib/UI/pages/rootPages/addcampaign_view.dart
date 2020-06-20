@@ -4,8 +4,10 @@ import 'package:blood_collector/UI/pages/rootPages/create_post_view.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:blood_collector/shared/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:location/location.dart';
 
 class AddCampaignsView extends StatefulWidget {
   @override
@@ -15,13 +17,19 @@ class AddCampaignsView extends StatefulWidget {
 class _AddCampaignsViewState extends State<AddCampaignsView> {
   final _formKey = GlobalKey<FormState>();
   final format = DateFormat("HH:mm");
+
   TextEditingController _campaignDate = TextEditingController();
+  TextEditingController _placeAddressController = TextEditingController();
+
   List<Marker> myMarker = [];
 
+  LatLng _markerLocation;
+  String _resultAddress;
   DateTime currentDate = DateTime.now();
   TimeOfDay currentTime = TimeOfDay.now();
   String birthDate = "";
   int eventTime;
+  bool _formValidate = false;
 
   BoxDecoration _boxDecoration() {
     return BoxDecoration(
@@ -67,8 +75,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                     fontFamily: "Roboto",
                   ),
                   enabledBorder: InputBorder.none),
-
-              // validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+              validator: validateTextFeild,
             ),
           ),
         ),
@@ -95,7 +102,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
         ),
         Container(
           width: double.infinity,
-          height: 58,
+          height: 48,
           margin: EdgeInsets.symmetric(horizontal: 15.0),
           decoration: _boxDecoration(),
           child: Padding(
@@ -103,15 +110,13 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
             child: TextFormField(
               controller: _campaignDate,
               decoration: inputDecoration.copyWith(
-                  hintText: "Date Of Birth",
+                  hintText: "Event date",
                   suffixIcon: Icon(
                     Icons.calendar_today,
                     color: Colors.black,
                   )),
-              // keyboardType: TextInputType.datetime,
               validator: (value) =>
-                  value.isEmpty ? 'Name should be filled' : null,
-
+                  value.isEmpty ? 'Event date is required' : null,
               onTap: () async {
                 FocusScope.of(context).requestFocus(new FocusNode());
                 _selectBDate(context, _campaignDate);
@@ -170,7 +175,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                     },
                     validator: (DateTime dateTime) {
                       if (dateTime == null) {
-                        return "Date Time Required";
+                        return "Date Start Time Required";
                       }
                       return null;
                     },
@@ -205,7 +210,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                       },
                       validator: (DateTime dateTime) {
                         if (dateTime == null) {
-                          return "Date Time Required";
+                          return "Date End Time Required";
                         }
                         return null;
                       },
@@ -250,7 +255,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                     fontFamily: "Roboto",
                   ),
                   enabledBorder: InputBorder.none),
-              validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+              validator: validateTextFeild,
             ),
           ),
         ),
@@ -283,45 +288,129 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: TextFormField(
+              enabled: false,
+              controller: _placeAddressController,
               decoration: InputDecoration(
-                  hintText: "eg: Sirisena Sahanayake Grounds",
+                  errorStyle: TextStyle(color: Theme.of(context).errorColor),
+                  hintText: "eg:15/8, Sirisena Rad, Dehiwala",
                   hintStyle: TextStyle(
                     fontSize: 16.0,
                     fontFamily: "Roboto",
                   ),
                   enabledBorder: InputBorder.none),
-              validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+              validator: (value) =>
+                  value.isEmpty ? ' Select from the map' : null,
             ),
           ),
         ),
       ],
     );
   }
-  // Widget _googleMapModal() {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(right:15),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.end,
-  //       children: [
-  //         Hero(
-  //             tag: "myMap",
-  //             child: Container(child: FlatButton(
-  //               color: Colors.red,
-  //               onPressed: () {
-  //               Navigator.of(context).push(PageRouteBuilder(
-  //                 pageBuilder: (context, animation, secondaryAnimation) =>
-  //                     HeroCampaignDetails(),
-  //                 transitionsBuilder:
-  //                     (context, animation, secondaryAnimation, child) {
-  //                   return child;
-  //                 },
-  //               ));
-  //             },
-  //             child: Text("Select From Map"),))),
-  //       ],
-  //     ),
-  //   );
-  // }
+
+  Widget _googleMapModal() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 15.0),
+          child: FlatButton(
+              color: Colors.blueAccent[200],
+              child: Text("Choose From Map"),
+              onPressed: () {
+                _mapdialogContent(context);
+              }),
+        ),
+      ],
+    );
+  }
+
+//updating the current instance - buildcontext
+  void _mapdialogContent(BuildContext context) {
+    Completer<GoogleMapController> _controller = Completer();
+    getSetAddress(Coordinates coordinates) async {
+      final addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      setState(() {
+        _resultAddress = addresses.first.addressLine;
+        //get the selelcted position into textfeild
+        _placeAddressController.text = _resultAddress;
+      });
+    }
+
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          //build a statefulbuilder to run the setState
+          return StatefulBuilder(builder: (context, setState) {
+            return Dialog(
+                elevation: 0.0,
+                backgroundColor: Colors.transparent,
+                child: Stack(children: <Widget>[
+                  GoogleMap(
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                    markers: _markerLocation != null
+                        ? [
+                            Marker(
+                                markerId: MarkerId("Tap Location"),
+                                position: _markerLocation),
+                          ].toSet()
+                        : null,
+                    myLocationEnabled: true,
+                    initialCameraPosition: CameraPosition(
+                        target: LatLng(6.927079, 79.861244), zoom: 18),
+                    onTap: (location) {
+                      setState(() {
+                        _markerLocation = location;
+                      });
+                    },
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FlatButton.icon(
+                        label: Text("Selected Position"),
+                        icon: Icon(Icons.location_on),
+                        color: Colors.blue,
+                        onPressed: () {
+                          setState(() {
+                            if (_markerLocation != null) {
+                              getSetAddress(Coordinates(
+                                  _markerLocation.latitude,
+                                  _markerLocation.longitude));
+                              Navigator.of(context).pop();
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 5.0,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.black.withOpacity(0.5),
+                            child: Icon(Icons.close,
+                                size: 25.0, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]));
+          });
+        });
+  }
 
   Widget _nearestBloodBankTextField() {
     return Column(
@@ -355,7 +444,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                     fontFamily: "Roboto",
                   ),
                   enabledBorder: InputBorder.none),
-              validator: (value) => value.isEmpty ? ' cannot be blank' : null,
+              validator: validateTextFeild,
             ),
           ),
         ),
@@ -396,71 +485,12 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                   ),
                   enabledBorder: InputBorder.none),
               keyboardType: TextInputType.phone,
-              validator: (value) => value.isEmpty || (value.length != 10)
-                  ? 'Mobile No should be filled'
-                  : null,
+              validator: validateMobile,
             ),
           ),
         ),
       ],
     );
-  }
-
-  // child: Stack(
-  //   children: [
-  //     Container(
-  //         width: 500,
-  //         height: 150,
-  //         child: GoogleMap(
-  //           padding: EdgeInsets.all(0),
-  //           myLocationEnabled: true,
-  //           initialCameraPosition: CameraPosition(
-  //               target: LatLng(6.927079, 79.861244), zoom: 19),
-  //         )),
-  //   ],
-  // )
-
-  Widget _googleMapModal() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 15.0),
-          child: FlatButton(
-              color: Colors.blueAccent[200],
-              child: Text("Choose From Map"),
-              onPressed: () => _mapdialogContent(context)),
-        ),
-      ],
-    );
-  }
-
-  void _mapdialogContent(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          //build a statefulbuilder to run the setState
-          return StatefulBuilder(builder: (context, setState) {
-            return Dialog(
-                elevation: 0.0,
-                backgroundColor: Colors.transparent,
-                child: Stack(children: <Widget>[
-                  GoogleMap(
-                    markers: Set.from(myMarker),
-                    initialCameraPosition: CameraPosition(
-                        target: LatLng(6.927079, 79.861244), zoom: 18),
-                    onTap: (tappedPoint) {
-                      setState(() {
-                        myMarker = [];
-                        myMarker.add(Marker(
-                            markerId: MarkerId(tappedPoint.toString()),
-                            position: tappedPoint));
-                      });
-                    },
-                  ),
-                ]));
-          });
-        });
   }
 
   void _submitTheForm() {
@@ -473,6 +503,9 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
       );
     } else {
       print('Form is invaild');
+      setState(() {
+        _formValidate = true;
+      });
     }
     _formKey.currentState.save();
   }
@@ -484,6 +517,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
         padding: const EdgeInsets.only(top: 18.0),
         child: SingleChildScrollView(
           child: Form(
+            autovalidate: _formValidate,
             key: _formKey,
             child: Column(
               children: <Widget>[
@@ -567,54 +601,30 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
       birthDate = ctrl.text;
     });
   }
+
+  String validateTextFeild(String value) {
+    String pattern = r'(^[a-zA-Z ]*$)';
+    RegExp regExp = RegExp(pattern);
+    if (value.length == 0) {
+      return "This feild is required ";
+    } else if (!regExp.hasMatch(value)) {
+      return "Name must be a-z and A-Z";
+    }
+    return null;
+  }
+
+  String validateMobile(String value) {
+    String pattern = r'(^[0-9]*$)';
+    RegExp regExp = RegExp(pattern);
+    if (value.length != 10) {
+      return 'Mobile Number must be of 10 digit';
+    } else if (!regExp.hasMatch(value)) {
+      return "It should be only 0-9 values!";
+    }
+    return null;
+  }
 }
 
-//   void _mapdialogContent(BuildContext context) {
+//A collection of objects in which each object can occur only once.
 
-//     LatLng _markerLocation;
-//      showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return Dialog(
-//               elevation: 0.0,
-//               backgroundColor: Colors.transparent,
-//               child: Stack(children: <Widget>[
-//                 GoogleMap(
-//                   markers: _markerLocation != null
-//                       ? [
-//                           Marker(
-//                               markerId: MarkerId("1"),
-//                               position: _markerLocation),
-//                         ].toSet()
-//                       : null,
-//                   initialCameraPosition: CameraPosition(
-//                       target: LatLng(6.927079, 79.861244), zoom: 18),
-//                   onTap: (position) {
-//                     setState(() {
-//                       _markerLocation = position;
-//                     });
-//                   },
-//                 ),
-//               ]));
-//         });
-//   }
-// }
-
-// Future<Null> _selectTime( context, ctrl) async {
-
-//   //  DateTime _selectedTime =
-//   //     ctrl.text != "" ? dateFormat.parse(ctrl.text) : DateTime.now();
-//   TimeOfDay picked = await showTimePicker(context: context, initialTime: currentTime);
-
-//   if(picked != null && picked != currentTime){
-//     print(picked);
-//     // ctrl.text = DateFormat('h:mm a').format(context);
-
-//     ctrl.text = picked.toString();
-//     // ctrl.text = DateFormat("h:mm a").format(picked);
-//     setState(() {
-//       currentTime =  picked;
-//       print(currentTime);
-//     });
-//   }
-// }
+// That is, for each object of the element type, the object is either considered to be in the set, or to not be in the set.
