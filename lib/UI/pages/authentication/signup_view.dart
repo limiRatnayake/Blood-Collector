@@ -554,7 +554,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                         Alert(
                                             context: context,
                                             type: AlertType.success,
-                                            title: "Your account is created",
+                                            title: "Your event is Successfully created!",
                                             style: AlertStyle(
                                                 backgroundColor: Colors.black,
                                                 alertBorder:

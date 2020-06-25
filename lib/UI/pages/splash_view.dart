@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -16,20 +17,19 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   AuthServices _authServices;
+  final PermissionHandler _permissionHandler = PermissionHandler();
+  PermissionStatus _status;
   @override
   void initState() {
-    startTime();
-
     super.initState();
-  }
-  //Splash screen animation 
-  Future<Timer> startTime() async {
-    return Timer(Duration(seconds: 3), _loadingApp);
+    permissionStartTime();
+    // startTime();
   }
 
-  navigationPage() {
-    Navigator.pushReplacementNamed(context, AppConstants.AUTH);
-  }
+  //Splash screen animation
+  // Future<Timer> startTime() async {
+  //   return Timer(Duration(seconds: 4), _loadingApp);
+  // }
 
   @override
   void dispose() {
@@ -39,7 +39,6 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     _authServices = Provider.of<AuthServices>(context);
-    // _loadingApp();
 
     return SafeArea(
       child: Scaffold(
@@ -63,6 +62,28 @@ class _SplashPageState extends State<SplashPage> {
       ),
     );
   }
+
+  Future permissionStartTime() async {
+    var result = await _permissionHandler
+        .requestPermissions([PermissionGroup.locationWhenInUse]);
+
+    switch (result[PermissionGroup.locationWhenInUse]) {
+      case PermissionStatus.granted:
+        Timer(Duration(milliseconds: 15), () {
+          _loadingApp();
+        });
+
+        break;
+      case PermissionStatus.denied:
+        _permissionHandler
+            .requestPermissions([PermissionGroup.locationWhenInUse]);
+        _letUsePermission();
+        break;
+
+      default:
+    }
+  }
+
 //keep app load until user signout
   _loadingApp() {
     _authServices.getCurrentFirebaseUser().then((user) {
@@ -72,5 +93,35 @@ class _SplashPageState extends State<SplashPage> {
         Navigator.pushReplacementNamed(context, AppConstants.HOME);
       }
     });
+  }
+
+  _letUsePermission() {
+    Alert(
+        context: context,
+        type: AlertType.info,
+        title:
+            "Sorry, we need permission to access your location to provide a better service to you!",
+        content: Container(
+          child: Text(
+            "Go to your settings and change the location permission!",
+          style: TextStyle(fontSize: 15, color: Colors.white))
+        ),
+        style: AlertStyle(
+            backgroundColor: Colors.black,
+            alertBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+                side: BorderSide(color: Colors.white)),
+            titleStyle: TextStyle(color: Colors.blueAccent)),
+        buttons: [
+          DialogButton(
+              width: 120,
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () {
+                 Navigator.of(context).pop();
+              })
+        ]).show();
   }
 }

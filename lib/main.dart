@@ -1,5 +1,6 @@
 import 'package:blood_collector/UI/router.dart';
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/hospital_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
@@ -26,6 +27,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => AuthServices()),
         ChangeNotifierProvider(create: (_) => HospitalDetailsServices()),
          ChangeNotifierProvider(create: (_) => UserService()),
+        ChangeNotifierProvider(create: (_) => EventService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

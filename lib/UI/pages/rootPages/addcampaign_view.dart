@@ -4,10 +4,10 @@ import 'package:blood_collector/UI/pages/rootPages/create_post_view.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:blood_collector/shared/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart';
 
 class AddCampaignsView extends StatefulWidget {
   @override
@@ -22,12 +22,19 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   TextEditingController _placeAddressController = TextEditingController();
 
   List<Marker> myMarker = [];
-
+  String nameOfTheOrOrganizer;
   LatLng _markerLocation;
   String _resultAddress;
   DateTime currentDate = DateTime.now();
   TimeOfDay currentTime = TimeOfDay.now();
-  String birthDate = "";
+  String pickUpDate = "";
+  String startTime;
+  String endTime;
+  String oragnizePlaceName;
+  String organizePlaceAddress;
+  String placeLat;
+  String placeLng;
+  String organizerPhoneNumber;
   int eventTime;
   bool _formValidate = false;
 
@@ -43,6 +50,16 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
         ]);
   }
 
+//import fluttertoast pub dev package - 5sec toast
+  void showToastError() {
+    Fluttertoast.showToast(
+        msg: "Please, pin a place!!",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        backgroundColor: Colors.grey[200],
+        textColor: Colors.red);
+  }
+
   Widget _companyNameField() {
     return Column(
       children: <Widget>[
@@ -51,7 +68,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
           child: Row(
             children: <Widget>[
               Text(
-                "Name of the comapany",
+                "Name of the organizer/organization",
                 style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
               ),
             ],
@@ -76,6 +93,11 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                   ),
                   enabledBorder: InputBorder.none),
               validator: validateTextFeild,
+              onChanged: (val) {
+                setState(() {
+                  nameOfTheOrOrganizer = val;
+                });
+              },
             ),
           ),
         ),
@@ -83,7 +105,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     );
   }
 
-  Widget _dateField() {
+  Widget _pickUpDateField() {
     return Column(
       children: <Widget>[
         Padding(
@@ -110,16 +132,16 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
             child: TextFormField(
               controller: _campaignDate,
               decoration: inputDecoration.copyWith(
-                  hintText: "Event date",
+                  hintText: "Live TIll",
                   suffixIcon: Icon(
                     Icons.calendar_today,
                     color: Colors.black,
                   )),
               validator: (value) =>
-                  value.isEmpty ? 'Event date is required' : null,
+                  value.isEmpty ? 'Request Closing Date is required' : null,
               onTap: () async {
                 FocusScope.of(context).requestFocus(new FocusNode());
-                _selectBDate(context, _campaignDate);
+                _selectDate(context, _campaignDate);
               },
             ),
           ),
@@ -172,6 +194,13 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                             currentValue ?? DateTime.now()),
                       );
                       return DateTimeField.convert(time);
+                     
+                    },
+                    onChanged: ( val) {
+                      setState(() {
+                        String formattedTime = DateFormat.Hms().format(val);
+                           startTime = formattedTime;
+                      });
                     },
                     validator: (DateTime dateTime) {
                       if (dateTime == null) {
@@ -208,6 +237,12 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                         );
                         return DateTimeField.convert(time);
                       },
+                      onChanged: ( val) {
+                      setState(() {
+                        String formattedTime = DateFormat.Hms().format(val);
+                           endTime = formattedTime;
+                      });
+                    },
                       validator: (DateTime dateTime) {
                         if (dateTime == null) {
                           return "Date End Time Required";
@@ -256,6 +291,9 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                   ),
                   enabledBorder: InputBorder.none),
               validator: validateTextFeild,
+              onChanged: (val) {
+                oragnizePlaceName = val;
+              },
             ),
           ),
         ),
@@ -334,6 +372,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
         _resultAddress = addresses.first.addressLine;
         //get the selelcted position into textfeild
         _placeAddressController.text = _resultAddress;
+        organizePlaceAddress = _placeAddressController.text;
       });
     }
 
@@ -382,6 +421,10 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                                   _markerLocation.latitude,
                                   _markerLocation.longitude));
                               Navigator.of(context).pop();
+                              placeLat = _markerLocation.latitude.toString();
+                              placeLng = _markerLocation.longitude.toString();
+                            } else {
+                              showToastError();
                             }
                           });
                         },
@@ -410,46 +453,6 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                 ]));
           });
         });
-  }
-
-  Widget _nearestBloodBankTextField() {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 25.0),
-          child: Row(
-            children: <Widget>[
-              Text(
-                "Nearest Blood Bank",
-                style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 8.0,
-        ),
-        Container(
-          width: double.infinity,
-          height: 58,
-          margin: EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: _boxDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  hintText: "Narahanpitiya Blood bank",
-                  hintStyle: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Roboto",
-                  ),
-                  enabledBorder: InputBorder.none),
-              validator: validateTextFeild,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 
   Widget _conatctTextFeild() {
@@ -486,6 +489,9 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                   enabledBorder: InputBorder.none),
               keyboardType: TextInputType.phone,
               validator: validateMobile,
+              onChanged: (value) {
+                organizerPhoneNumber = value;
+              },
             ),
           ),
         ),
@@ -497,10 +503,20 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     final _form = _formKey.currentState;
     if (_form.validate()) {
       print('Form is vaild');
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CreatePostView()),
+      var route = new MaterialPageRoute(
+        builder: (BuildContext context) => CreatePostView(
+          nameOfTheOrganizer: nameOfTheOrOrganizer,
+          pickUpDate: pickUpDate,
+          startTime: startTime,
+          endTime: endTime,
+          placeName: oragnizePlaceName,
+          placeAddress: organizePlaceAddress,
+          placeLat: placeLat,
+          placeLng: placeLng,
+          orgernizerConatctNo: organizerPhoneNumber,
+        ),
       );
+      Navigator.of(context).push(route);
     } else {
       print('Form is invaild');
       setState(() {
@@ -525,11 +541,15 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                 SizedBox(
                   height: 10.0,
                 ),
-                _dateField(),
+                _pickUpDateField(),
                 SizedBox(
                   height: 10.0,
                 ),
                 _timePicker(),
+                SizedBox(
+                  height: 10.0,
+                ),
+                _conatctTextFeild(),
                 SizedBox(
                   height: 10.0,
                 ),
@@ -543,15 +563,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                 ),
                 _googleMapModal(),
                 SizedBox(
-                  height: 10.0,
-                ),
-                _nearestBloodBankTextField(),
-                SizedBox(
-                  height: 10.0,
-                ),
-                _conatctTextFeild(),
-                SizedBox(
-                  height: 120.0,
+                  height: 30.0,
                 ),
                 Container(
                   width: double.infinity,
@@ -586,19 +598,19 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     );
   }
 
-  Future<Null> _selectBDate(context, ctrl) async {
+  Future<Null> _selectDate(context, ctrl) async {
     DateFormat dateFormat = DateFormat('yyyy-MMM-dd');
-    DateTime _selectedBDate =
+    DateTime _selectedDate =
         ctrl.text != "" ? dateFormat.parse(ctrl.text) : DateTime.now();
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: _selectedBDate,
-        firstDate: DateTime(1960, 1),
+        initialDate: _selectedDate,
+        firstDate: DateTime.now(),
         lastDate: DateTime(2101));
-    if (picked != null && picked != _selectedBDate)
+    if (picked != null && picked != _selectedDate)
       ctrl.text = DateFormat('yyyy-MMM-dd').format(picked);
     setState(() {
-      birthDate = ctrl.text;
+      pickUpDate = ctrl.text;
     });
   }
 

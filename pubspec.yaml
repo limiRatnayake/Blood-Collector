@@ -33,6 +33,10 @@ dependencies:
   image_picker: ^0.6.7+1
   datetime_picker_formfield: ^1.0.0
   rflutter_alert: ^1.0.3
+  permission_handler: 4.4.0+hotfix.4
+  shared_preferences: ^0.5.3+4
+  fluttertoast: ^4.0.1
+  uuid: ^2.0.4
   google_maps_flutter: 
   location: 
   geocoder: 
