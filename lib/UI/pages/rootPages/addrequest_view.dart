@@ -48,7 +48,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   String userFName = '';
   String userLName = '';
   String userPhoneNumber = '';
-   String birthDate = "";
+  
   bool notifyState;
 
   var selectedHospital;
@@ -747,7 +747,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
     if (picked != null && picked != _selectedBDate)
       ctrl.text = DateFormat('yyyy-MMM-dd').format(picked);
     setState(() {
-      birthDate = ctrl.text;
+      requestClose = ctrl.text;
     });
   }
 }

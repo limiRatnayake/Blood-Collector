@@ -4,6 +4,9 @@ import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:geolocator/geolocator.dart';
+
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -29,6 +32,9 @@ class _SignUpPageState extends State<SignUpPage> {
   String address = '';
   String email = '';
   String password = '';
+  String confirmPassword = '';
+  String userAddLat = '';
+  String userAddLng = '';
 
   String error = '';
   String uid = '';
@@ -41,6 +47,8 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _obscureText = true;
 
   TextEditingController _birthDate = TextEditingController();
+  TextEditingController _userAddressController = TextEditingController();
+
   List<String> bloodGroupType = [
     'Select Blood Type',
     'A+',
@@ -52,6 +60,28 @@ class _SignUpPageState extends State<SignUpPage> {
     'B-',
     'AB-'
   ];
+
+  void _getLocation() async {
+    final currentLocation = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    getSetAddress(
+        Coordinates(currentLocation.latitude, currentLocation.longitude));
+    setState(() {
+      //injecting the parameters
+      userAddLat = "${currentLocation.latitude}";
+      userAddLng = "${currentLocation.longitude}";
+    });
+  }
+
+  getSetAddress(Coordinates coordinates) async {
+    final addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    setState(() {
+      //get the selelcted position into textfeild
+      _userAddressController.text = addresses.first.addressLine;
+      address = _userAddressController.text;
+    });
+  }
 
   List<GenderList> radioButtonList = [
     GenderList(index: 1, title: "Male"),
@@ -72,9 +102,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   initState() {
+    _getLocation();
     setState(() {
       gender = _radioItemHolder;
     });
+
     super.initState();
   }
 
@@ -251,6 +283,8 @@ class _SignUpPageState extends State<SignUpPage> {
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
+          enabled: false,
+          controller: _userAddressController,
           decoration: inputDecoration.copyWith(hintText: "Postal Address"),
           keyboardType: TextInputType.multiline,
           validator: (value) =>
@@ -299,6 +333,7 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             Expanded(
               child: TextFormField(
+                // controller: _passController,
                 decoration: inputDecoration.copyWith(
                   hintText: "Password",
                 ),
@@ -308,6 +343,43 @@ class _SignUpPageState extends State<SignUpPage> {
                 onChanged: (val) {
                   setState(() {
                     password = val;
+                  });
+                },
+              ),
+            ),
+            FlatButton(
+              onPressed: _toggle,
+              child: _obscureText
+                  ? Icon(Icons.visibility_off)
+                  : Icon(Icons.visibility),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _confirmPasswordField() {
+    return Container(
+      width: double.infinity,
+      // height: 58,
+      margin: EdgeInsets.symmetric(horizontal: 30.0),
+      decoration: boxDecoration,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                decoration: inputDecoration.copyWith(
+                  hintText: "Confirm Password",
+                ),
+                keyboardType: TextInputType.visiblePassword,
+                validator: validateConfirmPassword,
+                obscureText: _obscureText,
+                onChanged: (val) {
+                  setState(() {
+                    confirmPassword = val;
                   });
                 },
               ),
@@ -493,6 +565,20 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                       _passwordField(),
+                      SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Confirm Password",
+                              style: TextStyle(
+                                  fontFamily: 'Roboto', fontSize: 16.0),
+                            ),
+                          ],
+                        ),
+                      ),
+                      _confirmPasswordField(),
                       SizedBox(height: 20.0),
                       _errorMessage != null
                           ? Container(
@@ -535,16 +621,19 @@ class _SignUpPageState extends State<SignUpPage> {
                                       });
                                       String response =
                                           await _authService.createUser(
-                                              email,
-                                              password,
-                                              uid,
-                                              firstName,
-                                              lastName,
-                                              birthDate,
-                                              gender,
-                                              mobileNo,
-                                              bloodGroup,
-                                              address);
+                                        email,
+                                        confirmPassword,
+                                        uid,
+                                        firstName,
+                                        lastName,
+                                        birthDate,
+                                        gender,
+                                        mobileNo,
+                                        bloodGroup,
+                                        address,
+                                        userAddLat,
+                                        userAddLng,
+                                      );
                                       if (response != "Success") {
                                         setState(() {
                                           _isLoading = false;
@@ -554,7 +643,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                         Alert(
                                             context: context,
                                             type: AlertType.success,
-                                            title: "Your event is Successfully created!",
+                                            title:
+                                                "Your event is Successfully created!",
                                             style: AlertStyle(
                                                 backgroundColor: Colors.black,
                                                 alertBorder:
@@ -695,6 +785,15 @@ class _SignUpPageState extends State<SignUpPage> {
       return "Password is required";
     } else if (!strongRegex.hasMatch(value)) {
       return "Password is not strong enough!";
+    }
+    return null;
+  }
+
+  String validateConfirmPassword(String value) {
+    if (value.isEmpty) {
+      return "Password is required";
+    }else if (value != password) {
+      return 'Password Not Match';
     }
     return null;
   }

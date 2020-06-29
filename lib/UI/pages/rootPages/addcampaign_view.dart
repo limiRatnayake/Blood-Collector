@@ -24,7 +24,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   List<Marker> myMarker = [];
   String nameOfTheOrOrganizer;
   LatLng _markerLocation;
-  String _resultAddress;
+  // String _resultAddress;
   DateTime currentDate = DateTime.now();
   TimeOfDay currentTime = TimeOfDay.now();
   String pickUpDate = "";
@@ -369,9 +369,9 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
       final addresses =
           await Geocoder.local.findAddressesFromCoordinates(coordinates);
       setState(() {
-        _resultAddress = addresses.first.addressLine;
+        // _resultAddress = addresses.first.addressLine;
         //get the selelcted position into textfeild
-        _placeAddressController.text = _resultAddress;
+        _placeAddressController.text = addresses.first.addressLine;
         organizePlaceAddress = _placeAddressController.text;
       });
     }

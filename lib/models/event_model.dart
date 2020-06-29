@@ -1,6 +1,5 @@
 class EventModel {
   String docRef;
-  String userName;
   String uid;
   String bloodGroup;
   String replacementAvailability;
@@ -22,7 +21,6 @@ class EventModel {
   String placeAddress;
   String placeLat;
   String placeLng;
-  String nearestBloodBank;
   String orgernizerConatctNo;
   String description;
   String imageName;
@@ -32,7 +30,6 @@ class EventModel {
   String createdAt;
   EventModel(
       {this.docRef,
-      this.userName,
       this.uid,
       this.bloodGroup,
       this.replacementAvailability,
@@ -54,7 +51,6 @@ class EventModel {
       this.placeAddress,
       this.placeLat,
       this.placeLng,
-      this.nearestBloodBank,
       this.orgernizerConatctNo,
       this.description,
       this.imageName,
@@ -66,7 +62,6 @@ class EventModel {
 
   EventModel.fromMap(Map snapshot)
       : docRef = snapshot['docRef'] ?? "",
-        userName = snapshot['userName'] ?? "",
         uid = snapshot['uid'] ?? "",
         bloodGroup = snapshot['bloodGroup'] ?? "",
         replacementAvailability = snapshot['replacementAvailability'] ??
@@ -89,7 +84,6 @@ class EventModel {
         placeAddress = snapshot['placeAddress'] ?? "",
         placeLat = snapshot['placeLat'] ?? "",
         placeLng = snapshot['placeLng'] ?? "",
-        nearestBloodBank = snapshot['nearestBloodBank'] ?? "",
         orgernizerConatctNo = snapshot['orgernizerConatctNo'] ?? "",
         description = snapshot['description'] ?? "",
         imageName = snapshot['imageName'] ?? "",
@@ -102,7 +96,6 @@ class EventModel {
   toJson() {
     return {
       "docRef": docRef,
-      "userName": userName,
       "uid": uid,
       "bloodGroup": bloodGroup,
       "replacementAvailability": replacementAvailability,
@@ -124,7 +117,6 @@ class EventModel {
       "placeAddress": placeAddress,
       "placeLat": placeLat,
       "placeLng": placeLng,
-      "nearestBloodBank": nearestBloodBank,
       "orgernizerConatctNo": orgernizerConatctNo,
       "description": description,
       "imageName": imageName,

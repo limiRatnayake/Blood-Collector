@@ -100,6 +100,7 @@ class _PostViewState extends State<CreatePostView> {
           minLines: 10,
           maxLines: 15,
           autocorrect: false,
+          autofocus: false,
           decoration: InputDecoration(
             hintText: 'Write your status here',
             filled: true,
@@ -137,27 +138,13 @@ class _PostViewState extends State<CreatePostView> {
           "Create Post",
         ),
         elevation: 0.3,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: InkWell(
-              child: Text(
-                "POST",
-                style: TextStyle(color: Colors.black, fontSize: 16.0),
-              ),
-              onTap: () {},
-            ),
-          )
-        ],
       ),
       body: SingleChildScrollView(
-        
         child: Form(
             key: _formKey,
             autovalidate: _formValidate,
             child: Column(
               children: [
-                Text("${widget.startTime}"),
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 25.0, left: 18.0, bottom: 8.0),
@@ -254,11 +241,10 @@ class _PostViewState extends State<CreatePostView> {
                                 borderRadius: BorderRadius.circular(25.0)),
                             onPressed: () async {
                               final _form = _formKey.currentState;
-                             
 
                               if (_image != null) {
-                                  imgName = Uuid().v1();
-                               imageExtention = Path.extension(_image.path);
+                                imgName = Uuid().v1();
+                                imageExtention = Path.extension(_image.path);
                                 //upload image and get the url of the image
                                 imgUrl = await _eventService.uploadImage(
                                     imgName, imageExtention, _image);
@@ -309,7 +295,8 @@ class _PostViewState extends State<CreatePostView> {
                                       title:
                                           "Your event is Successfully created!",
                                       style: AlertStyle(
-                                          backgroundColor: Colors.black,
+                                        isCloseButton: false,
+                                          backgroundColor: Colors.white,
                                           alertBorder: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5),
@@ -399,10 +386,9 @@ class _PostViewState extends State<CreatePostView> {
   }
 
   String validateFormDescription(String value) {
-   
     if (value.length == 0) {
       return "This feild is required ";
-    } 
+    }
     return null;
   }
 }

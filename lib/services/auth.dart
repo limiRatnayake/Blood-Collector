@@ -30,7 +30,9 @@ class AuthServices extends ChangeNotifier {
       String gender,
       String mobileNo,
       String bloodGroup,
-      String address) async {
+      String address,
+      String userAddLat,
+      String userAddLng) async {
     String message = "";
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
@@ -38,15 +40,18 @@ class AuthServices extends ChangeNotifier {
       FirebaseUser user = result.user;
       DocumentReference newRef = _ref.document(user.uid);
       UserModel userMod = new UserModel(
-        user.uid,
-        firstName,
-        lastName,
-        gender,
-        birthDate,
-        bloodGroup,
-        mobileNo,
-        address,
-        email,
+        uid: user.uid,
+        userRole: "User",
+        firstName: firstName,
+        lastName: lastName,
+        gender: gender,
+        birthDate: birthDate,
+        bloodGroup: bloodGroup,
+        mobileNo: mobileNo,
+        address: address,
+        userAddLat:userAddLat,
+        userAddLng:userAddLng,
+        email: email,
       );
 
       //create a new document for the user with the uid

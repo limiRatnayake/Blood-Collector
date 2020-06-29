@@ -23,6 +23,13 @@ class _SignInPageState extends State<SignInPage> {
   String email = '';
   String password = '';
   String error = '';
+   bool _obscureText = true;
+
+   void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   Widget _emailTextField() {
     return Container(
@@ -49,30 +56,68 @@ class _SignInPageState extends State<SignInPage> {
       ),
     );
   }
-
   Widget _passwordTextField() {
     return Container(
       width: double.infinity,
-      height: 58,
+      // height: 58,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
-        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-        child: TextFormField(
-          decoration: inputDecoration.copyWith(hintText: "Password"),
-          validator: (value) => value.isEmpty || value.length < 6
-              ? 'Password cannot be blank'
-              : null,
-          obscureText: true, //visibiity of the password
-          onChanged: (value) {
-            setState(() {
-              password = value;
-            });
-          },
+        padding: const EdgeInsets.only(top: 4, left: 24),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                // controller: _passController,
+                decoration: inputDecoration.copyWith(
+                  hintText: "Password",
+                ),
+                keyboardType: TextInputType.visiblePassword,
+                validator: validatePassword,
+                obscureText: _obscureText,
+                onChanged: (val) {
+                  setState(() {
+                    password = val;
+                  });
+                },
+              ),
+            ),
+            FlatButton(
+              onPressed: _toggle,
+              child: _obscureText
+                  ? Icon(Icons.visibility_off)
+                  : Icon(Icons.visibility),
+            )
+          ],
         ),
       ),
     );
   }
+
+  // Widget _passwordTextField() {
+  //   return Container(
+  //     width: double.infinity,
+  //     height: 58,
+  //     margin: EdgeInsets.symmetric(horizontal: 30.0),
+  //     decoration: boxDecoration,
+  //     child: Padding(
+  //       padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+  //       child: TextFormField(
+  //         decoration: inputDecoration.copyWith(hintText: "Password"),
+  //         validator: (value) => value.isEmpty || value.length < 6
+  //             ? 'Password cannot be blank'
+  //             : null,
+  //         obscureText: true, //visibiity of the password
+  //         onChanged: (value) {
+  //           setState(() {
+  //             password = value;
+  //           });
+  //         },
+  //       ),
+        
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -246,5 +291,16 @@ class _SignInPageState extends State<SignInPage> {
             ],
           )),
     ); //Scaffold
+  }
+  String validatePassword(String value) {
+    var strongRegex = new RegExp(
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+
+    if (value.isEmpty) {
+      return "Password is required";
+    } else if (!strongRegex.hasMatch(value)) {
+      return "Password is not strong enough!";
+    }
+    return null;
   }
 }
