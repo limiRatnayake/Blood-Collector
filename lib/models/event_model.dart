@@ -27,6 +27,7 @@ class EventModel {
   String imageExtention;
   String imageUrl;
   bool approved;
+  String rejectReason;
   String createdAt;
   EventModel(
       {this.docRef,
@@ -57,6 +58,7 @@ class EventModel {
       this.imageExtention,
       this.imageUrl,
       this.approved,
+      this.rejectReason,
       this.createdAt
       });
 
@@ -90,6 +92,7 @@ class EventModel {
         imageExtention = snapshot['imageExtention'] ?? "",
         imageUrl = snapshot['imageUrl'] ?? "",
         approved = snapshot['approved'] ?? false,
+        rejectReason = snapshot['rejectReason'] ?? "",
         createdAt = snapshot['createdAt'] ?? "";
 
 
@@ -123,6 +126,7 @@ class EventModel {
       "imageExtention": imageExtention,
       "imageUrl": imageUrl,
        "approved": approved,
+       "rejectReason":rejectReason,
        "createdAt": createdAt,
     };
   }

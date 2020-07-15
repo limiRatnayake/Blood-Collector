@@ -11,6 +11,7 @@ class UserModel {
    String userAddLat;
    String userAddLng;
    String email;
+   bool disabled;
 
   UserModel({
     this.uid,
@@ -25,14 +26,14 @@ class UserModel {
     this.userAddLat,
     this.userAddLng,
     this.email,
+    this.disabled
   });
 
   UserModel.fromMap(Map snapshot)
       : uid = snapshot['uid'] ?? "",
        userRole = snapshot['userRole'] ?? "",
         firstName = snapshot['firstName'] ?? "",
-        lastName =
-            snapshot['lastName'] ?? "", //if the value is not there it is empty
+        lastName = snapshot['lastName'] ?? "", //if the value is not there it is empty
         gender = snapshot['gender'] ?? "",
         birthDate = snapshot['birthDate'] ?? "",
         bloodGroup = snapshot['bloodGroup'] ?? "",
@@ -40,7 +41,8 @@ class UserModel {
         address = snapshot['address'] ?? "",
         userAddLat = snapshot['userAddLat'] ?? "",
         userAddLng = snapshot['userAddLng'] ?? "",
-        email = snapshot['email'] ?? "";
+        email = snapshot['email'] ?? "",
+        disabled = snapshot['disabled'] ?? "";
 
   toJson() {
     return {
@@ -55,7 +57,8 @@ class UserModel {
       "address": address,
       "email": email,
       "userAddLat":userAddLat,
-      "userAddLng": userAddLng
+      "userAddLng": userAddLng,
+      "disabled":disabled
     };
   }
 }

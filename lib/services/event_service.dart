@@ -76,6 +76,7 @@ class EventService extends ChangeNotifier {
         imageUrl: imgUrl,
         uid: user.uid,
         approved: false,
+        rejectReason: "None",
         createdAt: new DateTime.now().toString(),
       );
 

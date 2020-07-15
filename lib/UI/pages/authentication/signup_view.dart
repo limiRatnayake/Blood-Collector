@@ -35,6 +35,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String confirmPassword = '';
   String userAddLat = '';
   String userAddLng = '';
+  bool disabled ;
 
   String error = '';
   String uid = '';
@@ -45,6 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String _bloodGroup = 'Select Blood Type';
   bool _formValidate = false;
   bool _obscureText = true;
+  
 
   TextEditingController _birthDate = TextEditingController();
   TextEditingController _userAddressController = TextEditingController();
@@ -618,6 +620,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       setState(() {
                                         _errorMessage = "";
                                         _isLoading = true;
+                                        disabled = false;
                                       });
                                       String response =
                                           await _authService.createUser(
@@ -633,6 +636,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                         address,
                                         userAddLat,
                                         userAddLng,
+                                        disabled
                                       );
                                       if (response != "Success") {
                                         setState(() {

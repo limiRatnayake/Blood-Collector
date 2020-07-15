@@ -32,7 +32,8 @@ class AuthServices extends ChangeNotifier {
       String bloodGroup,
       String address,
       String userAddLat,
-      String userAddLng) async {
+      String userAddLng,
+      bool disabled) async {
     String message = "";
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
@@ -52,6 +53,7 @@ class AuthServices extends ChangeNotifier {
         userAddLat:userAddLat,
         userAddLng:userAddLng,
         email: email,
+        disabled: true
       );
 
       //create a new document for the user with the uid
