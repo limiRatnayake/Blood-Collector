@@ -1,15 +1,33 @@
 import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
+import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/shared/appConstant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
+import 'package:provider/provider.dart';
 
-class HomeView extends StatelessWidget {
+class HomeTimelineView extends StatefulWidget {
+  @override
+  _HomeTimelineViewState createState() => _HomeTimelineViewState();
+}
 
-  
+class _HomeTimelineViewState extends State<HomeTimelineView> {
+ AuthServices _authServices;
+
+ @override
+  void initState() {
+   
+  _stateLoadingApp();
+   
+    super.initState();
+    // new Future.delayed(const Duration(seconds: 2));
+  }
   @override
   Widget build(BuildContext context) {
+    _authServices = Provider.of<AuthServices>(context);
     return Scaffold(
         appBar: PreferredSize(
             preferredSize: const Size(double.infinity, kToolbarHeight),
@@ -85,5 +103,19 @@ class HomeView extends StatelessWidget {
         ));
   }
 
-  
+  //keep app load until user signout
+  _stateLoadingApp() {
+    // FirebaseAuth.instance.currentUser().then((user) {
+    //   if(user == null){
+    //   Navigator.pushReplacementNamed(context, AppConstants.AUTH);
+    //   }
+    // });
+// FirebaseAuth.instance.onAuthStateChanged.listen();
+  }
+  // FirebaseAuth.instance.currentUser().then((user) => user != null
+  //       ? print("User login")
+  //       : );
+
+  // }
 }
+

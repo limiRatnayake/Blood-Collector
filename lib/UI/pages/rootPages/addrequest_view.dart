@@ -623,11 +623,11 @@ class _RequestBloodViewState extends State<RequestBloodView> {
           } else {
             UserModel data = UserModel.fromMap(snapshot.data.data);
             userFNameController.text = data.firstName;
-            userFName = userFNameController.text;
+            // userFName = userFNameController.text;
             userLNameController.text = data.lastName;
-            userLName = userLNameController.text;
+            // userLName = userLNameController.text;
             userPhoneNoController.text = data.mobileNo;
-            userPhoneNumber = userPhoneNoController.text;
+            // userPhoneNumber = userPhoneNoController.text;
             return Column(
               children: [
                 Padding(

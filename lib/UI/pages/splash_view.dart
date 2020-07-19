@@ -63,6 +63,7 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 
+//Location permissionHandler
   Future permissionStartTime() async {
     var result = await _permissionHandler
         .requestPermissions([PermissionGroup.locationWhenInUse]);
@@ -87,10 +88,10 @@ class _SplashPageState extends State<SplashPage> {
 //keep app load until user signout
   _loadingApp() {
     _authServices.getCurrentFirebaseUser().then((user) {
-      if (user == null) {
+      if (user == null ) {
         Navigator.pushReplacementNamed(context, AppConstants.AUTH);
       } else {
-        Navigator.pushReplacementNamed(context, AppConstants.HOME);
+        Navigator.pushReplacementNamed(context, AppConstants.ADD_POST);
       }
     });
   }

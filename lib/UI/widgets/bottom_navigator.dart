@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/pages/rootPages/homeView.dart';
+import 'package:blood_collector/UI/pages/rootPages/HomeTimelineView.dart';
 import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/requestHistory.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
@@ -20,7 +20,7 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
   }
 
   final List<Widget> _children = [
-    HomeView(),
+    HomeTimelineView(),
     RequestHistory(),
     MapView(),
     SettingView()

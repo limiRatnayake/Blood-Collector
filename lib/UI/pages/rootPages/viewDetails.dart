@@ -5,7 +5,7 @@ class ViewDetails extends StatefulWidget {
   @override
   _ViewDetailsState createState() => _ViewDetailsState();
 }
-
+//timeline card
 class _ViewDetailsState extends State<ViewDetails> {
   @override
   Widget build(BuildContext context) {

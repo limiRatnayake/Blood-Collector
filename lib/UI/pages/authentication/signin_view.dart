@@ -214,7 +214,7 @@ class _SignInPageState extends State<SignInPage> {
                                                       Navigator
                                                           .pushReplacementNamed(
                                                         context,
-                                                        AppConstants.HOME,
+                                                        AppConstants.ADD_POST,
                                                       );
                                                     } else {
                                                       showDialog(

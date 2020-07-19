@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/bottom_navigator.dart';
 
-class HomePageView extends StatefulWidget {
+class FloatingActionBtnView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _HomePageState();
+    return _FloatingActionBtnViewState();
   }
 }
 
-class _HomePageState extends State<HomePageView>
-    with TickerProviderStateMixin<HomePageView> {
+class _FloatingActionBtnViewState extends State<FloatingActionBtnView>
+    with TickerProviderStateMixin<FloatingActionBtnView> {
 
     
   @override

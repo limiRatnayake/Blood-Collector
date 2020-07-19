@@ -2,7 +2,7 @@ import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:flutter/material.dart';
 
-import 'package:blood_collector/UI/widgets/homeWidget.dart';
+import 'package:blood_collector/UI/widgets/floatingActionBtn_widget.dart';
 
 class DrawerWidget extends StatelessWidget {
   @override
@@ -52,7 +52,7 @@ class DrawerWidget extends StatelessWidget {
             leading: Icon(Icons.home),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomePageView()));
+                  MaterialPageRoute(builder: (context) => FloatingActionBtnView()));
             },
           ),
           ListTile(

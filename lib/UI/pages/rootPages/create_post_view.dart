@@ -316,7 +316,7 @@ class _PostViewState extends State<CreatePostView> {
                                             onPressed: () {
                                               Navigator.pushReplacementNamed(
                                                 context,
-                                                AppConstants.HOME,
+                                                AppConstants.ADD_POST,
                                               );
                                             })
                                       ]).show();

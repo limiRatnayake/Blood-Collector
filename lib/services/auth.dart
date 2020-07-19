@@ -102,8 +102,9 @@ class AuthServices extends ChangeNotifier {
   //Check auth chnages
   Future<void> _onAuthStateChange(FirebaseUser firebaseUser) async {
     print(firebaseUser);
-    if (firebaseUser == null) {
+    if (firebaseUser == null ) {
       print("No UserModel");
+      
     } else {
       print("Has UserModel");
       _user = firebaseUser;

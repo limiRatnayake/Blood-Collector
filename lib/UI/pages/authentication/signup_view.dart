@@ -674,7 +674,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                     Navigator
                                                         .pushReplacementNamed(
                                                       context,
-                                                      AppConstants.HOME,
+                                                      AppConstants.ADD_POST,
                                                     );
                                                   })
                                             ]).show();
