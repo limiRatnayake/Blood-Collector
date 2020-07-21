@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
-import 'package:blood_collector/shared/constant.dart';
+import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';

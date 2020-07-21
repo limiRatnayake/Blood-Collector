@@ -4,7 +4,7 @@ import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/hospital_service.dart';
 import 'package:blood_collector/services/user_service.dart';
-import 'package:blood_collector/shared/constant.dart';
+import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

@@ -2,7 +2,7 @@
 import 'dart:async';
 import 'package:blood_collector/UI/pages/rootPages/create_post_view.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:blood_collector/shared/constant.dart';
+import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';

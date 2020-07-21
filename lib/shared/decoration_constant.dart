@@ -10,6 +10,7 @@ BoxDecoration boxDecoration = BoxDecoration(
           offset: Offset(3, 6)) //BoxShadow
     ]);
 
+
 const inputDecoration = InputDecoration(
     
     hintStyle: TextStyle(

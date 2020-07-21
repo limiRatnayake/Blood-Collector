@@ -19,4 +19,5 @@ class UserService extends ChangeNotifier {
     DocumentSnapshot postSnapshot = (await _ref.document(uid).get());
     return postSnapshot;
   }
+  
 }
