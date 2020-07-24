@@ -48,6 +48,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   String userFName = '';
   String userLName = '';
   String userPhoneNumber = '';
+  bool disabled;
   
   bool notifyState;
 
@@ -326,6 +327,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
           userLName: userLName,
           userPhoneNumber: userPhoneNumber,
           notifyState: _notifyState,
+          disabled: disabled,
         ),
       );
       Navigator.of(context).push(route);
@@ -627,6 +629,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
             userLNameController.text = data.lastName;
             // userLName = userLNameController.text;
             userPhoneNoController.text = data.mobileNo;
+            disabled = data.disabled;
             // userPhoneNumber = userPhoneNoController.text;
             return Column(
               children: [
