@@ -6,6 +6,7 @@ class AppConstants {
   static const String USER_STATE = 'user_state';
   static const String ADD_POST = 'add_post';
   static const String MAP_VIEW = 'map_view';
+  static const String MYPROFILE_VIEW = 'profile_view';
   static const String STORSGE_IMAGE_PATH = 'images';
 
   static const String USERS_COLLECTION = "users";

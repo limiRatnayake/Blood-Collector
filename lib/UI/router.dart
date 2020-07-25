@@ -1,6 +1,7 @@
 import 'package:blood_collector/UI/pages/authentication/auth_view.dart';
 import 'package:blood_collector/UI/pages/authentication/signup_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -27,6 +28,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => HomeWidgetView());
       case AppConstants.MAP_VIEW:
         return MaterialPageRoute(builder: (_) => MapView());
+         case AppConstants.MYPROFILE_VIEW:
+        return MaterialPageRoute(builder: (_) => SettingView());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(

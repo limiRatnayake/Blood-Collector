@@ -41,11 +41,12 @@ class _SignUpPageState extends State<SignUpPage> {
   String uid = '';
   String _radioItemHolder = "Male";
   int _radioValue = 1;
-  bool _isLoading = false;
-  String _errorMessage;
   String _bloodGroup = 'Select Blood Type';
-  bool _formValidate = false;
   bool _obscureText = true;
+
+  String _errorMessage;
+  bool _isLoading = false;
+  bool _formValidate = false;
   
 
   TextEditingController _birthDate = TextEditingController();

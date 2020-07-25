@@ -1,12 +1,14 @@
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class EditProfileView extends StatefulWidget {
   @override
@@ -14,22 +16,34 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
-  final format = DateFormat("yyyy-MMM-dd");
-  int value;
+  final _formKey = GlobalKey<FormState>();
+  DateFormat format = DateFormat('yyyy-MMM-dd');
+  // final format = DateFormat("yyy-MMM-dd");
+
+  // int bloodGroupValue;
+  // int genderValue;
   String birthDate = "";
   String previousGender;
-  String userBloodGroup;
-  String _bloodGroup;
+  // String _bloodGroup;
+
+  bool _formValidate = false;
+  bool _isLoading = false;
+  String _errorMessage;
+
+  String userFName;
+  String userLName;
+  String bloodGroup;
+  String gender;
+  String userPhoneNumber;
   TextEditingController userFNameController = new TextEditingController();
   TextEditingController userLNameController = new TextEditingController();
   TextEditingController userPhoneNoController = new TextEditingController();
   TextEditingController userEmailAddController = new TextEditingController();
-
   TextEditingController _birthDate = new TextEditingController();
 
   List<String> _bloodGroupType = [
-    "Select Blood Type",
-    'A+',
+    "Select a blood Group"
+        'A+',
     'O+',
     'B+',
     'AB+',
@@ -52,65 +66,173 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthServices _authService = Provider.of<AuthServices>(context);
+    final UserService _userService = Provider.of<UserService>(context);
     return Scaffold(
         appBar: AppBar(
           actionsIconTheme: null,
           leading: Container(
-            child: Icon(Icons.check),
-          ),
-          title: Text("Edit Profile"),
-          actions: <Widget>[
-            IconButton(
+            child: IconButton(
               icon: Icon(Icons.close),
               onPressed: () {},
             ),
-          ],
+          ),
+          title: Text("Edit Profile"),
         ),
         body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 180.0,
-                child: Card(
-                  child: Column(
-                    children: <Widget>[
-                      Center(
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage("assets/person.jpg"),
-                          minRadius: 40,
-                          maxRadius: 60,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      Center(
-                        child: InkWell(
-                          child: Text(
-                            "Change Profile Photo",
-                            style:
-                                TextStyle(color: Colors.blue, fontSize: 16.0),
+          child: Form(
+            key: _formKey,
+            autovalidate: _formValidate,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 180.0,
+                  child: Card(
+                    child: Column(
+                      children: <Widget>[
+                        Center(
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage("assets/person.jpg"),
+                            minRadius: 40,
+                            maxRadius: 60,
                           ),
-                          onTap: () {},
                         ),
-                      )
-                    ],
+                        SizedBox(
+                          height: 15.0,
+                        ),
+                        Center(
+                          child: InkWell(
+                            child: Text(
+                              "Change Profile Photo",
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 16.0),
+                            ),
+                            onTap: () {},
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // Call the widget class
-                    _userProfileDataBuilder(context),
-                  ],
+                SizedBox(
+                  height: 15.0,
                 ),
-              )
-            ],
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      // Call the widget class
+                      _userProfileDataBuilder(context),
+                      SizedBox(height: 20.0),
+                      _errorMessage != null
+                          ? Container(
+                              padding: EdgeInsets.only(bottom: 10),
+                              width: double.infinity,
+                              child: Text(
+                                _errorMessage,
+                                style: TextStyle(color: Colors.redAccent),
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          : Container(),
+                      _isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Container(
+                              width: double.infinity,
+                              height: 58,
+                              margin: EdgeInsets.symmetric(horizontal: 30.0),
+                              decoration: boxDecoration,
+                              child: ButtonTheme(
+                                child: RaisedButton(
+                                  elevation: 0.0,
+                                  child: Text("SIGNUP",
+                                      style: TextStyle(
+                                          fontFamily: "Roboto",
+                                          fontSize: 18.0,
+                                          color: Colors.black)),
+                                  textColor: Colors.black,
+                                  color: Colors.red.withOpacity(0.9),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(25.5)),
+                                  onPressed: () async {
+                                    if (_formKey.currentState.validate()) {
+                                      setState(() {
+                                        _errorMessage = "";
+                                        _isLoading = true;
+                                      });
+                                      String response =
+                                          await _userService.updateUserProfile(
+                                        _authService.user.uid,
+                                        userFName,
+                                        userLName,
+                                        gender,
+                                        birthDate,
+                                        bloodGroup,
+                                        userPhoneNumber,
+                                      );
+                                      if (response != "Success") {
+                                        setState(() {
+                                          _isLoading = false;
+                                          _errorMessage = response;
+                                        });
+                                      } else {
+                                        Alert(
+                                            context: context,
+                                            type: AlertType.success,
+                                            title:
+                                                "Your event is Successfully updated!",
+                                            style: AlertStyle(
+                                                backgroundColor: Colors.black,
+                                                alertBorder:
+                                                    RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        side: BorderSide(
+                                                            color:
+                                                                Colors.white)),
+                                                titleStyle: TextStyle(
+                                                    color: Colors.blueAccent)),
+                                            buttons: [
+                                              DialogButton(
+                                                  width: 120,
+                                                  child: Text(
+                                                    "ok",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator
+                                                        .pushReplacementNamed(
+                                                      context,
+                                                      AppConstants
+                                                          .MYPROFILE_VIEW,
+                                                    );
+                                                  })
+                                            ]).show();
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                      }
+                                    } else {
+                                      setState(() {
+                                        _formValidate = true;
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                      SizedBox(height: 20.0),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ));
   }
@@ -150,8 +272,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ),
                       validator: validateFormData,
                       onChanged: (value) {
-                        value = userFNameController.text;
-                        // userFName = value;
+                        setState(() {
+                          userFName = value;
+                        });
+                        print(userFName);
                       },
                     ),
                   ),
@@ -179,8 +303,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ),
                       validator: validateFormData,
                       onChanged: (value) {
-                        value = userLNameController.text;
-                        // userLName = value;
+                        setState(() {
+                          userLName = value;
+                        });
+                        print(userLName);
                       },
                     ),
                   ),
@@ -199,7 +325,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 4, left: 2),
                       child: DropdownButtonFormField(
-                        value: _bloodGroup ?? data.bloodGroup,
+                        value: bloodGroup ?? data.bloodGroup,
                         decoration: InputDecoration(
                             hintText: 'Blood Type',
                             hintStyle: TextStyle(
@@ -208,18 +334,18 @@ class _EditProfileViewState extends State<EditProfileView> {
                                 color: Colors.black54),
                             enabledBorder: InputBorder.none),
                         validator: validateBloodGroup,
-                        onChanged: (value) {
-                          // setState(() {
-                          //   bloodGroup = value;
-                          // });
-                          // something(value);
-                        },
-                        items: _bloodGroupType.map((String value) {
+                        items: _bloodGroupType.map((bloodgroup) {
                           return DropdownMenuItem(
-                            value: value,
-                            child: Text(value),
+                            value: bloodgroup,
+                            child: Text(bloodgroup),
                           );
                         }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            bloodGroup = value;
+                          });
+                          print(bloodGroup);
+                        },
                       ),
                     ),
                   ),
@@ -227,33 +353,33 @@ class _EditProfileViewState extends State<EditProfileView> {
                 SizedBox(
                   height: 10.0,
                 ),
-                Card(
-                  margin: EdgeInsets.symmetric(horizontal: 15.0),
-                  child: ListTile(
-                    title: Text(
-                      "Email Address",
-                      style: TextStyle(color: Colors.black45),
-                    ),
-                    subtitle: TextFormField(
-                      // controller: userEmailAddController,
-                      initialValue: data.email,
-                      decoration: InputDecoration(
-                        hintText: "Email Address",
-                        hintStyle: TextStyle(
-                          fontSize: 16.0,
-                          fontFamily: "Roboto",
-                        ),
-                        // enabledBorder: InputBorder.none
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: validateEmailAddress,
-                      onChanged: (value) {
-                        value = userEmailAddController.text;
-                        // userEmailAdd = value;
-                      },
-                    ),
-                  ),
-                ),
+                // Card(
+                //   margin: EdgeInsets.symmetric(horizontal: 15.0),
+                //   child: ListTile(
+                //     title: Text(
+                //       "Email Address",
+                //       style: TextStyle(color: Colors.black45),
+                //     ),
+                //     subtitle: TextFormField(
+                //       // controller: userEmailAddController,
+                //       initialValue: data.email,
+                //       decoration: InputDecoration(
+                //         hintText: "Email Address",
+                //         hintStyle: TextStyle(
+                //           fontSize: 16.0,
+                //           fontFamily: "Roboto",
+                //         ),
+                //         // enabledBorder: InputBorder.none
+                //       ),
+                //       keyboardType: TextInputType.emailAddress,
+                //       validator: validateEmailAddress,
+                //       onChanged: (value) {
+
+                //         userEmailAdd = value;
+                //       },
+                //     ),
+                //   ),
+                // ),
                 SizedBox(
                   height: 10.0,
                 ),
@@ -277,8 +403,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                       keyboardType: TextInputType.phone,
                       validator: validateMobile,
                       onChanged: (value) {
-                        value = userPhoneNoController.text;
-                        // userPhoneNumber = value;
+                        setState(() {
+                          userPhoneNumber = value;
+                          print(userPhoneNumber);
+                        });
                       },
                     ),
                   ),
@@ -289,14 +417,14 @@ class _EditProfileViewState extends State<EditProfileView> {
                 Card(
                   margin: EdgeInsets.symmetric(horizontal: 15.0),
                   child: ListTile(
-                    title:Text(
+                    title: Text(
                       "Gender",
                       style: TextStyle(color: Colors.black45),
-                    ) ,
+                    ),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 4, left: 2),
                       child: DropdownButtonFormField(
-                        value: _bloodGroup ?? data.gender,
+                        value: gender ?? data.gender,
                         decoration: InputDecoration(
                             hintText: 'Gender',
                             hintStyle: TextStyle(
@@ -305,18 +433,23 @@ class _EditProfileViewState extends State<EditProfileView> {
                                 color: Colors.black54),
                             enabledBorder: InputBorder.none),
                         validator: validateBloodGroup,
+                        items: _genderType.map((String gender) {
+                          return DropdownMenuItem(
+                            value: gender,
+                            child: Text(gender),
+                          );
+                        }).toList(),
                         onChanged: (value) {
+                          setState(() {
+                            gender = value;
+                          });
+
+                          print(gender);
                           // setState(() {
-                          //   bloodGroup = value;
+                          //   gender = value;
                           // });
                           // something(value);
                         },
-                        items: _genderType.map((String value) {
-                          return DropdownMenuItem(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
                       ),
                     ),
                   ),
@@ -341,6 +474,12 @@ class _EditProfileViewState extends State<EditProfileView> {
                             initialDate: currentValue ?? DateTime.now(),
                             lastDate: DateTime(2100));
                       },
+                      onChanged: (value) {
+                        setState(() {
+                          birthDate = value.toString() ?? data.birthDate;
+                          print(birthDate);
+                        });
+                      },
                     ),
                   ),
                 ),
@@ -352,95 +491,6 @@ class _EditProfileViewState extends State<EditProfileView> {
           }
         });
   }
-
-  Widget _genderTextField() {
-    return Card(
-      margin: EdgeInsets.symmetric(horizontal: 15.0),
-      child: Container(
-          child: Padding(
-        padding: EdgeInsets.only(right: 65),
-        child: Row(
-          children: [
-            Expanded(
-              child: ListTile(
-                  onTap: () => setState(() {
-                        if (previousGender == "Female") {
-                          value = 0;
-                        }
-                      }),
-                  leading: Radio(
-                    value: 0,
-                    groupValue: value,
-                    onChanged: (v) => setState(() => value = v),
-                  )),
-            ),
-            Text(
-              'Male',
-              style: new TextStyle(
-                fontSize: 16.0,
-              ),
-            ),
-            Expanded(
-              child: ListTile(
-                  onTap: () => setState(() {
-                        if (previousGender == "Female") {
-                          value = 1;
-                        }
-                      }),
-                  leading: Radio(
-                    value: 1,
-                    groupValue: value,
-                    onChanged: (v) => setState(() => value = v),
-                  )),
-            ),
-            Text(
-              'Female',
-              style: new TextStyle(
-                fontSize: 16.0,
-              ),
-            )
-          ],
-        ),
-      )),
-    );
-  }
-
-  // Widget _genderTextField() {
-  //   return Card(
-  //     margin: EdgeInsets.symmetric(horizontal: 15.0),
-  //     child: ListTile(
-  //       title: Text(
-  //         "Gender",
-  //         style: TextStyle(color: Colors.black45),
-  //       ),
-  //       subtitle: Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         children: <Widget>[
-  //           Expanded(
-  //             child: SizedBox(
-  //                 width: 30.0,
-  //                 child: Column(
-  //                     children: radioButtonList
-  //                         .map((data) => RadioListTile(
-  //                             title: Text("${data.title}"),
-  //                             value: data.index,
-  //                             groupValue: _radioValue,
-  //                             onChanged: (val) {
-  //                               setState(() {
-  //                                 _radioItemHolder = data.title;
-  //                                 print(_radioValue);
-  //                                 _radioValue = data.index;
-  //                                 val = _radioItemHolder;
-  //                                 print(val);
-  //                               });
-  //                             }))
-  //                         .toList())),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   String validateFormData(String value) {
     String pattern = r'(^[a-zA-Z ]*$)';
