@@ -1,3 +1,4 @@
+import 'package:blood_collector/UI/pages/rootPages/editPassword_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -102,7 +103,12 @@ class _SettingViewState extends State<SettingView> {
                     ListTile(
                       title: Text("Privacy/Security"),
                       leading: Icon(Icons.lock_outline),
-                      onTap: () {},
+                      onTap: () {
+                         Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EdiPasswordView()));
+                      },
                     ),
                     ListTile(
                       title: Text("Help"),
