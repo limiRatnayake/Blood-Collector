@@ -71,7 +71,6 @@ class _EditEmailAddressViewState extends State<EditEmailAddressView> {
                         // enabledBorder: InputBorder.none
                       ),
                       validator: validateEmailAddress,
-                     
                     ),
                   ),
                 ),
@@ -153,7 +152,7 @@ class _EditEmailAddressViewState extends State<EditEmailAddressView> {
                     child: ButtonTheme(
                         child: RaisedButton(
                             elevation: 0.0,
-                            child: Text("Save Chnages",
+                            child: Text("Save Changes",
                                 style: TextStyle(
                                     fontFamily: "Roboto",
                                     fontSize: 18.0,
@@ -168,10 +167,13 @@ class _EditEmailAddressViewState extends State<EditEmailAddressView> {
                               setState(() {});
                               if (_formKey.currentState.validate() &&
                                   checkCurrentPasswordValid) {
-                                _userService
-                                    .updateEmail(_currentEmailAddController.text);
+                                _userService.updateEmail(
+                                    _currentEmailAddController.text);
 
-                                Navigator.pop(context);
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  AppConstants.ADD_POST,
+                                );
                               }
                             }))),
                 // _errorMessage != null

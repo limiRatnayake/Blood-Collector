@@ -35,7 +35,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String confirmPassword = '';
   String userAddLat = '';
   String userAddLng = '';
-  bool disabled ;
+  bool disabled;
 
   String error = '';
   String uid = '';
@@ -47,7 +47,6 @@ class _SignUpPageState extends State<SignUpPage> {
   String _errorMessage;
   bool _isLoading = false;
   bool _formValidate = false;
-  
 
   TextEditingController _birthDate = TextEditingController();
   TextEditingController _userAddressController = TextEditingController();
@@ -387,12 +386,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
               ),
             ),
-            FlatButton(
-              onPressed: _toggle,
-              child: _obscureText
-                  ? Icon(Icons.visibility_off)
-                  : Icon(Icons.visibility),
-            )
           ],
         ),
       ),
@@ -625,20 +618,19 @@ class _SignUpPageState extends State<SignUpPage> {
                                       });
                                       String response =
                                           await _authService.createUser(
-                                        email,
-                                        confirmPassword,
-                                        uid,
-                                        firstName,
-                                        lastName,
-                                        birthDate,
-                                        gender,
-                                        mobileNo,
-                                        bloodGroup,
-                                        address,
-                                        userAddLat,
-                                        userAddLng,
-                                        disabled
-                                      );
+                                              email,
+                                              confirmPassword,
+                                              uid,
+                                              firstName,
+                                              lastName,
+                                              birthDate,
+                                              gender,
+                                              mobileNo,
+                                              bloodGroup,
+                                              address,
+                                              userAddLat,
+                                              userAddLng,
+                                              disabled);
                                       if (response != "Success") {
                                         setState(() {
                                           _isLoading = false;
@@ -675,7 +667,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                     Navigator
                                                         .pushReplacementNamed(
                                                       context,
-                                                      AppConstants.ADD_POST,
+                                                      AppConstants.SIGN_IN,
                                                     );
                                                   })
                                             ]).show();
@@ -797,7 +789,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String validateConfirmPassword(String value) {
     if (value.isEmpty) {
       return "Password is required";
-    }else if (value != password) {
+    } else if (value != password) {
       return 'Password Not Match';
     }
     return null;

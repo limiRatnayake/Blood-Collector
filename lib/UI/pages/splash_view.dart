@@ -18,7 +18,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   AuthServices _authServices;
   final PermissionHandler _permissionHandler = PermissionHandler();
-  PermissionStatus _status;
+  // PermissionStatus _status;
   @override
   void initState() {
     super.initState();
@@ -39,7 +39,6 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     _authServices = Provider.of<AuthServices>(context);
-
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -70,7 +69,7 @@ class _SplashPageState extends State<SplashPage> {
 
     switch (result[PermissionGroup.locationWhenInUse]) {
       case PermissionStatus.granted:
-        Timer(Duration(milliseconds: 15), () {
+        Timer(Duration(seconds: 4), () {
           _loadingApp();
         });
 
@@ -88,9 +87,14 @@ class _SplashPageState extends State<SplashPage> {
 //keep app load until user signout
   _loadingApp() {
     _authServices.getCurrentFirebaseUser().then((user) {
-      if (user == null ) {
+      // print(user.isEmailVerified);
+     
+      if (user == null) {
         Navigator.pushReplacementNamed(context, AppConstants.AUTH);
-      } else {
+      } else if (user != null && !user.isEmailVerified) {
+        Navigator.pushReplacementNamed(context, AppConstants.AUTH);
+      }
+       else {
         Navigator.pushReplacementNamed(context, AppConstants.ADD_POST);
         //  Navigator.pushReplacementNamed(context, AppConstants.USER_STATE);
       }
@@ -104,10 +108,9 @@ class _SplashPageState extends State<SplashPage> {
         title:
             "Sorry, we need permission to access your location to provide a better service to you!",
         content: Container(
-          child: Text(
-            "Go to your settings and change the location permission!",
-          style: TextStyle(fontSize: 15, color: Colors.white))
-        ),
+            child: Text(
+                "Go to your settings and change the location permission!",
+                style: TextStyle(fontSize: 15, color: Colors.white))),
         style: AlertStyle(
             backgroundColor: Colors.black,
             alertBorder: RoundedRectangleBorder(
@@ -122,7 +125,7 @@ class _SplashPageState extends State<SplashPage> {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
               onPressed: () {
-                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
               })
         ]).show();
   }

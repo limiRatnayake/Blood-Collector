@@ -1,4 +1,5 @@
 import 'package:blood_collector/UI/pages/authentication/auth_view.dart';
+import 'package:blood_collector/UI/pages/authentication/forgot_password.dart';
 import 'package:blood_collector/UI/pages/authentication/signup_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
@@ -22,8 +23,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => SignUpPage());
       case AppConstants.SIGN_IN:
         return MaterialPageRoute(builder: (_) => SignInPage());
-      // case AppConstants.USER_STATE:
-      //   return MaterialPageRoute(builder: (_) => UserDisabledStateView());
+      case AppConstants.FORGOT_PASSWORD:
+        return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
       case AppConstants.ADD_POST:
         return MaterialPageRoute(builder: (_) => HomeWidgetView());
       case AppConstants.MAP_VIEW:

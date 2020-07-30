@@ -1,8 +1,11 @@
 import 'package:blood_collector/UI/pages/rootPages/editPassword_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
+import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/user_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
@@ -20,6 +23,7 @@ class _SettingViewState extends State<SettingView> {
   @override
   Widget build(BuildContext context) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
+    final UserService _userService = Provider.of<UserService>(context);
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -49,27 +53,37 @@ class _SettingViewState extends State<SettingView> {
                               SizedBox(
                                 width: 25.0,
                               ),
-                              Column(
-                                // mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text("Azenz Allibe Dongro"),
-                                  SizedBox(
-                                    height: 8.0,
-                                  ),
-                                  Text("+94 165252326"),
-                                  SizedBox(
-                                    height: 8.0,
-                                  ),
-                                  Text("Email"),
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                ],
-                              ),
+                              FutureBuilder<DocumentSnapshot>(
+                                  future: _userService.requestUserDetails( _authServices.user.uid),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Text("Loading..");
+                                    } else {
+                                      UserModel data =
+                                          UserModel.fromMap(snapshot.data.data);
+                                      return Column(
+                                        // mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(data.firstName),
+                                          SizedBox(
+                                            height: 8.0,
+                                          ),
+                                          Text("+94 165252326"),
+                                          SizedBox(
+                                            height: 8.0,
+                                          ),
+                                          Text("Email"),
+                                          SizedBox(
+                                            height: 10.0,
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  })
                             ],
                           ),
-                          
                           InkWell(
                             child: Text(
                               "Edit",
@@ -104,7 +118,7 @@ class _SettingViewState extends State<SettingView> {
                       title: Text("Privacy/Security"),
                       leading: Icon(Icons.lock_outline),
                       onTap: () {
-                         Navigator.push(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => EdiPasswordView()));
@@ -143,12 +157,10 @@ class _SettingViewState extends State<SettingView> {
                       ),
                       ListTile(
                           title: Text("Log Out"),
-                          onTap: () async{
-                           
-                             await  _authServices.logOut();
-                              Navigator.pushReplacementNamed(
-                                  context, AppConstants.SPLASH);
-                            
+                          onTap: () async {
+                            await _authServices.logOut();
+                            Navigator.pushReplacementNamed(
+                                context, AppConstants.SPLASH);
                           }),
                     ],
                   ),
@@ -159,7 +171,5 @@ class _SettingViewState extends State<SettingView> {
         ),
       ),
     );
-
-    
   }
 }

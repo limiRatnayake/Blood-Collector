@@ -139,7 +139,7 @@ class _EdiPasswordViewState extends State<EdiPasswordView> {
                     child: ButtonTheme(
                         child: RaisedButton(
                             elevation: 0.0,
-                            child: Text("Save Chnages",
+                            child: Text("Save Password",
                                 style: TextStyle(
                                     fontFamily: "Roboto",
                                     fontSize: 18.0,

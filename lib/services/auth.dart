@@ -40,21 +40,21 @@ class AuthServices extends ChangeNotifier {
           email: email, password: password);
       FirebaseUser user = result.user;
       DocumentReference newRef = _ref.document(user.uid);
+      await user.sendEmailVerification();
       UserModel userMod = new UserModel(
-        uid: user.uid,
-        userRole: "User",
-        firstName: firstName,
-        lastName: lastName,
-        gender: gender,
-        birthDate: birthDate,
-        bloodGroup: bloodGroup,
-        mobileNo: mobileNo,
-        address: address,
-        userAddLat:userAddLat,
-        userAddLng:userAddLng,
-        email: email,
-        disabled: true
-      );
+          uid: user.uid,
+          userRole: "User",
+          firstName: firstName,
+          lastName: lastName,
+          gender: gender,
+          birthDate: birthDate,
+          bloodGroup: bloodGroup,
+          mobileNo: mobileNo,
+          address: address,
+          userAddLat: userAddLat,
+          userAddLng: userAddLng,
+          email: email,
+          disabled: false);
 
       //create a new document for the user with the uid
       await newRef.setData(userMod.toJson());
@@ -69,18 +69,37 @@ class AuthServices extends ChangeNotifier {
   }
 
 //Sign in with email and password
-  Future<FirebaseUser> signIn(String email, String password) async {
+  Future<String> signIn(String email, String password) async {
+    String message = "";
     try {
-      _user = (await _auth.signInWithEmailAndPassword(
+      FirebaseUser _user = (await _auth.signInWithEmailAndPassword(
               email: email, password: password))
           .user;
-      print("Sign in" + _user.displayName);
-    } catch (e) {
-      print(e);
+      if (_user.isEmailVerified ) 
+      message = "Success";
+      print(_user.isEmailVerified);
+      return message;
+    } catch (error) {
+      if (error != null && error.message != null) {
+        message = error.message;
+      }
     }
     notifyListeners();
-    return _user;
+    return message;
   }
+  // Future<FirebaseUser> signIn(String email, String password) async {
+  //   try {
+  //     _user = (await _auth.signInWithEmailAndPassword(
+  //             email: email, password: password))
+  //         .user;
+  //     if (_user.isEmailVerified) return _user;
+  //     print("Sign in" + _user.displayName);
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  //   notifyListeners();
+  //   return null;
+  // }
 
   //get current user
   Future<FirebaseUser> getCurrentFirebaseUser() async {
@@ -90,25 +109,34 @@ class AuthServices extends ChangeNotifier {
 
   //Log out
   Future<void> logOut() async {
-    try {
-      _user = null;
+     try {
       await _auth.signOut();
-    } catch (error) {
-      print(error.toString());
+      notifyListeners();
+    } catch (e) {
+      print(e);
     }
-    notifyListeners();
+    // try {
+    //   _user = null;
+    //   await _auth.signOut();
+    // } catch (error) {
+    //   print(error.toString());
+    // }
+    // notifyListeners();
   }
 
   //Check auth chnages
   Future<void> _onAuthStateChange(FirebaseUser firebaseUser) async {
     print(firebaseUser);
-    if (firebaseUser == null ) {
+    if (firebaseUser == null) {
       print("No UserModel");
-      
     } else {
       print("Has UserModel");
       _user = firebaseUser;
     }
     notifyListeners();
+  }
+
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
   }
 }

@@ -387,7 +387,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                               child: ButtonTheme(
                                                 child: RaisedButton(
                                                   elevation: 0.0,
-                                                  child: Text("SIGNUP",
+                                                  child: Text("Save Changes",
                                                       style: TextStyle(
                                                           fontFamily: "Roboto",
                                                           fontSize: 18.0,
