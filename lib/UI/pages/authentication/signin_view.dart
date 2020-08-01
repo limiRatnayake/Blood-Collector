@@ -237,65 +237,23 @@ class _SignInPageState extends State<SignInPage> {
                                                     await _authService.signIn(
                                                         email, password);
 
-                                                var user = await FirebaseAuth
-                                                    .instance
-                                                    .currentUser();
+                                               
 
                                                 if (response != "Success") {
                                                   setState(() {
                                                     _isLoading = false;
                                                     _errorMessage = response;
                                                   });
-                                                } else if (user
-                                                        .isEmailVerified ==
-                                                    false) {
-                                                  print("object");
-                                                  _isLoading = false;
-                                                  Alert(
-                                                      context: context,
-                                                      type: AlertType.error,
-                                                      title:
-                                                          "First, Verify Your Email",
-                                                      style: AlertStyle(
-                                                          backgroundColor:
-                                                              Colors.black,
-                                                          alertBorder: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              side: BorderSide(
-                                                                  color: Colors
-                                                                      .white)),
-                                                          titleStyle: TextStyle(
-                                                              color: Colors
-                                                                  .white)),
-                                                      buttons: [
-                                                        DialogButton(
-                                                            width: 120,
-                                                            child: Text(
-                                                              "ok",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 20),
-                                                            ),
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            })
-                                                      ]).show();
-                                                } else if (user
-                                                        .isEmailVerified ==
-                                                    true) {
+                                                }  else 
                                                   Alert(
                                                       context: context,
                                                       type: AlertType.success,
                                                       title: "You are Successfully login",
                                                       style: AlertStyle(
-                                                          backgroundColor:
-                                                              Colors.black,
+                                                        isCloseButton: false,
+                                                      
+                                                          // backgroundColor:
+                                                          //     Colors.black,
                                                           alertBorder: RoundedRectangleBorder(
                                                               borderRadius:
                                                                   BorderRadius
@@ -304,9 +262,10 @@ class _SignInPageState extends State<SignInPage> {
                                                               side: BorderSide(
                                                                   color: Colors
                                                                       .white)),
-                                                          titleStyle: TextStyle(
-                                                              color: Colors
-                                                                  .white)),
+                                                          // titleStyle: TextStyle(
+                                                          //     color: Colors
+                                                          //         .white)
+                                                          ),
                                                       buttons: [
                                                         DialogButton(
                                                             width: 120,
@@ -329,7 +288,7 @@ class _SignInPageState extends State<SignInPage> {
                                                   setState(() {
                                                     _isLoading = false;
                                                   });
-                                                }
+                                                
 
                                                 // if (response != "Success") {
                                                 //   setState(() {

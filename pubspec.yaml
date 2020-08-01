@@ -82,6 +82,7 @@ flutter:
     - assets/cam2.png
     - assets/logo.png
     - assets/logo_name.png
+    - assets/blank_proPic.jpg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

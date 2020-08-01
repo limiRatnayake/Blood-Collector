@@ -96,9 +96,12 @@ class EventService extends ChangeNotifier {
     File imageFile,
   ) async {
     String imgUrl = "";
+    //getting the refference and file name 
     StorageReference storageReference = _storageRef.ref().child(
         '${AppConstants.STORSGE_IMAGE_PATH}/${uuid}/${uuid + extention}');
+        //upload the image into the firebase storage
     StorageUploadTask uploadTask = storageReference.putFile(imageFile);
+      //check whether it is completed
     await uploadTask.onComplete;
     imgUrl = await storageReference.getDownloadURL();
 

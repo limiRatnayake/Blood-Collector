@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseStorage _storageRef = FirebaseStorage.instance;
   Firestore _db;
   CollectionReference _ref;
   UserModel _userDetails;
@@ -31,6 +35,7 @@ class UserService extends ChangeNotifier {
     String birthDate,
     String bloodGroup,
     String mobileNo,
+    String proPicUrl,
   ) async {
     String message = "";
     try {
@@ -43,6 +48,7 @@ class UserService extends ChangeNotifier {
         "birthDate": birthDate,
         "bloodGroup": bloodGroup,
         "mobileNo": mobileNo,
+        "proPicUrl": proPicUrl,
       });
       message = "Success";
     } catch (error) {
@@ -51,6 +57,26 @@ class UserService extends ChangeNotifier {
     }
     notifyListeners();
     return message;
+  }
+
+  Future<String> uploadImage(
+    String uuid,
+    String extention,
+    File imageFile,
+  ) async {
+    String proPicUrl = "";
+    //getting the refference and file name
+    StorageReference storageReference = _storageRef.ref().child(
+        '${AppConstants.STORSGE_PROFILE_PIC_PATH}/${uuid}/${uuid + extention}');
+    //upload the image into the firebase storage
+    StorageUploadTask uploadTask = storageReference.putFile(imageFile);
+    //check whether it is completed
+    await uploadTask.onComplete;
+    proPicUrl = await storageReference.getDownloadURL();
+
+   
+    notifyListeners();
+    return proPicUrl;
   }
 
   Future<bool> vaildatePassword(String password) async {
@@ -78,9 +104,8 @@ class UserService extends ChangeNotifier {
     });
   }
 
-   Future<void> updatePassword(String password) async {
+  Future<void> updatePassword(String password) async {
     var firebaseUser = await _auth.currentUser();
     firebaseUser.updatePassword(password);
-   
   }
 }

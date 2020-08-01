@@ -33,6 +33,7 @@ class AuthServices extends ChangeNotifier {
       String address,
       String userAddLat,
       String userAddLng,
+      String proPicUrl,
       bool disabled) async {
     String message = "";
     try {
@@ -54,6 +55,7 @@ class AuthServices extends ChangeNotifier {
           userAddLat: userAddLat,
           userAddLng: userAddLng,
           email: email,
+          proPicUrl: proPicUrl,
           disabled: false);
 
       //create a new document for the user with the uid
@@ -75,10 +77,14 @@ class AuthServices extends ChangeNotifier {
       FirebaseUser _user = (await _auth.signInWithEmailAndPassword(
               email: email, password: password))
           .user;
-      if (_user.isEmailVerified ) 
-      message = "Success";
+      if (_user.isEmailVerified ) {
+        message = "Success";
+      }else{
+        message = "Please Verify Your Email";
+      }
+      // message = "Success";
       print(_user.isEmailVerified);
-      return message;
+      // return message;
     } catch (error) {
       if (error != null && error.message != null) {
         message = error.message;
@@ -87,12 +93,13 @@ class AuthServices extends ChangeNotifier {
     notifyListeners();
     return message;
   }
+  
   // Future<FirebaseUser> signIn(String email, String password) async {
   //   try {
   //     _user = (await _auth.signInWithEmailAndPassword(
   //             email: email, password: password))
   //         .user;
-  //     if (_user.isEmailVerified) return _user;
+     
   //     print("Sign in" + _user.displayName);
   //   } catch (error) {
   //     print(error);

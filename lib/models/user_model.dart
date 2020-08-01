@@ -11,6 +11,7 @@ class UserModel {
    String userAddLat;
    String userAddLng;
    String email;
+  String proPicUrl;
    bool disabled;
 
   UserModel({
@@ -26,6 +27,7 @@ class UserModel {
     this.userAddLat,
     this.userAddLng,
     this.email,
+    this.proPicUrl,
     this.disabled
   });
 
@@ -42,6 +44,7 @@ class UserModel {
         userAddLat = snapshot['userAddLat'] ?? "",
         userAddLng = snapshot['userAddLng'] ?? "",
         email = snapshot['email'] ?? "",
+        proPicUrl = snapshot['proPicUrl'] ?? "",
         disabled = snapshot['disabled'] ?? "";
 
   toJson() {
@@ -58,6 +61,7 @@ class UserModel {
       "email": email,
       "userAddLat":userAddLat,
       "userAddLng": userAddLng,
+      "proPicUrl": proPicUrl,
       "disabled":disabled
     };
   }

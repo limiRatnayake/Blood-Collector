@@ -35,71 +35,65 @@ class _SettingViewState extends State<SettingView> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
-                Container(
-                  height: 150.0,
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 35.0, top: 10.0),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              CircleAvatar(
-                                backgroundImage:
-                                    AssetImage("assets/person.jpg"),
-                                minRadius: 30,
-                                maxRadius: 45,
-                              ),
-                              SizedBox(
-                                width: 25.0,
-                              ),
-                              FutureBuilder<DocumentSnapshot>(
-                                  future: _userService.requestUserDetails( _authServices.user.uid),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Text("Loading..");
-                                    } else {
-                                      UserModel data =
-                                          UserModel.fromMap(snapshot.data.data);
-                                      return Column(
-                                        // mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(data.firstName),
-                                          SizedBox(
-                                            height: 8.0,
-                                          ),
-                                          Text("+94 165252326"),
-                                          SizedBox(
-                                            height: 8.0,
-                                          ),
-                                          Text("Email"),
-                                          SizedBox(
-                                            height: 10.0,
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  })
-                            ],
-                          ),
-                          InkWell(
-                            child: Text(
-                              "Edit",
-                              style:
-                                  TextStyle(color: Colors.blue, fontSize: 18.0),
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditProfileView()));
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                Card(
+                  child:Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FutureBuilder<DocumentSnapshot>(
+                          future: _userService
+                              .requestUserDetails(_authServices.user.uid),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Text("Loading..");
+                            } else {
+                              UserModel data =
+                                  UserModel.fromMap(snapshot.data.data);
+                              return Column(
+                                children: <Widget>[
+                                  Center(
+                                    child: CircleAvatar(
+                                      radius: 50,
+                                      backgroundColor: Colors.blue,
+                                      backgroundImage: NetworkImage(data.proPicUrl),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  Text(data.firstName + " " + data.lastName),
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  Text(data.mobileNo),
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  Text(data.email),
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  InkWell(
+                                    child: Text(
+                                      "Edit Profile",
+                                      style: TextStyle(
+                                          color: Colors.blue, fontSize: 18.0),
+                                    ),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditProfileView()));
+                                    },
+                                  ),
+                                   SizedBox(
+                                    height: 10.0,
+                                  ),
+                                ],
+                              );
+                            }
+                          })
+                    ],
                   ),
                 ),
                 Card(

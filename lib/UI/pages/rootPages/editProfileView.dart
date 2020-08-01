@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:blood_collector/UI/pages/rootPages/editEmailAdd_view.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -7,9 +9,12 @@ import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as Path;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:uuid/uuid.dart';
 
 class EditProfileView extends StatefulWidget {
   @override
@@ -18,6 +23,8 @@ class EditProfileView extends StatefulWidget {
 
 class _EditProfileViewState extends State<EditProfileView> {
   final _formKey = GlobalKey<FormState>();
+  File _image;
+  final picker = ImagePicker();
   DateFormat format = DateFormat('yyy-MMM-dd');
 
   bool _formValidate = false;
@@ -31,7 +38,11 @@ class _EditProfileViewState extends State<EditProfileView> {
   String birthDate;
   String gender;
   String userPhoneNumber;
-  
+
+  String imgName = "";
+  String imageExtention = "";
+  String imgUrl = "";
+
   List<String> _bloodGroupType = [
     "Select a blood Group"
         'A+',
@@ -48,7 +59,6 @@ class _EditProfileViewState extends State<EditProfileView> {
     'Male',
     'Female',
   ];
- 
 
   @override
   Widget build(BuildContext context) {
@@ -82,33 +92,38 @@ class _EditProfileViewState extends State<EditProfileView> {
                           child: Column(
                             children: <Widget>[
                               Container(
-                                // height: 180.0,
                                 child: Card(
                                   child: Column(
                                     children: <Widget>[
                                       Center(
                                         child: CircleAvatar(
-                                          backgroundImage:
-                                              AssetImage("assets/person.jpg"),
-                                          minRadius: 40,
-                                          maxRadius: 60,
-                                        ),
+                                            radius: 75,
+                                            backgroundColor: Colors.black12,
+                                           
+                                            child: ClipOval(
+                                                child: SizedBox(
+                                                    width: 152,
+                                                    height: 152,
+                                                    child: _image == null
+                                                        ? Image.network(
+                                                           data.proPicUrl,
+                                                            fit: BoxFit.cover,
+                                                          )  
+                                                        : Image.file(_image,
+                                                            fit:BoxFit.fill)))),
                                       ),
-                                      SizedBox(
-                                        height: 15.0,
-                                      ),
-                                      Center(
-                                        child: InkWell(
-                                          child: Text(
-                                            "Change Profile Photo",
-                                            style: TextStyle(
-                                                color: Colors.blue,
-                                                fontSize: 16.0),
+                                      FlatButton.icon(
+                                          icon: Icon(
+                                            Icons.camera_alt,
+                                            size: 25.0,
+                                            color: Colors.black,
                                           ),
-                                          onTap: () {},
-                                        ),
-                                      ),
-                                      SizedBox(height: 15.0),
+                                          label: Text("Set a Profile Picture"),
+                                          onPressed: () => {
+                                                _settingModalBottomSheet(
+                                                    context)
+                                              }),
+                                      SizedBox(height: 25.0),
                                       Card(
                                         margin: EdgeInsets.symmetric(
                                             horizontal: 15.0),
@@ -354,7 +369,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                         EditEmailAddressView()));
+                                                          EditEmailAddressView()));
                                             },
                                           )),
                                       SizedBox(
@@ -406,22 +421,39 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                         _errorMessage = "";
                                                         _isLoading = true;
                                                       });
-                                                      String response =
-                                                          await _userService
-                                                              .updateUserProfile(
-                                                        _authService.user.uid,
-                                                        userFName ??
-                                                            data.firstName,
-                                                        userLName ??
-                                                            data.lastName,
-                                                        gender ?? data.gender,
-                                                        birthDate ??
-                                                            data.birthDate,
-                                                        bloodGroup ??
-                                                            data.bloodGroup,
-                                                        userPhoneNumber ??
-                                                            data.mobileNo,
-                                                      );
+                                                      if (_image != null) {
+                                                        imgName = Uuid().v1();
+                                                        imageExtention =
+                                                            Path.extension(
+                                                                _image.path);
+                                                        //upload image and get the url of the image
+                                                        imgUrl = await _userService
+                                                            .uploadImage(
+                                                                imgName,
+                                                                imageExtention,
+                                                                _image);
+                                                      }
+
+                                                      String response = await _userService
+                                                          .updateUserProfile(
+                                                              _authService
+                                                                  .user.uid,
+                                                              userFName ??
+                                                                  data
+                                                                      .firstName,
+                                                              userLName ??
+                                                                  data.lastName,
+                                                              gender ??
+                                                                  data.gender,
+                                                              birthDate ??
+                                                                  data
+                                                                      .birthDate,
+                                                              bloodGroup ??
+                                                                  data
+                                                                      .bloodGroup,
+                                                              userPhoneNumber ??
+                                                                  data.mobileNo,
+                                                              imgUrl);
                                                       if (response !=
                                                           "Success") {
                                                         setState(() {
@@ -498,6 +530,47 @@ class _EditProfileViewState extends State<EditProfileView> {
                 );
               }
             }));
+  }
+
+  void _settingModalBottomSheet(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext buildContext) {
+          return Container(
+            child: new Wrap(
+              children: <Widget>[
+                new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('Camera'),
+                    onTap: () => {Navigator.pop(context), _getImage(true)}),
+                new ListTile(
+                  leading: new Icon(Icons.photo_library),
+                  title: new Text('Gallery'),
+                  onTap: () => {Navigator.pop(context), _getImage(false)},
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  Future _getImage(bool isCamera) async {
+    try {
+      if (isCamera) {
+        final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      } else {
+        final pickedFile = await picker.getImage(source: ImageSource.gallery);
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   String validateFormData(String value) {
