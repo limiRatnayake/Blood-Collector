@@ -53,7 +53,7 @@ class _SettingViewState extends State<SettingView> {
                                   Center(
                                     child: CircleAvatar(
                                       radius: 50,
-                                      backgroundColor: Colors.blue,
+                                      backgroundColor: Colors.black,
                                       backgroundImage: NetworkImage(data.proPicUrl),
                                     ),
                                   ),

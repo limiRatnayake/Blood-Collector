@@ -74,9 +74,34 @@ class UserService extends ChangeNotifier {
     await uploadTask.onComplete;
     proPicUrl = await storageReference.getDownloadURL();
 
-   
     notifyListeners();
     return proPicUrl;
+  }
+
+  Future<String> deleteImage(String imgUrl, String proPicUrl) async {
+    String message = "";
+
+    try {
+      var firebaseUser = await _auth.currentUser();
+      //getting the refference and file name
+      StorageReference storageReference =
+          await _storageRef.getReferenceFromUrl(imgUrl);
+      //delete the image into the firebase storage
+      await storageReference.delete();
+
+      DocumentReference newRef = _ref.document(firebaseUser.uid);
+
+      await newRef.updateData({
+        "proPicUrl": proPicUrl,
+      });
+      message = "Deleted";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+
+    notifyListeners();
+    return message;
   }
 
   Future<bool> vaildatePassword(String password) async {

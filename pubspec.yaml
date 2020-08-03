@@ -37,6 +37,7 @@ dependencies:
   shared_preferences: ^0.5.3+4
   fluttertoast: ^4.0.1
   uuid: ^2.0.4
+  device_preview:
 
 #map
   google_maps_flutter: ^0.5.28+1

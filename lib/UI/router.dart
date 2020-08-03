@@ -25,7 +25,7 @@ class Router {
         return MaterialPageRoute(builder: (_) => SignInPage());
       case AppConstants.FORGOT_PASSWORD:
         return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
-      case AppConstants.ADD_POST:
+      case AppConstants.HOME_PAGE:
         return MaterialPageRoute(builder: (_) => HomeWidgetView());
       case AppConstants.MAP_VIEW:
         return MaterialPageRoute(builder: (_) => MapView());

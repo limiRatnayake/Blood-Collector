@@ -42,24 +42,16 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-            image: AssetImage("assets/backgroundImage.jpg"),
-            colorFilter: new ColorFilter.mode(
-                Colors.black.withOpacity(0.2), BlendMode.dstATop),
-            fit: BoxFit.cover,
-          )), //box decoration - add image to background
-          child: Center(
+    return  Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 new Container(
-                  width: 290.0,
-                  height: 290.0,
+                 
+                  height: 350.0,
                   child: Center(
                     child: Image.asset(
                       "assets/logo.png",
@@ -67,7 +59,7 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                 ), // container - circle & center text
                 SizedBox(
-                  height: 125.0,
+                  height: 105.0,
                 ),
                 new Column(children: <Widget>[
                   Column(
@@ -98,7 +90,7 @@ class _AuthPageState extends State<AuthPage> {
             ),
           ),
         ),
-      ),
+      
     );
   }
 }

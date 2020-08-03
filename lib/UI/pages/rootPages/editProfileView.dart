@@ -38,6 +38,8 @@ class _EditProfileViewState extends State<EditProfileView> {
   String birthDate;
   String gender;
   String userPhoneNumber;
+  String proPicUrl =
+      'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=b42aaeec-4118-4b8c-abe2-6636a347003e';
 
   String imgName = "";
   String imageExtention = "";
@@ -64,472 +66,521 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     final AuthServices _authService = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
-    return Scaffold(
-        appBar: AppBar(
-          actionsIconTheme: null,
-          leading: Container(
-            child: IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {},
+    return WillPopScope(
+        onWillPop: _onBackPressed,
+        child: Scaffold(
+            appBar: AppBar(
+              // actionsIconTheme: null,
+              iconTheme: IconThemeData(color: Colors.black),
+
+              title: Text("Edit Profile"),
             ),
-          ),
-          title: Text("Edit Profile"),
-        ),
-        body: FutureBuilder<DocumentSnapshot>(
-            future: _userService.requestUserDetails(_authService.user.uid),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Text("Loading..");
-              } else {
-                UserModel data = UserModel.fromMap(snapshot.data.data);
-                return SingleChildScrollView(
-                  child: Container(
-                    child: Column(
-                      children: [
-                        Form(
-                          key: _formKey,
-                          autovalidate: _formValidate,
+            body: FutureBuilder<DocumentSnapshot>(
+                future: _userService.requestUserDetails(_authService.user.uid),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text("Loading..");
+                  } else {
+                    UserModel data = UserModel.fromMap(snapshot.data.data);
+
+                    return SingleChildScrollView(
+                      child: Container(
                           child: Column(
-                            children: <Widget>[
-                              Container(
-                                child: Card(
-                                  child: Column(
-                                    children: <Widget>[
-                                      Center(
-                                        child: CircleAvatar(
-                                            radius: 75,
-                                            backgroundColor: Colors.black12,
-                                           
-                                            child: ClipOval(
-                                                child: SizedBox(
-                                                    width: 152,
-                                                    height: 152,
-                                                    child: _image == null
-                                                        ? Image.network(
-                                                           data.proPicUrl,
-                                                            fit: BoxFit.cover,
-                                                          )  
-                                                        : Image.file(_image,
-                                                            fit:BoxFit.fill)))),
+                        children: [
+                          Form(
+                            key: _formKey,
+                            autovalidate: _formValidate,
+                            child: Container(
+                              child: Card(
+                                child: Column(
+                                  children: <Widget>[
+                                    Center(
+                                      child: CircleAvatar(
+                                          radius: 75,
+                                          backgroundColor: Colors.black12,
+                                          child: ClipOval(
+                                              child: SizedBox(
+                                                  width: 152,
+                                                  height: 152,
+                                                  child: _image == null
+                                                      ? Image.network(
+                                                          data.proPicUrl,
+                                                          fit: BoxFit.cover,
+                                                        )
+                                                      : Image.file(_image,
+                                                          fit: BoxFit.fill)))),
+                                    ),
+                                    
+                                    FlatButton.icon(
+                                        icon: Icon(
+                                          Icons.camera_alt,
+                                          size: 25.0,
+                                          color: Colors.black,
+                                        ),
+                                        label: Text("Add profile Picture"),
+                                        onPressed: () => {
+                                              _settingModalBottomSheet(context)
+                                            }),
+                                    FlatButton.icon(
+                                        icon: Icon(
+                                          Icons.delete,
+                                          size: 25.0,
+                                          color: Colors.black,
+                                        ),
+                                        label: Text("Remove Picture"),
+                                        onPressed: () async {
+                                          if (data.proPicUrl == proPicUrl) {
+                                            print("there is not");
+                                          } else {
+                                            Alert(
+                                                context: context,
+                                                type: AlertType.success,
+                                                title:
+                                                    "Do you want to remove your profile picture!",
+                                                style: AlertStyle(
+                                                    backgroundColor: Colors
+                                                        .black,
+                                                    alertBorder:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5),
+                                                            side: BorderSide(
+                                                                color: Colors
+                                                                    .white)),
+                                                    titleStyle: TextStyle(
+                                                        color:
+                                                            Colors.blueAccent)),
+                                                buttons: [
+                                                  DialogButton(
+                                                      width: 120,
+                                                      child: Text(
+                                                        "ok",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20),
+                                                      ),
+                                                      onPressed: () async {
+                                                        await _userService
+                                                            .deleteImage(
+                                                                data.proPicUrl,
+                                                                proPicUrl);
+                                                        Navigator.pop(context);
+                                                      })
+                                                ]).show();
+                                          }
+
+                                          // String response =await  _userService.deleteImage(data.proPicUrl, proPicUrl);
+                                          // if(response != "success"){
+                                          //    setState(() {
+                                          //            print(response);
+                                          //           });
+                                          // } else{
+                                          //   print(response);
+                                          // }
+                                        }),
+                                    SizedBox(height: 25.0),
+                                    Card(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 15.0),
+                                      child: ListTile(
+                                        title: Text(
+                                          "First Name",
+                                          style:
+                                              TextStyle(color: Colors.black45),
+                                        ),
+                                        subtitle: TextFormField(
+                                          initialValue: data.firstName,
+                                          decoration: InputDecoration(
+                                            hintText: "First Name",
+                                            hintStyle: TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: "Roboto",
+                                            ),
+                                            // enabledBorder: InputBorder.none
+                                          ),
+                                          validator: validateFormData,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              userFName = value;
+                                            });
+                                          },
+                                        ),
                                       ),
-                                      FlatButton.icon(
-                                          icon: Icon(
-                                            Icons.camera_alt,
-                                            size: 25.0,
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Card(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 15.0),
+                                      child: ListTile(
+                                        title: Text(
+                                          "Last Name",
+                                          style:
+                                              TextStyle(color: Colors.black45),
+                                        ),
+                                        subtitle: TextFormField(
+                                          // controller: userLNameController,
+                                          initialValue: data.lastName,
+                                          decoration: InputDecoration(
+                                            hintText: "Last Name",
+                                            hintStyle: TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: "Roboto",
+                                            ),
+                                            // enabledBorder: InputBorder.none
+                                          ),
+                                          validator: validateFormData,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              userLName = value;
+                                            });
+                                            print(userLName);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Card(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 15.0),
+                                      child: ListTile(
+                                        title: Text(
+                                          "Blood Group",
+                                          style:
+                                              TextStyle(color: Colors.black45),
+                                        ),
+                                        subtitle: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 4, left: 2),
+                                          child: DropdownButtonFormField(
+                                            value:
+                                                bloodGroup ?? data.bloodGroup,
+                                            decoration: InputDecoration(
+                                                hintText: 'Blood Type',
+                                                hintStyle: TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Roboto",
+                                                    color: Colors.black54),
+                                                enabledBorder:
+                                                    InputBorder.none),
+                                            validator: validateBloodGroup,
+                                            items: _bloodGroupType
+                                                .map((bloodgroup) {
+                                              return DropdownMenuItem(
+                                                value: bloodgroup,
+                                                child: Text(bloodgroup),
+                                              );
+                                            }).toList(),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                bloodGroup = value;
+                                              });
+                                              print(bloodGroup);
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Card(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 15.0),
+                                      child: ListTile(
+                                        title: Text(
+                                          "Phone Number",
+                                          style:
+                                              TextStyle(color: Colors.black45),
+                                        ),
+                                        subtitle: TextFormField(
+                                          initialValue: data.mobileNo,
+                                          decoration: InputDecoration(
+                                            hintText: "Phone number",
+                                            hintStyle: TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: "Roboto",
+                                            ),
+                                          ),
+                                          keyboardType: TextInputType.phone,
+                                          validator: validateMobile,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              userPhoneNumber = value;
+                                              print(userPhoneNumber);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Card(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 15.0),
+                                      child: ListTile(
+                                        title: Text(
+                                          "Gender",
+                                          style:
+                                              TextStyle(color: Colors.black45),
+                                        ),
+                                        subtitle: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 4, left: 2),
+                                          child: DropdownButtonFormField(
+                                            value: gender ?? data.gender,
+                                            decoration: InputDecoration(
+                                                hintText: 'Gender',
+                                                hintStyle: TextStyle(
+                                                    fontSize: 16.0,
+                                                    fontFamily: "Roboto",
+                                                    color: Colors.black54),
+                                                enabledBorder:
+                                                    InputBorder.none),
+                                            validator: validateBloodGroup,
+                                            items: _genderType
+                                                .map((String gender) {
+                                              return DropdownMenuItem(
+                                                value: gender,
+                                                child: Text(gender),
+                                              );
+                                            }).toList(),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                gender = value;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Card(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 15.0),
+                                      child: ListTile(
+                                        title: Text(
+                                          "BirthDate",
+                                          style:
+                                              TextStyle(color: Colors.black45),
+                                        ),
+                                        subtitle: DateTimeField(
+                                          initialValue:
+                                              format.parse(data.birthDate),
+                                          format: format,
+                                          onShowPicker:
+                                              (context, currentValue) {
+                                            return showDatePicker(
+                                                context: context,
+                                                firstDate: DateTime(1900),
+                                                initialDate: currentValue ??
+                                                    DateTime.now(),
+                                                lastDate: DateTime(2100));
+                                          },
+                                          validator: dateTimeValidator,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              birthDate = value.toString();
+                                              print(birthDate);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Card(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 15.0),
+                                        child: ListTile(
+                                          title: Text(
+                                            "Email Address",
+                                            style: TextStyle(
+                                                color: Colors.black45),
+                                          ),
+                                          subtitle: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 1, top: 10),
+                                            child: Text(
+                                              data.email,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                          trailing: Icon(
+                                            Icons.arrow_right,
                                             color: Colors.black,
                                           ),
-                                          label: Text("Set a Profile Picture"),
-                                          onPressed: () => {
-                                                _settingModalBottomSheet(
-                                                    context)
-                                              }),
-                                      SizedBox(height: 25.0),
-                                      Card(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 15.0),
-                                        child: ListTile(
-                                          title: Text(
-                                            "First Name",
-                                            style: TextStyle(
-                                                color: Colors.black45),
-                                          ),
-                                          subtitle: TextFormField(
-                                            initialValue: data.firstName,
-                                            decoration: InputDecoration(
-                                              hintText: "First Name",
-                                              hintStyle: TextStyle(
-                                                fontSize: 16.0,
-                                                fontFamily: "Roboto",
-                                              ),
-                                              // enabledBorder: InputBorder.none
-                                            ),
-                                            validator: validateFormData,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                userFName = value;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      Card(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 15.0),
-                                        child: ListTile(
-                                          title: Text(
-                                            "Last Name",
-                                            style: TextStyle(
-                                                color: Colors.black45),
-                                          ),
-                                          subtitle: TextFormField(
-                                            // controller: userLNameController,
-                                            initialValue: data.lastName,
-                                            decoration: InputDecoration(
-                                              hintText: "Last Name",
-                                              hintStyle: TextStyle(
-                                                fontSize: 16.0,
-                                                fontFamily: "Roboto",
-                                              ),
-                                              // enabledBorder: InputBorder.none
-                                            ),
-                                            validator: validateFormData,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                userLName = value;
-                                              });
-                                              print(userLName);
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      Card(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 15.0),
-                                        child: ListTile(
-                                          title: Text(
-                                            "Blood Group",
-                                            style: TextStyle(
-                                                color: Colors.black45),
-                                          ),
-                                          subtitle: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 4, left: 2),
-                                            child: DropdownButtonFormField(
-                                              value:
-                                                  bloodGroup ?? data.bloodGroup,
-                                              decoration: InputDecoration(
-                                                  hintText: 'Blood Type',
-                                                  hintStyle: TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontFamily: "Roboto",
-                                                      color: Colors.black54),
-                                                  enabledBorder:
-                                                      InputBorder.none),
-                                              validator: validateBloodGroup,
-                                              items: _bloodGroupType
-                                                  .map((bloodgroup) {
-                                                return DropdownMenuItem(
-                                                  value: bloodgroup,
-                                                  child: Text(bloodgroup),
-                                                );
-                                              }).toList(),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  bloodGroup = value;
-                                                });
-                                                print(bloodGroup);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      Card(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 15.0),
-                                        child: ListTile(
-                                          title: Text(
-                                            "Phone Number",
-                                            style: TextStyle(
-                                                color: Colors.black45),
-                                          ),
-                                          subtitle: TextFormField(
-                                            initialValue: data.mobileNo,
-                                            decoration: InputDecoration(
-                                              hintText: "Phone number",
-                                              hintStyle: TextStyle(
-                                                fontSize: 16.0,
-                                                fontFamily: "Roboto",
-                                              ),
-                                            ),
-                                            keyboardType: TextInputType.phone,
-                                            validator: validateMobile,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                userPhoneNumber = value;
-                                                print(userPhoneNumber);
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      Card(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 15.0),
-                                        child: ListTile(
-                                          title: Text(
-                                            "Gender",
-                                            style: TextStyle(
-                                                color: Colors.black45),
-                                          ),
-                                          subtitle: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 4, left: 2),
-                                            child: DropdownButtonFormField(
-                                              value: gender ?? data.gender,
-                                              decoration: InputDecoration(
-                                                  hintText: 'Gender',
-                                                  hintStyle: TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontFamily: "Roboto",
-                                                      color: Colors.black54),
-                                                  enabledBorder:
-                                                      InputBorder.none),
-                                              validator: validateBloodGroup,
-                                              items: _genderType
-                                                  .map((String gender) {
-                                                return DropdownMenuItem(
-                                                  value: gender,
-                                                  child: Text(gender),
-                                                );
-                                              }).toList(),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  gender = value;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      Card(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 15.0),
-                                        child: ListTile(
-                                          title: Text(
-                                            "BirthDate",
-                                            style: TextStyle(
-                                                color: Colors.black45),
-                                          ),
-                                          subtitle: DateTimeField(
-                                            initialValue:
-                                                format.parse(data.birthDate),
-                                            format: format,
-                                            onShowPicker:
-                                                (context, currentValue) {
-                                              return showDatePicker(
-                                                  context: context,
-                                                  firstDate: DateTime(1900),
-                                                  initialDate: currentValue ??
-                                                      DateTime.now(),
-                                                  lastDate: DateTime(2100));
-                                            },
-                                            validator: dateTimeValidator,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                birthDate = value.toString();
-                                                print(birthDate);
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      Card(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 15.0),
-                                          child: ListTile(
-                                            title: Text(
-                                              "Email Address",
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditEmailAddressView()));
+                                          },
+                                        )),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    _errorMessage != null
+                                        ? Container(
+                                            padding:
+                                                EdgeInsets.only(bottom: 10),
+                                            width: double.infinity,
+                                            child: Text(
+                                              _errorMessage,
                                               style: TextStyle(
-                                                  color: Colors.black45),
+                                                  color: Colors.redAccent),
+                                              textAlign: TextAlign.center,
                                             ),
-                                            subtitle: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 1, top: 10),
-                                              child: Text(
-                                                data.email,
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 16),
-                                              ),
-                                            ),
-                                            trailing: Icon(
-                                              Icons.arrow_right,
-                                              color: Colors.black,
-                                            ),
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          EditEmailAddressView()));
-                                            },
-                                          )),
-                                      SizedBox(
-                                        height: 10.0,
-                                      ),
-                                      _errorMessage != null
-                                          ? Container(
-                                              padding:
-                                                  EdgeInsets.only(bottom: 10),
-                                              width: double.infinity,
-                                              child: Text(
-                                                _errorMessage,
-                                                style: TextStyle(
-                                                    color: Colors.redAccent),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            )
-                                          : Container(),
-                                      _isLoading
-                                          ? Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            )
-                                          : Container(
-                                              width: double.infinity,
-                                              height: 58,
-                                              margin: EdgeInsets.symmetric(
-                                                  horizontal: 30.0),
-                                              decoration: boxDecoration,
-                                              child: ButtonTheme(
-                                                child: RaisedButton(
-                                                  elevation: 0.0,
-                                                  child: Text("Save Changes",
-                                                      style: TextStyle(
-                                                          fontFamily: "Roboto",
-                                                          fontSize: 18.0,
-                                                          color: Colors.black)),
-                                                  textColor: Colors.black,
-                                                  color: Colors.red
-                                                      .withOpacity(0.9),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              25.5)),
-                                                  onPressed: () async {
-                                                    if (_formKey.currentState
-                                                        .validate()) {
-                                                      setState(() {
-                                                        _errorMessage = "";
-                                                        _isLoading = true;
-                                                      });
-                                                      if (_image != null) {
-                                                        imgName = Uuid().v1();
-                                                        imageExtention =
-                                                            Path.extension(
-                                                                _image.path);
-                                                        //upload image and get the url of the image
-                                                        imgUrl = await _userService
-                                                            .uploadImage(
-                                                                imgName,
-                                                                imageExtention,
-                                                                _image);
-                                                      }
-
-                                                      String response = await _userService
-                                                          .updateUserProfile(
-                                                              _authService
-                                                                  .user.uid,
-                                                              userFName ??
-                                                                  data
-                                                                      .firstName,
-                                                              userLName ??
-                                                                  data.lastName,
-                                                              gender ??
-                                                                  data.gender,
-                                                              birthDate ??
-                                                                  data
-                                                                      .birthDate,
-                                                              bloodGroup ??
-                                                                  data
-                                                                      .bloodGroup,
-                                                              userPhoneNumber ??
-                                                                  data.mobileNo,
-                                                              imgUrl);
-                                                      if (response !=
-                                                          "Success") {
-                                                        setState(() {
-                                                          _isLoading = false;
-                                                          _errorMessage =
-                                                              response;
-                                                        });
-                                                      } else {
-                                                        Alert(
-                                                            context: context,
-                                                            type: AlertType
-                                                                .success,
-                                                            title:
-                                                                "Your event is Successfully updated!",
-                                                            style: AlertStyle(
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .black,
-                                                                alertBorder: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            5),
-                                                                    side: BorderSide(
-                                                                        color: Colors
-                                                                            .white)),
-                                                                titleStyle: TextStyle(
-                                                                    color: Colors
-                                                                        .blueAccent)),
-                                                            buttons: [
-                                                              DialogButton(
-                                                                  width: 120,
-                                                                  child: Text(
-                                                                    "ok",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            20),
-                                                                  ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator
-                                                                        .pushReplacementNamed(
-                                                                      context,
-                                                                      AppConstants
-                                                                          .MYPROFILE_VIEW,
-                                                                    );
-                                                                  })
-                                                            ]).show();
-                                                        setState(() {
-                                                          _isLoading = false;
-                                                        });
-                                                      }
+                                          )
+                                        : Container(),
+                                    _isLoading
+                                        ? Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : Container(
+                                            width: double.infinity,
+                                            height: 58,
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 30.0),
+                                            decoration: boxDecoration,
+                                            child: ButtonTheme(
+                                              child: RaisedButton(
+                                                elevation: 0.0,
+                                                child: Text("Save Changes",
+                                                    style: TextStyle(
+                                                        fontFamily: "Roboto",
+                                                        fontSize: 18.0,
+                                                        color: Colors.black)),
+                                                textColor: Colors.black,
+                                                color:
+                                                    Colors.red.withOpacity(0.9),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            25.5)),
+                                                onPressed: () async {
+                                                  if (_formKey.currentState
+                                                      .validate()) {
+                                                    setState(() {
+                                                      _errorMessage = "";
+                                                      _isLoading = true;
+                                                    });
+                                                    if (_image != null) {
+                                                      imgName = Uuid().v1();
+                                                      imageExtention =
+                                                          Path.extension(
+                                                              _image.path);
+                                                      //upload image and get the url of the image
+                                                      imgUrl = await _userService
+                                                          .uploadImage(
+                                                              imgName,
+                                                              imageExtention,
+                                                              _image);
                                                     } else {
+                                                      imgUrl = data.proPicUrl;
+                                                    }
+
+                                                    String response = await _userService
+                                                        .updateUserProfile(
+                                                            _authService
+                                                                .user.uid,
+                                                            userFName ??
+                                                                data.firstName,
+                                                            userLName ??
+                                                                data.lastName,
+                                                            gender ??
+                                                                data.gender,
+                                                            birthDate ??
+                                                                data.birthDate,
+                                                            bloodGroup ??
+                                                                data.bloodGroup,
+                                                            userPhoneNumber ??
+                                                                data.mobileNo,
+                                                            imgUrl ??
+                                                                data.proPicUrl);
+                                                    if (response != "Success") {
                                                       setState(() {
-                                                        _formValidate = true;
+                                                        _isLoading = false;
+                                                        _errorMessage =
+                                                            response;
+                                                      });
+                                                    } else {
+                                                      Alert(
+                                                          context: context,
+                                                          type:
+                                                              AlertType.success,
+                                                          title:
+                                                              "Your event is Successfully updated!",
+                                                          style: AlertStyle(
+                                                              backgroundColor:
+                                                                  Colors.black,
+                                                              alertBorder: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              5),
+                                                                  side: BorderSide(
+                                                                      color: Colors
+                                                                          .white)),
+                                                              titleStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .blueAccent)),
+                                                          buttons: [
+                                                            DialogButton(
+                                                                width: 120,
+                                                                child: Text(
+                                                                  "ok",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          20),
+                                                                ),
+                                                                onPressed: () {
+                                                                  Navigator
+                                                                      .pushReplacementNamed(
+                                                                    context,
+                                                                    AppConstants
+                                                                        .MYPROFILE_VIEW,
+                                                                  );
+                                                                })
+                                                          ]).show();
+                                                      setState(() {
+                                                        _isLoading = false;
                                                       });
                                                     }
-                                                  },
-                                                ),
+                                                  } else {
+                                                    setState(() {
+                                                      _formValidate = true;
+                                                    });
+                                                  }
+                                                },
                                               ),
                                             ),
-                                      SizedBox(height: 20.0),
-                                    ],
-                                  ),
+                                          ),
+                                    SizedBox(height: 20.0),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-            }));
+                            ),
+                          )
+                        ],
+                      )),
+                    );
+                  }
+                })));
   }
 
   void _settingModalBottomSheet(context) {
@@ -571,6 +622,22 @@ class _EditProfileViewState extends State<EditProfileView> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<bool> _onBackPressed() {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Do you want to Discard Changes?"),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text("NO, BY MISTAKE")),
+                FlatButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text("YES, I WANT TO"))
+              ],
+            ));
   }
 
   String validateFormData(String value) {

@@ -29,14 +29,13 @@ class _SignUpPageState extends State<SignUpPage> {
   String birthDate = "";
   String bloodGroup = '';
   String mobileNo = '';
-   String address;
+  String address;
   String email = '';
   String password = '';
   String confirmPassword = '';
-   String userAddLat;
+  String userAddLat;
   String userAddLng;
-  String proPicUrl =
-      'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=9508806f-0c4c-486f-8d7f-b77b66a46bbf';
+  String proPicUrl = 'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=b42aaeec-4118-4b8c-abe2-6636a347003e';
   bool disabled;
 
   String error = '';
@@ -155,7 +154,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _genderRadioButton() {
     return Container(
-      width: 370,
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 30.0),
       // height: 58,
       decoration: boxDecoration,
       child: Padding(

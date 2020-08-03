@@ -281,7 +281,7 @@ class _SignInPageState extends State<SignInPage> {
                                                                   .pushReplacementNamed(
                                                                 context,
                                                                 AppConstants
-                                                                    .ADD_POST,
+                                                                    .HOME_PAGE,
                                                               );
                                                             })
                                                       ]).show();

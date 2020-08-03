@@ -95,7 +95,7 @@ class _SplashPageState extends State<SplashPage> {
         Navigator.pushReplacementNamed(context, AppConstants.AUTH);
       }
        else {
-        Navigator.pushReplacementNamed(context, AppConstants.ADD_POST);
+        Navigator.pushReplacementNamed(context, AppConstants.HOME_PAGE);
         //  Navigator.pushReplacementNamed(context, AppConstants.USER_STATE);
       }
     });
