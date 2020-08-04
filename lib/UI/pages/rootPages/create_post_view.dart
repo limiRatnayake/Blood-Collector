@@ -5,6 +5,7 @@ import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as Path;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,7 +35,7 @@ class CreatePostView extends StatefulWidget {
   final String placeLat;
   final String placeLng;
   final String orgernizerConatctNo;
-  final bool disabled;
+  final String category;
 
   //build constructor with argument values
   //optional argument key and optional values and then key is pass to the super class
@@ -61,7 +62,7 @@ class CreatePostView extends StatefulWidget {
       this.placeLat,
       this.placeLng,
       this.orgernizerConatctNo,
-      this.disabled})
+      this.category})
       : super(key: key);
 
   @override
@@ -76,6 +77,7 @@ class _PostViewState extends State<CreatePostView> {
   final picker = ImagePicker();
 
   String description = '';
+  String category;
   String imgName = "";
   String imageExtention = "";
   String imgUrl = "";
@@ -256,6 +258,8 @@ class _PostViewState extends State<CreatePostView> {
                                 setState(() {
                                   _errorMessage = "";
                                   _isLoading = true;
+                                  category = widget.category ?? "campaign";
+                                  print(category);
                                 });
 
                                 String response = await _eventService.addEvent(
@@ -284,7 +288,8 @@ class _PostViewState extends State<CreatePostView> {
                                     description,
                                     imgName, //imgName
                                     imageExtention,
-                                    imgUrl);
+                                    imgUrl,
+                                          category,);
                                 if (response != "Success") {
                                   setState(() {
                                     _isLoading = false;

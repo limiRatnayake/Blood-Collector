@@ -327,7 +327,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
           userLName: userLName,
           userPhoneNumber: userPhoneNumber,
           notifyState: _notifyState,
-          disabled: disabled,
+          category: "request",
         ),
       );
       Navigator.of(context).push(route);

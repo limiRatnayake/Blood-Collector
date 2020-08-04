@@ -43,7 +43,9 @@ class EventService extends ChangeNotifier {
       String description,
       String imgName,
       String imageExtention,
-      String imgUrl) async {
+      String imgUrl,
+      String category
+      ) async {
     String message = "";
     try {
       DocumentReference newRef = _ref.document();
@@ -74,6 +76,7 @@ class EventService extends ChangeNotifier {
         imageName: imgName,
         imageExtention: imageExtention,
         imageUrl: imgUrl,
+        category: category,
         uid: user.uid,
         approved: false,
         rejectReason: "None",
@@ -107,5 +110,11 @@ class EventService extends ChangeNotifier {
 
     notifyListeners();
     return imgUrl;
+  }
+
+   Future<DocumentSnapshot> requestEventDetails(String uid) async {
+    DocumentSnapshot postSnapshot = (await _ref.document(uid).get());
+    notifyListeners();
+    return postSnapshot;
   }
 }

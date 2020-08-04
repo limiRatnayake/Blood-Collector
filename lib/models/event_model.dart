@@ -29,6 +29,7 @@ class EventModel {
   bool approved;
   String rejectReason;
   String createdAt;
+  String category;
   EventModel(
       {this.docRef,
       this.uid,
@@ -59,7 +60,8 @@ class EventModel {
       this.imageUrl,
       this.approved,
       this.rejectReason,
-      this.createdAt
+      this.createdAt,
+      this.category
       });
 
   EventModel.fromMap(Map snapshot)
@@ -93,7 +95,8 @@ class EventModel {
         imageUrl = snapshot['imageUrl'] ?? "",
         approved = snapshot['approved'] ?? false,
         rejectReason = snapshot['rejectReason'] ?? "",
-        createdAt = snapshot['createdAt'] ?? "";
+        createdAt = snapshot['createdAt'] ?? "",
+         category = snapshot['category'] ?? "";
 
 
   toJson() {
@@ -128,6 +131,7 @@ class EventModel {
        "approved": approved,
        "rejectReason":rejectReason,
        "createdAt": createdAt,
+       "category":category
     };
   }
 }
