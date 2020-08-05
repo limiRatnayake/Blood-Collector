@@ -68,8 +68,7 @@ class EventModel {
       : docRef = snapshot['docRef'] ?? "",
         uid = snapshot['uid'] ?? "",
         bloodGroup = snapshot['bloodGroup'] ?? "",
-        replacementAvailability = snapshot['replacementAvailability'] ??
-            "", //if the value is not there it is empty
+        replacementAvailability = snapshot['replacementAvailability'] ??"", //if the value is not there it is empty
         unitsOfBlood = snapshot['unitsOfBlood'] ?? "",
         requestClose = snapshot['requestClose'] ?? "",
         hospitalName = snapshot['hospitalName'] ?? "",
@@ -79,7 +78,7 @@ class EventModel {
         userFName = snapshot['userFName'] ?? "",
         userLName = snapshot['userLName'] ?? "",
         userPhoneNumber = snapshot['userPhoneNumber'] ?? "",
-        notifyState = snapshot['notifyState'] ?? "",
+        notifyState = snapshot['notifyState'] ?? null,
         nameOftheOrganizer = snapshot['nameOftheOrganizer'] ?? "",
         pickUpDate = snapshot['pickUpDate'] ?? "",
         startTime = snapshot['startTime'] ?? "",

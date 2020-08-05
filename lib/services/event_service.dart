@@ -44,8 +44,7 @@ class EventService extends ChangeNotifier {
       String imgName,
       String imageExtention,
       String imgUrl,
-      String category
-      ) async {
+      String category) async {
     String message = "";
     try {
       DocumentReference newRef = _ref.document();
@@ -99,12 +98,12 @@ class EventService extends ChangeNotifier {
     File imageFile,
   ) async {
     String imgUrl = "";
-    //getting the refference and file name 
+    //getting the refference and file name
     StorageReference storageReference = _storageRef.ref().child(
         '${AppConstants.STORSGE_IMAGE_PATH}/${uuid}/${uuid + extention}');
-        //upload the image into the firebase storage
+    //upload the image into the firebase storage
     StorageUploadTask uploadTask = storageReference.putFile(imageFile);
-      //check whether it is completed
+    //check whether it is completed
     await uploadTask.onComplete;
     imgUrl = await storageReference.getDownloadURL();
 
@@ -112,9 +111,25 @@ class EventService extends ChangeNotifier {
     return imgUrl;
   }
 
-   Future<DocumentSnapshot> requestEventDetails(String uid) async {
-    DocumentSnapshot postSnapshot = (await _ref.document(uid).get());
-    notifyListeners();
-    return postSnapshot;
+// Future<List<String>> getData() async{
+// var values = new List<String>();
+// values.add("");
+// values.add("");
+// values.add("");
+//   return values;
+// }
+ 
+  Future<List<EventModel>> getEvents() async {
+    // var query = _ref.where("approved" == "true");
+   
+      List<DocumentSnapshot> snapshot = (await _ref.getDocuments()).documents;
+
+      List<EventModel> events = snapshot
+          .map<EventModel>((doc) => EventModel.fromMap(doc.data))
+          .toList();
+
+   
+    
+      return events;
   }
 }

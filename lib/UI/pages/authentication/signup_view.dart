@@ -35,7 +35,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String confirmPassword = '';
   String userAddLat;
   String userAddLng;
-  String proPicUrl = 'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=b42aaeec-4118-4b8c-abe2-6636a347003e';
+  String proPicUrl = 'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=e33110a2-a94a-4405-9fbc-e3bc4ba3c292';
   bool disabled;
 
   String error = '';

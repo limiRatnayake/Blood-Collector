@@ -36,7 +36,7 @@ class _SettingViewState extends State<SettingView> {
             child: Column(
               children: <Widget>[
                 Card(
-                  child:Column(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       FutureBuilder<DocumentSnapshot>(
@@ -44,7 +44,7 @@ class _SettingViewState extends State<SettingView> {
                               .requestUserDetails(_authServices.user.uid),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
-                              return Text("Loading..");
+                              return Center(child: CircularProgressIndicator());
                             } else {
                               UserModel data =
                                   UserModel.fromMap(snapshot.data.data);
@@ -53,8 +53,10 @@ class _SettingViewState extends State<SettingView> {
                                   Center(
                                     child: CircleAvatar(
                                       radius: 50,
-                                      backgroundColor: Colors.black,
-                                      backgroundImage: NetworkImage(data.proPicUrl),
+                                      backgroundColor: Colors.grey,
+                                      backgroundImage: NetworkImage(
+                                        data.proPicUrl,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
@@ -64,11 +66,26 @@ class _SettingViewState extends State<SettingView> {
                                   SizedBox(
                                     height: 8.0,
                                   ),
-                                  Text(data.mobileNo),
+                                  Text(data.email),
                                   SizedBox(
                                     height: 8.0,
                                   ),
-                                  Text(data.email),
+                                  data.userRole != "User"
+                                      ? RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: data.userRole,
+                                                style: DefaultTextStyle.of(context).style
+                                              ),
+                                              WidgetSpan(
+                                                child:
+                                                    Icon(Icons.stars, size: 14, color: Colors.blue,),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : Text("Blood Group: " + data.bloodGroup),
                                   SizedBox(
                                     height: 10.0,
                                   ),
@@ -76,7 +93,7 @@ class _SettingViewState extends State<SettingView> {
                                     child: Text(
                                       "Edit Profile",
                                       style: TextStyle(
-                                          color: Colors.blue, fontSize: 18.0),
+                                          color: Colors.red, fontSize: 18.0),
                                     ),
                                     onTap: () {
                                       Navigator.push(
@@ -86,7 +103,7 @@ class _SettingViewState extends State<SettingView> {
                                                   EditProfileView()));
                                     },
                                   ),
-                                   SizedBox(
+                                  SizedBox(
                                     height: 10.0,
                                   ),
                                 ],

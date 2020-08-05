@@ -39,7 +39,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   String gender;
   String userPhoneNumber;
   String proPicUrl =
-      'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=b42aaeec-4118-4b8c-abe2-6636a347003e';
+      'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=e33110a2-a94a-4405-9fbc-e3bc4ba3c292';
 
   String imgName = "";
   String imageExtention = "";
@@ -130,7 +130,41 @@ class _EditProfileViewState extends State<EditProfileView> {
                                         label: Text("Remove Picture"),
                                         onPressed: () async {
                                           if (data.proPicUrl == proPicUrl) {
-                                            print("there is not");
+                                            Alert(
+                                                context: context,
+                                                type: AlertType.info,
+                                                title:
+                                                    "Please save your image before removing!",
+                                                style: AlertStyle(
+                                                   isCloseButton: false,
+                                                    backgroundColor: Colors
+                                                        .black,
+                                                    alertBorder:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5),
+                                                            side: BorderSide(
+                                                                color: Colors
+                                                                    .white)),
+                                                    titleStyle: TextStyle(
+                                                        color:
+                                                            Colors.blueAccent)),
+                                                buttons: [
+                                                  DialogButton(
+                                                      width: 120,
+                                                      child: Text(
+                                                        "ok",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20),
+                                                      ),
+                                                      onPressed: () async {
+                                                       
+                                                        Navigator.pop(context);
+                                                      })
+                                                ]).show();
                                           } else {
                                             Alert(
                                                 context: context,
@@ -138,6 +172,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                 title:
                                                     "Do you want to remove your profile picture!",
                                                 style: AlertStyle(
+                                                   isCloseButton: false,
                                                     backgroundColor: Colors
                                                         .black,
                                                     alertBorder:
@@ -171,14 +206,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                 ]).show();
                                           }
 
-                                          // String response =await  _userService.deleteImage(data.proPicUrl, proPicUrl);
-                                          // if(response != "success"){
-                                          //    setState(() {
-                                          //            print(response);
-                                          //           });
-                                          // } else{
-                                          //   print(response);
-                                          // }
+                                       
                                         }),
                                     SizedBox(height: 25.0),
                                     Card(
@@ -374,7 +402,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                         ),
                                         subtitle: DateTimeField(
                                           initialValue:
-                                              format.parse(data.birthDate),
+                                              format.parse(data.birthDate) ,
                                           format: format,
                                           onShowPicker:
                                               (context, currentValue) {
