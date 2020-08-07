@@ -35,7 +35,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String confirmPassword = '';
   String userAddLat;
   String userAddLng;
-  String proPicUrl = 'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=e33110a2-a94a-4405-9fbc-e3bc4ba3c292';
+  String proPicUrl =
+      'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=e33110a2-a94a-4405-9fbc-e3bc4ba3c292';
   bool disabled;
 
   String error = '';
@@ -52,9 +53,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   TextEditingController _birthDate = TextEditingController();
   TextEditingController _userAddressController = TextEditingController();
-
- 
-
 
   //import fluttertoast pub dev package - 5sec toast
   void showToastError() {
@@ -78,8 +76,6 @@ class _SignUpPageState extends State<SignUpPage> {
     'AB-'
   ];
 
- 
-
   List<GenderList> radioButtonList = [
     GenderList(index: 1, title: "Male"),
     GenderList(index: 2, title: "Female")
@@ -99,7 +95,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   initState() {
-   
     setState(() {
       gender = _radioItemHolder;
     });
@@ -477,8 +472,8 @@ class _SignUpPageState extends State<SignUpPage> {
             FlatButton(
               onPressed: _toggle,
               child: _obscureText
-                  ? Icon(Icons.visibility_off)
-                  : Icon(Icons.visibility),
+                  ? Icon(Icons.visibility)
+                  : Icon(Icons.visibility_off),
             )
           ],
         ),

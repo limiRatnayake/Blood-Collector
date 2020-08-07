@@ -88,8 +88,8 @@ class _SignInPageState extends State<SignInPage> {
             FlatButton(
               onPressed: _toggle,
               child: _obscureText
-                  ? Icon(Icons.visibility_off)
-                  : Icon(Icons.visibility),
+                  ? Icon(Icons.visibility)
+                  : Icon(Icons.visibility_off),
             )
           ],
         ),
@@ -237,35 +237,35 @@ class _SignInPageState extends State<SignInPage> {
                                                     await _authService.signIn(
                                                         email, password);
 
-                                               
-
                                                 if (response != "Success") {
                                                   setState(() {
                                                     _isLoading = false;
                                                     _errorMessage = response;
                                                   });
-                                                }  else 
+                                                } else
                                                   Alert(
                                                       context: context,
                                                       type: AlertType.success,
-                                                      title: "You are Successfully login",
+                                                      title:
+                                                          "You are Successfully login",
                                                       style: AlertStyle(
                                                         isCloseButton: false,
-                                                      
-                                                          // backgroundColor:
-                                                          //     Colors.black,
-                                                          alertBorder: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              side: BorderSide(
-                                                                  color: Colors
-                                                                      .white)),
-                                                          // titleStyle: TextStyle(
-                                                          //     color: Colors
-                                                          //         .white)
-                                                          ),
+
+                                                        // backgroundColor:
+                                                        //     Colors.black,
+                                                        alertBorder:
+                                                            RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5),
+                                                                side: BorderSide(
+                                                                    color: Colors
+                                                                        .white)),
+                                                        // titleStyle: TextStyle(
+                                                        //     color: Colors
+                                                        //         .white)
+                                                      ),
                                                       buttons: [
                                                         DialogButton(
                                                             width: 120,
@@ -285,10 +285,9 @@ class _SignInPageState extends State<SignInPage> {
                                                               );
                                                             })
                                                       ]).show();
-                                                  setState(() {
-                                                    _isLoading = false;
-                                                  });
-                                                
+                                                setState(() {
+                                                  _isLoading = false;
+                                                });
 
                                                 // if (response != "Success") {
                                                 //   setState(() {
