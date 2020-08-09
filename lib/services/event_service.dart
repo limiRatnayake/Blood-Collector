@@ -119,8 +119,7 @@ class EventService extends ChangeNotifier {
 //   return values;
 // }
 
-  Future<QuerySnapshot> getEvents() async {
-    // var query = _ref.where("approved" == "true");
+  Future<QuerySnapshot> getEvents() {
     return _ref.getDocuments();
   }
 

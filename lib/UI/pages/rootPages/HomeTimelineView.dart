@@ -4,6 +4,7 @@ import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 
@@ -55,7 +56,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                                             data.description,
                                           )
                                         : buildPostSectionTwo(
-                                            data.description, data.uid);
+                                            data.uid, data.pickUpDate);
                                   }))
                         ],
                       )
@@ -250,8 +251,8 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
 
     final UserService _userService = Provider.of<UserService>(context);
-    return FutureBuilder(
-        future: _userService.requestUserDetails("ySsAVdeiV4PN4kBt4NaohlUYApg2"),
+    return FutureBuilder<DocumentSnapshot>(
+        future: _userService.requestUserDetails(uid),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -287,13 +288,13 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        // Text(
-                        //   "Iceland",
-                        //   style: TextStyle(
-                        //       fontSize: 12,
-                        //       fontWeight: FontWeight.bold,
-                        //       color: Colors.grey[500]),
-                        // ),
+                        Text(
+                          uid,
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[500]),
+                        ),
                       ],
                     )
                   ],
