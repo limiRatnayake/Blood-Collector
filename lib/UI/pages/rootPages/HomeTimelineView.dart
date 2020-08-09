@@ -1,6 +1,9 @@
 import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
 import 'package:blood_collector/models/event_model.dart';
+import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
+import 'package:blood_collector/services/user_service.dart';
 
 import 'package:flutter/material.dart';
 
@@ -18,7 +21,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
 
   @override
   Widget build(BuildContext context) {
-    final events = Provider.of<EventService>(context);
+    final EventService _eventServices = Provider.of<EventService>(context);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -27,44 +30,52 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
       drawer: DrawerWidget(),
       body: Container(
         // padding: EdgeInsets.only(left: 10, right: 10, top: 45),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.only(top: 8),
-                children: [
-                  (photoUrl != "")
-                      ? buildPostSection(
-                          "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=640",
-                          "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=100&w=940",
-                          "I want to be contine",
-                        )
-                      : buildPostSectionTwo(
-                          "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=640",
-                          "I want to be contine",
+        child: FutureBuilder(
+            future: _eventServices.getEvents(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return CircularProgressIndicator();
+              } else {
+                List<EventModel> dataList = snapshot.data.documents
+                    .map<EventModel>((doc) => EventModel.fromMap(doc.data))
+                    .toList();
+                return dataList.length > 0
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              child: ListView.builder(
+                                  itemCount: dataList.length,
+                                  itemBuilder: (context, index) {
+                                    EventModel data = dataList[index];
+                                    return data.imageUrl != ""
+                                        ? buildPostSection(
+                                            data.imageUrl,
+                                            data.uid,
+                                            data.description,
+                                          )
+                                        : buildPostSectionTwo(
+                                            data.description, data.uid);
+                                  }))
+                        ],
+                      )
+                    : Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Center(
+                          child: Text(
+                            "Please check again later.",
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                  buildPostSection(
-                    "https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=940",
-                    "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=100&w=640",
-                    "I want to be contine",
-                  ),
-                  buildPostSection(
-                    "https://images.pexels.com/photos/1212600/pexels-photo-1212600.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=200&w=1260",
-                    "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=100&w=640",
-                    "I want to be contine",
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
+                      );
+              }
+            }),
       ),
     );
   }
 
   Container buildPostSection(
-      String urlPost, String urlProfilePhoto, String postDescription) {
+      String urlPost, String uid, String postDescription) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -75,7 +86,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(urlProfilePhoto),
+          buildPostFirstRow(uid),
           SizedBox(
             height: 10,
           ),
@@ -156,8 +167,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Container buildPostSectionTwo(
-      String urlProfilePhoto, String postDescription) {
+  Container buildPostSectionTwo(String uid, String postDescription) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -168,7 +178,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(urlProfilePhoto),
+          buildPostFirstRow(uid),
           SizedBox(
             height: 10,
           ),
@@ -236,49 +246,62 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Row buildPostFirstRow(String urlProfilePhoto) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {},
-              child: Hero(
-                tag: urlProfilePhoto,
-                child: CircleAvatar(
-                  radius: 12,
-                  backgroundImage: NetworkImage(urlProfilePhoto),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget buildPostFirstRow(String uid) {
+    final AuthServices _authServices = Provider.of<AuthServices>(context);
+
+    final UserService _userService = Provider.of<UserService>(context);
+    return FutureBuilder(
+        future: _userService.requestUserDetails("ySsAVdeiV4PN4kBt4NaohlUYApg2"),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            UserModel data = UserModel.fromMap(snapshot.data.data);
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Tom Smith",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {},
+                      child: Hero(
+                        tag: data.proPicUrl,
+                        child: CircleAvatar(
+                          radius: 12,
+                          backgroundImage: NetworkImage(data.proPicUrl),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.firstName + " " + data.lastName,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        // Text(
+                        //   "Iceland",
+                        //   style: TextStyle(
+                        //       fontSize: 12,
+                        //       fontWeight: FontWeight.bold,
+                        //       color: Colors.grey[500]),
+                        // ),
+                      ],
+                    )
+                  ],
                 ),
-                Text(
-                  "Iceland",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[500]),
-                ),
+                Icon(Icons.more_vert)
               ],
-            )
-          ],
-        ),
-        Icon(Icons.more_vert)
-      ],
-    );
+            );
+          }
+        });
   }
 }

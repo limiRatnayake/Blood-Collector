@@ -119,16 +119,9 @@ class EventService extends ChangeNotifier {
 //   return values;
 // }
 
-  Future<List<EventModel>> getEvents() async {
+  Future<QuerySnapshot> getEvents() async {
     // var query = _ref.where("approved" == "true");
-
-    List<DocumentSnapshot> snapshot = (await _ref.getDocuments()).documents;
-
-    List<EventModel> events = snapshot
-        .map<EventModel>((doc) => EventModel.fromMap(doc.data))
-        .toList();
-
-    return events;
+    return _ref.getDocuments();
   }
 
   Future<QuerySnapshot> getUserEvents(String uid) {

@@ -6,6 +6,7 @@ import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ReqHistoryTimelineView extends StatefulWidget {
@@ -19,12 +20,12 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
   @override
   Widget build(BuildContext context) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
-    final EventService _userEvents = Provider.of<EventService>(context);
+    final EventService _eventServices = Provider.of<EventService>(context);
     return Scaffold(
       body: Container(
         // padding: EdgeInsets.only(left: 10, right: 10, top: 45),
         child: FutureBuilder(
-            future: _userEvents.getUserEvents(_authServices.user.uid),
+            future: _eventServices.getUserEvents(_authServices.user.uid),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(
@@ -50,37 +51,24 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                   itemCount: dataList.length,
                                   itemBuilder: (context, index) {
                                     EventModel data = dataList[index];
-                                    return buildPostSection(
-                                      // "https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=940",
-                                      data.imageUrl,
-                                      data.description,
-                                    );
-                                  })
-                              // child: ListView(
-                              //   padding: EdgeInsets.only(top: 8),
-                              //   children: [
-                              //     (photoUrl != "")
-                              //         ? buildPostSection(
-                              //             "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=640",
-                              //             "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=100&w=940",
-                              //             "I want to be contine",
-                              //           )
-                              //         : buildPostSectionTwo(
-                              //             "I want to be contine",
-                              //           ),
-                              //     buildPostSection(
-                              //       "https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=940",
-                              //       "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=100&w=640",
-                              //       "I want to be contine",
-                              //     ),
-                              //     buildPostSection(
-                              //       "https://images.pexels.com/photos/1212600/pexels-photo-1212600.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=200&w=1260",
-                              //       "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=100&w=640",
-                              //       "I want to be contine",
-                              //     ),
-                              //   ],
-                              // ),
-                              )
+                                    var date1 = DateTime.parse(data.createdAt);
+                                    String formattedTime =
+                                        DateFormat.Hm().format(date1);
+                                    return data.imageUrl != ""
+                                        ? buildPostSection(
+                                            data.imageUrl,
+                                            data.description,
+                                            data.approved == true
+                                                ? "Approved"
+                                                : "Approving...",
+                                            formattedTime)
+                                        : buildPostSectionTwo(
+                                            data.description,
+                                            data.approved == true
+                                                ? "Approved"
+                                                : "Approving...",
+                                            formattedTime);
+                                  }))
                         ],
                       )
                     : Padding(
@@ -92,14 +80,14 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                           ),
                         ),
                       );
-                ;
               }
             }),
       ),
     );
   }
 
-  Container buildPostSection(String urlPost, String postDescription) {
+  Container buildPostSection(String urlPost, String postDescription,
+      String approval, String createdAt) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -110,7 +98,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(),
+          buildPostFirstRow(approval, createdAt),
           SizedBox(
             height: 10,
           ),
@@ -191,7 +179,8 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
     );
   }
 
-  Container buildPostSectionTwo(String postDescription) {
+  Container buildPostSectionTwo(
+      String postDescription, String approval, String createdAt) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -202,7 +191,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(),
+          buildPostFirstRow(approval, createdAt),
           SizedBox(
             height: 10,
           ),
@@ -270,7 +259,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
     );
   }
 
-  Widget buildPostFirstRow() {
+  Widget buildPostFirstRow(String approval, String createdAt) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
 
     final UserService _userService = Provider.of<UserService>(context);
@@ -310,9 +299,23 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        Text(
+                          createdAt,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     )
                   ],
+                ),
+                Text(
+                  approval,
+                  style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15),
                 ),
                 Icon(Icons.more_vert)
               ],
