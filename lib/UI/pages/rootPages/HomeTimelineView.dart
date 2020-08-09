@@ -1,4 +1,3 @@
-import 'package:blood_collector/UI/pages/rootPages/EventListView.dart';
 import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/services/event_service.dart';
@@ -15,14 +14,13 @@ class HomeTimelineView extends StatefulWidget {
 }
 
 class _HomeTimelineViewState extends State<HomeTimelineView> {
- String photoUrl = "";
-
+  String photoUrl = "";
 
   @override
   Widget build(BuildContext context) {
     final events = Provider.of<EventService>(context);
 
-    return  Scaffold(
+    return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size(double.infinity, kToolbarHeight),
           child: AppTopBar(title: "Home")),
@@ -64,7 +62,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
       ),
     );
   }
-   
+
   Container buildPostSection(
       String urlPost, String urlProfilePhoto, String postDescription) {
     return Container(
@@ -284,5 +282,3 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 }
- 
-  
