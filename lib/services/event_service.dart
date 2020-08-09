@@ -118,18 +118,20 @@ class EventService extends ChangeNotifier {
 // values.add("");
 //   return values;
 // }
- 
+
   Future<List<EventModel>> getEvents() async {
     // var query = _ref.where("approved" == "true");
-   
-      List<DocumentSnapshot> snapshot = (await _ref.getDocuments()).documents;
 
-      List<EventModel> events = snapshot
-          .map<EventModel>((doc) => EventModel.fromMap(doc.data))
-          .toList();
+    List<DocumentSnapshot> snapshot = (await _ref.getDocuments()).documents;
 
-   
-    
-      return events;
+    List<EventModel> events = snapshot
+        .map<EventModel>((doc) => EventModel.fromMap(doc.data))
+        .toList();
+
+    return events;
+  }
+
+  Future<QuerySnapshot> getUserEvents(String uid) {
+    return _ref.where("uid", isEqualTo: uid).getDocuments();
   }
 }
