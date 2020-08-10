@@ -27,6 +27,10 @@ class UserService extends ChangeNotifier {
     return postSnapshot;
   }
 
+  // Future<QuerySnapshot> getUsersData(uid) {
+  //   return _ref.where("uid", isEqualTo: uid).getDocuments();
+  // }
+
   Future<String> updateUserProfile(
     String uid,
     String firstName,

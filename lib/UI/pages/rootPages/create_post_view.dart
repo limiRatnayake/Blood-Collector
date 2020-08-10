@@ -254,7 +254,7 @@ class _PostViewState extends State<CreatePostView> {
                                     imgName, imageExtention, _image);
                               }
 
-                              if (_form.validate() ) {
+                              if (_form.validate()) {
                                 setState(() {
                                   _errorMessage = "";
                                   _isLoading = true;
@@ -263,33 +263,34 @@ class _PostViewState extends State<CreatePostView> {
                                 });
 
                                 String response = await _eventService.addEvent(
-                                    _user,
-                                    widget.bloodGroup,
-                                    widget.replacementAvailability,
-                                    widget.unitsOfBlood,
-                                    widget.requestClose,
-                                    widget.hospitalName,
-                                    widget.hospitalAddress,
-                                    widget.hospitalLat,
-                                    widget.hospitalLng,
-                                    widget.userFName,
-                                    widget.userLName,
-                                    widget.userPhoneNumber,
-                                    widget.notifyState,
-                                    widget.nameOfTheOrganizer,
-                                    widget.pickUpDate,
-                                    widget.startTime,
-                                    widget.endTime,
-                                    widget.placeName,
-                                    widget.placeAddress,
-                                    widget.placeLat,
-                                    widget.placeLng,
-                                    widget.orgernizerConatctNo,
-                                    description,
-                                    imgName, //imgName
-                                    imageExtention,
-                                    imgUrl,
-                                          category,);
+                                  _user,
+                                  widget.bloodGroup,
+                                  widget.replacementAvailability,
+                                  widget.unitsOfBlood,
+                                  widget.requestClose,
+                                  widget.hospitalName,
+                                  widget.hospitalAddress,
+                                  widget.hospitalLat,
+                                  widget.hospitalLng,
+                                  widget.userFName,
+                                  widget.userLName,
+                                  widget.userPhoneNumber,
+                                  widget.notifyState,
+                                  widget.nameOfTheOrganizer,
+                                  widget.pickUpDate,
+                                  widget.startTime,
+                                  widget.endTime,
+                                  widget.placeName,
+                                  widget.placeAddress,
+                                  widget.placeLat,
+                                  widget.placeLng,
+                                  widget.orgernizerConatctNo,
+                                  description,
+                                  imgName, //imgName
+                                  imageExtention,
+                                  imgUrl,
+                                  category,
+                                );
                                 if (response != "Success") {
                                   setState(() {
                                     _isLoading = false;
@@ -302,7 +303,7 @@ class _PostViewState extends State<CreatePostView> {
                                       title:
                                           "Your event is Successfully created!",
                                       style: AlertStyle(
-                                        isCloseButton: false,
+                                          isCloseButton: false,
                                           backgroundColor: Colors.white,
                                           alertBorder: RoundedRectangleBorder(
                                               borderRadius:
@@ -323,7 +324,8 @@ class _PostViewState extends State<CreatePostView> {
                                             onPressed: () {
                                               Navigator.pushReplacementNamed(
                                                 context,
-                                                AppConstants.HOME_PAGE,
+                                                AppConstants
+                                                    .REQUEST_HISTORY_TIMELINE,
                                               );
                                             })
                                       ]).show();

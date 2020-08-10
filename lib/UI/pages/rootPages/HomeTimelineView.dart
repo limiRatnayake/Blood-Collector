@@ -1,10 +1,6 @@
 import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
 import 'package:blood_collector/models/event_model.dart';
-import 'package:blood_collector/models/user_model.dart';
-import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
-import 'package:blood_collector/services/user_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 
@@ -52,11 +48,12 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                                     return data.imageUrl != ""
                                         ? buildPostSection(
                                             data.imageUrl,
-                                            data.uid,
+                                            "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=640",
                                             data.description,
                                           )
                                         : buildPostSectionTwo(
-                                            data.uid, data.pickUpDate);
+                                            "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=640",
+                                            data.description);
                                   }))
                         ],
                       )
@@ -76,7 +73,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
   }
 
   Container buildPostSection(
-      String urlPost, String uid, String postDescription) {
+      String urlPost, String urlProfilePhoto, String postDescription) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -87,7 +84,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(uid),
+          buildPostFirstRow(urlProfilePhoto),
           SizedBox(
             height: 10,
           ),
@@ -168,7 +165,8 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Container buildPostSectionTwo(String uid, String postDescription) {
+  Container buildPostSectionTwo(
+      String urlProfilePhoto, String postDescription) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -179,7 +177,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(uid),
+          buildPostFirstRow(urlProfilePhoto),
           SizedBox(
             height: 10,
           ),
@@ -247,62 +245,109 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Widget buildPostFirstRow(String uid) {
-    final AuthServices _authServices = Provider.of<AuthServices>(context);
-
-    final UserService _userService = Provider.of<UserService>(context);
-    return FutureBuilder<DocumentSnapshot>(
-        future: _userService.requestUserDetails(uid),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          } else {
-            UserModel data = UserModel.fromMap(snapshot.data.data);
-
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: Hero(
-                        tag: data.proPicUrl,
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundImage: NetworkImage(data.proPicUrl),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          data.firstName + " " + data.lastName,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          uid,
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[500]),
-                        ),
-                      ],
-                    )
-                  ],
+  Row buildPostFirstRow(String urlProfilePhoto) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {},
+              child: Hero(
+                tag: urlProfilePhoto,
+                child: CircleAvatar(
+                  radius: 12,
+                  backgroundImage: NetworkImage(urlProfilePhoto),
                 ),
-                Icon(Icons.more_vert)
+              ),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Tom Smith",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "Iceland",
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[500]),
+                ),
               ],
-            );
-          }
-        });
+            )
+          ],
+        ),
+        Icon(Icons.more_vert)
+      ],
+    );
   }
+
+  // Widget buildPostFirstRow(String uid) {
+  //   final AuthServices _authServices = Provider.of<AuthServices>(context);
+
+  //   final UserService _userService = Provider.of<UserService>(context);
+  //   return FutureBuilder(
+  //       future: _userService.requestUserDetails(uid),
+  //       builder: (context, snapshot) {
+  //         if (!snapshot.hasData) {
+  //           return Center(child: CircularProgressIndicator());
+  //         } else {
+  //           UserModel data = UserModel.fromMap(snapshot.data.data);
+  //           return data != null
+  //               ? Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     Row(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         GestureDetector(
+  //                           onTap: () {},
+  //                           child: Hero(
+  //                             tag: data.proPicUrl,
+  //                             child: CircleAvatar(
+  //                               radius: 12,
+  //                               backgroundImage: NetworkImage(data.proPicUrl),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         SizedBox(
+  //                           width: 8,
+  //                         ),
+  //                         Column(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           children: [
+  //                             Text(
+  //                               data.firstName + " " + data.lastName,
+  //                               style: TextStyle(
+  //                                 fontSize: 18,
+  //                                 fontWeight: FontWeight.bold,
+  //                               ),
+  //                             ),
+  //                             Text(
+  //                               uid,
+  //                               style: TextStyle(
+  //                                   fontSize: 12,
+  //                                   fontWeight: FontWeight.bold,
+  //                                   color: Colors.grey[500]),
+  //                             ),
+  //                           ],
+  //                         )
+  //                       ],
+  //                     ),
+  //                     Icon(Icons.more_vert)
+  //                   ],
+  //                 )
+  //               : Text("try again later");
+  //         }
+  //       });
+  // }
 }

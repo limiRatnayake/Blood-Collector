@@ -1,9 +1,12 @@
+import 'package:blood_collector/UI/pages/rootPages/editEventView.dart';
+import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -15,8 +18,6 @@ class ReqHistoryTimelineView extends StatefulWidget {
 }
 
 class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
-  String photoUrl = "";
-
   @override
   Widget build(BuildContext context) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
@@ -28,16 +29,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
             future: _eventServices.getUserEvents(_authServices.user.uid),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return Center(
-                    child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Center(
-                    child: Text(
-                      "Please check again later.",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ));
+                return Center(child: CircularProgressIndicator());
               } else {
                 List<EventModel> dataList = snapshot.data.documents
                     .map<EventModel>((doc) => EventModel.fromMap(doc.data))
@@ -61,13 +53,15 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                             data.approved == true
                                                 ? "Approved"
                                                 : "Approving...",
-                                            formattedTime)
+                                            formattedTime,
+                                            data.docRef)
                                         : buildPostSectionTwo(
                                             data.description,
                                             data.approved == true
                                                 ? "Approved"
                                                 : "Approving...",
-                                            formattedTime);
+                                            formattedTime,
+                                            data.docRef);
                                   }))
                         ],
                       )
@@ -87,7 +81,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
   }
 
   Container buildPostSection(String urlPost, String postDescription,
-      String approval, String createdAt) {
+      String approval, String createdAt, String id) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -98,7 +92,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(approval, createdAt),
+          buildPostFirstRow(approval, createdAt, id),
           SizedBox(
             height: 10,
           ),
@@ -180,7 +174,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
   }
 
   Container buildPostSectionTwo(
-      String postDescription, String approval, String createdAt) {
+      String postDescription, String approval, String createdAt, String id) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -191,7 +185,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(approval, createdAt),
+          buildPostFirstRow(approval, createdAt, id),
           SizedBox(
             height: 10,
           ),
@@ -259,7 +253,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
     );
   }
 
-  Widget buildPostFirstRow(String approval, String createdAt) {
+  Widget buildPostFirstRow(String approval, String createdAt, String id) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
 
     final UserService _userService = Provider.of<UserService>(context);
@@ -278,12 +272,9 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                   children: [
                     GestureDetector(
                       onTap: () {},
-                      child: Hero(
-                        tag: data.proPicUrl,
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundImage: NetworkImage(data.proPicUrl),
-                        ),
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundImage: NetworkImage(data.proPicUrl),
                       ),
                     ),
                     SizedBox(
@@ -317,10 +308,47 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                       fontWeight: FontWeight.bold,
                       fontSize: 15),
                 ),
-                Icon(Icons.more_vert)
+                _popmenuButton(id)
               ],
             );
           }
         });
   }
+
+  Widget _popmenuButton(String id) => PopupMenuButton<int>(
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 1,
+            child: Text(
+              "Edit",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            ),
+          ),
+          PopupMenuItem(
+            value: 2,
+            child: Text(
+              "Delete",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+        onSelected: (value) {
+          switch (value) {
+            case 1:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EditEventView(
+                            docRef: id,
+                          )));
+
+              break;
+            case 2:
+              {}
+              break;
+          }
+        },
+      );
 }
