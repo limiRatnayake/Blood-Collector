@@ -7,7 +7,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geocoder/geocoder.dart';
 
 class UserService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
