@@ -109,6 +109,35 @@ class _EditRequestViewState extends State<EditRequestView> {
                                 margin: EdgeInsets.symmetric(horizontal: 15.0),
                                 child: ListTile(
                                   title: Text(
+                                    "How many units of blood you need?",
+                                    style: TextStyle(color: Colors.black45),
+                                  ),
+                                  subtitle: TextFormField(
+                                    initialValue: data.unitsOfBlood,
+                                    decoration: InputDecoration(
+                                      hintText: "Units Of Blood",
+                                      hintStyle: TextStyle(
+                                        fontSize: 16.0,
+                                        fontFamily: "Roboto",
+                                      ),
+                                      // enabledBorder: InputBorder.none
+                                    ),
+                                    validator: validateBloodUnit,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        unitsOfBlood = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Card(
+                                margin: EdgeInsets.symmetric(horizontal: 15.0),
+                                child: ListTile(
+                                  title: Text(
                                     "Is replacement available at hospital?",
                                     style: TextStyle(color: Colors.black45),
                                   ),
@@ -141,31 +170,8 @@ class _EditRequestViewState extends State<EditRequestView> {
                                   ),
                                 ),
                               ),
-                              Card(
-                                margin: EdgeInsets.symmetric(horizontal: 15.0),
-                                child: ListTile(
-                                  title: Text(
-                                    "How many units of blood you need?",
-                                    style: TextStyle(color: Colors.black45),
-                                  ),
-                                  subtitle: TextFormField(
-                                    initialValue: data.unitsOfBlood,
-                                    decoration: InputDecoration(
-                                      hintText: "Units Of Blood",
-                                      hintStyle: TextStyle(
-                                        fontSize: 16.0,
-                                        fontFamily: "Roboto",
-                                      ),
-                                      // enabledBorder: InputBorder.none
-                                    ),
-                                    validator: validateBloodUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        unitsOfBlood = value;
-                                      });
-                                    },
-                                  ),
-                                ),
+                              SizedBox(
+                                height: 10,
                               ),
                             ],
                           )));
