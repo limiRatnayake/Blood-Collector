@@ -14,171 +14,153 @@ class EditRequestView extends StatefulWidget {
 }
 
 class _EditRequestViewState extends State<EditRequestView> {
+  final _formKey = GlobalKey<FormState>();
+  // String docRef = widget.docRef;
+  String bloodGroup;
+  String replacementAvailability;
+  String unitsOfBlood;
+
+  bool _formValidate = false;
+
+  List<String> _bloodGroupType = [
+    'A+',
+    'O+',
+    'B+',
+    'AB+',
+    'A-',
+    'O-',
+    'B-',
+    'AB-'
+  ];
+  List<String> _replacementAvailabilityOption = [
+    'Yes',
+    'No',
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-
     final EventService _eventServices = Provider.of<EventService>(context);
-
-    String docRef = widget.docRef;
-    String bloodGroup;
-    String replacementAvailability;
-    String unitsOfBlood;
-
-    bool _formValidate = false;
-
-    List<String> _bloodGroupType = [
-      'A+',
-      'O+',
-      'B+',
-      'AB+',
-      'A-',
-      'O-',
-      'B-',
-      'AB-'
-    ];
-    List<String> _replacementAvailabilityOption = [
-      'Yes',
-      'No',
-    ];
 
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
-        appBar: AppBar(
-          // actionsIconTheme: null,
-          iconTheme: IconThemeData(color: Colors.black),
+          appBar: AppBar(
+            // actionsIconTheme: null,
+            iconTheme: IconThemeData(color: Colors.black),
 
-          title: Text("Edit Request View"),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 18.0),
-          child: FutureBuilder<DocumentSnapshot>(
-              future: _eventServices.requestEventsDetails(docRef),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
-                } else {
-                  EventModel data = EventModel.fromMap(snapshot.data.data);
-
-                  return SingleChildScrollView(
-                      child: Form(
-                          key: _formKey,
-                          autovalidate: _formValidate,
-                          child: Column(
-                            children: <Widget>[
-                              Card(
-                                margin: EdgeInsets.symmetric(horizontal: 15.0),
-                                child: ListTile(
-                                  title: Text(
-                                    "Blood group that you are looking for?",
-                                    style: TextStyle(color: Colors.black45),
-                                  ),
-                                  subtitle: Padding(
-                                    padding:
-                                        const EdgeInsets.only(top: 4, left: 2),
-                                    child: DropdownButtonFormField(
-                                      value: data.bloodGroup,
-                                      decoration: InputDecoration(
-                                          hintText: 'Blood Type',
-                                          hintStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              fontFamily: "Roboto",
-                                              color: Colors.black54),
-                                          enabledBorder: InputBorder.none),
-                                      validator: validateDropdowns,
-                                      items: _bloodGroupType.map((bloodgroup) {
-                                        return DropdownMenuItem(
-                                          value: bloodgroup,
-                                          child: Text(bloodgroup),
-                                        );
-                                      }).toList(),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          bloodGroup = value;
-                                        });
-                                      },
-                                    ),
-                                  ),
+            title: Text("Edit Request View"),
+          ),
+          body: SingleChildScrollView(
+              child: Form(
+                  key: _formKey,
+                  autovalidate: _formValidate,
+                  child: Column(
+                    children: <Widget>[
+                      Card(
+                        margin: EdgeInsets.symmetric(horizontal: 15.0),
+                        child: ListTile(
+                          title: Text(
+                            "Blood group that you are looking for?",
+                            style: TextStyle(color: Colors.black45),
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 4, left: 2),
+                            child: DropdownButtonFormField(
+                              value: "AB+",
+                              decoration: InputDecoration(
+                                  hintText: 'Blood Type',
+                                  hintStyle: TextStyle(
+                                      fontSize: 16.0,
+                                      fontFamily: "Roboto",
+                                      color: Colors.black54),
+                                  enabledBorder: InputBorder.none),
+                              // validator: validateDropdowns,
+                              items: _bloodGroupType.map((bloodgroup) {
+                                return DropdownMenuItem(
+                                  value: bloodgroup,
+                                  child: Text(bloodgroup),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  bloodGroup = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Card(
+                        margin: EdgeInsets.symmetric(horizontal: 15.0),
+                        child: ListTile(
+                          title: Text(
+                            "How many units of blood you need?",
+                            style: TextStyle(color: Colors.black45),
+                          ),
+                          subtitle: TextFormField(
+                            initialValue: "",
+                            decoration: InputDecoration(
+                                hintText: "Units Of Blood",
+                                hintStyle: TextStyle(
+                                  fontSize: 16.0,
+                                  fontFamily: "Roboto",
                                 ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Card(
-                                margin: EdgeInsets.symmetric(horizontal: 15.0),
-                                child: ListTile(
-                                  title: Text(
-                                    "How many units of blood you need?",
-                                    style: TextStyle(color: Colors.black45),
-                                  ),
-                                  subtitle: TextFormField(
-                                    initialValue: data.unitsOfBlood,
-                                    decoration: InputDecoration(
-                                      hintText: "Units Of Blood",
-                                      hintStyle: TextStyle(
-                                        fontSize: 16.0,
-                                        fontFamily: "Roboto",
-                                      ),
-                                      // enabledBorder: InputBorder.none
-                                    ),
-                                    validator: validateBloodUnit,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        unitsOfBlood = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Card(
-                                margin: EdgeInsets.symmetric(horizontal: 15.0),
-                                child: ListTile(
-                                  title: Text(
-                                    "Is replacement available at hospital?",
-                                    style: TextStyle(color: Colors.black45),
-                                  ),
-                                  subtitle: Padding(
-                                    padding:
-                                        const EdgeInsets.only(top: 4, left: 2),
-                                    child: DropdownButtonFormField(
-                                      value: data.replacementAvailability,
-                                      decoration: InputDecoration(
-                                          // hintText: '',
-                                          hintStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              fontFamily: "Roboto",
-                                              color: Colors.black54),
-                                          enabledBorder: InputBorder.none),
-                                      validator: validateDropdowns,
-                                      items: _replacementAvailabilityOption
-                                          .map((availability) {
-                                        return DropdownMenuItem(
-                                          value: availability,
-                                          child: Text(availability),
-                                        );
-                                      }).toList(),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          replacementAvailability = value;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ],
-                          )));
-                }
-              }),
-        ),
-      ),
+                                enabledBorder: InputBorder.none),
+                            validator: validateBloodUnit,
+                            onChanged: (value) {
+                              setState(() {
+                                unitsOfBlood = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Card(
+                        margin: EdgeInsets.symmetric(horizontal: 15.0),
+                        child: ListTile(
+                          title: Text(
+                            "Is replacement available at hospital?",
+                            style: TextStyle(color: Colors.black45),
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 4, left: 2),
+                            child: DropdownButtonFormField(
+                              value: "Yes",
+                              decoration: InputDecoration(
+                                  hintText: 'availability',
+                                  hintStyle: TextStyle(
+                                      fontSize: 16.0,
+                                      fontFamily: "Roboto",
+                                      color: Colors.black54),
+                                  enabledBorder: InputBorder.none),
+                              validator: validateDropdowns,
+                              items: _replacementAvailabilityOption
+                                  .map((availability) {
+                                return DropdownMenuItem(
+                                  value: availability,
+                                  child: Text(availability),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  replacementAvailability = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  )))),
     );
   }
 
