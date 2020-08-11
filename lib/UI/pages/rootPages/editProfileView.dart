@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:blood_collector/UI/pages/rootPages/editEmailAdd_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/editUserAddressView.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/user_service.dart';
@@ -9,6 +11,9 @@ import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 import 'package:intl/intl.dart';
@@ -34,6 +39,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   String userFName;
   String userLName;
   String email;
+  String address;
   String bloodGroup;
   String birthDate;
   String gender;
@@ -46,8 +52,8 @@ class _EditProfileViewState extends State<EditProfileView> {
   String imgUrl = "";
 
   List<String> _bloodGroupType = [
-    "Select a blood Group"
-        'A+',
+    "Select a blood Group",
+    'A+',
     'O+',
     'B+',
     'AB+',
@@ -110,7 +116,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                       : Image.file(_image,
                                                           fit: BoxFit.fill)))),
                                     ),
-                                    
                                     FlatButton.icon(
                                         icon: Icon(
                                           Icons.camera_alt,
@@ -136,7 +141,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                 title:
                                                     "Please save your image before removing!",
                                                 style: AlertStyle(
-                                                   isCloseButton: false,
+                                                    isCloseButton: false,
                                                     backgroundColor: Colors
                                                         .black,
                                                     alertBorder:
@@ -161,7 +166,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                             fontSize: 20),
                                                       ),
                                                       onPressed: () async {
-                                                       
                                                         Navigator.pop(context);
                                                       })
                                                 ]).show();
@@ -172,7 +176,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                 title:
                                                     "Do you want to remove your profile picture!",
                                                 style: AlertStyle(
-                                                   isCloseButton: false,
+                                                    isCloseButton: false,
                                                     backgroundColor: Colors
                                                         .black,
                                                     alertBorder:
@@ -205,8 +209,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                       })
                                                 ]).show();
                                           }
-
-                                       
                                         }),
                                     SizedBox(height: 25.0),
                                     Card(
@@ -274,6 +276,40 @@ class _EditProfileViewState extends State<EditProfileView> {
                                       height: 10.0,
                                     ),
                                     Card(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 15.0),
+                                        child: ListTile(
+                                          title: Text(
+                                            "Address",
+                                            style: TextStyle(
+                                                color: Colors.black45),
+                                          ),
+                                          subtitle: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 1, top: 10),
+                                            child: Text(
+                                              data.address,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15),
+                                            ),
+                                          ),
+                                          trailing: Icon(
+                                            Icons.arrow_right,
+                                            color: Colors.black,
+                                          ),
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditUserAddressView()));
+                                          },
+                                        )),
+                                    SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    Card(
                                       margin: EdgeInsets.symmetric(
                                           horizontal: 15.0),
                                       child: ListTile(
@@ -286,8 +322,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                           padding: const EdgeInsets.only(
                                               top: 4, left: 2),
                                           child: DropdownButtonFormField(
-                                            value:
-                                                bloodGroup ?? data.bloodGroup,
+                                            value: data.bloodGroup,
                                             decoration: InputDecoration(
                                                 hintText: 'Blood Type',
                                                 hintStyle: TextStyle(
@@ -402,7 +437,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                         ),
                                         subtitle: DateTimeField(
                                           initialValue:
-                                              format.parse(data.birthDate) ,
+                                              format.parse(data.birthDate),
                                           format: format,
                                           onShowPicker:
                                               (context, currentValue) {
@@ -528,6 +563,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                                 data.firstName,
                                                             userLName ??
                                                                 data.lastName,
+                                                            address ??
+                                                                data.address,
                                                             gender ??
                                                                 data.gender,
                                                             birthDate ??

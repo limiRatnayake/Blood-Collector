@@ -3,11 +3,12 @@ class AppConstants {
   static const String AUTH = 'auth';
   static const String SIGN_IN = 'sign_in';
   static const String SIGN_UP = 'sign_up';
-   static const String FORGOT_PASSWORD = 'forgot_password';
+  static const String FORGOT_PASSWORD = 'forgot_password';
   static const String USER_STATE = 'user_state';
   static const String HOME_PAGE = 'home_page';
   static const String MAP_VIEW = 'map_view';
   static const String MYPROFILE_VIEW = 'profile_view';
+  static const String REQUEST_HISTORY_TIMELINE = 'request_history_timeline';
 
 //Storage constants
   static const String STORSGE_IMAGE_PATH = 'images';

@@ -1,73 +1,35 @@
-import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
+import 'package:blood_collector/UI/pages/rootPages/EditCampaignView.dart';
+import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
 import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
 import 'package:blood_collector/models/event_model.dart';
+import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:blood_collector/services/user_service.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
-
-import 'package:blood_collector/UI/widgets/appTopBar.dart';
-import 'package:blood_collector/UI/widgets/drawer_widget.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class HomeTimelineView extends StatefulWidget {
+class ReqHistoryTimelineView extends StatefulWidget {
   @override
-  _HomeTimelineViewState createState() => _HomeTimelineViewState();
+  _ReqHistoryTimelineViewState createState() => _ReqHistoryTimelineViewState();
 }
 
-class _HomeTimelineViewState extends State<HomeTimelineView> {
-  FirebaseUser user;
-  @override
-  void initState() {
-    FirebaseAuth.instance
-        .currentUser()
-        .then((currentUser) => {
-              Firestore.instance
-                  .collection("users")
-                  .document(currentUser.uid)
-                  .get()
-                  .then((DocumentSnapshot result) {
-                if (result["address"] == "") {
-                  Future<Null>.delayed(Duration.zero, () {
-                    Scaffold.of(context).showSnackBar(
-                      new SnackBar(
-                        content: new Text(
-                            "Please, Add your address & other details"),
-                        action: SnackBarAction(
-                          label: 'Go',
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditProfileView()));
-                          },
-                        ),
-                      ),
-                    );
-                  });
-                }
-              })
-            })
-        .catchError((err) => print(err));
-    super.initState();
-  }
-
+class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
   @override
   Widget build(BuildContext context) {
+    final AuthServices _authServices = Provider.of<AuthServices>(context);
     final EventService _eventServices = Provider.of<EventService>(context);
     return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: const Size(double.infinity, kToolbarHeight),
-          child: AppTopBar(title: "Home")),
-      drawer: DrawerWidget(),
       body: Container(
         // padding: EdgeInsets.only(left: 10, right: 10, top: 45),
         child: FutureBuilder(
-            future: _eventServices.getEvents(),
+            future: _eventServices.getUserEvents(_authServices.user.uid),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               } else {
                 List<EventModel> dataList = snapshot.data.documents
                     .map<EventModel>((doc) => EventModel.fromMap(doc.data))
@@ -81,16 +43,28 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                                   itemCount: dataList.length,
                                   itemBuilder: (context, index) {
                                     EventModel data = dataList[index];
+                                    var date1 = DateTime.parse(data.createdAt);
+                                    String formattedTime =
+                                        DateFormat.Hm().format(date1);
                                     return data.imageUrl != ""
                                         ? buildPostSection(
                                             data.imageUrl,
-                                            "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=640",
                                             data.description,
-                                          )
+                                            data.approved == true
+                                                ? "Approved"
+                                                : "Approving...",
+                                            formattedTime,
+                                            data.docRef,
+                                            data.category)
                                         : buildPostSectionTwo(
-                                            "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=640",
-                                            data.description);
-                                  })),
+                                            data.description,
+                                            data.approved == true
+                                                ? "Approved"
+                                                : "Approving...",
+                                            formattedTime,
+                                            data.docRef,
+                                            data.category);
+                                  }))
                         ],
                       )
                     : Padding(
@@ -108,8 +82,8 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Container buildPostSection(
-      String urlPost, String urlProfilePhoto, String postDescription) {
+  Container buildPostSection(String urlPost, String postDescription,
+      String approval, String createdAt, String id, String category) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -120,7 +94,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(urlProfilePhoto),
+          buildPostFirstRow(approval, createdAt, id, category),
           SizedBox(
             height: 10,
           ),
@@ -129,9 +103,9 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
             height: 10,
           ),
           Container(
-            height: MediaQuery.of(context).size.width - 60,
+            height: MediaQuery.of(context).size.width - 50,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
                   fit: BoxFit.cover,
                   image: NetworkImage(urlPost),
@@ -201,8 +175,8 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Container buildPostSectionTwo(
-      String urlProfilePhoto, String postDescription) {
+  Container buildPostSectionTwo(String postDescription, String approval,
+      String createdAt, String id, String category) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -213,7 +187,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(urlProfilePhoto),
+          buildPostFirstRow(approval, createdAt, id, category),
           SizedBox(
             height: 10,
           ),
@@ -281,106 +255,112 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Row buildPostFirstRow(String urlProfilePhoto) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {},
-              child: CircleAvatar(
-                radius: 12,
-                backgroundImage: NetworkImage(urlProfilePhoto),
-              ),
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget buildPostFirstRow(
+      String approval, String createdAt, String id, String category) {
+    final AuthServices _authServices = Provider.of<AuthServices>(context);
+
+    final UserService _userService = Provider.of<UserService>(context);
+    return FutureBuilder(
+        future: _userService.requestUserDetails(_authServices.user.uid),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            UserModel data = UserModel.fromMap(snapshot.data.data);
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Tom Smith",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {},
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundImage: NetworkImage(data.proPicUrl),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.firstName + " " + data.lastName,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          createdAt,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
                 Text(
-                  "Iceland",
+                  approval,
                   style: TextStyle(
-                      fontSize: 12,
+                      color: Colors.red,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey[500]),
+                      fontSize: 15),
                 ),
+                _popmenuButton(id, category)
               ],
-            )
-          ],
-        ),
-        Icon(Icons.more_vert)
-      ],
-    );
+            );
+          }
+        });
   }
 
-  // Widget buildPostFirstRow(String uid) {
-  //   final AuthServices _authServices = Provider.of<AuthServices>(context);
+  Widget _popmenuButton(String id, String category) => PopupMenuButton<int>(
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 1,
+            child: Text(
+              "Edit",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            ),
+          ),
+          PopupMenuItem(
+            value: 2,
+            child: Text(
+              "Delete",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+        onSelected: (value) {
+          switch (value) {
+            case 1:
+              if (category != "campaign") {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditRequestView(
+                              docRef: id,
+                            )));
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditCampaignView(
+                              docRef: id,
+                            )));
+              }
 
-  //   final UserService _userService = Provider.of<UserService>(context);
-  //   return FutureBuilder(
-  //       future: _userService.requestUserDetails(uid),
-  //       builder: (context, snapshot) {
-  //         if (!snapshot.hasData) {
-  //           return Center(child: CircularProgressIndicator());
-  //         } else {
-  //           UserModel data = UserModel.fromMap(snapshot.data.data);
-  //           return data != null
-  //               ? Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     Row(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         GestureDetector(
-  //                           onTap: () {},
-  //                           child: Hero(
-  //                             tag: data.proPicUrl,
-  //                             child: CircleAvatar(
-  //                               radius: 12,
-  //                               backgroundImage: NetworkImage(data.proPicUrl),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                         SizedBox(
-  //                           width: 8,
-  //                         ),
-  //                         Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: [
-  //                             Text(
-  //                               data.firstName + " " + data.lastName,
-  //                               style: TextStyle(
-  //                                 fontSize: 18,
-  //                                 fontWeight: FontWeight.bold,
-  //                               ),
-  //                             ),
-  //                             Text(
-  //                               uid,
-  //                               style: TextStyle(
-  //                                   fontSize: 12,
-  //                                   fontWeight: FontWeight.bold,
-  //                                   color: Colors.grey[500]),
-  //                             ),
-  //                           ],
-  //                         )
-  //                       ],
-  //                     ),
-  //                     Icon(Icons.more_vert)
-  //                   ],
-  //                 )
-  //               : Text("try again later");
-  //         }
-  //       });
-  // }
+              break;
+            case 2:
+              {}
+              break;
+          }
+        },
+      );
 }

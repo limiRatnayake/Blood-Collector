@@ -1,12 +1,21 @@
 import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
+import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/home_widget.dart';
+import 'package:provider/provider.dart';
 
 class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final AuthServices _authServices = Provider.of<AuthServices>(context);
+
+    final UserService _userService = Provider.of<UserService>(context);
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -19,33 +28,46 @@ class DrawerWidget extends StatelessWidget {
               ),
               child: DrawerHeader(
                 child: Container(
-                  child: Column(
-                    children: <Widget>[
-                      CircleAvatar(
-                        backgroundImage: AssetImage("assets/person.jpg"),
-                        radius: 50.0,
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Center(
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              "Aurélien Salomon",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "@aureliensalomon",
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 10.0),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+                    child: FutureBuilder<DocumentSnapshot>(
+                        future: _userService
+                            .requestUserDetails(_authServices.user.uid),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Center(child: CircularProgressIndicator());
+                          } else {
+                            UserModel data =
+                                UserModel.fromMap(snapshot.data.data);
+                            return Column(
+                              children: <Widget>[
+                                CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                    data.proPicUrl,
+                                  ),
+                                  radius: 50.0,
+                                ),
+                                SizedBox(
+                                  height: 5.0,
+                                ),
+                                Center(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                        data.firstName + " " + data.lastName,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      Text(
+                                        data.email,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10.0),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            );
+                          }
+                        })),
               )),
           ListTile(
             title: Text("Home"),

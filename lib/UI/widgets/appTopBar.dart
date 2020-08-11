@@ -1,4 +1,3 @@
-
 import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
 import 'package:flutter/material.dart';
 
@@ -22,11 +21,11 @@ class _AppTopBarState extends State<AppTopBar> {
           style: TextStyle(color: Colors.redAccent),
         ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.favorite),
-            color: Colors.grey,
-            onPressed: () {},
-          ),
+          // IconButton(
+          //   icon: Icon(Icons.favorite),
+          //   color: Colors.grey,
+          //   onPressed: () {},
+          // ),
           IconButton(
             icon: Icon(Icons.notifications),
             color: Colors.grey,

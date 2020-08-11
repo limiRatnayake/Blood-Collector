@@ -1,3 +1,4 @@
+import 'package:blood_collector/UI/pages/rootPages/request-history-timeline.dart';
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
 import 'package:flutter/material.dart';
@@ -49,13 +50,14 @@ class _RequestHistoryState extends State<RequestHistory>
                 subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
               ),
             ]),
-            Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              const ListTile(
-                leading: Icon(Icons.album),
-                title: Text('The Enchanted Nightingale'),
-                subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-              ),
-            ]),
+            ReqHistoryTimelineView()
+            // Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            //   const ListTile(
+            //     leading: Icon(Icons.album),
+            //     title: Text('The Enchanted Nightingale'),
+            //     subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
+            //   ),
+            // ]),
           ])),
     );
   }
