@@ -640,18 +640,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       _mobileNoField(),
                       SizedBox(height: 10.0),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 45.0),
-                      //   child: Row(
-                      //     children: <Widget>[
-                      //       Text(
-                      //         "Postal Address",
-                      //         style: TextStyle(
-                      //             fontFamily: 'Roboto', fontSize: 16.0),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
                       _placeAddressTextField(),
                       _googleMapModal(),
                       // _postalAddressField(),

@@ -111,14 +111,6 @@ class EventService extends ChangeNotifier {
     return imgUrl;
   }
 
-// Future<List<String>> getData() async{
-// var values = new List<String>();
-// values.add("");
-// values.add("");
-// values.add("");
-//   return values;
-// }
-
   Future<QuerySnapshot> getEvents() {
     return _ref.getDocuments();
   }
@@ -127,8 +119,8 @@ class EventService extends ChangeNotifier {
     return _ref.where("uid", isEqualTo: uid).getDocuments();
   }
 
-  Future<DocumentSnapshot> requestEventsDetails(String id) async {
-    DocumentSnapshot postSnapshot = (await _ref.document(id).get());
+  Future<DocumentSnapshot> requestEventsDetails(String docRef) async {
+    DocumentSnapshot postSnapshot = (await _ref.document(docRef).get());
     notifyListeners();
     return postSnapshot;
   }

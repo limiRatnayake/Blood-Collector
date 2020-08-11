@@ -172,7 +172,7 @@ class _EditEmailAddressViewState extends State<EditEmailAddressView> {
 
                                 Navigator.pushReplacementNamed(
                                   context,
-                                  AppConstants.HOME_PAGE,
+                                  AppConstants.SIGN_IN,
                                 );
                               }
                             }))),

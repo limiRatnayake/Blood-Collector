@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geocoder/geocoder.dart';
 
 class UserService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -35,6 +36,7 @@ class UserService extends ChangeNotifier {
     String uid,
     String firstName,
     String lastName,
+    String address,
     String gender,
     String birthDate,
     String bloodGroup,
@@ -48,6 +50,7 @@ class UserService extends ChangeNotifier {
       await newRef.updateData({
         "firstName": firstName,
         "lastName": lastName,
+        "address": address,
         "gender": gender,
         "birthDate": birthDate,
         "bloodGroup": bloodGroup,
@@ -136,5 +139,27 @@ class UserService extends ChangeNotifier {
   Future<void> updatePassword(String password) async {
     var firebaseUser = await _auth.currentUser();
     firebaseUser.updatePassword(password);
+  }
+
+  Future<String> updateUserAddress(
+      String address, String latitude, String longitude) async {
+    String message = "";
+    try {
+      var firebaseUser = await _auth.currentUser();
+
+      DocumentReference newRef = _ref.document(firebaseUser.uid);
+
+      await newRef.updateData({
+        "address": address,
+        "userAddLat": latitude,
+        "userAddLng": longitude
+      });
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
   }
 }

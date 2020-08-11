@@ -1,6 +1,9 @@
+import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/services/event_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 
@@ -14,12 +17,45 @@ class HomeTimelineView extends StatefulWidget {
 }
 
 class _HomeTimelineViewState extends State<HomeTimelineView> {
-  String photoUrl = "";
+  FirebaseUser user;
+  @override
+  void initState() {
+    FirebaseAuth.instance
+        .currentUser()
+        .then((currentUser) => {
+              Firestore.instance
+                  .collection("users")
+                  .document(currentUser.uid)
+                  .get()
+                  .then((DocumentSnapshot result) {
+                if (result["address"] == "") {
+                  Future<Null>.delayed(Duration.zero, () {
+                    Scaffold.of(context).showSnackBar(
+                      new SnackBar(
+                        content: new Text(
+                            "Please, Add your address & other details"),
+                        action: SnackBarAction(
+                          label: 'Go',
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfileView()));
+                          },
+                        ),
+                      ),
+                    );
+                  });
+                }
+              })
+            })
+        .catchError((err) => print(err));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final EventService _eventServices = Provider.of<EventService>(context);
-
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size(double.infinity, kToolbarHeight),
@@ -54,7 +90,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                                         : buildPostSectionTwo(
                                             "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=640",
                                             data.description);
-                                  }))
+                                  })),
                         ],
                       )
                     : Padding(
@@ -254,12 +290,9 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
           children: [
             GestureDetector(
               onTap: () {},
-              child: Hero(
-                tag: urlProfilePhoto,
-                child: CircleAvatar(
-                  radius: 12,
-                  backgroundImage: NetworkImage(urlProfilePhoto),
-                ),
+              child: CircleAvatar(
+                radius: 12,
+                backgroundImage: NetworkImage(urlProfilePhoto),
               ),
             ),
             SizedBox(
