@@ -28,7 +28,8 @@ class CreatePostView extends StatefulWidget {
   final String userPhoneNumber;
   final bool notifyState;
   final String nameOfTheOrganizer;
-  final String pickUpDate;
+  final String pickUpStartDate;
+  final String pickUpEndDate;
   final String startTime;
   final String endTime;
   final String placeName;
@@ -55,7 +56,8 @@ class CreatePostView extends StatefulWidget {
       this.userPhoneNumber,
       this.notifyState,
       this.nameOfTheOrganizer,
-      this.pickUpDate,
+      this.pickUpStartDate,
+      this.pickUpEndDate,
       this.startTime,
       this.endTime,
       this.placeName,
@@ -278,7 +280,8 @@ class _PostViewState extends State<CreatePostView> {
                                   widget.userPhoneNumber,
                                   widget.notifyState,
                                   widget.nameOfTheOrganizer,
-                                  widget.pickUpDate,
+                                  widget.pickUpStartDate,
+                                  widget.pickUpEndDate,
                                   widget.startTime,
                                   widget.endTime,
                                   widget.placeName,

@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ReqHistoryTimelineView extends StatefulWidget {
   @override
@@ -259,8 +260,9 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
   Widget buildPostFirstRow(
       String approval, String createdAt, String id, String category) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
-
     final UserService _userService = Provider.of<UserService>(context);
+    final EventService _eventServices = Provider.of<EventService>(context);
+
     return FutureBuilder(
         future: _userService.requestUserDetails(_authServices.user.uid),
         builder: (context, snapshot) {
@@ -312,7 +314,123 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                       fontWeight: FontWeight.bold,
                       fontSize: 15),
                 ),
-                _popmenuButton(id, category)
+                // _popmenuButton(id, category)
+                PopupMenuButton<int>(
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 1,
+                      child: Text(
+                        "Edit",
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 2,
+                      child: Text(
+                        "Delete",
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ],
+                  onSelected: (value) {
+                    switch (value) {
+                      case 1:
+                        if (category != "campaign") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditRequestView(
+                                        docRef: id,
+                                      )));
+                        } else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditCampaignView(
+                                        docRef: id,
+                                      )));
+                        }
+
+                        break;
+                      case 2:
+                        {
+                          Alert(
+                              context: context,
+                              type: AlertType.success,
+                              title:
+                                  "Are you sure you want to delete this event?",
+                              style: AlertStyle(
+                                  isCloseButton: false,
+                                  isOverlayTapDismiss: false,
+                                  backgroundColor: Colors.black,
+                                  alertBorder: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                      side: BorderSide(color: Colors.white)),
+                                  titleStyle:
+                                      TextStyle(color: Colors.blueAccent)),
+                              buttons: [
+                                DialogButton(
+                                    child: Text(
+                                      "No",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    }),
+                                DialogButton(
+                                    child: Text(
+                                      "Yes",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
+                                    onPressed: () async {
+                                      String response =
+                                          await _eventServices.deleteEvent(id);
+                                      if (response == "Success") {
+                                        var snackBar = SnackBar(
+                                          content: Text(
+                                              'Your event is Successfully deleted',
+                                              style: TextStyle(
+                                                  color: Colors.blueGrey)),
+                                        );
+                                        Scaffold.of(context)
+                                            .showSnackBar(snackBar);
+                                             Navigator.of(context).pop();
+                                      }
+                                    })
+                              ]).show();
+                          // showDialog(
+                          //     context: context,
+                          //     barrierDismissible: false,
+                          //     builder: (BuildContext context) {
+                          //       return new AlertDialog(
+                          //         title: new Text('You clicked on'),
+                          //         content: new SingleChildScrollView(
+                          //           child: new ListBody(
+                          //             children: [
+                          //               new Text(
+                          //                   'This is a Dialog Box. Click OK to Close.'),
+                          //             ],
+                          //           ),
+                          //         ),
+                          //         actions: [
+                          //           new FlatButton(
+                          //             child: new Text('Ok'),
+                          //             onPressed: () {
+                          //               Navigator.of(context).pop();
+                          //             },
+                          //           ),
+                          //         ],
+                          //       );
+                          //     });
+                        }
+                        break;
+                    }
+                  },
+                )
               ],
             );
           }
@@ -359,7 +477,60 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
 
               break;
             case 2:
-              {}
+              {
+                Alert(
+                    context: context,
+                    type: AlertType.success,
+                    title: "Are you sure you want to delete this event?",
+                    style: AlertStyle(
+                        isCloseButton: false,
+                        isOverlayTapDismiss: false,
+                        backgroundColor: Colors.black,
+                        alertBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            side: BorderSide(color: Colors.white)),
+                        titleStyle: TextStyle(color: Colors.blueAccent)),
+                    buttons: [
+                      DialogButton(
+                          child: Text(
+                            "No",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }),
+                      DialogButton(
+                          child: Text(
+                            "Yes",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                          onPressed: () {})
+                    ]).show();
+                // showDialog(
+                //     context: context,
+                //     barrierDismissible: false,
+                //     builder: (BuildContext context) {
+                //       return new AlertDialog(
+                //         title: new Text('You clicked on'),
+                //         content: new SingleChildScrollView(
+                //           child: new ListBody(
+                //             children: [
+                //               new Text(
+                //                   'This is a Dialog Box. Click OK to Close.'),
+                //             ],
+                //           ),
+                //         ),
+                //         actions: [
+                //           new FlatButton(
+                //             child: new Text('Ok'),
+                //             onPressed: () {
+                //               Navigator.of(context).pop();
+                //             },
+                //           ),
+                //         ],
+                //       );
+                //     });
+              }
               break;
           }
         },

@@ -14,7 +14,8 @@ class EventModel {
   String userPhoneNumber;
   bool notifyState;
   String nameOftheOrganizer;
-  String pickUpDate;
+  String pickUpStartDate;
+  String pickUpEndDate;
   String startTime;
   String endTime;
   String placeName;
@@ -46,7 +47,8 @@ class EventModel {
       this.userPhoneNumber,
       this.notifyState,
       this.nameOftheOrganizer,
-      this.pickUpDate,
+      this.pickUpStartDate,
+      this.pickUpEndDate,
       this.startTime,
       this.endTime,
       this.placeName,
@@ -61,14 +63,14 @@ class EventModel {
       this.approved,
       this.rejectReason,
       this.createdAt,
-      this.category
-      });
+      this.category});
 
   EventModel.fromMap(Map snapshot)
       : docRef = snapshot['docRef'] ?? "",
         uid = snapshot['uid'] ?? "",
         bloodGroup = snapshot['bloodGroup'] ?? "",
-        replacementAvailability = snapshot['replacementAvailability'] ??"", //if the value is not there it is empty
+        replacementAvailability = snapshot['replacementAvailability'] ??
+            "", //if the value is not there it is empty
         unitsOfBlood = snapshot['unitsOfBlood'] ?? "",
         requestClose = snapshot['requestClose'] ?? "",
         hospitalName = snapshot['hospitalName'] ?? "",
@@ -80,7 +82,8 @@ class EventModel {
         userPhoneNumber = snapshot['userPhoneNumber'] ?? "",
         notifyState = snapshot['notifyState'] ?? null,
         nameOftheOrganizer = snapshot['nameOftheOrganizer'] ?? "",
-        pickUpDate = snapshot['pickUpDate'] ?? "",
+        pickUpStartDate = snapshot['pickUpStartDate'] ?? "",
+        pickUpEndDate = snapshot['pickUpEndDate'] ?? "",
         startTime = snapshot['startTime'] ?? "",
         endTime = snapshot['endTime'] ?? "",
         placeName = snapshot['placeName'] ?? "",
@@ -95,8 +98,7 @@ class EventModel {
         approved = snapshot['approved'] ?? false,
         rejectReason = snapshot['rejectReason'] ?? "",
         createdAt = snapshot['createdAt'] ?? "",
-         category = snapshot['category'] ?? "";
-
+        category = snapshot['category'] ?? "";
 
   toJson() {
     return {
@@ -115,7 +117,8 @@ class EventModel {
       "userPhoneNumber": userPhoneNumber,
       "notifyState": notifyState,
       "nameOftheOrganizer": nameOftheOrganizer,
-      "pickUpDate": pickUpDate,
+      "pickUpStartDate": pickUpStartDate,
+      "pickUpEndDate": pickUpEndDate,
       "startTime": startTime,
       "endTime": endTime,
       "placeName": placeName,
@@ -127,10 +130,10 @@ class EventModel {
       "imageName": imageName,
       "imageExtention": imageExtention,
       "imageUrl": imageUrl,
-       "approved": approved,
-       "rejectReason":rejectReason,
-       "createdAt": createdAt,
-       "category":category
+      "approved": approved,
+      "rejectReason": rejectReason,
+      "createdAt": createdAt,
+      "category": category
     };
   }
 }

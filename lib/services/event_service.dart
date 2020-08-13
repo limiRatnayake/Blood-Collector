@@ -32,7 +32,8 @@ class EventService extends ChangeNotifier {
       String userPhoneNumber,
       bool notifyState,
       String nameOftheOrganizer,
-      String pickUpDate,
+      String pickUpStartDate,
+      String pickUpEndDate,
       String startTime,
       String endTime,
       String placeName,
@@ -63,7 +64,8 @@ class EventService extends ChangeNotifier {
         userPhoneNumber: userPhoneNumber,
         notifyState: notifyState,
         nameOftheOrganizer: nameOftheOrganizer,
-        pickUpDate: pickUpDate,
+        pickUpStartDate: pickUpStartDate,
+        pickUpEndDate: pickUpEndDate,
         startTime: startTime,
         endTime: endTime,
         placeName: placeName,
@@ -164,6 +166,69 @@ class EventService extends ChangeNotifier {
         "imageExtention": imageExtention,
         "imageUrl": imageUrl,
       });
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
+  }
+
+  Future<String> updateCampaignEvents(
+    String docRef,
+    String description,
+    String imageName,
+    String imageExtention,
+    String imageUrl,
+    String nameOfTheOrOrganizer,
+    String organizerPhoneNumber,
+    String organizePlaceName,
+    String organizePlaceAddress,
+    String placeLat,
+    String placeLng,
+    String pickUpStartDate,
+    String pickUpEndDate,
+    String startTime,
+    String endTime,
+    String requestClose,
+  ) async {
+    String message = "";
+    try {
+      DocumentReference newRef = _ref.document(docRef);
+
+      await newRef.updateData({
+        "description": description,
+        "imageName": imageName,
+        "imageExtention": imageExtention,
+        "imageUrl": imageUrl,
+        "nameOftheOrganizer": nameOfTheOrOrganizer,
+        "orgernizerConatctNo": organizerPhoneNumber,
+        "placeName": organizePlaceName,
+        "placeAddress": organizePlaceAddress,
+        "placeLat": placeLat,
+        "placeLng": placeLng,
+        "pickUpStartDate": pickUpStartDate,
+        "pickUpEndDate": pickUpEndDate,
+        "startTime": startTime,
+        "endTime": endTime,
+        "requestClose": requestClose,
+      });
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
+  }
+
+//delete an event
+  Future<String> deleteEvent(String docRef) async {
+    String message = "";
+    try {
+      _ref.document(docRef).delete();
+
       message = "Success";
     } catch (error) {
       print(error);
