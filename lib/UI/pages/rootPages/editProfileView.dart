@@ -30,7 +30,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   final _formKey = GlobalKey<FormState>();
   File _image;
   final picker = ImagePicker();
-  DateFormat format = DateFormat('yyy-MMM-dd');
+  DateFormat format = DateFormat('yyyy-MM-dd');
 
   bool _formValidate = false;
   bool _isLoading = false;
@@ -618,7 +618,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                                       .pushReplacementNamed(
                                                                     context,
                                                                     AppConstants
-                                                                        .MYPROFILE_VIEW,
+                                                                        .HOME_PAGE,
                                                                   );
                                                                 })
                                                           ]).show();

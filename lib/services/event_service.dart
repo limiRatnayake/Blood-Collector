@@ -124,4 +124,52 @@ class EventService extends ChangeNotifier {
     notifyListeners();
     return postSnapshot;
   }
+
+  Future<String> updateRequestEvents(
+    String docRef,
+    String bloodGroup,
+    String replacementAvailability,
+    String unitsOfBlood,
+    String requestClose,
+    String hospitalName,
+    String hospitalAddress,
+    String hospitalLat,
+    String hospitalLng,
+    String userFName,
+    String userLName,
+    String userPhoneNumber,
+    String description,
+    String imageName,
+    String imageExtention,
+    String imageUrl,
+  ) async {
+    String message = "";
+    try {
+      DocumentReference newRef = _ref.document(docRef);
+
+      await newRef.updateData({
+        "bloodGroup": bloodGroup,
+        "replacementAvailability": replacementAvailability,
+        "unitsOfBlood": unitsOfBlood,
+        "requestClose": requestClose,
+        "hospitalName": hospitalName,
+        "hospitalAddress": hospitalAddress,
+        "hospitalLat": hospitalLat,
+        "hospitalLng": hospitalLng,
+        "userFName": userFName,
+        "userLName": userLName,
+        "userPhoneNumber": userPhoneNumber,
+        "description": description,
+        "imageName": imageName,
+        "imageExtention": imageExtention,
+        "imageUrl": imageUrl,
+      });
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
+  }
 }

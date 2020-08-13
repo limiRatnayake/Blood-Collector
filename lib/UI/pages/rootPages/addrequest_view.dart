@@ -45,12 +45,15 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   String hospitalAddress = '';
   String hospitalLat = '';
   String hospitalLng = '';
-  String userFName = '';
-  String userLName = '';
-  String userPhoneNumber = '';
+  String userFName;
+  String userLName;
+  String userPhoneNumber;
   bool disabled;
-  
+
   bool notifyState;
+  String firstName;
+  String lastName;
+  String mobilePhone;
 
   var selectedHospital;
   bool _notifyState = false;
@@ -255,6 +258,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
           onChanged: (value) {
             value = userLNameController.text;
             userLName = value;
+            print(userLName);
           },
         ),
       ),
@@ -313,6 +317,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
         print("Hello error");
       }
       print('Form is vaild');
+      print(userFName);
       var route = new MaterialPageRoute(
         builder: (BuildContext context) => CreatePostView(
           bloodGroup: bloodGroup,
@@ -323,9 +328,9 @@ class _RequestBloodViewState extends State<RequestBloodView> {
           hospitalAddress: hospitalAddress,
           hospitalLat: hospitalLat,
           hospitalLng: hospitalLng,
-          userFName: userFName,
-          userLName: userLName,
-          userPhoneNumber: userPhoneNumber,
+          userFName: userFName ?? firstName,
+          userLName: userLName ?? lastName,
+          userPhoneNumber: userPhoneNumber ?? mobilePhone,
           notifyState: _notifyState,
           category: "request",
         ),
@@ -408,7 +413,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                     ],
                   ),
                 ),
-                 SizedBox(
+                SizedBox(
                   height: 10.0,
                 ),
                 _availableDateTextField(),
@@ -556,10 +561,8 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                         if (hospitalValue == hospitalItems[i].bloodBankName) {
                           addressController.text =
                               hospitalItems[i].bloodBankAddress;
-                          hospitalLat =
-                              hospitalItems[i].hospitalLatitude;
-                           hospitalLng =
-                              hospitalItems[i].hospitalLongitude;
+                          hospitalLat = hospitalItems[i].hospitalLatitude;
+                          hospitalLng = hospitalItems[i].hospitalLongitude;
 
                           //assign to parameters of CreatePostView class
                           hospitalAddress = addressController.text;
@@ -625,12 +628,12 @@ class _RequestBloodViewState extends State<RequestBloodView> {
           } else {
             UserModel data = UserModel.fromMap(snapshot.data.data);
             userFNameController.text = data.firstName;
-            // userFName = userFNameController.text;
+            firstName = userFNameController.text;
             userLNameController.text = data.lastName;
-            // userLName = userLNameController.text;
+            lastName = userLNameController.text;
             userPhoneNoController.text = data.mobileNo;
             disabled = data.disabled;
-            // userPhoneNumber = userPhoneNoController.text;
+            mobilePhone = userPhoneNoController.text;
             return Column(
               children: [
                 Padding(
@@ -661,7 +664,36 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                     ],
                   ),
                 ),
-                _userFNameDeatils(),
+                Container(
+                  width: double.infinity,
+                  height: 58,
+                  margin: EdgeInsets.symmetric(horizontal: 15.0),
+                  decoration: _boxDecoration(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+                    child: TextFormField(
+                      // controller: userLNameController,
+                      initialValue: data.firstName,
+                      decoration: InputDecoration(
+                          hintText: "First Name",
+                          hintStyle: TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: "Roboto",
+                          ),
+                          enabledBorder: InputBorder.none),
+                      validator: validateFormData,
+                      onChanged: (value) {
+                        // value = userLNameController.text;
+                        userFName = value;
+                        // setState(() {
+                        //   userFName = data.firstName;
+                        // });
+
+                        print(userFName);
+                      },
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 10.0,
                 ),
@@ -676,7 +708,34 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                     ],
                   ),
                 ),
-                _userLNameDeatils(),
+                Container(
+                  width: double.infinity,
+                  height: 58,
+                  margin: EdgeInsets.symmetric(horizontal: 15.0),
+                  decoration: _boxDecoration(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+                    child: TextFormField(
+                      // controller: userLNameController,
+                      initialValue: data.lastName,
+                      decoration: InputDecoration(
+                          hintText: "Last Name",
+                          hintStyle: TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: "Roboto",
+                          ),
+                          enabledBorder: InputBorder.none),
+                      validator: validateFormData,
+                      onChanged: (value) {
+                        setState(() {
+                          userLName = value ?? data.lastName;
+                        });
+
+                        print(userLName);
+                      },
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 10.0,
                 ),
@@ -691,7 +750,33 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                     ],
                   ),
                 ),
-                _userPhoneNumber()
+                Container(
+                  width: double.infinity,
+                  height: 58,
+                  margin: EdgeInsets.symmetric(horizontal: 15.0),
+                  decoration: _boxDecoration(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+                    child: TextFormField(
+                      initialValue: data.mobileNo,
+                      decoration: InputDecoration(
+                          hintText: "Phone number",
+                          hintStyle: TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: "Roboto",
+                          ),
+                          enabledBorder: InputBorder.none),
+                      keyboardType: TextInputType.phone,
+                      validator: validateMobile,
+                      onChanged: (value) {
+                        setState(() {
+                          userPhoneNumber = value;
+                        });
+                        print(userPhoneNumber);
+                      },
+                    ),
+                  ),
+                )
               ],
             );
           }
@@ -716,7 +801,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
     return null;
   }
 
-   String validateBloodUnit(String value) {
+  String validateBloodUnit(String value) {
     String pattern = r'(^[0-9]*$)';
     RegExp regExp = RegExp(pattern);
     if (value.isEmpty) {
@@ -738,8 +823,8 @@ class _RequestBloodViewState extends State<RequestBloodView> {
     return null;
   }
 
-   Future<Null> _selectDate(context, ctrl) async {
-    DateFormat dateFormat = DateFormat('yyyy-MMM-dd');
+  Future<Null> _selectDate(context, ctrl) async {
+    DateFormat dateFormat = DateFormat('yyyy-MM-dd');
     DateTime _selectedBDate =
         ctrl.text != "" ? dateFormat.parse(ctrl.text) : DateTime.now();
     final DateTime picked = await showDatePicker(
@@ -748,7 +833,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
         firstDate: DateTime.now(),
         lastDate: DateTime(2101));
     if (picked != null && picked != _selectedBDate)
-      ctrl.text = DateFormat('yyyy-MMM-dd').format(picked);
+      ctrl.text = DateFormat('yyyy-MM-dd').format(picked);
     setState(() {
       requestClose = ctrl.text;
     });

@@ -1,4 +1,5 @@
 import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/requestHistory.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -81,8 +82,8 @@ class DrawerWidget extends StatelessWidget {
             title: Text("History"),
             leading: Icon(Icons.history),
             onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => ListView()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => RequestHistory()));
             },
           ),
           ListTile(

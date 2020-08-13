@@ -1,6 +1,7 @@
 import 'package:blood_collector/UI/pages/rootPages/editPassword_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
+import 'package:blood_collector/UI/widgets/bottom_navigator.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/user_service.dart';
@@ -75,12 +76,16 @@ class _SettingViewState extends State<SettingView> {
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
-                                                text: data.userRole,
-                                                style: DefaultTextStyle.of(context).style
-                                              ),
+                                                  text: data.userRole,
+                                                  style: DefaultTextStyle.of(
+                                                          context)
+                                                      .style),
                                               WidgetSpan(
-                                                child:
-                                                    Icon(Icons.stars, size: 14, color: Colors.blue,),
+                                                child: Icon(
+                                                  Icons.stars,
+                                                  size: 14,
+                                                  color: Colors.blue,
+                                                ),
                                               ),
                                             ],
                                           ),

@@ -194,12 +194,11 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                             currentValue ?? DateTime.now()),
                       );
                       return DateTimeField.convert(time);
-                     
                     },
-                    onChanged: ( val) {
+                    onChanged: (val) {
                       setState(() {
                         String formattedTime = DateFormat.Hms().format(val);
-                           startTime = formattedTime;
+                        startTime = formattedTime;
                       });
                     },
                     validator: (DateTime dateTime) {
@@ -237,12 +236,12 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                         );
                         return DateTimeField.convert(time);
                       },
-                      onChanged: ( val) {
-                      setState(() {
-                        String formattedTime = DateFormat.Hms().format(val);
-                           endTime = formattedTime;
-                      });
-                    },
+                      onChanged: (val) {
+                        setState(() {
+                          String formattedTime = DateFormat.Hms().format(val);
+                          endTime = formattedTime;
+                        });
+                      },
                       validator: (DateTime dateTime) {
                         if (dateTime == null) {
                           return "Date End Time Required";
@@ -599,7 +598,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   }
 
   Future<Null> _selectDate(context, ctrl) async {
-    DateFormat dateFormat = DateFormat('yyyy-MMM-dd');
+    DateFormat dateFormat = DateFormat('yyyy-MM-dd');
     DateTime _selectedDate =
         ctrl.text != "" ? dateFormat.parse(ctrl.text) : DateTime.now();
     final DateTime picked = await showDatePicker(
@@ -608,7 +607,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
         firstDate: DateTime.now(),
         lastDate: DateTime(2101));
     if (picked != null && picked != _selectedDate)
-      ctrl.text = DateFormat('yyyy-MMM-dd').format(picked);
+      ctrl.text = DateFormat('yyyy-MM-dd').format(picked);
     setState(() {
       pickUpDate = ctrl.text;
     });

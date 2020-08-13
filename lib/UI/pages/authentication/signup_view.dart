@@ -835,7 +835,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<Null> _selectBDate(context, ctrl) async {
-    DateFormat dateFormat = DateFormat('yyyy-MMM-dd');
+    DateFormat dateFormat = DateFormat('yyyy-MM-dd');
     DateTime _selectedBDate =
         ctrl.text != "" ? dateFormat.parse(ctrl.text) : DateTime.now();
     final DateTime picked = await showDatePicker(
@@ -844,7 +844,7 @@ class _SignUpPageState extends State<SignUpPage> {
         firstDate: DateTime(1960, 1),
         lastDate: DateTime(2101));
     if (picked != null && picked != _selectedBDate)
-      ctrl.text = DateFormat('yyyy-MMM-dd').format(picked);
+      ctrl.text = DateFormat('yyyy-MM-dd').format(picked);
     setState(() {
       birthDate = ctrl.text;
     });

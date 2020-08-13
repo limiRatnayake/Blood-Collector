@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:blood_collector/UI/pages/rootPages/requestHistory.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
@@ -106,7 +107,7 @@ class _PostViewState extends State<CreatePostView> {
           autocorrect: false,
           autofocus: false,
           decoration: InputDecoration(
-            hintText: 'Write your status here',
+            hintText: 'Write your need here',
             filled: true,
             fillColor: Colors.white,
             enabledBorder: OutlineInputBorder(
@@ -323,10 +324,8 @@ class _PostViewState extends State<CreatePostView> {
                                             ),
                                             onPressed: () {
                                               Navigator.pushReplacementNamed(
-                                                context,
-                                                AppConstants
-                                                    .REQUEST_HISTORY_TIMELINE,
-                                              );
+                                                  context,
+                                                  AppConstants.HOME_PAGE);
                                             })
                                       ]).show();
                                   setState(() {

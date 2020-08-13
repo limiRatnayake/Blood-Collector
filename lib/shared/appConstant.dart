@@ -7,8 +7,8 @@ class AppConstants {
   static const String USER_STATE = 'user_state';
   static const String HOME_PAGE = 'home_page';
   static const String MAP_VIEW = 'map_view';
-  static const String MYPROFILE_VIEW = 'profile_view';
-  static const String REQUEST_HISTORY_TIMELINE = 'request_history_timeline';
+  // static const String MYPROFILE_VIEW = 'profile_view';
+  // static const String REQUEST_HISTORY = 'request_history';
 
 //Storage constants
   static const String STORSGE_IMAGE_PATH = 'images';
