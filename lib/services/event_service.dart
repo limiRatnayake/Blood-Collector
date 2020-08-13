@@ -228,7 +228,11 @@ class EventService extends ChangeNotifier {
     String message = "";
     try {
       _ref.document(docRef).delete();
-
+      //getting the refference and file name
+      // StorageReference storageReference =
+          // await _storageRef.getReferenceFromUrl(imgUrl);
+      //delete the image into the firebase storage
+      // await storageReference.delete();
       message = "Success";
     } catch (error) {
       print(error);
@@ -236,5 +240,23 @@ class EventService extends ChangeNotifier {
     }
     notifyListeners();
     return message;
+  }
+
+   Future<void> deleteEventImage(String imgUrl) async {
+  
+    try {
+   
+      //getting the refference and file name
+      StorageReference storageReference =
+          await _storageRef.getReferenceFromUrl(imgUrl);
+      //delete the image into the firebase storage
+      await storageReference.delete();
+    
+    } catch (error) {
+      print(error);
+     
+    }
+    notifyListeners();
+   
   }
 }

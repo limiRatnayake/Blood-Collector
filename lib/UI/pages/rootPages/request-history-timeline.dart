@@ -57,7 +57,8 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                                 : "Approving...",
                                             formattedTime,
                                             data.docRef,
-                                            data.category)
+                                            data.category,
+                                            data.imageUrl)
                                         : buildPostSectionTwo(
                                             data.description,
                                             data.approved == true
@@ -65,7 +66,8 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                                 : "Approving...",
                                             formattedTime,
                                             data.docRef,
-                                            data.category);
+                                            data.category,
+                                            data.imageUrl);
                                   }))
                         ],
                       )
@@ -85,7 +87,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
   }
 
   Container buildPostSection(String urlPost, String postDescription,
-      String approval, String createdAt, String id, String category) {
+      String approval, String createdAt, String id, String category, String imageUrl) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -96,7 +98,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(approval, createdAt, id, category),
+          buildPostFirstRow(approval, createdAt, id, category, imageUrl),
           SizedBox(
             height: 10,
           ),
@@ -178,7 +180,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
   }
 
   Container buildPostSectionTwo(String postDescription, String approval,
-      String createdAt, String id, String category) {
+      String createdAt, String id, String category, String imageUrl) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -189,7 +191,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(approval, createdAt, id, category),
+          buildPostFirstRow(approval, createdAt, id, category, imageUrl),
           SizedBox(
             height: 10,
           ),
@@ -258,7 +260,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
   }
 
   Widget buildPostFirstRow(
-      String approval, String createdAt, String id, String category) {
+      String approval, String createdAt, String id, String category, String imageUrl) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
     final EventService _eventServices = Provider.of<EventService>(context);
@@ -396,6 +398,9 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                               style: TextStyle(
                                                   color: Colors.blueGrey)),
                                         );
+                                        if(imageUrl != null){
+                                           _eventServices.deleteEventImage(imageUrl);
+                                        }
                                         Scaffold.of(context)
                                             .showSnackBar(snackBar);
                                              Navigator.of(context).pop();

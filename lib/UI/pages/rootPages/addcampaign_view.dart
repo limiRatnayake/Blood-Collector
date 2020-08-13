@@ -146,7 +146,8 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
               onShowPicker: (context, currentValue) {
                 return showDatePicker(
                     context: context,
-                    firstDate: DateTime(1900),
+                    // from todays date subtract the pass dates so that it will show only future days
+                    firstDate:DateTime.now().subtract(Duration(days: 0)),
                     initialDate: currentValue ?? DateTime.now(),
                     lastDate: DateTime(2100));
               },
@@ -204,7 +205,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
               onShowPicker: (context, currentValue) {
                 return showDatePicker(
                     context: context,
-                    firstDate: DateTime(1900),
+                    firstDate: DateTime.now().subtract(Duration(days: 0)),
                     initialDate: currentValue ?? DateTime.now(),
                     lastDate: DateTime(2100));
               },
@@ -361,7 +362,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
               onShowPicker: (context, currentValue) {
                 return showDatePicker(
                     context: context,
-                    firstDate: DateTime(1900),
+                    firstDate: DateTime.now().subtract(Duration(days: 0)),
                     initialDate: currentValue ?? DateTime.now(),
                     lastDate: DateTime(2100));
               },

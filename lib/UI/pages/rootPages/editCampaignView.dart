@@ -362,7 +362,7 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                                   (context, currentValue) {
                                                 return showDatePicker(
                                                     context: context,
-                                                    firstDate: DateTime(1900),
+                                                    firstDate: DateTime.now().subtract(Duration(days: 0)),
                                                     initialDate: currentValue ??
                                                         DateTime.now(),
                                                     lastDate: DateTime(2100));
@@ -395,7 +395,7 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                                   (context, currentValue) {
                                                 return showDatePicker(
                                                     context: context,
-                                                    firstDate: DateTime(1900),
+                                                    firstDate:DateTime.now().subtract(Duration(days: 0)),
                                                     initialDate: currentValue ??
                                                         DateTime.now(),
                                                     lastDate: DateTime(2100));
@@ -554,7 +554,7 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                         onShowPicker: (context, currentValue) {
                                           return showDatePicker(
                                               context: context,
-                                              firstDate: DateTime(1900),
+                                              firstDate:DateTime.now().subtract(Duration(days: 1)),
                                               initialDate: currentValue ??
                                                   DateTime.now(),
                                               lastDate: DateTime(2100));
