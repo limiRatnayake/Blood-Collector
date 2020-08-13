@@ -195,7 +195,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
         child: TextFormField(
           controller: _campaignDate,
           decoration: inputDecoration.copyWith(
-              hintText: "Event date",
+              hintText: "Event Close on",
               suffixIcon: Icon(
                 Icons.calendar_today,
                 color: Colors.black,

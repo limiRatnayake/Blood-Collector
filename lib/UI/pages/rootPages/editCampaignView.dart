@@ -27,6 +27,8 @@ class _EditCampaignViewState extends State<EditCampaignView> {
 
   String bloodGroup;
   String description;
+  String nameOfTheOrOrganizer;
+  String organizerPhoneNumber;
 
   bool _formValidate = false;
 
@@ -71,62 +73,65 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                           autovalidate: _formValidate,
                           child: Column(
                             children: <Widget>[
-                              GestureDetector(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 25.0,
-                                      left: 18.0,
-                                      bottom: 8.0,
-                                      right: 18.0),
-                                  child: _image == null
-                                      ? Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                          child: data.imageUrl == ""
-                                              ? DottedBorder(
-                                                  color: Colors.black,
-                                                  padding: EdgeInsets.only(
-                                                    top: 30,
-                                                    right: 150,
-                                                    bottom: 30,
-                                                    left: 150,
-                                                  ),
-                                                  strokeWidth: 2,
-                                                  radius: Radius.circular(12),
-                                                  dashPattern: [6, 6],
-                                                  child: Icon(
-                                                    Icons.backup,
-                                                    size: 90,
+                              Card(
+                                margin: EdgeInsets.symmetric(horizontal: 15.0),
+                                child: ListTile(
+                                  title: Text(
+                                    "Upload a image",
+                                    style: TextStyle(color: Colors.black45),
+                                  ),
+                                  subtitle: GestureDetector(
+                                    child: _image == null
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: data.imageUrl == ""
+                                                ? DottedBorder(
                                                     color: Colors.black,
+                                                    padding: EdgeInsets.only(
+                                                      top: 30,
+                                                      right: 150,
+                                                      bottom: 30,
+                                                      left: 150,
+                                                    ),
+                                                    strokeWidth: 2,
+                                                    radius: Radius.circular(12),
+                                                    dashPattern: [6, 6],
+                                                    child: Icon(
+                                                      Icons.backup,
+                                                      size: 90,
+                                                      color: Colors.black,
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width -
+                                                            50,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        image: DecorationImage(
+                                                          fit: BoxFit.cover,
+                                                          image: NetworkImage(
+                                                              data.imageUrl),
+                                                        )),
                                                   ),
-                                                )
-                                              : Container(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .width -
-                                                      50,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                      image: DecorationImage(
-                                                        fit: BoxFit.cover,
-                                                        image: NetworkImage(
-                                                            data.imageUrl),
-                                                      )),
-                                                ),
-                                        )
-                                      : Container(
-                                          // height: 150,
-                                          width: double.infinity,
-                                          child: Image.file(_image,
-                                              fit: BoxFit.fitHeight)),
+                                          )
+                                        : Container(
+                                            // height: 150,
+                                            width: double.infinity,
+                                            child: Image.file(_image,
+                                                fit: BoxFit.fitHeight)),
+                                  ),
+                                  onTap: () {
+                                    _settingModalBottomSheet(context);
+                                  },
                                 ),
-                                onTap: () {
-                                  _settingModalBottomSheet(context);
-                                },
                               ),
                               SizedBox(height: 10),
                               Card(
@@ -147,18 +152,18 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                         hintText: "Write your need her",
                                         filled: true,
                                         fillColor: Colors.white,
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0)),
-                                          borderSide:
-                                              BorderSide(color: Colors.grey),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0)),
-                                          borderSide:
-                                              BorderSide(color: Colors.grey),
-                                        ),
+                                        // enabledBorder: OutlineInputBorder(
+                                        //   borderRadius: BorderRadius.all(
+                                        //       Radius.circular(10.0)),
+                                        //   borderSide:
+                                        //       BorderSide(color: Colors.grey),
+                                        // ),
+                                        // focusedBorder: OutlineInputBorder(
+                                        //   borderRadius: BorderRadius.all(
+                                        //       Radius.circular(10.0)),
+                                        //   borderSide:
+                                        //       BorderSide(color: Colors.grey),
+                                        // ),
                                       ),
                                       validator: validateFormDescription,
                                       onChanged: (value) {
@@ -171,6 +176,59 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                 ),
                               ),
                               SizedBox(height: 10),
+                              Card(
+                                margin: EdgeInsets.symmetric(horizontal: 15.0),
+                                child: ListTile(
+                                  title: Text(
+                                    "Name of the organizer/organization",
+                                    style: TextStyle(color: Colors.black45),
+                                  ),
+                                  subtitle: TextFormField(
+                                    initialValue: data.userFName,
+                                    decoration: InputDecoration(
+                                      hintText: "First Name",
+                                      hintStyle: TextStyle(
+                                        fontSize: 16.0,
+                                        fontFamily: "Roboto",
+                                      ),
+                                      // enabledBorder: InputBorder.none
+                                    ),
+                                    validator: validateFormData,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        nameOfTheOrOrganizer = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Card(
+                                margin: EdgeInsets.symmetric(horizontal: 15.0),
+                                child: ListTile(
+                                  title: Text(
+                                    "Your Mobile Number",
+                                    style: TextStyle(color: Colors.black45),
+                                  ),
+                                  subtitle: TextFormField(
+                                    initialValue: data.userPhoneNumber,
+                                    decoration: InputDecoration(
+                                        hintText: "Phone number",
+                                        hintStyle: TextStyle(
+                                          fontSize: 16.0,
+                                          fontFamily: "Roboto",
+                                        ),
+                                        enabledBorder: InputBorder.none),
+                                    keyboardType: TextInputType.phone,
+                                    validator: validateMobile,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        organizerPhoneNumber = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
                             ],
                           )));
                 }
@@ -190,6 +248,28 @@ class _EditCampaignViewState extends State<EditCampaignView> {
   String validateFormDescription(String value) {
     if (value.length == 0) {
       return "This feild is required ";
+    }
+    return null;
+  }
+
+  String validateMobile(String value) {
+    String pattern = r'(^[0-9]*$)';
+    RegExp regExp = RegExp(pattern);
+    if (value.length != 10) {
+      return 'Mobile Number must be of 10 digit';
+    } else if (!regExp.hasMatch(value)) {
+      return "Name must be numeric vaue";
+    }
+    return null;
+  }
+
+  String validateFormData(String value) {
+    String pattern = r'(^[a-zA-Z ]*$)';
+    RegExp regExp = RegExp(pattern);
+    if (value.length == 0) {
+      return "This feild is required ";
+    } else if (!regExp.hasMatch(value)) {
+      return "Name must be a-z and A-Z";
     }
     return null;
   }

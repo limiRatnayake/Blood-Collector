@@ -18,7 +18,9 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   final _formKey = GlobalKey<FormState>();
   final format = DateFormat("HH:mm");
 
-  TextEditingController _campaignDate = TextEditingController();
+  TextEditingController _campaignStartDate = TextEditingController();
+  TextEditingController _campaignEndDate = TextEditingController();
+  TextEditingController _campaignCloseOn = TextEditingController();
   TextEditingController _placeAddressController = TextEditingController();
 
   List<Marker> myMarker = [];
@@ -27,7 +29,8 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   // String _resultAddress;
   DateTime currentDate = DateTime.now();
   TimeOfDay currentTime = TimeOfDay.now();
-  String pickUpDate = "";
+  String pickUpStartDate;
+  String pickUpEndDate;
   String startTime;
   String endTime;
   String oragnizePlaceName;
@@ -35,6 +38,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   String placeLat;
   String placeLng;
   String organizerPhoneNumber;
+  String requestCloseOn;
   int eventTime;
   bool _formValidate = false;
 
@@ -130,9 +134,9 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
             child: TextFormField(
-              controller: _campaignDate,
+              controller: _campaignStartDate,
               decoration: inputDecoration.copyWith(
-                  hintText: "Live TIll",
+                  hintText: "Start Date",
                   suffixIcon: Icon(
                     Icons.calendar_today,
                     color: Colors.black,
@@ -141,7 +145,32 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                   value.isEmpty ? 'Request Closing Date is required' : null,
               onTap: () async {
                 FocusScope.of(context).requestFocus(new FocusNode());
-                _selectDate(context, _campaignDate);
+                _selectDate(context, _campaignStartDate);
+              },
+            ),
+          ),
+        ),
+        SizedBox(height: 10),
+        Container(
+          width: double.infinity,
+          height: 48,
+          margin: EdgeInsets.symmetric(horizontal: 15.0),
+          decoration: _boxDecoration(),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
+            child: TextFormField(
+              controller: _campaignEndDate,
+              decoration: inputDecoration.copyWith(
+                  hintText: "End Date",
+                  suffixIcon: Icon(
+                    Icons.calendar_today,
+                    color: Colors.black,
+                  )),
+              validator: (value) =>
+                  value.isEmpty ? 'Request Closing Date is required' : null,
+              onTap: () async {
+                FocusScope.of(context).requestFocus(new FocusNode());
+                _selectDate(context, _campaignEndDate);
               },
             ),
           ),
@@ -252,6 +281,51 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
               ),
             )
           ],
+        ),
+      ],
+    );
+  }
+
+  Widget _availableDateTextField() {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left: 25.0),
+          child: Row(
+            children: <Widget>[
+              Text(
+                "Request Close On",
+                style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 8.0,
+        ),
+        Container(
+          width: double.infinity,
+          height: 48,
+          margin: EdgeInsets.symmetric(horizontal: 15.0),
+          decoration: _boxDecoration(),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
+            child: TextFormField(
+              controller: _campaignCloseOn,
+              decoration: inputDecoration.copyWith(
+                  hintText: "Event Close on",
+                  suffixIcon: Icon(
+                    Icons.calendar_today,
+                    color: Colors.black,
+                  )),
+              validator: (value) =>
+                  value.isEmpty ? 'Event date is required' : null,
+              onTap: () async {
+                FocusScope.of(context).requestFocus(new FocusNode());
+                _selectDate(context, _campaignCloseOn);
+              },
+            ),
+          ),
         ),
       ],
     );
@@ -502,20 +576,23 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     final _form = _formKey.currentState;
     if (_form.validate()) {
       print('Form is vaild');
-      var route = new MaterialPageRoute(
-        builder: (BuildContext context) => CreatePostView(
-          nameOfTheOrganizer: nameOfTheOrOrganizer,
-          pickUpDate: pickUpDate,
-          startTime: startTime,
-          endTime: endTime,
-          placeName: oragnizePlaceName,
-          placeAddress: organizePlaceAddress,
-          placeLat: placeLat,
-          placeLng: placeLng,
-          orgernizerConatctNo: organizerPhoneNumber,
-        ),
-      );
-      Navigator.of(context).push(route);
+      print("Strat" + pickUpStartDate);
+      print("end" + pickUpEndDate);
+      print("close" + requestCloseOn);
+      // var route = new MaterialPageRoute(
+      //   builder: (BuildContext context) => CreatePostView(
+      //     nameOfTheOrganizer: nameOfTheOrOrganizer,
+      //     pickUpDate: pickUpStartDate,
+      //     startTime: startTime,
+      //     endTime: endTime,
+      //     placeName: oragnizePlaceName,
+      //     placeAddress: organizePlaceAddress,
+      //     placeLat: placeLat,
+      //     placeLng: placeLng,
+      //     orgernizerConatctNo: organizerPhoneNumber,
+      //   ),
+      // );
+      // Navigator.of(context).push(route);
     } else {
       print('Form is invaild');
       setState(() {
@@ -561,6 +638,10 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                   height: 10.0,
                 ),
                 _googleMapModal(),
+                SizedBox(
+                  height: 10.0,
+                ),
+                _availableDateTextField(),
                 SizedBox(
                   height: 30.0,
                 ),
@@ -609,7 +690,9 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     if (picked != null && picked != _selectedDate)
       ctrl.text = DateFormat('yyyy-MM-dd').format(picked);
     setState(() {
-      pickUpDate = ctrl.text;
+      pickUpStartDate = ctrl.text;
+      pickUpEndDate = ctrl.text;
+      requestCloseOn = ctrl.text;
     });
   }
 
