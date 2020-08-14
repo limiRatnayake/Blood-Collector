@@ -54,7 +54,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                             data.description,
                                             data.approved == true
                                                 ? "Approved"
-                                                : data.rejectReason != ""
+                                                : data.rejectReason != "None"
                                                     ? "Rejected"
                                                     : "Approving..",
                                             formattedTime,
@@ -65,7 +65,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                             data.description,
                                             data.approved == true
                                                 ? "Approved"
-                                                : data.rejectReason != ""
+                                                : data.rejectReason != "None"
                                                     ? "Rejected"
                                                     : "Approving..",
                                             formattedTime,

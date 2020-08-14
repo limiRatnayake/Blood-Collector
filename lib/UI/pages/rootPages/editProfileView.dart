@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:blood_collector/UI/pages/rootPages/editEmailAdd_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/editUserAddressView.dart';
+import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/user_service.dart';
@@ -614,7 +615,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                                           20),
                                                                 ),
                                                                 onPressed: () {
-                                                                 Navigator.pop(context);
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              SettingView()));
                                                                 })
                                                           ]).show();
                                                       setState(() {
