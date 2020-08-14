@@ -19,6 +19,7 @@ class _EdiPasswordViewState extends State<EdiPasswordView> {
 
   bool _formValidate = false;
   bool _isLoading = false;
+  String _errorMessage;
 
   String email;
   bool checkCurrentPasswordValid = true;
@@ -131,7 +132,22 @@ class _EdiPasswordViewState extends State<EdiPasswordView> {
                 SizedBox(
                   height: 10.0,
                 ),
-                Container(
+                _errorMessage != null
+                    ? Container(
+                        padding: EdgeInsets.only(bottom: 10),
+                        width: double.infinity,
+                        child: Text(
+                          _errorMessage,
+                          style: TextStyle(color: Colors.redAccent),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : Container(),
+                _isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    :Container(
                     width: double.infinity,
                     height: 58,
                     margin: EdgeInsets.symmetric(horizontal: 30.0),
@@ -153,13 +169,53 @@ class _EdiPasswordViewState extends State<EdiPasswordView> {
                                   await _userService.vaildatePassword(
                                       _currentPasswordController.text);
                               setState(() {});
-                              //check if the current password and the form is valid then update the password 
+                              //check if the current password and the form is valid then update the password
                               if (_formKey.currentState.validate() &&
                                   checkCurrentPasswordValid) {
-                                _userService.updatePassword(
-                                    _repeatPasswordController.text);
-
-                                Navigator.pop(context);
+                                String response =
+                                    await _userService.updatePassword(
+                                        _repeatPasswordController.text);
+                                if (response != "Success") {
+                                  setState(() {
+                                        _isLoading = false;
+                                        _errorMessage = response;
+                                      });
+                                } else {
+                                  Navigator.pop(context, 'Save Password');
+                                  // Alert(
+                                  //         context: context,
+                                  //         type: AlertType.success,
+                                  //         title:
+                                  //             "Password Updated!",
+                                  //         style: AlertStyle(
+                                  //             backgroundColor: Colors.black,
+                                  //             alertBorder:
+                                  //                 RoundedRectangleBorder(
+                                  //                     borderRadius:
+                                  //                         BorderRadius.circular(
+                                  //                             5),
+                                  //                     side: BorderSide(
+                                  //                         color: Colors.white)),
+                                  //             titleStyle: TextStyle(
+                                  //                 color: Colors.blueAccent)),
+                                  //         buttons: [
+                                  //           DialogButton(
+                                  //               width: 120,
+                                  //               child: Text(
+                                  //                 "ok",
+                                  //                 style: TextStyle(
+                                  //                     color: Colors.white,
+                                  //                     fontSize: 20),
+                                  //               ),
+                                  //               onPressed: () {
+                                  //               Navigator.pop(context);
+                                  //               })
+                                  //         ]).show();
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                  
+                                }
                               } else {
                                 setState(() {
                                   _formValidate = true;

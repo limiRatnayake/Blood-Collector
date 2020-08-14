@@ -21,6 +21,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   bool _isLoading = false;
   bool _formValidate = false;
+  String _errorMessage;
 
   String email = '';
   String password = '';
@@ -130,19 +131,31 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                     SizedBox(
                                       height: 25.0,
                                     ),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 58,
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: 30.0),
-                                      decoration: boxDecoration,
-                                      child: ButtonTheme(
-                                        child: _isLoading
-                                            ? Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              )
-                                            : RaisedButton(
+                                    _errorMessage != null
+                                        ? Container(
+                                            padding:
+                                                EdgeInsets.only(bottom: 10),
+                                            width: double.infinity,
+                                            child: Text(
+                                              _errorMessage,
+                                              style: TextStyle(
+                                                  color: Colors.redAccent),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          )
+                                        : Container(),
+                                    _isLoading
+                                        ? Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : Container(
+                                            width: double.infinity,
+                                            height: 58,
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 30.0),
+                                            decoration: boxDecoration,
+                                            child: ButtonTheme(
+                                              child: RaisedButton(
                                                 elevation: 0.0,
                                                 child: Text("REQUEST",
                                                     style: TextStyle(
@@ -156,56 +169,54 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             25.5)),
-                                                onPressed: () {
+                                                onPressed: () async {
                                                   if (_formKey.currentState
                                                       .validate()) {
                                                     setState(() {
                                                       _isLoading = true;
                                                     });
-                                                    _authService
-                                                        .resetPassword(email)
-                                                        .then((value) => {
-                                                              showDialog(
-                                                                context:
+                                                    String response =
+                                                        await _authService
+                                                            .resetPassword(
+                                                                email);
+                                                    if (response != "Success") {
+                                                      setState(() {
+                                                        _isLoading = false;
+                                                        _errorMessage =
+                                                            response;
+                                                      });
+                                                    } else {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          // returns a object of type Dialog
+                                                          return AlertDialog(
+                                                            title: new Text(
+                                                                "Request Sent"),
+                                                            content: new Text(
+                                                                "Check your mails and follow the link, Then Come Again"),
+                                                            actions: <Widget>[
+                                                              new FlatButton(
+                                                                child: new Text(
+                                                                    "Close"),
+                                                                onPressed: () {
+                                                                  Navigator
+                                                                      .pushReplacementNamed(
                                                                     context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  // returns a object of type Dialog
-                                                                  return AlertDialog(
-                                                                    title: new Text(
-                                                                        "Request Sent"),
-                                                                    content:
-                                                                        new Text(
-                                                                            "Check your mails and follow the link, Then Come Again"),
-                                                                    actions: <
-                                                                        Widget>[
-                                                                      new FlatButton(
-                                                                        child: new Text(
-                                                                            "Close"),
-                                                                        onPressed:
-                                                                            () {
-                                                                          Navigator
-                                                                              .pushReplacementNamed(
-                                                                            context,
-                                                                            AppConstants.SIGN_IN,
-                                                                          );
-                                                                        },
-                                                                      ),
-                                                                    ],
+                                                                    AppConstants
+                                                                        .SIGN_IN,
                                                                   );
                                                                 },
                                                               ),
-                                                              setState(() =>
-                                                                  _isLoading =
-                                                                      false)
-                                                            })
-                                                        .catchError((e) {
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
                                                       setState(() {
                                                         _isLoading = false;
-                                                        print(e);
                                                       });
-                                                    });
+                                                    }
                                                   } else {
                                                     setState(() {
                                                       _formValidate = true;
@@ -213,8 +224,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                                   }
                                                 },
                                               ),
-                                      ),
-                                    ),
+                                            ),
+                                          ),
                                     SizedBox(height: 33.0),
                                     Container(
                                         child: Center(

@@ -125,19 +125,45 @@ class UserService extends ChangeNotifier {
     }
   }
 
-  Future<void> updateEmail(String email) async {
-    var firebaseUser = await _auth.currentUser();
-    firebaseUser.updateEmail(email);
-    DocumentReference newRef = _ref.document(firebaseUser.uid);
+  Future<String> updateEmail(String email) async {
+    String message = "";
+    try {
+      var firebaseUser = await _auth.currentUser();
+      firebaseUser
+          .updateEmail(email)
+          .then((value) => firebaseUser.sendEmailVerification())
+          .catchError((e) {
+        print(e);
+      });
 
-    await newRef.updateData({
-      "email": email,
-    });
+      DocumentReference newRef = _ref.document(firebaseUser.uid);
+
+      await newRef.updateData({
+        "email": email,
+      });
+
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
   }
 
-  Future<void> updatePassword(String password) async {
-    var firebaseUser = await _auth.currentUser();
-    firebaseUser.updatePassword(password);
+  Future<String> updatePassword(String password) async {
+    String message = "";
+    try {
+      var firebaseUser = await _auth.currentUser();
+      firebaseUser.updatePassword(password);
+
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
   }
 
   Future<String> updateUserAddress(

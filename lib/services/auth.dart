@@ -77,9 +77,9 @@ class AuthServices extends ChangeNotifier {
       FirebaseUser _user = (await _auth.signInWithEmailAndPassword(
               email: email, password: password))
           .user;
-      if (_user.isEmailVerified ) {
+      if (_user.isEmailVerified) {
         message = "Success";
-      }else{
+      } else {
         message = "Please Verify Your Email";
       }
       // message = "Success";
@@ -93,13 +93,13 @@ class AuthServices extends ChangeNotifier {
     notifyListeners();
     return message;
   }
-  
+
   // Future<FirebaseUser> signIn(String email, String password) async {
   //   try {
   //     _user = (await _auth.signInWithEmailAndPassword(
   //             email: email, password: password))
   //         .user;
-     
+
   //     print("Sign in" + _user.displayName);
   //   } catch (error) {
   //     print(error);
@@ -116,7 +116,7 @@ class AuthServices extends ChangeNotifier {
 
   //Log out
   Future<void> logOut() async {
-     try {
+    try {
       await _auth.signOut();
       notifyListeners();
     } catch (e) {
@@ -143,7 +143,16 @@ class AuthServices extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> resetPassword(String email) async {
-    await _auth.sendPasswordResetEmail(email: email);
+  Future<String> resetPassword(String email) async {
+    String message = "";
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
   }
 }

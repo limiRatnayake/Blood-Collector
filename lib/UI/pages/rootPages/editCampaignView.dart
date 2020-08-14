@@ -83,7 +83,7 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                             future: _eventServices.requestEventsDetails(docRef),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
-                                return Text("Loading..");
+                                return Center(child: CircularProgressIndicator());
                               } else {
                                 EventModel data =
                                     EventModel.fromMap(snapshot.data.data);

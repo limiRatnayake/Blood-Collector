@@ -54,7 +54,9 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                             data.description,
                                             data.approved == true
                                                 ? "Approved"
-                                                : "Approving...",
+                                                : data.rejectReason != ""
+                                                    ? "Rejected"
+                                                    : "Approving..",
                                             formattedTime,
                                             data.docRef,
                                             data.category,
@@ -63,7 +65,9 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                             data.description,
                                             data.approved == true
                                                 ? "Approved"
-                                                : "Approving...",
+                                                : data.rejectReason != ""
+                                                    ? "Rejected"
+                                                    : "Approving..",
                                             formattedTime,
                                             data.docRef,
                                             data.category,
@@ -86,8 +90,14 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
     );
   }
 
-  Container buildPostSection(String urlPost, String postDescription,
-      String approval, String createdAt, String id, String category, String imageUrl) {
+  Container buildPostSection(
+      String urlPost,
+      String postDescription,
+      String approval,
+      String createdAt,
+      String id,
+      String category,
+      String imageUrl) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -259,8 +269,8 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
     );
   }
 
-  Widget buildPostFirstRow(
-      String approval, String createdAt, String id, String category, String imageUrl) {
+  Widget buildPostFirstRow(String approval, String createdAt, String id,
+      String category, String imageUrl) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
     final EventService _eventServices = Provider.of<EventService>(context);
@@ -398,12 +408,13 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                               style: TextStyle(
                                                   color: Colors.blueGrey)),
                                         );
-                                        if(imageUrl != null){
-                                           _eventServices.deleteEventImage(imageUrl);
+                                        if (imageUrl != null) {
+                                          _eventServices
+                                              .deleteEventImage(imageUrl);
                                         }
                                         Scaffold.of(context)
                                             .showSnackBar(snackBar);
-                                             Navigator.of(context).pop();
+                                        Navigator.of(context).pop();
                                       }
                                     })
                               ]).show();

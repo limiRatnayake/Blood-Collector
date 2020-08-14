@@ -218,11 +218,7 @@ class _EditUserAddressViewwState extends State<EditUserAddressView> {
                                     _userAddressController.text,
                                     userAddLat,
                                     userAddLng);
-
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  AppConstants.HOME_PAGE,
-                                );
+                                Navigator.pop(context);
                               }
                             }))),
                 SizedBox(height: 20.0),

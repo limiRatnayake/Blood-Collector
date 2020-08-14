@@ -67,7 +67,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
             future: _eventServices.getEvents(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               } else {
                 List<EventModel> dataList = snapshot.data.documents
                     .map<EventModel>((doc) => EventModel.fromMap(doc.data))

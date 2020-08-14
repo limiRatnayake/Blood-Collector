@@ -85,7 +85,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 future: _userService.requestUserDetails(_authService.user.uid),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return Text("Loading..");
+                    return Center(child: CircularProgressIndicator());
                   } else {
                     UserModel data = UserModel.fromMap(snapshot.data.data);
 
@@ -614,12 +614,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                                           20),
                                                                 ),
                                                                 onPressed: () {
-                                                                  Navigator
-                                                                      .pushReplacementNamed(
-                                                                    context,
-                                                                    AppConstants
-                                                                        .HOME_PAGE,
-                                                                  );
+                                                                 Navigator.pop(context);
                                                                 })
                                                           ]).show();
                                                       setState(() {

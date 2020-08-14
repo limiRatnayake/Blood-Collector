@@ -95,7 +95,7 @@ class _EditRequestViewState extends State<EditRequestView> {
                       future: _eventServices.requestEventsDetails(docRef),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
-                          return Text("Loading..");
+                          return Center(child: CircularProgressIndicator());
                         } else {
                           EventModel data =
                               EventModel.fromMap(snapshot.data.data);

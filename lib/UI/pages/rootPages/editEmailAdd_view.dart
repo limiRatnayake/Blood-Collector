@@ -144,38 +144,93 @@ class _EditEmailAddressViewState extends State<EditEmailAddressView> {
                 SizedBox(
                   height: 10.0,
                 ),
-                Container(
-                    width: double.infinity,
-                    height: 58,
-                    margin: EdgeInsets.symmetric(horizontal: 30.0),
-                    decoration: boxDecoration,
-                    child: ButtonTheme(
-                        child: RaisedButton(
-                            elevation: 0.0,
-                            child: Text("Save Changes",
-                                style: TextStyle(
-                                    fontFamily: "Roboto",
-                                    fontSize: 18.0,
-                                    color: Colors.black)),
-                            textColor: Colors.black,
-                            color: Colors.red.withOpacity(0.9),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25.5)),
-                            onPressed: () async {
-                              checkCurrentPasswordValid = await _userService
-                                  .vaildatePassword(_passwordController.text);
-                              setState(() {});
-                              if (_formKey.currentState.validate() &&
-                                  checkCurrentPasswordValid) {
-                                _userService.updateEmail(
-                                    _currentEmailAddController.text);
-
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  AppConstants.SIGN_IN,
-                                );
-                              }
-                            }))),
+                _errorMessage != null
+                    ? Container(
+                        padding: EdgeInsets.only(bottom: 10),
+                        width: double.infinity,
+                        child: Text(
+                          _errorMessage,
+                          style: TextStyle(color: Colors.redAccent),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : Container(),
+                _isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(
+                        width: double.infinity,
+                        height: 58,
+                        margin: EdgeInsets.symmetric(horizontal: 30.0),
+                        decoration: boxDecoration,
+                        child: ButtonTheme(
+                            child: RaisedButton(
+                                elevation: 0.0,
+                                child: Text("Save Changes",
+                                    style: TextStyle(
+                                        fontFamily: "Roboto",
+                                        fontSize: 18.0,
+                                        color: Colors.black)),
+                                textColor: Colors.black,
+                                color: Colors.red.withOpacity(0.9),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25.5)),
+                                onPressed: () async {
+                                  checkCurrentPasswordValid =
+                                      await _userService.vaildatePassword(
+                                          _passwordController.text);
+                                  setState(() {});
+                                  if (_formKey.currentState.validate() &&
+                                      checkCurrentPasswordValid) {
+                                    String response =
+                                        await _userService.updateEmail(
+                                            _currentEmailAddController.text);
+                                    if (response != "Success") {
+                                      setState(() {
+                                        _isLoading = false;
+                                        _errorMessage = response;
+                                      });
+                                    } else {
+                                      Alert(
+                                          context: context,
+                                          type: AlertType.success,
+                                          title:
+                                              "Please Verify Your Email and signin again",
+                                          style: AlertStyle(
+                                              backgroundColor: Colors.black,
+                                              alertBorder:
+                                                  RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      side: BorderSide(
+                                                          color: Colors.white)),
+                                              titleStyle: TextStyle(
+                                                  color: Colors.blueAccent)),
+                                          buttons: [
+                                            DialogButton(
+                                                width: 120,
+                                                child: Text(
+                                                  "ok",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 20),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                    context,
+                                                    AppConstants.SIGN_IN,
+                                                  );
+                                                })
+                                          ]).show();
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                    }
+                                  }
+                                }))),
                 // _errorMessage != null
                 //     ? Container(
                 //         padding: EdgeInsets.only(bottom: 10),

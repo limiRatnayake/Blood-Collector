@@ -133,11 +133,16 @@ class _SettingViewState extends State<SettingView> {
                     ListTile(
                       title: Text("Privacy/Security"),
                       leading: Icon(Icons.lock_outline),
-                      onTap: () {
-                        Navigator.push(
+                      onTap: () async {
+                        final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => EdiPasswordView()));
+                        if (result != null) {
+                          Scaffold.of(context)
+                            ..removeCurrentSnackBar()
+                            ..showSnackBar(SnackBar(content: Text("$result")));
+                        }
                       },
                     ),
                     ListTile(
