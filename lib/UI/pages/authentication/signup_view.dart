@@ -520,6 +520,7 @@ class _SignUpPageState extends State<SignUpPage> {
         resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.white,
         body: ListView(children: <Widget>[
+          //logo
           Center(
             child: Column(
               children: <Widget>[

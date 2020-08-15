@@ -109,7 +109,7 @@ class EventService extends ChangeNotifier {
     await uploadTask.onComplete;
     imgUrl = await storageReference.getDownloadURL();
 
-    notifyListeners();
+    notifyListeners(); //notify or update anybody that listen to state chnages
     return imgUrl;
   }
 
@@ -230,7 +230,7 @@ class EventService extends ChangeNotifier {
       _ref.document(docRef).delete();
       //getting the refference and file name
       // StorageReference storageReference =
-          // await _storageRef.getReferenceFromUrl(imgUrl);
+      // await _storageRef.getReferenceFromUrl(imgUrl);
       //delete the image into the firebase storage
       // await storageReference.delete();
       message = "Success";
@@ -242,21 +242,16 @@ class EventService extends ChangeNotifier {
     return message;
   }
 
-   Future<void> deleteEventImage(String imgUrl) async {
-  
+  Future<void> deleteEventImage(String imgUrl) async {
     try {
-   
       //getting the refference and file name
       StorageReference storageReference =
           await _storageRef.getReferenceFromUrl(imgUrl);
       //delete the image into the firebase storage
       await storageReference.delete();
-    
     } catch (error) {
       print(error);
-     
     }
     notifyListeners();
-   
   }
 }
