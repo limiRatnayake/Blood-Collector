@@ -452,7 +452,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                                           validator: dateTimeValidator,
                                           onChanged: (value) {
                                             setState(() {
-                                              birthDate = value.toString();
+                                              birthDate =
+                                                  DateFormat('yyyy-MM-dd')
+                                                      .format(value);
+                                              // birthDate = value.toString();
                                               print(birthDate);
                                             });
                                           },
