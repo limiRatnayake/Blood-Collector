@@ -1,7 +1,6 @@
 import 'package:blood_collector/UI/pages/rootPages/EditCampaignView.dart';
 import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
 import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
-import 'package:blood_collector/UI/widgets/bottom_navigator.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';

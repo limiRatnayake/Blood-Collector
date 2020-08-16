@@ -40,6 +40,7 @@ class _SettingViewState extends State<SettingView> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      //get user profile data
                       FutureBuilder<DocumentSnapshot>(
                           future: _userService
                               .requestUserDetails(_authServices.user.uid),

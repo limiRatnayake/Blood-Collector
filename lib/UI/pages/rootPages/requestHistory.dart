@@ -50,14 +50,8 @@ class _RequestHistoryState extends State<RequestHistory>
                 subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
               ),
             ]),
+            //users event history
             ReqHistoryTimelineView()
-            // Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            //   const ListTile(
-            //     leading: Icon(Icons.album),
-            //     title: Text('The Enchanted Nightingale'),
-            //     subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-            //   ),
-            // ]),
           ])),
     );
   }

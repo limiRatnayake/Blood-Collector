@@ -20,6 +20,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
   FirebaseUser user;
   @override
   void initState() {
+    //ask for the user loaction
     FirebaseAuth.instance
         .currentUser()
         .then((currentUser) => {
