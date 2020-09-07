@@ -1,7 +1,9 @@
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
 import 'package:blood_collector/models/event_model.dart';
+import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_service.dart';
+import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HomeTimelineView extends StatefulWidget {
@@ -18,6 +21,7 @@ class HomeTimelineView extends StatefulWidget {
 
 class _HomeTimelineViewState extends State<HomeTimelineView> {
   FirebaseUser user;
+  List<bool> _isFavorited = [];
   @override
   void initState() {
     FirebaseAuth.instance
@@ -62,7 +66,6 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
           child: AppTopBar(title: "Home")),
       drawer: DrawerWidget(),
       body: Container(
-        // padding: EdgeInsets.only(left: 10, right: 10, top: 45),
         child: FutureBuilder(
             future: _eventServices.getEvents(),
             builder: (context, snapshot) {
@@ -72,6 +75,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                 List<EventModel> dataList = snapshot.data.documents
                     .map<EventModel>((doc) => EventModel.fromMap(doc.data))
                     .toList();
+              
                 return dataList.length > 0
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,15 +85,15 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                                   itemCount: dataList.length,
                                   itemBuilder: (context, index) {
                                     EventModel data = dataList[index];
+                                  
                                     return data.imageUrl != ""
                                         ? buildPostSection(
                                             data.imageUrl,
-                                            "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=640",
+                                            data.uid,
                                             data.description,
-                                          )
-                                        : buildPostSectionTwo(
-                                            "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=640",
-                                            data.description);
+                                            data.createdAt)
+                                        : buildPostSectionTwo(data.uid,
+                                            data.description, data.createdAt);
                                   })),
                         ],
                       )
@@ -108,8 +112,12 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Container buildPostSection(
-      String urlPost, String urlProfilePhoto, String postDescription) {
+
+
+  Container buildPostSection(String urlPost, String uid, 
+      String postDescription, String createAt) {
+   
+
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -120,7 +128,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(urlProfilePhoto),
+          buildPostFirstRow(uid, createAt),
           SizedBox(
             height: 10,
           ),
@@ -147,8 +155,9 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
               Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.favorite_border),
-                    onPressed: () {},
+                    icon:  Icon(Icons.favorite),
+                 onPressed: (){},
+                  
                   ),
                   Text(
                     "Like",
@@ -202,7 +211,8 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
   }
 
   Container buildPostSectionTwo(
-      String urlProfilePhoto, String postDescription) {
+      String uid,  String postDescription, String createAt) {
+     
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -213,7 +223,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildPostFirstRow(urlProfilePhoto),
+          buildPostFirstRow(uid, createAt),
           SizedBox(
             height: 10,
           ),
@@ -226,9 +236,10 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
             children: [
               Row(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.favorite_border),
-                    onPressed: () {},
+                 IconButton(
+                    icon:  Icon(Icons.favorite),
+                 onPressed: (){},
+                  
                   ),
                   Text(
                     "Like",
@@ -281,106 +292,121 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Row buildPostFirstRow(String urlProfilePhoto) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {},
-              child: CircleAvatar(
-                radius: 12,
-                backgroundImage: NetworkImage(urlProfilePhoto),
-              ),
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Tom Smith",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "Iceland",
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[500]),
-                ),
-              ],
-            )
-          ],
-        ),
-        Icon(Icons.more_vert)
-      ],
-    );
-  }
-
-  // Widget buildPostFirstRow(String uid) {
-  //   final AuthServices _authServices = Provider.of<AuthServices>(context);
-
-  //   final UserService _userService = Provider.of<UserService>(context);
-  //   return FutureBuilder(
-  //       future: _userService.requestUserDetails(uid),
-  //       builder: (context, snapshot) {
-  //         if (!snapshot.hasData) {
-  //           return Center(child: CircularProgressIndicator());
-  //         } else {
-  //           UserModel data = UserModel.fromMap(snapshot.data.data);
-  //           return data != null
-  //               ? Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     Row(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         GestureDetector(
-  //                           onTap: () {},
-  //                           child: Hero(
-  //                             tag: data.proPicUrl,
-  //                             child: CircleAvatar(
-  //                               radius: 12,
-  //                               backgroundImage: NetworkImage(data.proPicUrl),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                         SizedBox(
-  //                           width: 8,
-  //                         ),
-  //                         Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: [
-  //                             Text(
-  //                               data.firstName + " " + data.lastName,
-  //                               style: TextStyle(
-  //                                 fontSize: 18,
-  //                                 fontWeight: FontWeight.bold,
-  //                               ),
-  //                             ),
-  //                             Text(
-  //                               uid,
-  //                               style: TextStyle(
-  //                                   fontSize: 12,
-  //                                   fontWeight: FontWeight.bold,
-  //                                   color: Colors.grey[500]),
-  //                             ),
-  //                           ],
-  //                         )
-  //                       ],
-  //                     ),
-  //                     Icon(Icons.more_vert)
-  //                   ],
-  //                 )
-  //               : Text("try again later");
-  //         }
-  //       });
+  // Row buildPostFirstRow(String urlProfilePhoto) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       Row(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           GestureDetector(
+  //             onTap: () {},
+  //             child: CircleAvatar(
+  //               radius: 12,
+  //               backgroundImage: NetworkImage(urlProfilePhoto),
+  //             ),
+  //           ),
+  //           SizedBox(
+  //             width: 5,
+  //           ),
+  //           Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text(
+  //                 "Tom Smith",
+  //                 style: TextStyle(
+  //                   fontSize: 18,
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //               ),
+  //               Text(
+  //                 "Iceland",
+  //                 style: TextStyle(
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.bold,
+  //                     color: Colors.grey[500]),
+  //               ),
+  //             ],
+  //           )
+  //         ],
+  //       ),
+  //       Icon(Icons.more_vert)
+  //     ],
+  //   );
   // }
+
+  Widget buildPostFirstRow(String uid, createAt) {
+    final UserService _userService = Provider.of<UserService>(context);
+    String date;
+    //get the event created date
+    var dateTime = DateTime.parse(createAt);
+    //get the event created time
+    String roughTimeString = DateFormat('jm').format(dateTime);
+    //get the current date
+    DateTime currentTime = DateTime.now();
+
+    if ((currentTime.year == dateTime.year) &&
+        (currentTime.month == dateTime.month) &&
+        (currentTime.day == dateTime.day)) {
+      date = "TODAY";
+    } else if ((currentTime.year == dateTime.year) &&
+        (currentTime.month == dateTime.month)) {
+      if ((currentTime.day - dateTime.day) == 1) {
+        date = "YESTERDAY";
+      }
+    } else if (currentTime.month != dateTime.month) {
+      //if it is long ago
+      date = DateFormat('yMd').format(dateTime) + " " + roughTimeString;
+    }
+    return FutureBuilder(
+        future: _userService.requestUserDetails(uid),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            UserModel data = UserModel.fromMap(snapshot.data.data);
+            return data != null
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            child: CircleAvatar(
+                              radius: 12,
+                              backgroundImage: NetworkImage(data.proPicUrl),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                data.firstName + " " + data.lastName,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                date,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[500]),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      Icon(Icons.more_vert)
+                    ],
+                  )
+                : Text("try again later");
+          }
+        });
+  }
 }
