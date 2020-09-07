@@ -1,18 +1,13 @@
 import 'dart:async';
 
-import 'package:blood_collector/models/user_model.dart';
-import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/user_service.dart';
-import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class EditUserAddressView extends StatefulWidget {
   @override
@@ -65,11 +60,12 @@ class _EditUserAddressViewwState extends State<EditUserAddressView> {
 //updating the current instance - buildcontext
   void _mapdialogContent(BuildContext context) {
     Completer<GoogleMapController> _controller = Completer();
+
+//get the actual address
     getSetAddress(Coordinates coordinates) async {
       final addresses =
           await Geocoder.local.findAddressesFromCoordinates(coordinates);
       setState(() {
-        // _resultAddress = addresses.first.addressLine;
         //get the selelcted position into textfeild
         _userAddressController.text = addresses.first.addressLine;
         address = _userAddressController.text;
@@ -86,7 +82,9 @@ class _EditUserAddressViewwState extends State<EditUserAddressView> {
                 elevation: 0.0,
                 backgroundColor: Colors.transparent,
                 child: Stack(children: <Widget>[
+                  //google map widget
                   GoogleMap(
+                    //use this controller to set markers or move camera around
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);
                     },
@@ -98,6 +96,7 @@ class _EditUserAddressViewwState extends State<EditUserAddressView> {
                           ].toSet()
                         : null,
                     myLocationEnabled: true,
+                    //create default camera positiion to a target
                     initialCameraPosition: CameraPosition(
                         target: LatLng(6.927079, 79.861244), zoom: 18),
                     onTap: (location) {
@@ -158,7 +157,6 @@ class _EditUserAddressViewwState extends State<EditUserAddressView> {
   @override
   Widget build(BuildContext context) {
     final UserService _userService = Provider.of<UserService>(context);
-    final UserService _authService = Provider.of<UserService>(context);
 
     return Scaffold(
         appBar: AppBar(

@@ -14,6 +14,7 @@ class AuthServices extends ChangeNotifier {
   }
 
   //Create a collection as user in cloud firestore
+  //CollectionReference is used to get document, adding document etc
   final CollectionReference _ref =
       Firestore.instance.collection(AppConstants.USERS_COLLECTION);
 
@@ -40,6 +41,7 @@ class AuthServices extends ChangeNotifier {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser user = result.user;
+      //DocumentReference refer to the document location in database
       DocumentReference newRef = _ref.document(user.uid);
       await user.sendEmailVerification();
       UserModel userMod = new UserModel(

@@ -353,6 +353,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 backgroundColor: Colors.transparent,
                 child: Stack(children: <Widget>[
                   GoogleMap(
+                    //use this controller to set markers or move camera around
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);
                     },
@@ -364,6 +365,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ].toSet()
                         : null,
                     myLocationEnabled: true,
+                    //create default camera positiion to a target
                     initialCameraPosition: CameraPosition(
                         target: LatLng(6.927079, 79.861244), zoom: 18),
                     onTap: (location) {

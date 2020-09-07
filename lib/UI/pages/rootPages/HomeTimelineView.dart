@@ -24,6 +24,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
   List<bool> _isFavorited = [];
   @override
   void initState() {
+    //ask for the user loaction
     FirebaseAuth.instance
         .currentUser()
         .then((currentUser) => {
