@@ -1,7 +1,10 @@
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
+import 'package:blood_collector/models/event_likes_model.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/event_likes_service.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +24,7 @@ class HomeTimelineView extends StatefulWidget {
 
 class _HomeTimelineViewState extends State<HomeTimelineView> {
   FirebaseUser user;
-  List<bool> _isFavorited = [];
+
   @override
   void initState() {
     //ask for the user loaction
@@ -55,12 +58,15 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
               })
             })
         .catchError((err) => print(err));
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final EventService _eventServices = Provider.of<EventService>(context);
+    final EventLikesService _eventLikesService =
+        Provider.of<EventLikesService>(context);
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size(double.infinity, kToolbarHeight),
@@ -76,7 +82,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                 List<EventModel> dataList = snapshot.data.documents
                     .map<EventModel>((doc) => EventModel.fromMap(doc.data))
                     .toList();
-              
+
                 return dataList.length > 0
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,15 +92,19 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                                   itemCount: dataList.length,
                                   itemBuilder: (context, index) {
                                     EventModel data = dataList[index];
-                                  
+
                                     return data.imageUrl != ""
                                         ? buildPostSection(
                                             data.imageUrl,
                                             data.uid,
+                                            data.docRef,
                                             data.description,
                                             data.createdAt)
-                                        : buildPostSectionTwo(data.uid,
-                                            data.description, data.createdAt);
+                                        : buildPostSectionTwo(
+                                            data.uid,
+                                            data.docRef,
+                                            data.description,
+                                            data.createdAt);
                                   })),
                         ],
                       )
@@ -113,12 +123,8 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-
-
-  Container buildPostSection(String urlPost, String uid, 
+  Container buildPostSection(String urlPost, String uid, String docRef,
       String postDescription, String createAt) {
-   
-
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -150,25 +156,11 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
           SizedBox(
             height: 5,
           ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  IconButton(
-                    icon:  Icon(Icons.favorite),
-                 onPressed: (){},
-                  
-                  ),
-                  Text(
-                    "Like",
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[800]),
-                  ),
-                ],
-              ),
+              buildPostLike(context, docRef, uid),
               Row(
                 children: [
                   IconButton(
@@ -212,8 +204,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
   }
 
   Container buildPostSectionTwo(
-      String uid,  String postDescription, String createAt) {
-     
+      String uid, String docRef, String postDescription, String createAt) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -235,22 +226,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                 IconButton(
-                    icon:  Icon(Icons.favorite),
-                 onPressed: (){},
-                  
-                  ),
-                  Text(
-                    "Like",
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[800]),
-                  ),
-                ],
-              ),
+              buildPostLike(context, docRef, uid),
               Row(
                 children: [
                   IconButton(
@@ -407,6 +383,43 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                     ],
                   )
                 : Text("try again later");
+          }
+        });
+  }
+
+  Widget buildPostLike(BuildContext context, String docRef, String uid) {
+    bool isLiked = false;
+    final EventLikesService _eventLikesService =
+        Provider.of<EventLikesService>(context);
+    final AuthServices _authService = Provider.of<AuthServices>(context);
+    return FutureBuilder(
+        future: _eventLikesService.getEventLiked(docRef),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Text("Loading..");
+          } else {
+          
+            return Row(
+              children: [
+                IconButton(
+                  icon: isLiked != true
+                      ? Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        ),
+                  onPressed: () {
+                    setState(() {
+                      _eventLikesService.setPostLikes(
+                          docRef, _authService.user.uid, true);
+                    });
+                  },
+                )
+              ],
+            );
           }
         });
   }

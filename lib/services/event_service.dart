@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:blood_collector/models/event_likes_model.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,34 +19,35 @@ class EventService extends ChangeNotifier {
   }
 
   Future<String> addEvent(
-      FirebaseUser user,
-      String bloodGroup,
-      String replacementAvailability,
-      String unitsOfBlood,
-      String requestClose,
-      String hospitalName,
-      String hospitalAddress,
-      String hospitalLat,
-      String hospitalLng,
-      String userFName,
-      String userLName,
-      String userPhoneNumber,
-      bool notifyState,
-      String nameOftheOrganizer,
-      String pickUpStartDate,
-      String pickUpEndDate,
-      String startTime,
-      String endTime,
-      String placeName,
-      String placeAddress,
-      String placeLat,
-      String placeLng,
-      String orgernizerConatctNo,
-      String description,
-      String imgName,
-      String imageExtention,
-      String imgUrl,
-      String category) async {
+    FirebaseUser user,
+    String bloodGroup,
+    String replacementAvailability,
+    String unitsOfBlood,
+    String requestClose,
+    String hospitalName,
+    String hospitalAddress,
+    String hospitalLat,
+    String hospitalLng,
+    String userFName,
+    String userLName,
+    String userPhoneNumber,
+    bool notifyState,
+    String nameOftheOrganizer,
+    String pickUpStartDate,
+    String pickUpEndDate,
+    String startTime,
+    String endTime,
+    String placeName,
+    String placeAddress,
+    String placeLat,
+    String placeLng,
+    String orgernizerConatctNo,
+    String description,
+    String imgName,
+    String imageExtention,
+    String imgUrl,
+    String category,
+  ) async {
     String message = "";
     try {
       DocumentReference newRef = _ref.document();
@@ -254,4 +256,31 @@ class EventService extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  // Future<void> setPostLikes(String docRef, String uid, bool isLiked) async {
+  //   try {
+  //     DocumentReference newRef =
+  //         _ref.document(docRef).collection('Likes').document(uid);
+  //     EventLikesModel likesModel = new EventLikesModel(docRef: isLiked);
+  //     await newRef.setData(likesModel.toJson());
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  //   notifyListeners();
+  // }
+
+  // Future<List<EventLikesModel>> getEventLiked() async {
+  //   try {
+  //     List<DocumentSnapshot> snapshot = (await _ref.getDocuments()).documents;
+
+  //     List<EventLikesModel> eventIsLiked = snapshot
+  //         .map<EventLikesModel>((doc) => EventLikesModel.fromMap(doc.data))
+  //         .toList();
+
+  //     return eventIsLiked;
+  //   } catch (e) {
+  //     print(e);
+  //     return null;
+  //   }
+  // }
 }

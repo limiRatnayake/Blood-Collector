@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class RequestBloodView extends StatefulWidget {
   @override
@@ -312,12 +313,9 @@ class _RequestBloodViewState extends State<RequestBloodView> {
 
   void _submitTheForm() {
     final _form = _formKey.currentState;
-    if (_form.validate()) {
-      if (_radioValue < 0) {
-        print("Hello error");
-      }
+
+    if (_form.validate() && hospitalName != null) {
       print('Form is vaild');
-      print(userFName);
       var route = new MaterialPageRoute(
         builder: (BuildContext context) => CreatePostView(
           bloodGroup: bloodGroup,
@@ -338,6 +336,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
       Navigator.of(context).push(route);
     } else {
       print('Form is invaild');
+
       setState(() {
         _formValidate = true;
       });
@@ -539,16 +538,18 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                 decoration: _boxDecoration(),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 7, left: 24, right: 16),
-                  child: DropdownButtonFormField(
+                  child: SearchableDropdown(
                     items: dropDownItems,
-                    validator: (value) =>
-                        value == null ? 'field required' : null,
-                    decoration: InputDecoration(
-                      hintText: 'Select a Hospital ',
-                      hintStyle:
-                          TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
-                      enabledBorder: InputBorder.none,
+                    hint: Text(
+                      'Select One',
                     ),
+                    isExpanded: true,
+                  
+                    validator: (value) {
+                      if (value == null) {
+                        return "Select the hospital";
+                      }
+                    },
                     onChanged: (hospitalValue) {
                       print(hospitalValue);
                       final snackBar = SnackBar(
@@ -556,7 +557,6 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                             style: TextStyle(color: Colors.blueGrey)),
                       );
                       Scaffold.of(context).showSnackBar(snackBar);
-
                       for (var i = 0; i < hospitalItems.length; i++) {
                         if (hospitalValue == hospitalItems[i].bloodBankName) {
                           addressController.text =
@@ -579,6 +579,52 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                   ),
                 ),
               ),
+
+              // Container(
+              //   margin: EdgeInsets.symmetric(horizontal: 15.0),
+              //   decoration: _boxDecoration(),
+              //   child: Padding(
+              //     padding: const EdgeInsets.only(top: 7, left: 24, right: 16),
+              //     child: DropdownButtonFormField(
+              //       items: dropDownItems,
+              //       validator: (value) =>
+              //           value == null ? 'field required' : null,
+              //       decoration: InputDecoration(
+              //         hintText: 'Select a Hospital ',
+              //         hintStyle:
+              //             TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
+              //         enabledBorder: InputBorder.none,
+              //       ),
+              //       onChanged: (hospitalValue) {
+              //         print(hospitalValue);
+              //         final snackBar = SnackBar(
+              //           content: Text('Selected Hospital is $hospitalValue',
+              //               style: TextStyle(color: Colors.blueGrey)),
+              //         );
+              //         Scaffold.of(context).showSnackBar(snackBar);
+
+              //         for (var i = 0; i < hospitalItems.length; i++) {
+              //           if (hospitalValue == hospitalItems[i].bloodBankName) {
+              //             addressController.text =
+              //                 hospitalItems[i].bloodBankAddress;
+              //             hospitalLat = hospitalItems[i].hospitalLatitude;
+              //             hospitalLng = hospitalItems[i].hospitalLongitude;
+
+              //             //assign to parameters of CreatePostView class
+              //             hospitalAddress = addressController.text;
+              //             // hospitalLat = addressLatController.text;
+              //             // hospitalLng = addressLngController.text;
+              //           }
+              //         }
+              //         setState(() {
+              //           selectedHospital = hospitalValue;
+              //           hospitalName = selectedHospital;
+              //         });
+              //       },
+              //       value: selectedHospital,
+              //     ),
+              //   ),
+              // ),
               SizedBox(
                 height: 15.0,
               ),
@@ -688,8 +734,6 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                         // setState(() {
                         //   userFName = data.firstName;
                         // });
-
-                        print(userFName);
                       },
                     ),
                   ),
@@ -772,7 +816,6 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                         setState(() {
                           userPhoneNumber = value;
                         });
-                        print(userPhoneNumber);
                       },
                     ),
                   ),

@@ -31,39 +31,42 @@ class EventModel {
   String rejectReason;
   String createdAt;
   String category;
-  EventModel(
-      {this.docRef,
-      this.uid,
-      this.bloodGroup,
-      this.replacementAvailability,
-      this.unitsOfBlood,
-      this.requestClose,
-      this.hospitalName,
-      this.hospitalAddress,
-      this.hospitalLat,
-      this.hospitalLng,
-      this.userFName,
-      this.userLName,
-      this.userPhoneNumber,
-      this.notifyState,
-      this.nameOftheOrganizer,
-      this.pickUpStartDate,
-      this.pickUpEndDate,
-      this.startTime,
-      this.endTime,
-      this.placeName,
-      this.placeAddress,
-      this.placeLat,
-      this.placeLng,
-      this.orgernizerConatctNo,
-      this.description,
-      this.imageName,
-      this.imageExtention,
-      this.imageUrl,
-      this.approved,
-      this.rejectReason,
-      this.createdAt,
-      this.category});
+  int likes;
+  EventModel({
+    this.docRef,
+    this.uid,
+    this.bloodGroup,
+    this.replacementAvailability,
+    this.unitsOfBlood,
+    this.requestClose,
+    this.hospitalName,
+    this.hospitalAddress,
+    this.hospitalLat,
+    this.hospitalLng,
+    this.userFName,
+    this.userLName,
+    this.userPhoneNumber,
+    this.notifyState,
+    this.nameOftheOrganizer,
+    this.pickUpStartDate,
+    this.pickUpEndDate,
+    this.startTime,
+    this.endTime,
+    this.placeName,
+    this.placeAddress,
+    this.placeLat,
+    this.placeLng,
+    this.orgernizerConatctNo,
+    this.description,
+    this.imageName,
+    this.imageExtention,
+    this.imageUrl,
+    this.approved,
+    this.rejectReason,
+    this.createdAt,
+    this.category,
+    this.likes,
+  });
 
   EventModel.fromMap(Map snapshot)
       : docRef = snapshot['docRef'] ?? "",
@@ -98,7 +101,8 @@ class EventModel {
         approved = snapshot['approved'] ?? false,
         rejectReason = snapshot['rejectReason'] ?? "",
         createdAt = snapshot['createdAt'] ?? "",
-        category = snapshot['category'] ?? "";
+        category = snapshot['category'] ?? "",
+        likes = snapshot['likes'] ?? 0;
 
   toJson() {
     return {
@@ -133,7 +137,8 @@ class EventModel {
       "approved": approved,
       "rejectReason": rejectReason,
       "createdAt": createdAt,
-      "category": category
+      "category": category,
+      "likes": likes,
     };
   }
 }
