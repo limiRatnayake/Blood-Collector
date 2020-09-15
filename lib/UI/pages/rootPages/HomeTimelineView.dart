@@ -25,8 +25,11 @@ class HomeTimelineView extends StatefulWidget {
 class _HomeTimelineViewState extends State<HomeTimelineView> {
   FirebaseUser user;
 
+
+
   @override
   void initState() {
+   
     //ask for the user loaction
     FirebaseAuth.instance
         .currentUser()
@@ -62,11 +65,12 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     super.initState();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     final EventService _eventServices = Provider.of<EventService>(context);
-    final EventLikesService _eventLikesService =
-        Provider.of<EventLikesService>(context);
+  
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size(double.infinity, kToolbarHeight),
@@ -315,10 +319,13 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
   Widget buildPostFirstRow(String uid, createAt) {
     final UserService _userService = Provider.of<UserService>(context);
     String date;
+    // print(createAt);
     //get the event created date
     var dateTime = DateTime.parse(createAt);
+    print(dateTime);
     //get the event created time
     String roughTimeString = DateFormat('jm').format(dateTime);
+    print(roughTimeString);
     //get the current date
     DateTime currentTime = DateTime.now();
 
@@ -326,6 +333,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
         (currentTime.month == dateTime.month) &&
         (currentTime.day == dateTime.day)) {
       date = "TODAY";
+      print(date);
     } else if ((currentTime.year == dateTime.year) &&
         (currentTime.month == dateTime.month)) {
       if ((currentTime.day - dateTime.day) == 1) {
@@ -334,7 +342,9 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     } else if (currentTime.month != dateTime.month) {
       //if it is long ago
       date = DateFormat('yMd').format(dateTime) + " " + roughTimeString;
+      print(date);
     }
+    print(date);
     return FutureBuilder(
         future: _userService.requestUserDetails(uid),
         builder: (context, snapshot) {
@@ -369,7 +379,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                                 ),
                               ),
                               Text(
-                                date,
+                                "date",
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
@@ -388,39 +398,23 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
   }
 
   Widget buildPostLike(BuildContext context, String docRef, String uid) {
-    bool isLiked = false;
-    final EventLikesService _eventLikesService =
-        Provider.of<EventLikesService>(context);
-    final AuthServices _authService = Provider.of<AuthServices>(context);
-    return FutureBuilder(
-        future: _eventLikesService.getEventLiked(docRef),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Text("Loading..");
-          } else {
-          
-            return Row(
+    bool isLiked;
+    Map<String, dynamic> data;
+    // final EventLikesService _eventLikesService = Provider.of<EventLikesService>(context);
+
+  
+    
+    return Row(
               children: [
-                IconButton(
-                  icon: isLiked != true
-                      ? Icon(
-                          Icons.favorite,
-                          color: Colors.red,
-                        )
-                      : Icon(
-                          Icons.favorite,
-                          color: Colors.red,
-                        ),
-                  onPressed: () {
-                    setState(() {
-                      _eventLikesService.setPostLikes(
-                          docRef, _authService.user.uid, true);
-                    });
+                GestureDetector(
+                  onTap:(){
+                  
+
                   },
-                )
+                  child: Icon(Icons.favorite_border),),
+                
               ],
             );
-          }
-        });
+   
   }
 }
