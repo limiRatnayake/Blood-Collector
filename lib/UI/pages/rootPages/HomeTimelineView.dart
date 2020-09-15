@@ -7,6 +7,7 @@ import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_likes_service.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:blood_collector/shared/appConstant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -94,12 +95,14 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
 
                                     return data.imageUrl != ""
                                         ? buildPostSection(
+                                            index,
                                             data.imageUrl,
                                             data.uid,
                                             data.docRef,
                                             data.description,
                                             data.createdAt)
                                         : buildPostSectionTwo(
+                                            index,
                                             data.uid,
                                             data.docRef,
                                             data.description,
@@ -122,7 +125,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Container buildPostSection(String urlPost, String uid, String docRef,
+  Container buildPostSection(index, String urlPost, String uid, String docRef,
       String postDescription, String createAt) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
@@ -159,7 +162,21 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              buildPostLike(context, docRef, uid),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.favorite),
+                    onPressed: () {},
+                  ),
+                  Text(
+                    "Likes",
+                    style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800]),
+                  ),
+                ],
+              ),
               Row(
                 children: [
                   IconButton(
@@ -202,8 +219,8 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
     );
   }
 
-  Container buildPostSectionTwo(
-      String uid, String docRef, String postDescription, String createAt) {
+  Container buildPostSectionTwo(index, String uid, String docRef,
+      String postDescription, String createAt) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
       padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
@@ -225,7 +242,21 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              buildPostLike(context, docRef, uid),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.favorite),
+                    onPressed: () {},
+                  ),
+                  Text(
+                    "Likes",
+                    style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800]),
+                  ),
+                ],
+              ),
               Row(
                 children: [
                   IconButton(
@@ -387,20 +418,5 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                 : Text("try again later");
           }
         });
-  }
-
-  Widget buildPostLike(BuildContext context, String docRef, String uid) {
-    bool isLiked;
-    Map<String, dynamic> data;
-    // final EventLikesService _eventLikesService = Provider.of<EventLikesService>(context);
-
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () {},
-          child: Icon(Icons.favorite_border),
-        ),
-      ],
-    );
   }
 }

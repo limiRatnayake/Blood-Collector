@@ -2,6 +2,7 @@ import 'package:blood_collector/UI/pages/rootPages/HomeTimelineView.dart';
 import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/requestHistory.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
+import 'package:blood_collector/UI/pages/rootPages/timelineView.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavigationWidget extends StatefulWidget {
@@ -19,7 +20,7 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
   }
 
   final List<Widget> _children = [
-    HomeTimelineView(),
+    TimelineView(),
     RequestHistory(),
     MapView(),
     SettingView()
