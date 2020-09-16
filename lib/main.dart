@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => HospitalDetailsServices()),
         ChangeNotifierProvider(create: (_) => UserService()),
         ChangeNotifierProvider(create: (_) => EventService()),
-        // ChangeNotifierProvider(create: (_) => EventLikesService()),
+        ChangeNotifierProvider(create: (_) => EventLikesService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

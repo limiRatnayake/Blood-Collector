@@ -1,5 +1,9 @@
+import 'package:blood_collector/models/event_likes_model.dart';
 import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/services/event_likes_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:blood_collector/shared/appConstant.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -35,12 +39,13 @@ class _PostViewState extends State<PostView> {
   @override
   Widget build(BuildContext context) {
     final UserService _userService = Provider.of<UserService>(context);
+    final EventLikesService _eventLikesService = Provider.of<EventLikesService>(context);
 
     String date;
-    // print(widget.createdAt);
+
     //get the event created date
     var checkedTime = DateTime.parse(widget.createdAt);
-    // print(dateTime);
+
     //get the event created time
     String roughTimeString = DateFormat('jm').format(checkedTime);
 
@@ -54,12 +59,11 @@ class _PostViewState extends State<PostView> {
         (currentTime.month == checkedTime.month)) {
       if ((currentTime.day - checkedTime.day) == 1) {
         date = "YESTERDAY";
-      } else if ((currentTime.day - checkedTime.day) == -1) {
-        date = "TOMORROW";
       } else {
         date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
       }
     }
+  
 
     return Container(
         child: Card(
@@ -78,7 +82,7 @@ class _PostViewState extends State<PostView> {
                       ? ListTile(
                           leading: GestureDetector(
                             child: CircleAvatar(
-                              radius: 12,
+                              radius: 24,
                               backgroundImage: NetworkImage(data.proPicUrl),
                             ),
                           ),
@@ -100,49 +104,52 @@ class _PostViewState extends State<PostView> {
                       : Text("try again later");
                 }
               }),
-          // ListTile(
-          //   leading: Container(
-          //     child: FutureBuilder(
-          //         future: _userService.requestUserDetails(widget.uid),
-          //         builder: (context, snapshot) {
-          //           if (!snapshot.hasData) {
-          //             return Center(child: CircularProgressIndicator());
-          //           } else {
-          //             UserModel data = UserModel.fromMap(snapshot.data.data);
-          //             print(data.proPicUrl);
-          //             return data != null
-          //                 ? CircleAvatar(
-          //                     backgroundImage: NetworkImage(data.proPicUrl),
-          //                   )
-          //                 : Text("try again later");
-          //           }
-          //         }),
-          //   ),
-          //   title: const Text('Card title 1'),
-          //   subtitle: Text(
-          //     'Secondary Text',
-          //     style: TextStyle(color: Colors.black.withOpacity(0.6)),
-          //   ),
-          // ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Greyhound divisively hello coldly wonderfully marginally far upon excluding.',
-              style: TextStyle(color: Colors.black.withOpacity(0.6)),
+
+          Container(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                widget.description,
+                style: TextStyle(color: Colors.black.withOpacity(0.6)),
+              ),
             ),
           ),
+          widget.imageUrl != ""
+              ? Container(
+                  height: MediaQuery.of(context).size.width - 60,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(22),
+                      image: DecorationImage(
+                        fit: BoxFit.fitHeight,
+                        image: NetworkImage(widget.imageUrl),
+                      )),
+                )
+              : Container(),
           ButtonBar(
             alignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(
-                onPressed: () {
-                  _isLiked();
-                },
-                icon: IconButton(
-                    icon: isLiked
-                        ? Icon(Icons.favorite)
-                        : Icon(Icons.favorite_border),
-                    onPressed: null),
+              FutureBuilder(
+                future: _eventLikesService.getEventLiked(widget.docRef),
+                builder: (context, snapshot) {
+                  List<EventLikesModel> eventLikes = snapshot.data;
+              
+                  return IconButton(
+                    onPressed: () {
+                      _isLiked();
+                      if (isLiked != false) {
+                        
+                      }else{
+                       
+                      }
+                    },
+                    icon: IconButton(
+                        icon: isLiked
+                            ? Icon(Icons.favorite)
+                            : Icon(Icons.favorite_border),
+                        onPressed: null),
+                  );
+                }
               ),
               IconButton(
                 onPressed: () {
@@ -165,25 +172,5 @@ class _PostViewState extends State<PostView> {
     ));
   }
 
-  Container porfilePicture(String uid) {
-    final UserService _userService = Provider.of<UserService>(context);
-
-    return Container(
-      child: FutureBuilder(
-          future: _userService.requestUserDetails(uid),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              UserModel data = UserModel.fromMap(snapshot.data.data);
-              print(data.proPicUrl);
-              return data != null
-                  ? CircleAvatar(
-                      backgroundImage: NetworkImage(data.proPicUrl),
-                    )
-                  : Text("try again later");
-            }
-          }),
-    );
-  }
+ 
 }
