@@ -1,5 +1,6 @@
 import 'package:blood_collector/models/event_likes_model.dart';
 import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_likes_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
@@ -9,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PostView extends StatefulWidget {
+  final String currentUser;
   final String imageUrl;
   final String uid;
   final String docRef;
@@ -17,6 +19,7 @@ class PostView extends StatefulWidget {
 
   PostView(
       {Key key,
+      this.currentUser,
       this.imageUrl,
       this.uid,
       this.docRef,
@@ -28,7 +31,10 @@ class PostView extends StatefulWidget {
 }
 
 class _PostViewState extends State<PostView> {
+  DocumentReference likeRef;
+
   bool isLiked = false;
+  Map<String, dynamic> likeData;
 
   _isLiked() {
     setState(() {
@@ -37,10 +43,24 @@ class _PostViewState extends State<PostView> {
   }
 
   @override
+  void initState() {
+    likeRef = Firestore.instance
+        .collection("likes")
+        .document(widget.currentUser);
+        
+     
+    super.initState();
+    likeRef.get().then((value) {
+      likeData = value.data;
+      
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final UserService _userService = Provider.of<UserService>(context);
-    final EventLikesService _eventLikesService = Provider.of<EventLikesService>(context);
-
+    final AuthServices _authService = Provider.of<AuthServices>(context);
+    String currentUser = _authService.user.uid;
     String date;
 
     //get the event created date
@@ -63,7 +83,6 @@ class _PostViewState extends State<PostView> {
         date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
       }
     }
-  
 
     return Container(
         child: Card(
@@ -129,27 +148,34 @@ class _PostViewState extends State<PostView> {
           ButtonBar(
             alignment: MainAxisAlignment.spaceEvenly,
             children: [
-              FutureBuilder(
-                future: _eventLikesService.getEventLiked(widget.docRef),
-                builder: (context, snapshot) {
-                  List<EventLikesModel> eventLikes = snapshot.data;
-              
-                  return IconButton(
-                    onPressed: () {
-                      _isLiked();
-                      if (isLiked != false) {
-                        
-                      }else{
-                       
-                      }
-                    },
-                    icon: IconButton(
-                        icon: isLiked
-                            ? Icon(Icons.favorite)
-                            : Icon(Icons.favorite_border),
-                        onPressed: null),
-                  );
-                }
+              IconButton(
+                onPressed: () {
+                  _isLiked();
+
+                  likeRef.get().then((value) => {
+                     print(likeData),
+                        if (value.data != null)
+                          {}
+                        else
+                          {
+                            // Firestore.instance
+                            //     .runTransaction((Transaction tx) async {}),
+                            likeRef.setData({widget.docRef: true}),
+                             
+                            setState(() {
+                             likeRef
+                                  .get()
+                                  .then((value) {
+                                     likeData = value.data;
+                                   
+                                  });
+                            })
+                          }
+                      });
+                },
+                icon: likeData != null && likeData.containsKey(widget.docRef)
+                    ? Icon(Icons.favorite)
+                    : Icon(Icons.favorite_border),
               ),
               IconButton(
                 onPressed: () {
@@ -171,6 +197,4 @@ class _PostViewState extends State<PostView> {
       ),
     ));
   }
-
- 
 }

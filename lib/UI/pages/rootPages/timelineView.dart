@@ -67,6 +67,8 @@ class _TimelineViewState extends State<TimelineView> {
   @override
   Widget build(BuildContext context) {
     final EventService _eventServices = Provider.of<EventService>(context);
+    final AuthServices _authService = Provider.of<AuthServices>(context);
+    String currentUser = _authService.user.uid;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -95,6 +97,7 @@ class _TimelineViewState extends State<TimelineView> {
                                     EventModel data = dataList[index];
 
                                     return PostView(
+                                      currentUser: currentUser,
                                         imageUrl: data.imageUrl,
                                         uid: data.uid,
                                         docRef: data.docRef,
