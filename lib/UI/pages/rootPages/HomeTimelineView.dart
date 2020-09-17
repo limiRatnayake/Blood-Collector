@@ -1,5 +1,5 @@
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
-import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
+import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
 import 'package:blood_collector/models/event_likes_model.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
@@ -185,7 +185,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ViewDetails()));
+                              builder: (context) => ViewRequestDetails()));
                     },
                   ),
                   Text(
@@ -265,7 +265,7 @@ class _HomeTimelineViewState extends State<HomeTimelineView> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ViewDetails()));
+                              builder: (context) => ViewRequestDetails()));
                     },
                   ),
                   Text(

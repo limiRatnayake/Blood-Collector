@@ -1,6 +1,6 @@
 import 'package:blood_collector/UI/pages/rootPages/EditCampaignView.dart';
 import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
-import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
+import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -154,7 +154,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ViewDetails()));
+                              builder: (context) => ViewRequestDetails()));
                     },
                   ),
                   Text(
@@ -234,7 +234,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ViewDetails()));
+                              builder: (context) => ViewRequestDetails()));
                     },
                   ),
                   Text(

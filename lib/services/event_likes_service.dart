@@ -31,7 +31,7 @@ class EventLikesService extends ChangeNotifier {
 
    Future<void> setPostLikes(String docRef, String uid, bool isLiked) async {
     try {
-      DocumentReference newRef = _ref.document(docRef).collection(AppConstants.EVENTS_LIKES_COLLECTION).document();
+      DocumentReference newRef = _ref.document(docRef).collection(AppConstants.EVENTS_LIKES_COLLECTION).document(uid);
       // EventLikesModel likesModel = new EventLikesModel(docRef: docRef);
       await newRef.setData({
         uid : isLiked
@@ -55,20 +55,35 @@ class EventLikesService extends ChangeNotifier {
   //   return likesSnapshot;
   // }
 
-  Future<List<EventLikesModel>> getEventLiked(String docRef,) async {
-    try {
-      List<DocumentSnapshot> snapshot = (await _ref.document(docRef).collection(AppConstants.EVENTS_LIKES_COLLECTION).getDocuments()).documents;
+  // Future<List<EventLikesModel>> getEventLiked(String docRef,) async {
+  //   try {
+  //     List<DocumentSnapshot> snapshot = (await _ref.document(docRef).collection(AppConstants.EVENTS_LIKES_COLLECTION).getDocuments()).documents;
 
-      List<EventLikesModel> eventIsLiked = snapshot
-          .map<EventLikesModel>((doc) => EventLikesModel.fromMap(doc.data))
-          .toList();
+  //     List<EventLikesModel> eventIsLiked = snapshot
+  //         .map<EventLikesModel>((doc) => EventLikesModel.fromMap(doc.data))
+  //         .toList();
 
-      return eventIsLiked;
-    } catch (e) {
-      print(e);
-      return null;
+  //     return eventIsLiked;
+  //   } catch (e) {
+  //     print(e);
+  //     return null;
+  //   }
+  // }
+
+   Future<bool> requestLikes(String docRef, String uid) async {
+     Map<String, dynamic> data;
+     bool postLike = false;
+    DocumentReference likeRef = _ref.document(docRef).collection(AppConstants.EVENTS_LIKES_COLLECTION).document(uid);
+    likeRef.get().then((value) => data = value.data);
+   
+    if(data != null && data.containsKey(uid)){
+      postLike = true;
+    }else{
+       postLike = false;
     }
+   return postLike;
   }
+
 
   
 }

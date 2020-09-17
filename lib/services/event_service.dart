@@ -80,6 +80,7 @@ class EventService extends ChangeNotifier {
         imageExtention: imageExtention,
         imageUrl: imgUrl,
         category: category,
+        likes: 0,
         uid: user.uid,
         approved: false,
         rejectReason: "None",

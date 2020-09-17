@@ -1,3 +1,5 @@
+import 'package:blood_collector/UI/pages/rootPages/viewCampaignDetails.dart';
+import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
 import 'package:blood_collector/models/event_likes_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -16,6 +18,8 @@ class PostView extends StatefulWidget {
   final String docRef;
   final String description;
   final String createdAt;
+  final int likeCount;
+  final String category;
 
   PostView(
       {Key key,
@@ -24,7 +28,9 @@ class PostView extends StatefulWidget {
       this.uid,
       this.docRef,
       this.createdAt,
-      this.description})
+      this.description,
+      this.likeCount,
+      this.category})
       : super(key: key);
   @override
   _PostViewState createState() => _PostViewState();
@@ -32,8 +38,9 @@ class PostView extends StatefulWidget {
 
 class _PostViewState extends State<PostView> {
   DocumentReference likeRef;
-
+  CollectionReference eventRef;
   bool isLiked = false;
+
   Map<String, dynamic> likeData;
 
   _isLiked() {
@@ -45,15 +52,17 @@ class _PostViewState extends State<PostView> {
   @override
   void initState() {
     likeRef = Firestore.instance
+        .collection("events")
+        .document(widget.docRef)
         .collection("likes")
         .document(widget.currentUser);
-        
-     
+
     super.initState();
     likeRef.get().then((value) {
       likeData = value.data;
-      
+      print(likeData);
     });
+    eventRef = Firestore.instance.collection("events");
   }
 
   @override
@@ -148,47 +157,121 @@ class _PostViewState extends State<PostView> {
           ButtonBar(
             alignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(
-                onPressed: () {
-                  _isLiked();
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      _isLiked();
 
-                  likeRef.get().then((value) => {
-                     print(likeData),
-                        if (value.data != null)
-                          {}
-                        else
-                          {
-                            // Firestore.instance
-                            //     .runTransaction((Transaction tx) async {}),
-                            likeRef.setData({widget.docRef: true}),
-                             
-                            setState(() {
-                             likeRef
-                                  .get()
-                                  .then((value) {
-                                     likeData = value.data;
-                                   
+                      likeRef.get().then((value) => {
+                            print(likeData),
+                            if (value.data != null)
+                              {
+                                print("like ref is nt null"),
+                                if (value.data.keys.contains(widget.docRef))
+                                  {
+                                    Firestore.instance
+                                        .runTransaction((Transaction tx) async {
+                                      DocumentSnapshot docSnapshot =
+                                          await tx.get(
+                                              eventRef.document(widget.docRef));
+                                      if (docSnapshot.exists) {
+                                        await tx.update(
+                                            eventRef.document(widget.docRef),
+                                            <String, dynamic>{
+                                              'likes':
+                                                  docSnapshot.data["likes"] - 1
+                                            });
+                                      }
+                                    }),
+                                  },
+                                likeRef.delete(),
+                                setState(() {
+                                  likeRef.get().then((value) {
+                                    likeData = value.data;
                                   });
-                            })
-                          }
-                      });
-                },
-                icon: likeData != null && likeData.containsKey(widget.docRef)
-                    ? Icon(Icons.favorite)
-                    : Icon(Icons.favorite_border),
+                                })
+                              }
+                            else
+                              {
+                                Firestore.instance
+                                    .runTransaction((Transaction tx) async {
+                                  DocumentSnapshot docSnapshot = await tx
+                                      .get(eventRef.document(widget.docRef));
+                                  if (docSnapshot.exists) {
+                                    await tx.update(
+                                        eventRef.document(widget.docRef),
+                                        <String, dynamic>{
+                                          'likes': docSnapshot.data["likes"] + 1
+                                        });
+                                  }
+                                }),
+                                likeRef.setData({widget.docRef: true}),
+                                setState(() {
+                                  likeRef.get().then((value) {
+                                    likeData = value.data;
+                                  });
+                                })
+                              }
+                          });
+                    },
+                    icon:
+                        likeData != null && likeData.containsKey(widget.docRef)
+                            ? Icon(Icons.favorite)
+                            : Icon(Icons.favorite_border),
+                  ),
+                  widget.likeCount != 0
+                      ? Text(
+                          (widget.likeCount).toString() + " " + 'likes',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[800]),
+                        )
+                      : Container()
+                ],
               ),
-              IconButton(
-                onPressed: () {
-                  // Perform some action
-                },
-                icon: IconButton(
-                    icon: Icon(Icons.remove_red_eye), onPressed: null),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      if (widget.category != "request") {
+                         Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ViewCampaignDetails(docRef: widget.docRef, uid:widget.uid)));
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ViewRequestDetails(docRef: widget.docRef,uid:widget.uid)));
+                      }
+                    },
+                    icon: Icon(Icons.remove_red_eye),
+                  ),
+                  Text(
+                    "View",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800]),
+                  ),
+                ],
               ),
-              IconButton(
-                onPressed: () {
-                  // Perform some action
-                },
-                icon: IconButton(icon: Icon(Icons.map), onPressed: null),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.map),
+                    onPressed: () {},
+                  ),
+                  Text(
+                    "Map",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800]),
+                  ),
+                ],
               ),
             ],
           ),

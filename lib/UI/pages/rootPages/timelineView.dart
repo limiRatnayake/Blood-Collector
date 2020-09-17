@@ -1,5 +1,5 @@
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
-import 'package:blood_collector/UI/pages/rootPages/viewDetails.dart';
+import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
 import 'package:blood_collector/UI/widgets/postWidget.dart';
 import 'package:blood_collector/models/event_likes_model.dart';
 import 'package:blood_collector/models/event_model.dart';
@@ -97,12 +97,14 @@ class _TimelineViewState extends State<TimelineView> {
                                     EventModel data = dataList[index];
 
                                     return PostView(
-                                      currentUser: currentUser,
+                                        currentUser: currentUser,
                                         imageUrl: data.imageUrl,
                                         uid: data.uid,
                                         docRef: data.docRef,
                                         description: data.description,
-                                        createdAt: data.createdAt);
+                                        createdAt: data.createdAt,
+                                        likeCount: data.likes,
+                                        category: data.category);
                                   })),
                         ],
                       )
