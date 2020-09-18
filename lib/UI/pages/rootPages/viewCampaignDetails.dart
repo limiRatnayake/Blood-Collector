@@ -89,8 +89,8 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                           Card(
                             child: ListTile(
                               leading: Icon(Icons.opacity ),
-                              title: Text("Requested Blood Type"),
-                              subtitle: Text(data.bloodGroup, style: TextStyle(color: Colors.red),),
+                              title: Text("Organizered By"),
+                              subtitle: Text(data.nameOftheOrganizer, style: TextStyle(color: Colors.red),),
                             ),
                           ),
                           SizedBox(
@@ -98,9 +98,9 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                           ),
                           Card(
                             child: ListTile(
-                              leading: Icon(Icons.check_box_outline_blank ),
-                              title: Text("Units of Blood"),
-                              subtitle: Text(data.unitsOfBlood),
+                              leading: Icon(Icons.access_time),
+                              title: Text("Time"),
+                              subtitle: Text(data.startTime + " " + data.endTime),
                             ),
                           ),
                           SizedBox(
@@ -118,8 +118,8 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                           Card(
                             child: ListTile(
                               leading: Icon(Icons.local_hospital ),
-                              title: Text("Hospital Name"),
-                              subtitle: Text(data.hospitalName),
+                              title: Text("Place Name"),
+                              subtitle: Text(data.placeName),
                             ),
                           ),
                           SizedBox(
@@ -128,8 +128,8 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                           Card(
                             child: ListTile(
                               leading: Icon(Icons.location_on),
-                              title: Text("Hospital Address"),
-                              subtitle: Text(data.hospitalAddress),
+                              title: Text("Place Address"),
+                              subtitle: Text(data.placeAddress),
                             ),
                           ),
                           SizedBox(
@@ -138,8 +138,8 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                           Card(
                             child: ListTile(
                                leading: Icon(Icons.phone),
-                              title: Text("Contact Person Number"),
-                              subtitle: Text(data.userPhoneNumber),
+                              title: Text("Organizer Contact Number"),
+                              subtitle: Text(data.orgernizerConatctNo),
                               // trailing: Text(data.userPhoneNumber),
                             ),
                           ),

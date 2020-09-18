@@ -1,9 +1,11 @@
 import 'package:blood_collector/UI/pages/rootPages/viewCampaignDetails.dart';
 import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
 import 'package:blood_collector/models/event_likes_model.dart';
+import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_likes_service.dart';
+import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,7 +20,6 @@ class PostView extends StatefulWidget {
   final String docRef;
   final String description;
   final String createdAt;
-  final int likeCount;
   final String category;
 
   PostView(
@@ -29,7 +30,6 @@ class PostView extends StatefulWidget {
       this.docRef,
       this.createdAt,
       this.description,
-      this.likeCount,
       this.category})
       : super(key: key);
   @override
@@ -46,6 +46,7 @@ class _PostViewState extends State<PostView> {
   _isLiked() {
     setState(() {
       isLiked = !isLiked;
+    
     });
   }
 
@@ -60,7 +61,7 @@ class _PostViewState extends State<PostView> {
     super.initState();
     likeRef.get().then((value) {
       likeData = value.data;
-      print(likeData);
+   
     });
     eventRef = Firestore.instance.collection("events");
   }
@@ -68,8 +69,7 @@ class _PostViewState extends State<PostView> {
   @override
   Widget build(BuildContext context) {
     final UserService _userService = Provider.of<UserService>(context);
-    final AuthServices _authService = Provider.of<AuthServices>(context);
-    String currentUser = _authService.user.uid;
+    final EventService _eventServices = Provider.of<EventService>(context);
     String date;
 
     //get the event created date
@@ -164,7 +164,7 @@ class _PostViewState extends State<PostView> {
                       _isLiked();
 
                       likeRef.get().then((value) => {
-                            print(likeData),
+                         
                             if (value.data != null)
                               {
                                 print("like ref is nt null"),
@@ -220,15 +220,23 @@ class _PostViewState extends State<PostView> {
                             ? Icon(Icons.favorite)
                             : Icon(Icons.favorite_border),
                   ),
-                  widget.likeCount != 0
-                      ? Text(
-                          (widget.likeCount).toString() + " " + 'likes',
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[800]),
-                        )
-                      : Container()
+                   FutureBuilder(
+                     future:  _eventServices.requestEventsDetails(widget.docRef),
+                     builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      EventModel data = EventModel.fromMap(snapshot.data.data);
+                       return data.likes !=0 ? Text(
+                              (data.likes).toString() + " " + 'likes',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[800]),
+                            ):Container();
+                      }}
+                   )
+                      
                 ],
               ),
               Row(

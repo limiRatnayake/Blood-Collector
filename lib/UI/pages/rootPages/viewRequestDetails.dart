@@ -131,7 +131,7 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
                           ),
                           Card(
                             child: ListTile(
-                              leading: Icon(Icons.location_on),
+                              leading: Icon(Icons.directions),
                               title: Text("Hospital Address"),
                               subtitle: Text(data.hospitalAddress),
                             ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:blood_collector/UI/pages/authentication/signup_second_view.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
@@ -712,7 +713,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               child: ButtonTheme(
                                 child: RaisedButton(
                                   elevation: 0.0,
-                                  child: Text("SIGNUP",
+                                  child: Text("CONTINUE",
                                       style: TextStyle(
                                           fontFamily: "Roboto",
                                           fontSize: 18.0,
@@ -723,109 +724,128 @@ class _SignUpPageState extends State<SignUpPage> {
                                       borderRadius:
                                           BorderRadius.circular(25.5)),
                                   onPressed: () async {
-                                    if (_formKey.currentState.validate()) {
-                                      setState(() {
-                                        _errorMessage = "";
-                                        _isLoading = true;
-                                        disabled = false;
-                                      });
-                                      String response =
-                                          await _authService.createUser(
-                                              email,
-                                              confirmPassword,
-                                              uid,
-                                              firstName,
-                                              lastName,
-                                              birthDate,
-                                              gender,
-                                              mobileNo,
-                                              bloodGroup,
-                                              address,
-                                              userAddLat,
-                                              userAddLng,
-                                              proPicUrl,
-                                              disabled);
-                                      if (response != "Success") {
-                                        setState(() {
-                                          _isLoading = false;
-                                          _errorMessage = response;
-                                        });
-                                      } else {
-                                        Alert(
-                                            context: context,
-                                            type: AlertType.success,
-                                            title:
-                                                "Your are Successfully signup!",
-                                            desc:
-                                                "Please Verify Your Email Before Sign in",
-                                            style: AlertStyle(
-                                                isCloseButton: false,
-                                                // backgroundColor: Colors.black,
-                                                descStyle: TextStyle(
-                                                    fontWeight: FontWeight
-                                                        .bold),
-                                                alertBorder:
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        side: BorderSide(
-                                                            color:
-                                                                Colors.white)),
-                                                titleStyle: TextStyle(
-                                                    color: Colors.blueAccent)),
-                                            buttons: [
-                                              DialogButton(
-                                                  width: 120,
-                                                  child: Text(
-                                                    "ok",
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 20),
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator
-                                                        .pushReplacementNamed(
-                                                      context,
-                                                      AppConstants.SIGN_IN,
-                                                    );
-                                                  })
-                                            ]).show();
-                                        setState(() {
-                                          _isLoading = false;
-                                        });
-                                      }
-                                    } else {
-                                      setState(() {
-                                        _formValidate = true;
-                                      });
-                                    }
+                                    var route = new MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          SignUpSecondPage(
+                                              email: email,
+                                              confirmPassword: confirmPassword,
+                                              uid: uid,
+                                              firstName: firstName,
+                                              lastName: lastName,
+                                              birthDate: birthDate,
+                                              gender: gender,
+                                              mobileNo: mobileNo,
+                                              bloodGroup: bloodGroup,
+                                              address: address,
+                                              userAddLat: userAddLat,
+                                              userAddLng: userAddLng,
+                                              proPicUrl: proPicUrl,
+                                              disabled: disabled),
+                                    );
+                                    Navigator.of(context).push(route);
+                                    // if (_formKey.currentState.validate()) {
+                                    //   setState(() {
+                                    //     _errorMessage = "";
+                                    //     _isLoading = true;
+                                    //     disabled = false;
+                                    //   });
+                                    //   String response =
+                                    //       await _authService.createUser(
+                                    //           email,
+                                    //           confirmPassword,
+                                    //           uid,
+                                    //           firstName,
+                                    //           lastName,
+                                    //           birthDate,
+                                    //           gender,
+                                    //           mobileNo,
+                                    //           bloodGroup,
+                                    //           address,
+                                    //           userAddLat,
+                                    //           userAddLng,
+                                    //           proPicUrl,
+                                    //           disabled);
+                                    //   if (response != "Success") {
+                                    //     setState(() {
+                                    //       _isLoading = false;
+                                    //       _errorMessage = response;
+                                    //     });
+                                    //   } else {
+                                    //     Alert(
+                                    //         context: context,
+                                    //         type: AlertType.success,
+                                    //         title:
+                                    //             "Your are Successfully signup!",
+                                    //         desc:
+                                    //             "Please Verify Your Email Before Sign in",
+                                    //         style: AlertStyle(
+                                    //             isCloseButton: false,
+                                    //             // backgroundColor: Colors.black,
+                                    //             descStyle: TextStyle(
+                                    //                 fontWeight: FontWeight
+                                    //                     .bold),
+                                    //             alertBorder:
+                                    //                 RoundedRectangleBorder(
+                                    //                     borderRadius:
+                                    //                         BorderRadius
+                                    //                             .circular(5),
+                                    //                     side: BorderSide(
+                                    //                         color:
+                                    //                             Colors.white)),
+                                    //             titleStyle: TextStyle(
+                                    //                 color: Colors.blueAccent)),
+                                    //         buttons: [
+                                    //           DialogButton(
+                                    //               width: 120,
+                                    //               child: Text(
+                                    //                 "ok",
+                                    //                 style: TextStyle(
+                                    //                     color: Colors.white,
+                                    //                     fontSize: 20),
+                                    //               ),
+                                    //               onPressed: () {
+                                    //                 Navigator
+                                    //                     .pushReplacementNamed(
+                                    //                   context,
+                                    //                   AppConstants.SIGN_IN,
+                                    //                 );
+                                    //               })
+                                    //         ]).show();
+                                    //     setState(() {
+                                    //       _isLoading = false;
+                                    //     });
+                                    //   }
+                                    // } else {
+                                    //   setState(() {
+                                    //     _formValidate = true;
+                                    //   });
+                                    // }
                                   },
                                 ),
                               ),
                             ),
-                      Container(
-                          child: Center(
-                              child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "If you already have an account !  ",
-                            style:
-                                TextStyle(fontSize: 15.0, fontFamily: "Roboto"),
-                          ),
-                          FlatButton.icon(
-                            icon: Icon(Icons.person),
-                            label: Text('Sign In'),
-                            onPressed: () {
-                              Navigator.pushReplacementNamed(
-                                context,
-                                AppConstants.SIGN_IN,
-                              );
-                            },
-                          )
-                        ],
-                      )))
+                      // Container(
+                      //     child: Center(
+                      //         child: Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: <Widget>[
+                      //     Text(
+                      //       "If you already have an account !  ",
+                      //       style:
+                      //           TextStyle(fontSize: 15.0, fontFamily: "Roboto"),
+                      //     ),
+                      //     FlatButton.icon(
+                      //       icon: Icon(Icons.person),
+                      //       label: Text('Sign In'),
+                      //       onPressed: () {
+                      //         Navigator.pushReplacementNamed(
+                      //           context,
+                      //           AppConstants.SIGN_IN,
+                      //         );
+                      //       },
+                      //     )
+                      //   ],
+                      // )))
                     ],
                   ),
                 ),

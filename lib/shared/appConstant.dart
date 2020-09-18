@@ -3,6 +3,7 @@ class AppConstants {
   static const String AUTH = 'auth';
   static const String SIGN_IN = 'sign_in';
   static const String SIGN_UP = 'sign_up';
+  static const String SIGN_UP_SECOND_PAGE = 'signup_second_page';
   static const String FORGOT_PASSWORD = 'forgot_password';
   static const String USER_STATE = 'user_state';
   static const String HOME_PAGE = 'home_page';

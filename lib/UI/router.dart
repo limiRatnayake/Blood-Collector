@@ -1,5 +1,6 @@
 import 'package:blood_collector/UI/pages/authentication/auth_view.dart';
 import 'package:blood_collector/UI/pages/authentication/forgot_password.dart';
+import 'package:blood_collector/UI/pages/authentication/signup_second_view.dart';
 import 'package:blood_collector/UI/pages/authentication/signup_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/request-history-timeline.dart';
@@ -23,6 +24,8 @@ class Router {
         return MaterialPageRoute(builder: ((_) => AuthPage()));
       case AppConstants.SIGN_UP:
         return MaterialPageRoute(builder: (_) => SignUpPage());
+         case AppConstants.SIGN_UP_SECOND_PAGE:
+        return MaterialPageRoute(builder: (_) => SignUpSecondPage());
       case AppConstants.SIGN_IN:
         return MaterialPageRoute(builder: (_) => SignInPage());
       case AppConstants.FORGOT_PASSWORD:

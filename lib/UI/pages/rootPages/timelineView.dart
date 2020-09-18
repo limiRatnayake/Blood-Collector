@@ -103,7 +103,6 @@ class _TimelineViewState extends State<TimelineView> {
                                         docRef: data.docRef,
                                         description: data.description,
                                         createdAt: data.createdAt,
-                                        likeCount: data.likes,
                                         category: data.category);
                                   })),
                         ],
