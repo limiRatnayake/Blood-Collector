@@ -38,6 +38,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String userAddLng;
   String proPicUrl =
       'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=e33110a2-a94a-4405-9fbc-e3bc4ba3c292';
+  int age = 0;
+
   bool disabled;
 
   String error = '';
@@ -51,6 +53,11 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isLoading = false;
   bool _formValidate = false;
   LatLng _markerLocation;
+
+  //picked birthday year
+  var selectedYear;
+
+  DateTime currentTime = DateTime.now();
 
   TextEditingController _birthDate = TextEditingController();
   TextEditingController _userAddressController = TextEditingController();
@@ -91,6 +98,16 @@ class _SignUpPageState extends State<SignUpPage> {
   void something(String value) {
     setState(() {
       _bloodGroup = value;
+    });
+  }
+
+  void calculateAge() {
+    print(selectedYear);
+     selectedYear =   DateTime.parse(birthDate);
+     var currentYear = DateTime.now().year;
+    setState(() {
+      age = (currentYear - selectedYear.year).toInt();
+      print(age);
     });
   }
 
@@ -204,6 +221,7 @@ class _SignUpPageState extends State<SignUpPage> {
           validator: (value) => value.isEmpty ? 'Name should be filled' : null,
           onTap: () async {
             FocusScope.of(context).requestFocus(new FocusNode());
+
             _selectBDate(context, _birthDate);
           },
         ),
@@ -690,22 +708,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       _confirmPasswordField(),
                       SizedBox(height: 20.0),
-                      _errorMessage != null
-                          ? Container(
-                              padding: EdgeInsets.only(bottom: 10),
-                              width: double.infinity,
-                              child: Text(
-                                _errorMessage,
-                                style: TextStyle(color: Colors.redAccent),
-                                textAlign: TextAlign.center,
-                              ),
-                            )
-                          : Container(),
-                      _isLoading
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : Container(
+                      Container(
                               width: double.infinity,
                               height: 58,
                               margin: EdgeInsets.symmetric(horizontal: 30.0),
@@ -723,12 +726,22 @@ class _SignUpPageState extends State<SignUpPage> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(25.5)),
-                                  onPressed: () async {
+                                  onPressed: ()  {
+                                    calculateAge();
+                                  
+
+                                    if (_formKey.currentState.validate()) {
+                                      setState(() {
+                                        _errorMessage = "";
+                                        _isLoading = true;
+                                        disabled = false;
+                                      });
                                     var route = new MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           SignUpSecondPage(
                                               email: email,
-                                              confirmPassword: confirmPassword,
+                                              confirmPassword:
+                                                  confirmPassword,
                                               uid: uid,
                                               firstName: firstName,
                                               lastName: lastName,
@@ -740,15 +753,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                               userAddLat: userAddLat,
                                               userAddLng: userAddLng,
                                               proPicUrl: proPicUrl,
-                                              disabled: disabled),
+                                              disabled: disabled,
+                                              age: age),
                                     );
                                     Navigator.of(context).push(route);
-                                    // if (_formKey.currentState.validate()) {
-                                    //   setState(() {
-                                    //     _errorMessage = "";
-                                    //     _isLoading = true;
-                                    //     disabled = false;
-                                    //   });
                                     //   String response =
                                     //       await _authService.createUser(
                                     //           email,
@@ -819,7 +827,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     //   setState(() {
                                     //     _formValidate = true;
                                     //   });
-                                    // }
+                                    }
                                   },
                                 ),
                               ),
@@ -859,6 +867,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<Null> _selectBDate(context, ctrl) async {
     DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+
     DateTime _selectedBDate =
         ctrl.text != "" ? dateFormat.parse(ctrl.text) : DateTime.now();
     final DateTime picked = await showDatePicker(
@@ -869,6 +878,8 @@ class _SignUpPageState extends State<SignUpPage> {
     if (picked != null && picked != _selectedBDate)
       ctrl.text = DateFormat('yyyy-MM-dd').format(picked);
     setState(() {
+      // selectedYear = picked.year;
+
       birthDate = ctrl.text;
     });
   }

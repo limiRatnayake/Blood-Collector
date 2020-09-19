@@ -1,3 +1,4 @@
+import 'package:blood_collector/UI/pages/rootPages/donorSelectionCriteriaVIew.dart';
 import 'package:blood_collector/UI/pages/rootPages/editPassword_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
@@ -144,6 +145,16 @@ class _SettingViewState extends State<SettingView> {
                             ..removeCurrentSnackBar()
                             ..showSnackBar(SnackBar(content: Text("$result")));
                         }
+                      },
+                    ),
+                    ListTile(
+                      title: Text("Donor Selection Criteria"),
+                      leading: Icon(Icons.label_outline),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DonorSelectionCriteriaPage()));
                       },
                     ),
                     ListTile(

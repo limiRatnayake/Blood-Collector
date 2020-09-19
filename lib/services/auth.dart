@@ -35,7 +35,20 @@ class AuthServices extends ChangeNotifier {
       String userAddLat,
       String userAddLng,
       String proPicUrl,
-      bool disabled) async {
+      bool disabled,
+      String userPreviouslyDonatedOrNot,
+      String ifYesHowManyTimes,
+      String dateOfLastDonation,
+      String medicallyAdvised,
+      String vaildIdentitiyCardCheck,
+      String freeFromRiskBehaviour,
+      String freeFromSeriousCondition,
+      String travelAbroad,
+      String presentMedialTreatment,
+      String undergoneSurgery,
+      bool availability,
+      bool lastDonationDateCheck,
+      int age) async {
     String message = "";
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
@@ -58,7 +71,19 @@ class AuthServices extends ChangeNotifier {
           userAddLng: userAddLng,
           email: email,
           proPicUrl: proPicUrl,
-          disabled: false);
+          disabled: false,
+          userPreviouslyDonatedOrNot: userPreviouslyDonatedOrNot,
+          ifYesHowManyTimes: ifYesHowManyTimes,
+          dateOfLastDonation: dateOfLastDonation,
+          medicallyAdvised: medicallyAdvised,
+          vaildIdentitiyCardCheck: vaildIdentitiyCardCheck,
+          freeFromRiskBehaviour: freeFromRiskBehaviour,
+          freeFromSeriousCondition: freeFromSeriousCondition,
+          travelAbroad: travelAbroad,
+          presentMedialTreatment: presentMedialTreatment,
+          undergoneSurgery: undergoneSurgery,
+          availability: availability,
+          lastDonationDateCheck: lastDonationDateCheck);
 
       //create a new document for the user with the uid
       await newRef.setData(userMod.toJson());

@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SignUpSecondPage extends StatefulWidget {
   final String email;
@@ -22,6 +23,7 @@ class SignUpSecondPage extends StatefulWidget {
   final String userAddLat;
   final String userAddLng;
   final String proPicUrl;
+  final int age;
   final bool disabled;
 
   SignUpSecondPage(
@@ -39,6 +41,7 @@ class SignUpSecondPage extends StatefulWidget {
       this.userAddLat,
       this.userAddLng,
       this.proPicUrl,
+      this.age,
       this.disabled})
       : super(key: key);
   @override
@@ -51,12 +54,25 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
   DateTime currentDate = DateTime.now();
   final _formKey = GlobalKey<FormState>();
   final dateFormat = DateFormat("yyyy-MM-dd");
+  List<String> answerType = ["Select a value", 'Yes', 'No'];
+
   String _errorMessage;
   bool _isLoading = false;
   bool _formValidate = false;
-  String answer = "Yes";
+  String answer = "Select a value";
 
-  List<String> answerType = ['Yes', 'No'];
+  String userPreviouslyDonatedOrNot;
+  String ifYesHowManyTimes;
+  String dateOfLastDonation;
+  String medicallyAdvised;
+  String vaildIdentitiyCardCheck;
+  String freeFromRiskBehaviour;
+  String freeFromSeriousCondition;
+  String travelAbroad;
+  String presentMedialTreatment;
+  String undergoneSurgery;
+  bool availability;
+  bool lastDonationDateCheck;
 
   Widget _userPreviouslyDonatedOrNot() {
     return Column(
@@ -77,13 +93,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
               value: answer,
-              decoration: InputDecoration(
-                  hintText: 'Blood Type',
-                  hintStyle: TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "Roboto",
-                      color: Colors.black54),
-                  enabledBorder: InputBorder.none),
+              decoration: InputDecoration(enabledBorder: InputBorder.none),
               // validator: validateBloodGroup,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
@@ -92,7 +102,9 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                 );
               }).toList(),
               onChanged: (value) {
-                setState(() {});
+                setState(() {
+                  userPreviouslyDonatedOrNot = value;
+                });
               },
             ),
           ),
@@ -123,8 +135,10 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                   inputDecoration.copyWith(hintText: "Enter How many times"),
               keyboardType: TextInputType.text,
               // validator: validateName,
-              onChanged: (val) {
-                setState(() {});
+              onChanged: (value) {
+                setState(() {
+                  ifYesHowManyTimes = value;
+                });
               },
             ),
           ),
@@ -170,7 +184,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
               // validator: dateTimeValidator,
               onChanged: (value) {
                 setState(() {
-                  // pickUpStartDate = DateFormat('yyyy-MM-dd').format(value);
+                  dateOfLastDonation = DateFormat('yyyy-MM-dd').format(value);
                   // print(pickUpStartDate);
                 });
               },
@@ -200,13 +214,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
               value: answer,
-              decoration: InputDecoration(
-                  hintText: 'Blood Type',
-                  hintStyle: TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "Roboto",
-                      color: Colors.black54),
-                  enabledBorder: InputBorder.none),
+              decoration: InputDecoration(enabledBorder: InputBorder.none),
               // validator: validateBloodGroup,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
@@ -215,7 +223,9 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                 );
               }).toList(),
               onChanged: (value) {
-                setState(() {});
+                setState(() {
+                  medicallyAdvised = value;
+                });
               },
             ),
           ),
@@ -243,13 +253,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
               value: answer,
-              decoration: InputDecoration(
-                  hintText: 'Blood Type',
-                  hintStyle: TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "Roboto",
-                      color: Colors.black54),
-                  enabledBorder: InputBorder.none),
+              decoration: InputDecoration(enabledBorder: InputBorder.none),
               // validator: validateBloodGroup,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
@@ -258,7 +262,9 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                 );
               }).toList(),
               onChanged: (value) {
-                setState(() {});
+                setState(() {
+                  vaildIdentitiyCardCheck = value;
+                });
               },
             ),
           ),
@@ -272,19 +278,22 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
       children: [
         Container(
           width: MediaQuery.of(context).size.width * 0.78,
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "Are you free from Risk Behaviour?",
                 style: TextStyle(fontSize: 16),
               ),
-              IconButton(
-                  icon: Icon(Icons.info), tooltip: 'Hello', onPressed: () {})
+              Text(
+                "(Homosexuals,Sex workers and their clients,Drug addicts,Engaging in sex with any of the above,Having more than one sexual partner)",
+                style: TextStyle(fontSize: 11),
+              ),
             ],
           ),
         ),
         SizedBox(
-          height: 25,
+          height: 10,
         ),
         Container(
           width: double.infinity,
@@ -310,7 +319,9 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                 );
               }).toList(),
               onChanged: (value) {
-                setState(() {});
+                setState(() {
+                  freeFromRiskBehaviour = value;
+                });
               },
             ),
           ),
@@ -356,7 +367,9 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                 );
               }).toList(),
               onChanged: (value) {
-                setState(() {});
+                setState(() {
+                  freeFromSeriousCondition = value;
+                });
               },
             ),
           ),
@@ -364,7 +377,8 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
       ],
     );
   }
- Widget _travelAbroad() {
+
+  Widget _travelAbroad() {
     return Column(
       children: [
         Container(
@@ -401,7 +415,93 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                 );
               }).toList(),
               onChanged: (value) {
-                setState(() {});
+                setState(() {
+                  travelAbroad = value;
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _presentMedialTreatment() {
+    return Column(
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width * 0.78,
+          child: Text(
+            "Are you taking any medication/treatment, presently?",
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+        SizedBox(
+          height: 25,
+        ),
+        Container(
+          width: double.infinity,
+          height: 66,
+          margin: EdgeInsets.symmetric(horizontal: 30.0),
+          decoration: boxDecoration,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+            child: DropdownButtonFormField(
+              value: answer,
+              decoration: InputDecoration(enabledBorder: InputBorder.none),
+              // validator: validateBloodGroup,
+              items: answerType.map((answerType) {
+                return DropdownMenuItem(
+                  value: answerType,
+                  child: Text(answerType),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  presentMedialTreatment = value;
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _undergoneSurgery() {
+    return Column(
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width * 0.78,
+          child: Text(
+            "Have you undergone any surgery?",
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+        SizedBox(
+          height: 25,
+        ),
+        Container(
+          width: double.infinity,
+          height: 66,
+          margin: EdgeInsets.symmetric(horizontal: 30.0),
+          decoration: boxDecoration,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+            child: DropdownButtonFormField(
+              value: answer,
+              decoration: InputDecoration(enabledBorder: InputBorder.none),
+              // validator: validateBloodGroup,
+              items: answerType.map((answerType) {
+                return DropdownMenuItem(
+                  value: answerType,
+                  child: Text(answerType),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  undergoneSurgery = value;
+                });
               },
             ),
           ),
@@ -413,8 +513,31 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
   @override
   Widget build(BuildContext context) {
     final AuthServices _authService = Provider.of<AuthServices>(context);
+
+    void availabilityCalculate() {
+      if (dateOfLastDonation != null) {
+        var lastDonatedMonth = DateTime.parse(dateOfLastDonation);
+        var currentMonth = DateTime.now();
+
+        setState(() {
+          var differenceInDays =
+              currentMonth.difference(lastDonatedMonth).inDays;
+          var differenceOfMonth = (differenceInDays) ~/ 30;
+
+          if (differenceOfMonth > 4) {
+            lastDonationDateCheck = true;
+          } else {
+            lastDonationDateCheck = false;
+          }
+        });
+      }
+    }
+
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
         resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.white,
         body: ListView(children: <Widget>[
@@ -468,6 +591,10 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                       _freeFromSeriousCondition(),
                       SizedBox(height: 10),
                       _travelAbroad(),
+                      SizedBox(height: 10),
+                      _presentMedialTreatment(),
+                      SizedBox(height: 10),
+                      _undergoneSurgery(),
                       SizedBox(height: 20.0),
                       _errorMessage != null
                           ? Container(
@@ -492,7 +619,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                               child: ButtonTheme(
                                 child: RaisedButton(
                                   elevation: 0.0,
-                                  child: Text("CONTINUE",
+                                  child: Text("SIGNUP",
                                       style: TextStyle(
                                           fontFamily: "Roboto",
                                           fontSize: 18.0,
@@ -503,85 +630,142 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                                       borderRadius:
                                           BorderRadius.circular(25.5)),
                                   onPressed: () async {
-                                    Navigator.pushReplacementNamed(
-                                        context, AppConstants.SIGN_IN);
-                                    // if (_formKey.currentState.validate()) {
-                                    //   setState(() {
-                                    //     _errorMessage = "";
-                                    //     _isLoading = true;
-                                    //     disabled = false;
-                                    //   });
-                                    //   String response =
-                                    //       await _authService.createUser(
-                                    //           email,
-                                    //           confirmPassword,
-                                    //           uid,
-                                    //           firstName,
-                                    //           lastName,
-                                    //           birthDate,
-                                    //           gender,
-                                    //           mobileNo,
-                                    //           bloodGroup,
-                                    //           address,
-                                    //           userAddLat,
-                                    //           userAddLng,
-                                    //           proPicUrl,
-                                    //           disabled);
-                                    //   if (response != "Success") {
-                                    //     setState(() {
-                                    //       _isLoading = false;
-                                    //       _errorMessage = response;
-                                    //     });
-                                    //   } else {
-                                    //     Alert(
-                                    //         context: context,
-                                    //         type: AlertType.success,
-                                    //         title:
-                                    //             "Your are Successfully signup!",
-                                    //         desc:
-                                    //             "Please Verify Your Email Before Sign in",
-                                    //         style: AlertStyle(
-                                    //             isCloseButton: false,
-                                    //             // backgroundColor: Colors.black,
-                                    //             descStyle: TextStyle(
-                                    //                 fontWeight: FontWeight
-                                    //                     .bold),
-                                    //             alertBorder:
-                                    //                 RoundedRectangleBorder(
-                                    //                     borderRadius:
-                                    //                         BorderRadius
-                                    //                             .circular(5),
-                                    //                     side: BorderSide(
-                                    //                         color:
-                                    //                             Colors.white)),
-                                    //             titleStyle: TextStyle(
-                                    //                 color: Colors.blueAccent)),
-                                    //         buttons: [
-                                    //           DialogButton(
-                                    //               width: 120,
-                                    //               child: Text(
-                                    //                 "ok",
-                                    //                 style: TextStyle(
-                                    //                     color: Colors.white,
-                                    //                     fontSize: 20),
-                                    //               ),
-                                    //               onPressed: () {
-                                    //                 Navigator
-                                    //                     .pushReplacementNamed(
-                                    //                   context,
-                                    //                   AppConstants.SIGN_IN,
-                                    //                 );
-                                    //               })
-                                    //         ]).show();
-                                    //     setState(() {
-                                    //       _isLoading = false;
-                                    //     });
-                                    //   }
-                                    // } else {
-                                    //   setState(() {
-                                    //     _formValidate = true;
-                                    //   });
-                                    // }
+                                    availabilityCalculate();
+                                    if ((userPreviouslyDonatedOrNot == "No" ||
+                                            lastDonationDateCheck == true) &&
+                                        (widget.age > 18 && widget.age < 55) &&
+                                        medicallyAdvised == "No" &&
+                                        vaildIdentitiyCardCheck == "Yes" &&
+                                        freeFromRiskBehaviour == "Yes" &&
+                                        freeFromSeriousCondition == "No" &&
+                                        travelAbroad == "No" &&
+                                        presentMedialTreatment == "No" &&
+                                        undergoneSurgery == "No") {
+                                      setState(() {
+                                        availability = true;
+                                        print(availability);
+                                      });
+                                    } else {
+                                      setState(() {
+                                        availability = false;
+                                        print(availability);
+                                      });
+                                    }
+                                    //  print(gapBetweenDonation);
+                                    // print(widget.email);
+                                    // print(widget.confirmPassword);
+                                    // print(widget.uid);
+                                    // print(widget.firstName);
+                                    // print(widget.lastName);
+                                    // print(widget.birthDate);
+                                    // print(widget.gender);
+                                    // print(widget.mobileNo);
+                                    // print(widget.bloodGroup);
+                                    // print(widget.address);
+                                    // print(widget.userAddLat);
+                                    // print(widget.userAddLng);
+                                    // print(widget.proPicUrl);
+                                    // print(widget.disabled);
+                                    // print(userPreviouslyDonatedOrNot);
+                                    // print(ifYesHowManyTimes);
+                                    // print(dateOfLastDonation);
+                                    // print(medicallyAdvised);
+                                    // print(vaildIdentitiyCardCheck);
+                                    // print(freeFromRiskBehaviour);
+                                    // print(freeFromSeriousCondition);
+                                    // print(travelAbroad);
+                                    // print(widget.age);
+
+                                    if (_formKey.currentState.validate()) {
+                                      setState(() {
+                                        _errorMessage = "";
+                                        _isLoading = true;
+                                        // disabled = false;
+                                      });
+                                      String response =
+                                          await _authService.createUser(
+                                              widget.email,
+                                              widget.confirmPassword,
+                                              widget.uid,
+                                              widget.firstName,
+                                              widget.lastName,
+                                              widget.birthDate,
+                                              widget.gender,
+                                              widget.mobileNo,
+                                              widget.bloodGroup,
+                                              widget.address,
+                                              widget.userAddLat,
+                                              widget.userAddLng,
+                                              widget.proPicUrl,
+                                              widget.disabled,
+                                              userPreviouslyDonatedOrNot,
+                                              ifYesHowManyTimes,
+                                              dateOfLastDonation,
+                                              medicallyAdvised,
+                                              vaildIdentitiyCardCheck,
+                                              freeFromRiskBehaviour,
+                                              freeFromSeriousCondition,
+                                              travelAbroad,
+                                              presentMedialTreatment,
+                                              undergoneSurgery,
+                                              availability,
+                                              lastDonationDateCheck,
+                                              widget.age);
+                                      if (response != "Success") {
+                                        setState(() {
+                                          _isLoading = false;
+                                          _errorMessage = response;
+                                        });
+                                      } else {
+                                        Alert(
+                                            context: context,
+                                            type: AlertType.success,
+                                            title:
+                                                "Your are Successfully signup!",
+                                            desc:
+                                                "Please Verify Your Email Before Sign in",
+                                            style: AlertStyle(
+                                                isCloseButton: false,
+                                                // backgroundColor: Colors.black,
+                                                descStyle: TextStyle(
+                                                    fontWeight: FontWeight
+                                                        .bold),
+                                                alertBorder:
+                                                    RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        side: BorderSide(
+                                                            color:
+                                                                Colors.white)),
+                                                titleStyle: TextStyle(
+                                                    color: Colors.blueAccent)),
+                                            buttons: [
+                                              DialogButton(
+                                                  width: 120,
+                                                  child: Text(
+                                                    "ok",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator
+                                                        .pushReplacementNamed(
+                                                      context,
+                                                      AppConstants.SIGN_IN,
+                                                    );
+                                                  })
+                                            ]).show();
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                      }
+                                    } else {
+                                      setState(() {
+                                        _formValidate = true;
+                                      });
+                                    }
                                   },
                                 ),
                               ),

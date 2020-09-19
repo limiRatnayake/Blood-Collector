@@ -1,18 +1,32 @@
 class UserModel {
-   String uid;
-   String userRole;
-   String firstName;
-   String lastName;
-   String gender;
-   String birthDate;
-   String bloodGroup;
-   String mobileNo;
-   String address;
-   String userAddLat;
-   String userAddLng;
-   String email;
+  String uid;
+  String userRole;
+  String firstName;
+  String lastName;
+  String gender;
+  String birthDate;
+  String bloodGroup;
+  String mobileNo;
+  String address;
+  String userAddLat;
+  String userAddLng;
+  String email;
   String proPicUrl;
-   bool disabled;
+  bool disabled;
+  int age;
+
+  String userPreviouslyDonatedOrNot;
+  String ifYesHowManyTimes;
+  String dateOfLastDonation;
+  String medicallyAdvised;
+  String vaildIdentitiyCardCheck;
+  String freeFromRiskBehaviour;
+  String freeFromSeriousCondition;
+  String travelAbroad;
+  String presentMedialTreatment;
+  String undergoneSurgery;
+  bool availability;
+  bool lastDonationDateCheck;
 
   UserModel({
     this.uid,
@@ -28,14 +42,28 @@ class UserModel {
     this.userAddLng,
     this.email,
     this.proPicUrl,
-    this.disabled
+    this.disabled,
+    this.age,
+    this.userPreviouslyDonatedOrNot,
+    this.ifYesHowManyTimes,
+    this.dateOfLastDonation,
+    this.medicallyAdvised,
+    this.vaildIdentitiyCardCheck,
+    this.freeFromRiskBehaviour,
+    this.freeFromSeriousCondition,
+    this.travelAbroad,
+    this.presentMedialTreatment,
+    this.undergoneSurgery,
+    this.availability,
+    this.lastDonationDateCheck,
   });
 
   UserModel.fromMap(Map snapshot)
       : uid = snapshot['uid'] ?? "",
-       userRole = snapshot['userRole'] ?? "",
+        userRole = snapshot['userRole'] ?? "",
         firstName = snapshot['firstName'] ?? "",
-        lastName = snapshot['lastName'] ?? "", //if the value is not there it is empty
+        lastName =
+            snapshot['lastName'] ?? "", //if the value is not there it is empty
         gender = snapshot['gender'] ?? "",
         birthDate = snapshot['birthDate'] ?? "",
         bloodGroup = snapshot['bloodGroup'] ?? "",
@@ -45,12 +73,26 @@ class UserModel {
         userAddLng = snapshot['userAddLng'] ?? "",
         email = snapshot['email'] ?? "",
         proPicUrl = snapshot['proPicUrl'] ?? "",
-        disabled = snapshot['disabled'] ?? "";
+        disabled = snapshot['disabled'] ?? "",
+        age = snapshot['age'] ?? 0,
+        userPreviouslyDonatedOrNot =
+            snapshot['userPreviouslyDonatedOrNot'] ?? "",
+        ifYesHowManyTimes = snapshot['ifYesHowManyTimes'] ?? "",
+        dateOfLastDonation = snapshot['dateOfLastDonation'] ?? "",
+        medicallyAdvised = snapshot['medicallyAdvised'] ?? "",
+        vaildIdentitiyCardCheck = snapshot['vaildIdentitiyCardCheck'] ?? "",
+        freeFromRiskBehaviour = snapshot['freeFromRiskBehaviour'] ?? "",
+        freeFromSeriousCondition = snapshot['freeFromSeriousCondition'] ?? "",
+        travelAbroad = snapshot['travelAbroad'] ?? "",
+        presentMedialTreatment = snapshot['presentMedialTreatment'] ?? "",
+        undergoneSurgery = snapshot['undergoneSurgery'] ?? "",
+        availability = snapshot['availability'] ?? "",
+        lastDonationDateCheck = snapshot['lastDonationDateCheck'] ?? "";
 
   toJson() {
     return {
       "uid": uid,
-      "userRole" : userRole,
+      "userRole": userRole,
       "firstName": firstName,
       "lastName": lastName,
       "gender": gender,
@@ -59,10 +101,23 @@ class UserModel {
       "mobileNo": mobileNo,
       "address": address,
       "email": email,
-      "userAddLat":userAddLat,
+      "userAddLat": userAddLat,
       "userAddLng": userAddLng,
       "proPicUrl": proPicUrl,
-      "disabled":disabled
+      "disabled": disabled,
+      "age": age,
+      "userPreviouslyDonatedOrNot": userPreviouslyDonatedOrNot,
+      "ifYesHowManyTimes": ifYesHowManyTimes,
+      "dateOfLastDonation": dateOfLastDonation,
+      "medicallyAdvised": medicallyAdvised,
+      "vaildIdentitiyCardCheck": vaildIdentitiyCardCheck,
+      "freeFromRiskBehaviour": freeFromRiskBehaviour,
+      "freeFromSeriousCondition": freeFromSeriousCondition,
+      "travelAbroad": travelAbroad,
+      "presentMedialTreatment": presentMedialTreatment,
+      "undergoneSurgery": undergoneSurgery,
+      "availability": availability,
+      "lastDonationDateCheck": lastDonationDateCheck
     };
   }
 }

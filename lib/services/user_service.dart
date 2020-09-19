@@ -125,6 +125,47 @@ class UserService extends ChangeNotifier {
     }
   }
 
+  Future<String> updateDonorSelectionCriteria(
+      String uid,
+      String userPreviouslyDonatedOrNot,
+      String ifYesHowManyTimes,
+      String dateOfLastDonation,
+      String medicallyAdvised,
+      String vaildIdentitiyCardCheck,
+      String freeFromRiskBehaviour,
+      String freeFromSeriousCondition,
+      String travelAbroad,
+      String presentMedialTreatment,
+      String undergoneSurgery,
+      bool availability,
+      bool lastDonationDateCheck) async {
+    String message = "";
+    try {
+      DocumentReference newRef = _ref.document(uid);
+
+      await newRef.updateData({
+        "userPreviouslyDonatedOrNot": userPreviouslyDonatedOrNot,
+        "ifYesHowManyTimes": ifYesHowManyTimes,
+        "dateOfLastDonation": dateOfLastDonation,
+        "medicallyAdvised": medicallyAdvised,
+        "vaildIdentitiyCardCheck": vaildIdentitiyCardCheck,
+        "freeFromRiskBehaviour": freeFromRiskBehaviour,
+        "freeFromSeriousCondition": freeFromSeriousCondition,
+        "travelAbroad": travelAbroad,
+        "presentMedialTreatment": presentMedialTreatment,
+        "undergoneSurgery": undergoneSurgery,
+        "availability": availability,
+        "lastDonationDateCheck": lastDonationDateCheck
+      });
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
+  }
+
   Future<String> updateEmail(String email) async {
     String message = "";
     try {
