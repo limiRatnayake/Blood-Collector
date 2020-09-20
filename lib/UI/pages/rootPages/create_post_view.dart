@@ -38,6 +38,7 @@ class CreatePostView extends StatefulWidget {
   final String placeLng;
   final String orgernizerConatctNo;
   final String category;
+  final bool visibleState;
 
   //build constructor with argument values
   //optional argument key and optional values and then key is pass to the super class
@@ -65,7 +66,8 @@ class CreatePostView extends StatefulWidget {
       this.placeLat,
       this.placeLng,
       this.orgernizerConatctNo,
-      this.category})
+      this.category,
+      this.visibleState})
       : super(key: key);
 
   @override
@@ -294,6 +296,7 @@ class _PostViewState extends State<CreatePostView> {
                                   imageExtention,
                                   imgUrl,
                                   category,
+                                  widget.visibleState
                                 );
                                 if (response != "Success") {
                                   setState(() {

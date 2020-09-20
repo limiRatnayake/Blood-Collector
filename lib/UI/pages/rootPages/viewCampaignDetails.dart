@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ViewCampaignDetails extends StatefulWidget {
- final String docRef;
+  final String docRef;
   final String uid;
   ViewCampaignDetails({Key key, this.docRef, this.uid}) : super(key: key);
   @override
@@ -29,14 +29,13 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-           Card(
+            Card(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   //get user profile data
                   FutureBuilder(
-                      future: _userService
-                          .requestUserDetails(widget.uid),
+                      future: _userService.requestUserDetails(widget.uid),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return Center(child: CircularProgressIndicator());
@@ -88,9 +87,12 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                         children: <Widget>[
                           Card(
                             child: ListTile(
-                              leading: Icon(Icons.opacity ),
+                              leading: Icon(Icons.opacity),
                               title: Text("Organizered By"),
-                              subtitle: Text(data.nameOftheOrganizer, style: TextStyle(color: Colors.red),),
+                              subtitle: Text(
+                                data.nameOftheOrganizer,
+                                style: TextStyle(color: Colors.red),
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -100,7 +102,8 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                             child: ListTile(
                               leading: Icon(Icons.access_time),
                               title: Text("Time"),
-                              subtitle: Text(data.startTime + " " + data.endTime),
+                              subtitle:
+                                  Text(data.startTime + " " + data.endTime),
                             ),
                           ),
                           SizedBox(
@@ -108,7 +111,7 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                           ),
                           Card(
                             child: ListTile(
-                              leading: Icon(Icons.event_available),
+                                leading: Icon(Icons.event_available),
                                 title: Text("When they need blood"),
                                 subtitle: Text(requestCloseDate.toString())),
                           ),
@@ -117,7 +120,7 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                           ),
                           Card(
                             child: ListTile(
-                              leading: Icon(Icons.local_hospital ),
+                              leading: Icon(Icons.local_hospital),
                               title: Text("Place Name"),
                               subtitle: Text(data.placeName),
                             ),
@@ -135,23 +138,39 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                           SizedBox(
                             height: 10.0,
                           ),
-                          Card(
-                            child: ListTile(
-                               leading: Icon(Icons.phone),
-                              title: Text("Organizer Contact Number"),
-                              subtitle: Text(data.orgernizerConatctNo),
-                              // trailing: Text(data.userPhoneNumber),
-                            ),
-                          ),
+                          data.visibleState != false
+                              ? Card(
+                                  child: ListTile(
+                                    leading: Icon(Icons.phone),
+                                    title: Text("Organizer Contact Number"),
+                                    subtitle: Text(data.orgernizerConatctNo),
+                                    // trailing: Text(data.userPhoneNumber),
+                                  ),
+                                )
+                              : Container(),
                         ],
                       );
                     }
                   }),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PreventDoubleTap(),
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+              RaisedButton(
+                    color: Colors.blue,
+                    child: Row(
+                      children: [Icon(Icons.star_border), Text("Interested")],
+                    ),
+                    onPressed: () {},
+                  ),
+                
+                FlatButton(
+                  color: Colors.blueAccent[100],
+                  child: Text("data"),
+                  onPressed: () {},
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -160,5 +179,17 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
       //   child: PreventDoubleTap(),
       // ),
     );
+  }
+
+  BoxDecoration _boxDecoration() {
+    return BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6,
+              offset: Offset(3, 6)) //BoxShadow
+        ]);
   }
 }

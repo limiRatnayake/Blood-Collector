@@ -31,6 +31,7 @@ class EventModel {
   String rejectReason;
   String createdAt;
   String category;
+  bool visibleState;
   int likes;
   EventModel({
     this.docRef,
@@ -65,6 +66,7 @@ class EventModel {
     this.rejectReason,
     this.createdAt,
     this.category,
+    this.visibleState,
     this.likes,
   });
 
@@ -102,6 +104,7 @@ class EventModel {
         rejectReason = snapshot['rejectReason'] ?? "",
         createdAt = snapshot['createdAt'] ?? "",
         category = snapshot['category'] ?? "",
+        visibleState = snapshot['visibleState'] ?? null,
         likes = snapshot['likes'] ?? 0;
 
   toJson() {
@@ -138,6 +141,7 @@ class EventModel {
       "rejectReason": rejectReason,
       "createdAt": createdAt,
       "category": category,
+      "visibleState":visibleState,
       "likes": likes,
     };
   }

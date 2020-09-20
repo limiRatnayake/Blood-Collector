@@ -42,6 +42,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   String requestCloseOn;
   int eventTime;
   bool _formValidate = false;
+    bool _visibleState = false;
 
   BoxDecoration _boxDecoration() {
     return BoxDecoration(
@@ -620,6 +621,40 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     );
   }
 
+ Widget _visibleContactNumberToPubic() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 25.0),
+          child: Row(
+            children: <Widget>[
+              Text(
+                "Do you like to visible the Conatact Number to Public",
+                style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 8.0,
+        ),
+        Container(
+            width: double.infinity,
+            height: 58,
+            margin: EdgeInsets.symmetric(horizontal: 15.0),
+            child: CheckboxListTile(
+              title: Text("Yes, visible it"),
+              value: _visibleState,
+              onChanged: (value) {
+                setState(() {
+                  _visibleState = value;
+                });
+              },
+              controlAffinity: ListTileControlAffinity.leading,
+            )),
+      ],
+    );
+  }
   void _submitTheForm() {
     final _form = _formKey.currentState;
     if (_form.validate()) {
@@ -637,6 +672,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
           placeLat: placeLat,
           placeLng: placeLng,
           orgernizerConatctNo: organizerPhoneNumber,
+          visibleState: _visibleState,
         ),
       );
       Navigator.of(context).push(route);
@@ -673,6 +709,10 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                   height: 10.0,
                 ),
                 _conatctTextFeild(),
+                  SizedBox(
+                  height: 10.0,
+                ),
+                _visibleContactNumberToPubic(),
                 SizedBox(
                   height: 10.0,
                 ),

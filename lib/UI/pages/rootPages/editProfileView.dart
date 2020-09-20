@@ -45,6 +45,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   String birthDate;
   String gender;
   String userPhoneNumber;
+  var age;
   String proPicUrl =
       'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=e33110a2-a94a-4405-9fbc-e3bc4ba3c292';
 
@@ -276,6 +277,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                                     SizedBox(
                                       height: 10.0,
                                     ),
+                                     SizedBox(
+                                      height: 10.0,
+                                    ),
+                                    
                                     Card(
                                         margin: EdgeInsets.symmetric(
                                             horizontal: 15.0),
@@ -496,6 +501,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                         EditEmailAddressView()));
                                           },
                                         )),
+                                    
                                     SizedBox(
                                       height: 10.0,
                                     ),

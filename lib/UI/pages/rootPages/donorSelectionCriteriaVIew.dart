@@ -31,6 +31,7 @@ class _DonorSelectionCriteriaPageState
   String _errorMessage;
   bool _isLoading = false;
   bool _formValidate = false;
+  String birthDate;
 
   String userPreviouslyDonatedOrNot;
   String ifYesHowManyTimes;
@@ -43,7 +44,18 @@ class _DonorSelectionCriteriaPageState
   String presentMedialTreatment;
   String undergoneSurgery;
   bool availability;
-  bool lastDonationDateCheck;
+  bool lastDonationDateCheck ;
+  int age;
+
+  void calculateAge() {
+    var selectedYear = DateTime.parse(birthDate);
+    print(selectedYear);
+    var currentYear = DateTime.now().year;
+    setState(() {
+      age = (currentYear - selectedYear.year).toInt();
+      print(age);
+    });
+  }
 
   Widget _userPreviouslyDonatedOrNot(String value) {
     return Column(
@@ -139,6 +151,54 @@ class _DonorSelectionCriteriaPageState
             child: DateTimeField(
               format: dateFormat,
               initialValue: dateFormat.parse(date),
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  suffixIcon: Icon(
+                    Icons.calendar_today,
+                    color: Colors.black,
+                  ),
+                  hintText: "Last Donation Date"),
+              onShowPicker: (context, currentValue) {
+                return showDatePicker(
+                    context: context,
+                    // from todays date subtract the pass dates so that it will show only future days
+                    firstDate: DateTime(1930),
+                    initialDate: currentValue ?? DateTime.now(),
+                    lastDate: DateTime(2100));
+              },
+              // validator: dateTimeValidator,
+              onChanged: (value) {
+                setState(() {
+                  dateOfLastDonation = DateFormat('yyyy-MM-dd').format(value);
+                  // print(pickUpStartDate);
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _dateOfLastDonationIsNull() {
+    return Column(
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width * 0.78,
+          child: Text(
+            "Date of Last Donation?",
+            style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          height: 58,
+          margin: EdgeInsets.symmetric(horizontal: 30.0),
+          decoration: boxDecoration,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
+            child: DateTimeField(
+              format: dateFormat,
               decoration: InputDecoration(
                   border: InputBorder.none,
                   suffixIcon: Icon(
@@ -499,9 +559,7 @@ class _DonorSelectionCriteriaPageState
 
           if (differenceOfMonth > 4) {
             lastDonationDateCheck = true;
-          } else {
-            lastDonationDateCheck = false;
-          }
+          } 
         });
       }
     }
@@ -519,6 +577,7 @@ class _DonorSelectionCriteriaPageState
                 return Center(child: CircularProgressIndicator());
               } else {
                 UserModel data = UserModel.fromMap(snapshot.data.data);
+                birthDate = data.birthDate;
                 return ListView(children: <Widget>[
                   Container(
                     child: SingleChildScrollView(
@@ -535,7 +594,10 @@ class _DonorSelectionCriteriaPageState
                               SizedBox(height: 10),
                               _ifYesHowManyTimes(data.ifYesHowManyTimes),
                               SizedBox(height: 10),
-                              _dateOfLastDonation(data.dateOfLastDonation),
+                              //using two fields because if user never donated before dateOfLastDonation should be null
+                              //once they really donated it should be updated
+                              data.dateOfLastDonation == null ?
+                              _dateOfLastDonation(data.dateOfLastDonation) : _dateOfLastDonationIsNull(),
                               SizedBox(height: 10),
                               _medicallyAdvised(data.medicallyAdvised),
                               SizedBox(height: 10),
@@ -592,11 +654,16 @@ class _DonorSelectionCriteriaPageState
                                                   BorderRadius.circular(25.5)),
                                           onPressed: () async {
                                             availabilityCalculate();
-                                            if ((userPreviouslyDonatedOrNot =="No" ||
-                                                    lastDonationDateCheck ==true) 
-                                                    && (data.age > 18 
-                                                    && data.age < 55) 
-                                                    ) {
+                                            calculateAge();
+                                            if (lastDonationDateCheck == true &&
+                                                (age > 18 && age < 55) &&
+                                                medicallyAdvised == "No" &&
+                                                vaildIdentitiyCardCheck =="Yes" &&
+                                                freeFromRiskBehaviour =="Yes" &&
+                                                freeFromSeriousCondition =="No" &&
+                                                travelAbroad == "No" &&
+                                                presentMedialTreatment =="No" &&
+                                                undergoneSurgery == "No") {
                                               setState(() {
                                                 availability = true;
                                                 print(availability);
@@ -613,7 +680,7 @@ class _DonorSelectionCriteriaPageState
                                                 _errorMessage = "";
                                                 _isLoading = true;
                                               });
-                                   
+
                                               String response = await _userService.updateDonorSelectionCriteria(
                                                   _authService.user.uid,
                                                   userPreviouslyDonatedOrNot ??
@@ -641,7 +708,8 @@ class _DonorSelectionCriteriaPageState
                                                           .presentMedialTreatment,
                                                   undergoneSurgery ??
                                                       data.undergoneSurgery,
-                                                  availability ,
+                                                  availability ??
+                                                      data.availability,
                                                   lastDonationDateCheck ??
                                                       data.lastDonationDateCheck);
                                               if (response != "Success") {

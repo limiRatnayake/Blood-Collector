@@ -72,7 +72,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
   String presentMedialTreatment;
   String undergoneSurgery;
   bool availability;
-  bool lastDonationDateCheck;
+  bool lastDonationDateCheck = false;
 
   Widget _userPreviouslyDonatedOrNot() {
     return Column(
@@ -94,7 +94,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
             child: DropdownButtonFormField(
               value: answer,
               decoration: InputDecoration(enabledBorder: InputBorder.none),
-              // validator: validateBloodGroup,
+              validator: validateDropdowns,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
                   value: answerType,
@@ -134,7 +134,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
               decoration:
                   inputDecoration.copyWith(hintText: "Enter How many times"),
               keyboardType: TextInputType.text,
-              // validator: validateName,
+              validator: validateHowManyTimes,
               onChanged: (value) {
                 setState(() {
                   ifYesHowManyTimes = value;
@@ -181,7 +181,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                     initialDate: currentValue ?? DateTime.now(),
                     lastDate: DateTime(2100));
               },
-              // validator: dateTimeValidator,
+              validator: dateTimeValidator,
               onChanged: (value) {
                 setState(() {
                   dateOfLastDonation = DateFormat('yyyy-MM-dd').format(value);
@@ -215,7 +215,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
             child: DropdownButtonFormField(
               value: answer,
               decoration: InputDecoration(enabledBorder: InputBorder.none),
-              // validator: validateBloodGroup,
+              validator: validateDropdowns,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
                   value: answerType,
@@ -254,7 +254,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
             child: DropdownButtonFormField(
               value: answer,
               decoration: InputDecoration(enabledBorder: InputBorder.none),
-              // validator: validateBloodGroup,
+              validator: validateDropdowns,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
                   value: answerType,
@@ -311,7 +311,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                       fontFamily: "Roboto",
                       color: Colors.black54),
                   enabledBorder: InputBorder.none),
-              // validator: validateBloodGroup,
+              validator: validateDropdowns,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
                   value: answerType,
@@ -359,7 +359,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                       fontFamily: "Roboto",
                       color: Colors.black54),
                   enabledBorder: InputBorder.none),
-              // validator: validateBloodGroup,
+              validator: validateDropdowns,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
                   value: answerType,
@@ -407,7 +407,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                       fontFamily: "Roboto",
                       color: Colors.black54),
                   enabledBorder: InputBorder.none),
-              // validator: validateBloodGroup,
+              validator: validateDropdowns,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
                   value: answerType,
@@ -449,7 +449,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
             child: DropdownButtonFormField(
               value: answer,
               decoration: InputDecoration(enabledBorder: InputBorder.none),
-              // validator: validateBloodGroup,
+              validator: validateDropdowns,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
                   value: answerType,
@@ -491,7 +491,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
             child: DropdownButtonFormField(
               value: answer,
               decoration: InputDecoration(enabledBorder: InputBorder.none),
-              // validator: validateBloodGroup,
+              validator: validateDropdowns,
               items: answerType.map((answerType) {
                 return DropdownMenuItem(
                   value: answerType,
@@ -526,9 +526,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
 
           if (differenceOfMonth > 4) {
             lastDonationDateCheck = true;
-          } else {
-            lastDonationDateCheck = false;
-          }
+          } 
         });
       }
     }
@@ -801,5 +799,35 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
         ]),
       ),
     );
+  }
+
+  String validateDropdowns(String value) {
+    if (value == "Select a value") {
+      return 'Please select a value';
+    }
+    return null;
+  }
+
+  String validateHowManyTimes(String value) {
+    String pattern = r'(^[0-9]*$)';
+    RegExp regExp = RegExp(pattern);
+    if (userPreviouslyDonatedOrNot == "Yes") {
+      if (value.isEmpty) {
+        return "Ths feild is Required";
+      } else if (!regExp.hasMatch(value)) {
+        return "This must be numeric vaue";
+      }
+      
+    }
+    return null;
+  }
+
+   String dateTimeValidator(DateTime dateTime) {
+    if (userPreviouslyDonatedOrNot == "Yes") {
+      if (dateTime == null) {
+        return "Ths feild is Required";
+      }
+    }
+    return null;
   }
 }
