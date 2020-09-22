@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class EventLikesService extends ChangeNotifier {
+class EventParticipantService extends ChangeNotifier {
   Firestore _db;
   CollectionReference _ref;
 
-  EventLikesService() : _db = Firestore.instance {
+  EventParticipantService() : _db = Firestore.instance {
     _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
   }
 

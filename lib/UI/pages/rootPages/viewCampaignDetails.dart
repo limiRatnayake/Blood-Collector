@@ -1,10 +1,10 @@
-import 'package:blood_collector/UI/widgets/slider_widget.dart';
-import 'package:blood_collector/UI/widgets/preventDooubleTap.dart';
+import 'package:blood_collector/UI/widgets/radioButtonWidget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -12,19 +12,34 @@ import 'package:provider/provider.dart';
 class ViewCampaignDetails extends StatefulWidget {
   final String docRef;
   final String uid;
+  final String currentUser;
 
-  ViewCampaignDetails({Key key, this.docRef, this.uid}) : super(key: key);
+  ViewCampaignDetails({Key key, this.docRef, this.uid, this.currentUser})
+      : super(key: key);
   @override
   _ViewDetailsState createState() => _ViewDetailsState();
 }
 
 //timeline card
 class _ViewDetailsState extends State<ViewCampaignDetails> {
-  bool isLiked = false;
-  _isLiked() {
-    setState(() {
-      isLiked = !isLiked;
+  DocumentReference interestedRef;
+  CollectionReference eventRef;
+
+  Map<String, dynamic> interestedData;
+  @override
+  void initState() {
+    print(widget.currentUser);
+    interestedRef = Firestore.instance
+        .collection("events")
+        .document(widget.docRef)
+        .collection("interested")
+        .document(widget.currentUser);
+
+    super.initState();
+    interestedRef.get().then((value) {
+      interestedData = value.data;
     });
+    eventRef = Firestore.instance.collection("events");
   }
 
   @override
@@ -167,40 +182,11 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
               children: [
                 RaisedButton(
                   textColor: Colors.black,
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(color: Colors.black)),
-                  child: Row(
-                    children: [
-                      isLiked != true
-                          ? Icon(
-                              Icons.star,
-                            )
-                          : Icon(Icons.star_border),
-                      SizedBox(width: 10),
-                      Text("Interested",
-                          style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 18.0,
-                              color: Colors.black)),
-                    ],
-                  ),
-                  onPressed: () {
-                    _isLiked();
-                  },
-                ),
-                RaisedButton(
-                  textColor: Colors.black,
                   color: Colors.red.withOpacity(0.9),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       side: BorderSide(color: Colors.red)),
                   child: Row(children: [
-                    Icon(
-                      Icons.check,
-                    ),
-                    SizedBox(width: 10),
                     Text("Participating",
                         style: TextStyle(
                             fontFamily: "Roboto",
@@ -208,10 +194,7 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                             color: Colors.black)),
                   ]),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => IntroSliderWidget()));
+                    _settingModalBottomSheet(context);
                   },
                 ),
               ],
@@ -226,15 +209,16 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
     );
   }
 
-  BoxDecoration _boxDecoration() {
-    return BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(3, 6)) //BoxShadow
-        ]);
+  void _settingModalBottomSheet(context) {
+    showModalBottomSheet(
+        isDismissible: true,
+        context: context,
+        builder: (BuildContext buildContext) {
+          return RadioButtonWidget(
+            docRef: widget.docRef,
+            uid: widget.uid,
+            currentUser: widget.currentUser,
+          );
+        });
   }
 }

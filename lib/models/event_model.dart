@@ -33,6 +33,7 @@ class EventModel {
   String category;
   bool visibleState;
   int likes;
+  int interested;
   EventModel({
     this.docRef,
     this.uid,
@@ -68,6 +69,7 @@ class EventModel {
     this.category,
     this.visibleState,
     this.likes,
+    this.interested
   });
 
   EventModel.fromMap(Map snapshot)
@@ -105,7 +107,8 @@ class EventModel {
         createdAt = snapshot['createdAt'] ?? "",
         category = snapshot['category'] ?? "",
         visibleState = snapshot['visibleState'] ?? null,
-        likes = snapshot['likes'] ?? 0;
+        likes = snapshot['likes'] ?? 0,
+        interested = snapshot['interested'] ?? 0;
 
   toJson() {
     return {
@@ -143,6 +146,8 @@ class EventModel {
       "category": category,
       "visibleState":visibleState,
       "likes": likes,
+      "interested": interested,
+
     };
   }
 }

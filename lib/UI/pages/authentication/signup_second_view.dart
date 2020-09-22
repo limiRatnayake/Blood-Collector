@@ -526,7 +526,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
 
           if (differenceOfMonth > 4) {
             lastDonationDateCheck = true;
-          } 
+          }
         });
       }
     }
@@ -576,9 +576,13 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                     children: <Widget>[
                       _userPreviouslyDonatedOrNot(),
                       SizedBox(height: 10),
-                      _ifYesHowManyTimes(),
+                      userPreviouslyDonatedOrNot == "Yes"
+                          ? _ifYesHowManyTimes()
+                          : SizedBox(),
                       SizedBox(height: 10),
-                      _dateOfLastDonation(),
+                      userPreviouslyDonatedOrNot == "Yes"
+                          ? _dateOfLastDonation()
+                          : SizedBox(),
                       SizedBox(height: 10),
                       _medicallyAdvised(),
                       SizedBox(height: 10),
@@ -817,12 +821,11 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
       } else if (!regExp.hasMatch(value)) {
         return "This must be numeric vaue";
       }
-      
     }
     return null;
   }
 
-   String dateTimeValidator(DateTime dateTime) {
+  String dateTimeValidator(DateTime dateTime) {
     if (userPreviouslyDonatedOrNot == "Yes") {
       if (dateTime == null) {
         return "Ths feild is Required";

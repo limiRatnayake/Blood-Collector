@@ -83,6 +83,7 @@ class EventService extends ChangeNotifier {
         category: category,
         visibleState: visibleState,
         likes: 0,
+        interested: 0,
         uid: user.uid,
         approved: false,
         rejectReason: "None",

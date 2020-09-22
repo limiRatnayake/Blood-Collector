@@ -1,13 +1,9 @@
 import 'package:blood_collector/UI/pages/rootPages/viewCampaignDetails.dart';
 import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
-import 'package:blood_collector/models/event_likes_model.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
-import 'package:blood_collector/services/auth.dart';
-import 'package:blood_collector/services/event_likes_service.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
-import 'package:blood_collector/shared/appConstant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -247,7 +243,7 @@ class _PostViewState extends State<PostView> {
                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ViewCampaignDetails(docRef: widget.docRef, uid:widget.uid)));
+                                builder: (context) => ViewCampaignDetails(docRef: widget.docRef, uid:widget.uid,currentUser: widget.currentUser)));
                       } else {
                         Navigator.push(
                             context,

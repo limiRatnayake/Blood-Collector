@@ -120,6 +120,24 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
               borderRadius: BorderRadius.circular(18.0),
             ),
           )),
+     PageViewModel(
+          image: Image.asset(
+            "assets/slide_three.png",
+          ),
+          titleWidget: Text(
+            "Are you ready to Donate ?",
+            style: TextStyle(
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.bold,
+                fontSize: 25.0),
+          ),
+          body: "Let's Go!",
+          decoration: PageDecoration(
+            pageColor: Colors.orange[50],
+            bodyTextStyle:  TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
+          ),
+          
+          ),
     ];
   }
 
@@ -151,25 +169,67 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
               return IntroductionScreen(
                 pages: getPages(),
                 onDone: () {
-
-                  if(data.availability == false){
+                  calculateAge();
+                  print(age);
+                  if (data.availability == false) {
                     //can't donate
-                    
-                    Alert(context: context, title: "Can't donate",).show();
-                  }else if(data.availability != false && (age > 18 && age < 55)){
+
+                    Alert(
+                      context: context,
+                      title: "Can't donate",
+                    ).show();
+                  } else if (data.availability != false &&
+                      (age > 18 && age < 55)) {
+                      
                     //can donate
-                     Alert(context: context, title: "Can donate",).show();
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => RequestHistory()));
+                    Alert(
+                      
+                        context: context,
+                        type: AlertType.info,
+                        title: "Would you like to donate blood!",
+                        // content: Container(
+                        //     child: Text(
+                        //         "Go to your settings and change the location permission!",
+                        //         style: TextStyle(
+                        //             fontSize: 15, color: Colors.white))),
+                        style: AlertStyle(
+                            backgroundColor: Colors.black,
+                            alertBorder: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                                side: BorderSide(color: Colors.white)),
+                            titleStyle: TextStyle(color: Colors.blueAccent)),
+                        buttons: [
+                          DialogButton(
+                              width: 120,
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }),
+                          DialogButton(
+                              width: 120,
+                              child: Text(
+                                "Yes, I want to",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            RequestHistory()));
+                              })
+                        ]).show();
                   }
-                 
                 },
                 done: Text(
-                  "Done",
+                  "Donate",
                   style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold),
+                      color: Colors.red, fontWeight: FontWeight.bold),
                 ),
                 globalBackgroundColor: Colors.white,
                 // showSkipButton: true,
