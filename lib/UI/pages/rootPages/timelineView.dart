@@ -71,6 +71,7 @@ class _TimelineViewState extends State<TimelineView> {
     String currentUser = _authService.user.uid;
 
     return Scaffold(
+      backgroundColor: Colors.grey.withOpacity(0.3),
       appBar: PreferredSize(
           preferredSize: const Size(double.infinity, kToolbarHeight),
           child: AppTopBar(title: "Home")),

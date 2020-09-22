@@ -217,7 +217,7 @@ class _PostViewState extends State<PostView> {
                     },
                     icon:
                         likeData != null && likeData.containsKey(widget.docRef)
-                            ? Icon(Icons.favorite)
+                            ? Icon(Icons.favorite,color: Colors.red,)
                             : Icon(Icons.favorite_border),
                   ),
                    FutureBuilder(

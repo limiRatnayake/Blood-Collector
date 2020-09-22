@@ -749,12 +749,8 @@ class _DonorSelectionCriteriaPageState
                                                                 fontSize: 20),
                                                           ),
                                                           onPressed: () {
-                                                            Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            SettingView()));
+                                                            //use pop route here becuase in slider_widget it should update & come back to same page
+                                                           Navigator.pop(context);
                                                           })
                                                     ]).show();
                                                 setState(() {
@@ -766,120 +762,7 @@ class _DonorSelectionCriteriaPageState
                                                 _formValidate = true;
                                               });
                                             }
-                                            //  print(gapBetweenDonation);
-                                            // print(widget.email);
-                                            // print(widget.confirmPassword);
-                                            // print(widget.uid);
-                                            // print(widget.firstName);
-                                            // print(widget.lastName);
-                                            // print(widget.birthDate);
-                                            // print(widget.gender);
-                                            // print(widget.mobileNo);
-                                            // print(widget.bloodGroup);
-                                            // print(widget.address);
-                                            // print(widget.userAddLat);
-                                            // print(widget.userAddLng);
-                                            // print(widget.proPicUrl);
-                                            // print(widget.disabled);
-                                            // print(userPreviouslyDonatedOrNot);
-                                            // print(ifYesHowManyTimes);
-                                            // print(dateOfLastDonation);
-                                            // print(medicallyAdvised);
-                                            // print(vaildIdentitiyCardCheck);
-                                            // print(freeFromRiskBehaviour);
-                                            // print(freeFromSeriousCondition);
-                                            // print(travelAbroad);
-                                            // print(widget.age);
-
-                                            // if (_formKey.currentState.validate()) {
-                                            //   setState(() {
-                                            //     _errorMessage = "";
-                                            //     _isLoading = true;
-                                            //     // disabled = false;
-                                            //   });
-                                            //   String response =
-                                            //       await _authService.createUser(
-                                            //           widget.email,
-                                            //           widget.confirmPassword,
-                                            //           widget.uid,
-                                            //           widget.firstName,
-                                            //           widget.lastName,
-                                            //           widget.birthDate,
-                                            //           widget.gender,
-                                            //           widget.mobileNo,
-                                            //           widget.bloodGroup,
-                                            //           widget.address,
-                                            //           widget.userAddLat,
-                                            //           widget.userAddLng,
-                                            //           widget.proPicUrl,
-                                            //           widget.disabled,
-                                            //           userPreviouslyDonatedOrNot,
-                                            //           ifYesHowManyTimes,
-                                            //           dateOfLastDonation,
-                                            //           medicallyAdvised,
-                                            //           vaildIdentitiyCardCheck,
-                                            //           freeFromRiskBehaviour,
-                                            //           freeFromSeriousCondition,
-                                            //           travelAbroad,
-                                            //           presentMedialTreatment,
-                                            //           undergoneSurgery,
-                                            //           availability,
-                                            //           lastDonationDateCheck);
-                                            //   if (response != "Success") {
-                                            //     setState(() {
-                                            //       _isLoading = false;
-                                            //       _errorMessage = response;
-                                            //     });
-                                            //   } else {
-                                            //     Alert(
-                                            //         context: context,
-                                            //         type: AlertType.success,
-                                            //         title:
-                                            //             "Your are Successfully signup!",
-                                            //         desc:
-                                            //             "Please Verify Your Email Before Sign in",
-                                            //         style: AlertStyle(
-                                            //             isCloseButton: false,
-                                            //             // backgroundColor: Colors.black,
-                                            //             descStyle: TextStyle(
-                                            //                 fontWeight: FontWeight
-                                            //                     .bold),
-                                            //             alertBorder:
-                                            //                 RoundedRectangleBorder(
-                                            //                     borderRadius:
-                                            //                         BorderRadius
-                                            //                             .circular(5),
-                                            //                     side: BorderSide(
-                                            //                         color:
-                                            //                             Colors.white)),
-                                            //             titleStyle: TextStyle(
-                                            //                 color: Colors.blueAccent)),
-                                            //         buttons: [
-                                            //           DialogButton(
-                                            //               width: 120,
-                                            //               child: Text(
-                                            //                 "ok",
-                                            //                 style: TextStyle(
-                                            //                     color: Colors.white,
-                                            //                     fontSize: 20),
-                                            //               ),
-                                            //               onPressed: () {
-                                            //                 Navigator
-                                            //                     .pushReplacementNamed(
-                                            //                   context,
-                                            //                   AppConstants.SIGN_IN,
-                                            //                 );
-                                            //               })
-                                            //         ]).show();
-                                            //     setState(() {
-                                            //       _isLoading = false;
-                                            //     });
-                                            //   }
-                                            // } else {
-                                            //   setState(() {
-                                            //     _formValidate = true;
-                                            //   });
-                                            // }
+                                           
                                           },
                                         ),
                                       ),

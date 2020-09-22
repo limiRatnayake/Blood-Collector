@@ -1,3 +1,4 @@
+import 'package:blood_collector/UI/widgets/slider_widget.dart';
 import 'package:blood_collector/UI/widgets/preventDooubleTap.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 class ViewCampaignDetails extends StatefulWidget {
   final String docRef;
   final String uid;
+
   ViewCampaignDetails({Key key, this.docRef, this.uid}) : super(key: key);
   @override
   _ViewDetailsState createState() => _ViewDetailsState();
@@ -18,6 +20,13 @@ class ViewCampaignDetails extends StatefulWidget {
 
 //timeline card
 class _ViewDetailsState extends State<ViewCampaignDetails> {
+  bool isLiked = false;
+  _isLiked() {
+    setState(() {
+      isLiked = !isLiked;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final EventService _eventServices = Provider.of<EventService>(context);
@@ -156,18 +165,54 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-              RaisedButton(
-                    color: Colors.blue,
-                    child: Row(
-                      children: [Icon(Icons.star_border), Text("Interested")],
-                    ),
-                    onPressed: () {},
+                RaisedButton(
+                  textColor: Colors.black,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(color: Colors.black)),
+                  child: Row(
+                    children: [
+                      isLiked != true
+                          ? Icon(
+                              Icons.star,
+                            )
+                          : Icon(Icons.star_border),
+                      SizedBox(width: 10),
+                      Text("Interested",
+                          style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 18.0,
+                              color: Colors.black)),
+                    ],
                   ),
-                
-                FlatButton(
-                  color: Colors.blueAccent[100],
-                  child: Text("data"),
-                  onPressed: () {},
+                  onPressed: () {
+                    _isLiked();
+                  },
+                ),
+                RaisedButton(
+                  textColor: Colors.black,
+                  color: Colors.red.withOpacity(0.9),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(color: Colors.red)),
+                  child: Row(children: [
+                    Icon(
+                      Icons.check,
+                    ),
+                    SizedBox(width: 10),
+                    Text("Participating",
+                        style: TextStyle(
+                            fontFamily: "Roboto",
+                            fontSize: 18.0,
+                            color: Colors.black)),
+                  ]),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => IntroSliderWidget()));
+                  },
                 ),
               ],
             )
