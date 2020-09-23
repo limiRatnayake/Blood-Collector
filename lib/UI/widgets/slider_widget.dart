@@ -1,14 +1,21 @@
 import 'package:blood_collector/UI/pages/rootPages/donorSelectionCriteriaVIew.dart';
-import 'package:blood_collector/UI/pages/rootPages/requestHistory.dart';
+import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class IntroSliderWidget extends StatefulWidget {
+  final String docRef;
+  final String currentUser;
+
+  IntroSliderWidget({Key key, this.docRef, this.currentUser}) : super(key: key);
   @override
   _IntroSliderWidgetState createState() => _IntroSliderWidgetState();
 }
@@ -16,6 +23,11 @@ class IntroSliderWidget extends StatefulWidget {
 class _IntroSliderWidgetState extends State<IntroSliderWidget> {
   int age;
   String birthDate;
+  DocumentReference interestedRef;
+  CollectionReference eventRef;
+  bool isInterested = false;
+
+  Map<String, dynamic> interestedData;
   //craete a list of slides
   List<PageViewModel> getPages() {
     return [
@@ -120,24 +132,23 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
               borderRadius: BorderRadius.circular(18.0),
             ),
           )),
-     PageViewModel(
-          image: Image.asset(
-            "assets/slide_three.png",
-          ),
-          titleWidget: Text(
-            "Are you ready to Donate ?",
-            style: TextStyle(
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.bold,
-                fontSize: 25.0),
-          ),
-          body: "Let's Go!",
-          decoration: PageDecoration(
-            pageColor: Colors.orange[50],
-            bodyTextStyle:  TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
-          ),
-          
-          ),
+      PageViewModel(
+        image: Image.asset(
+          "assets/slide_three.png",
+        ),
+        titleWidget: Text(
+          "Are you ready to Donate ?",
+          style: TextStyle(
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.bold,
+              fontSize: 25.0),
+        ),
+        body: "Let's Go!",
+        decoration: PageDecoration(
+          pageColor: Colors.orange[50],
+          bodyTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
+        ),
+      ),
     ];
   }
 
@@ -152,9 +163,29 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
   }
 
   @override
+  void initState() {
+    print(widget.currentUser);
+    interestedRef = Firestore.instance
+        .collection("events")
+        .document(widget.docRef)
+        .collection("interested")
+        .document(widget.currentUser);
+
+    super.initState();
+    interestedRef.get().then((value) {
+      interestedData = value.data;
+    });
+    eventRef = Firestore.instance.collection("events");
+  }
+
+  @override
   Widget build(BuildContext context) {
     final AuthServices _authService = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
+    final EventParticipantService _participantService =
+        Provider.of<EventParticipantService>(context);
+    FirebaseUser _user = Provider.of<AuthServices>(context).user;
+
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.all(8.0),
@@ -180,10 +211,8 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
                     ).show();
                   } else if (data.availability != false &&
                       (age > 18 && age < 55)) {
-                      
                     //can donate
                     Alert(
-                      
                         context: context,
                         type: AlertType.info,
                         title: "Would you like to donate blood!",
@@ -216,20 +245,68 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 20),
                               ),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            RequestHistory()));
+                              onPressed: () async {
+                                String userName = data.firstName +" " + data.lastName;
+                                String response = await _participantService
+                                    .addParticipants(_user, widget.docRef,userName);
+                                if (response != "Success") {
+                                  final snackBar = SnackBar(
+                                    content: Text('Error! Try again later.',
+                                        style:
+                                            TextStyle(color: Colors.blueGrey)),
+                                  );
+                                  Scaffold.of(context).showSnackBar(snackBar);
+                                  Navigator.pop(context);
+                                  setState(() {});
+                                } else {
+                                  interestedRef.get().then((value) => {
+                                        if (value.data != null)
+                                          {
+                                            if (value.data.keys
+                                                .contains(widget.docRef))
+                                              {
+                                                Firestore.instance
+                                                    .runTransaction(
+                                                        (Transaction tx) async {
+                                                  DocumentSnapshot docSnapshot =
+                                                      await tx.get(
+                                                          eventRef.document(
+                                                              widget.docRef));
+                                                  if (docSnapshot.exists) {
+                                                    await tx.update(
+                                                        eventRef.document(
+                                                            widget.docRef),
+                                                        <String, dynamic>{
+                                                          'interested': docSnapshot
+                                                                      .data[
+                                                                  "interested"] -
+                                                              1
+                                                        });
+                                                  }
+                                                }),
+                                              },
+                                            interestedRef.delete(),
+                                            setState(() {
+                                              interestedRef.get().then((value) {
+                                                interestedData = value.data;
+                                              });
+                                            })
+                                          }
+                                      });
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              RequestHistory()));
+                                }
                               })
                         ]).show();
                   }
                 },
                 done: Text(
                   "Donate",
-                  style: TextStyle(
-                      color: Colors.red, fontWeight: FontWeight.bold),
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                 ),
                 globalBackgroundColor: Colors.white,
                 // showSkipButton: true,

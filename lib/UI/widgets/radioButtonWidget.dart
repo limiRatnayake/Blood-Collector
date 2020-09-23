@@ -6,11 +6,13 @@ class RadioButtonWidget extends StatefulWidget {
   final String docRef;
   final String uid;
   final String currentUser;
- 
 
-  RadioButtonWidget(
-      {Key key, this.docRef, this.uid, this.currentUser,})
-      : super(key: key);
+  RadioButtonWidget({
+    Key key,
+    this.docRef,
+    this.uid,
+    this.currentUser,
+  }) : super(key: key);
   @override
   _RadioButtonWidgetState createState() => _RadioButtonWidgetState();
 }
@@ -18,10 +20,13 @@ class RadioButtonWidget extends StatefulWidget {
 class _RadioButtonWidgetState extends State<RadioButtonWidget> {
   int _radioValue;
   DocumentReference interestedRef;
+  final participantRef = Firestore.instance;
   CollectionReference eventRef;
-  bool isInterested = false;
 
+  bool isInterested = false;
+  String participateId;
   Map<String, dynamic> interestedData;
+  Map<String, dynamic> participants;
 
   _setSelectedRadio(int value) {
     setState(() {
@@ -31,25 +36,38 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
 
   @override
   void initState() {
-    print(widget.currentUser);
     interestedRef = Firestore.instance
         .collection("events")
         .document(widget.docRef)
         .collection("interested")
         .document(widget.currentUser);
 
-    super.initState();
+    participantRef
+        .collection("participants")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
+              participateId = element.documentID;
+              var eventID = element.data["eventId"];
+
+              if (eventID == widget.docRef) {
+                setState(() {
+                  _radioValue = 2;
+                });
+              }
+            }));
+
     interestedRef.get().then((value) {
       interestedData = value.data;
-      print(interestedData);
+
       if (interestedData != null && interestedData.containsKey(widget.docRef)) {
         setState(() {
           _radioValue = 1;
         });
       }
     });
-    eventRef = Firestore.instance.collection("events");
 
+    eventRef = Firestore.instance.collection("events");
+    super.initState();
   }
 
   @override
@@ -83,9 +101,9 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
                           setState(() {
                             interestedRef.get().then((value) {
                               interestedData = value.data;
-                            
                             });
-                          })
+                          }),
+                          participantRef.collection("participants").document(participateId).delete()
                         }
                     });
               },
@@ -101,7 +119,9 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => IntroSliderWidget()));
+                        builder: (context) => IntroSliderWidget(
+                            docRef: widget.docRef,
+                            currentUser: widget.currentUser)));
               },
             ),
             title: new Text('Participate'),

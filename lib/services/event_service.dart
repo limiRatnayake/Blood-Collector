@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:blood_collector/models/event_likes_model.dart';
+
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:firebase_auth/firebase_auth.dart';

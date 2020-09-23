@@ -1,4 +1,5 @@
-import 'package:blood_collector/UI/pages/rootPages/request-history-timeline.dart';
+import 'package:blood_collector/UI/pages/rootPages/donated_request.dart';
+import 'package:blood_collector/UI/pages/rootPages/raised_request.dart';
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
 import 'package:flutter/material.dart';
@@ -38,20 +39,9 @@ class _RequestHistoryState extends State<RequestHistory>
           ),
           drawer: DrawerWidget(),
           body: TabBarView(children: <Widget>[
-            Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              const ListTile(
-                leading: Icon(Icons.verified_user),
-                title: Text('The Enchanted Nightingale'),
-                subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-              ),
-              const ListTile(
-                leading: Icon(Icons.album),
-                title: Text('The Enchanted Nightingale'),
-                subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-              ),
-            ]),
+           DonatedRequestView(),
             //users event history
-            ReqHistoryTimelineView()
+            RaisedRequestView()
           ])),
     );
   }

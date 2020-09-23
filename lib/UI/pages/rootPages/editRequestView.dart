@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:blood_collector/UI/pages/rootPages/request-history-timeline.dart';
-import 'package:blood_collector/UI/pages/rootPages/requestHistory.dart';
+import 'package:blood_collector/UI/pages/rootPages/raised_request.dart';
+import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/hospital_model.dart';
 import 'package:blood_collector/services/event_service.dart';

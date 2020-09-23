@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:blood_collector/UI/pages/rootPages/requestHistory.dart';
+import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
@@ -136,6 +136,7 @@ class _PostViewState extends State<CreatePostView> {
 
   @override
   Widget build(BuildContext context) {
+    //get parameter type FirebaseUser 
     FirebaseUser _user = Provider.of<AuthServices>(context).user;
     EventService _eventService = Provider.of<EventService>(context);
 

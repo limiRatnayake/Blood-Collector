@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class ReqHistoryTimelineView extends StatefulWidget {
+class RaisedRequestView extends StatefulWidget {
   @override
-  _ReqHistoryTimelineViewState createState() => _ReqHistoryTimelineViewState();
+  _RaisedRequestViewState createState() => _RaisedRequestViewState();
 }
 
-class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
+class _RaisedRequestViewState extends State<RaisedRequestView> {
   @override
   Widget build(BuildContext context) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
@@ -40,9 +40,7 @@ class _ReqHistoryTimelineViewState extends State<ReqHistoryTimelineView> {
                                   itemCount: dataList.length,
                                   itemBuilder: (context, index) {
                                     EventModel data = dataList[index];
-                                    var date1 = DateTime.parse(data.createdAt);
-                                    String formattedTime =
-                                        DateFormat.Hm().format(date1);
+                                   
                                         return RequestedPostView( 
                                         imageUrl: data.imageUrl,
                                         uid: data.uid,

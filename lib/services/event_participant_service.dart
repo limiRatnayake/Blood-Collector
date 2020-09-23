@@ -1,10 +1,6 @@
-import 'dart:io';
-
-import 'package:blood_collector/models/event_likes_model.dart';
-import 'package:blood_collector/models/event_model.dart';
+import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,76 +10,25 @@ class EventParticipantService extends ChangeNotifier {
   CollectionReference _ref;
 
   EventParticipantService() : _db = Firestore.instance {
-    _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
+    _ref = _db.collection(AppConstants.EVENTS_PARTICIPANTS_COLLECTION);
   }
 
-  // Future<void> setPostLikes(String docRef, String uid, bool isLiked) async {
-  //   try {
-  //     DocumentReference newRef =
-  //         _ref.document(docRef).collection(AppConstants.EVENTS_LIKES_COLLECTION).document(uid);
-  //     EventLikesModel likesModel = new EventLikesModel(docRef: docRef);
-  //     await newRef.setData(likesModel.toJson());
-  //   } catch (error) {
-  //     print(error);
-  //   }
-  //   notifyListeners();
-  // }
-
-   Future<void> setPostLikes(String docRef, String uid, bool isLiked) async {
+  Future<String> addParticipants(
+      FirebaseUser user, String docRef, String userName) async {
+    String message = "";
     try {
-      DocumentReference newRef = _ref.document(docRef).collection(AppConstants.EVENTS_LIKES_COLLECTION).document(uid);
-      // EventLikesModel likesModel = new EventLikesModel(docRef: docRef);
-      await newRef.setData({
-        uid : isLiked
-      });
-      // await newRef.setData(likesModel.toJson());
+      DocumentReference newRef = _ref.document();
+      
+      ParticipantModel participantModel = new ParticipantModel(
+          docRef: docRef, uid: user.uid, participantName: userName);
+      await newRef.setData(participantModel.toJson());
+  
+      message = "Success";
+      notifyListeners();
     } catch (error) {
       print(error);
+      if (error != null && error.message != null) message = error.message;
     }
-    // notifyListeners();
+    return message;
   }
-
- 
-
-  // Future<DocumentSnapshot> getEventLiked(String docRef) async {
-  //   DocumentSnapshot likesSnapshot = (await _ref
-  //       .document(docRef)
-  //       .collection(AppConstants.EVENTS_LIKES_COLLECTION)
-  //       .document()
-  //       .get());
-  //   notifyListeners();
-  //   return likesSnapshot;
-  // }
-
-  // Future<List<EventLikesModel>> getEventLiked(String docRef,) async {
-  //   try {
-  //     List<DocumentSnapshot> snapshot = (await _ref.document(docRef).collection(AppConstants.EVENTS_LIKES_COLLECTION).getDocuments()).documents;
-
-  //     List<EventLikesModel> eventIsLiked = snapshot
-  //         .map<EventLikesModel>((doc) => EventLikesModel.fromMap(doc.data))
-  //         .toList();
-
-  //     return eventIsLiked;
-  //   } catch (e) {
-  //     print(e);
-  //     return null;
-  //   }
-  // }
-
-   Future<bool> requestLikes(String docRef, String uid) async {
-     Map<String, dynamic> data;
-     bool postLike = false;
-    DocumentReference likeRef = _ref.document(docRef).collection(AppConstants.EVENTS_LIKES_COLLECTION).document(uid);
-    likeRef.get().then((value) => data = value.data);
-   
-    if(data != null && data.containsKey(uid)){
-      postLike = true;
-    }else{
-       postLike = false;
-    }
-   return postLike;
-  }
-
-
-  
 }
