@@ -16,7 +16,7 @@ class ParticipantModel {
 
   toJson() {
     return {
-      "eventId": docRef,
+      "docRef": docRef,
       "uid": uid,
       "participantName": participantName,
     };

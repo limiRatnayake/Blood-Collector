@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class RequestedPostView extends StatefulWidget {
+class RaisedRequestedPostView extends StatefulWidget {
   final String imageUrl;
   final String uid;
   final String docRef;
@@ -18,7 +18,7 @@ class RequestedPostView extends StatefulWidget {
   final bool approval;
   final String rejectedReason;
 
-  RequestedPostView(
+  RaisedRequestedPostView(
       {Key key,
       this.imageUrl,
       this.uid,
@@ -30,10 +30,10 @@ class RequestedPostView extends StatefulWidget {
       this.rejectedReason})
       : super(key: key);
   @override
-  _RequestedPostViewState createState() => _RequestedPostViewState();
+  _RaisedRequestedPostViewState createState() => _RaisedRequestedPostViewState();
 }
 
-class _RequestedPostViewState extends State<RequestedPostView> {
+class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
   @override
   Widget build(BuildContext context) {
     final UserService _userService = Provider.of<UserService>(context);

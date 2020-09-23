@@ -41,7 +41,7 @@ class _RaisedRequestViewState extends State<RaisedRequestView> {
                                   itemBuilder: (context, index) {
                                     EventModel data = dataList[index];
                                    
-                                        return RequestedPostView( 
+                                        return RaisedRequestedPostView( 
                                         imageUrl: data.imageUrl,
                                         uid: data.uid,
                                         docRef: data.docRef,

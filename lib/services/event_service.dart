@@ -126,6 +126,10 @@ class EventService extends ChangeNotifier {
   Future<QuerySnapshot> getUserEvents(String uid) {
     return _ref.where("uid", isEqualTo: uid).getDocuments();
   }
+  //get events that user has participated
+   Future<QuerySnapshot> getParticipatedEvents(String docRef) {
+    return _ref.where("docRef", isEqualTo: docRef).getDocuments();
+  }
 
   Future<DocumentSnapshot> requestEventsDetails(String docRef) async {
     DocumentSnapshot postSnapshot = (await _ref.document(docRef).get());

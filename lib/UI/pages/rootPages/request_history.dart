@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/pages/rootPages/donated_request.dart';
+import 'package:blood_collector/UI/pages/rootPages/donatedRequestHistory/donated_request.dart';
 import 'package:blood_collector/UI/pages/rootPages/raised_request.dart';
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';

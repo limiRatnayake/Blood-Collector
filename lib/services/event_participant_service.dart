@@ -18,11 +18,11 @@ class EventParticipantService extends ChangeNotifier {
     String message = "";
     try {
       DocumentReference newRef = _ref.document();
-      
+
       ParticipantModel participantModel = new ParticipantModel(
           docRef: docRef, uid: user.uid, participantName: userName);
       await newRef.setData(participantModel.toJson());
-  
+
       message = "Success";
       notifyListeners();
     } catch (error) {
@@ -31,4 +31,18 @@ class EventParticipantService extends ChangeNotifier {
     }
     return message;
   }
+
+  Future<QuerySnapshot> getParticipant(String uid) {
+    return _ref.where("uid", isEqualTo: uid).getDocuments();
+  }
+
+   Future<QuerySnapshot> getParticipantEvents(String docRef) {
+    return Firestore.instance.collection("events").where("docRef", isEqualTo: docRef).getDocuments();
+  }
+
+  // Future<DocumentSnapshot> requestParticipantDetails(String participantId) async {
+  //   DocumentSnapshot postSnapshot = (await _ref.document(participantId).get());
+  //   notifyListeners();
+  //   return postSnapshot;
+  // }
 }
