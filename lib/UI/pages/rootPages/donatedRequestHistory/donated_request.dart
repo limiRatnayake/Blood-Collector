@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/pages/rootPages/donatedRequestHistory/donatedRequestGetEvents.dart';
+import 'package:blood_collector/UI/pages/rootPages/donatedRequestHistory/donatedRequestPostWidget.dart';
 import 'package:blood_collector/UI/widgets/requestHistoryPostWidget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/participant_model.dart';
@@ -43,8 +43,9 @@ class _DonatedRequestViewState extends State<DonatedRequestView> {
     final EventParticipantService _participantServices =
         Provider.of<EventParticipantService>(context);
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       body: Container(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 45),
+        padding: EdgeInsets.all(8),
         child: FutureBuilder(
             future: _participantServices.getParticipant(_authServices.user.uid),
             builder: (context, snapshot) {
