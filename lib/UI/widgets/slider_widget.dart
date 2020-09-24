@@ -156,6 +156,7 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
     var selectedYear = DateTime.parse(birthDate);
     print(selectedYear);
     var currentYear = DateTime.now().year;
+    print(selectedYear);
     setState(() {
       age = (currentYear - selectedYear.year).toInt();
       print(age);
@@ -197,11 +198,14 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
             } else {
               UserModel data = UserModel.fromMap(snapshot.data.data);
               birthDate = data.birthDate;
+
               return IntroductionScreen(
                 pages: getPages(),
                 onDone: () {
                   calculateAge();
                   print(age);
+                  print(data.availability);
+
                   if (data.availability == false) {
                     //can't donate
 

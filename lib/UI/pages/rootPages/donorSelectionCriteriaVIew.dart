@@ -44,7 +44,7 @@ class _DonorSelectionCriteriaPageState
   String presentMedialTreatment;
   String undergoneSurgery;
   bool availability;
-  bool lastDonationDateCheck ;
+  bool lastDonationDateCheck;
   int age;
 
   void calculateAge() {
@@ -559,7 +559,7 @@ class _DonorSelectionCriteriaPageState
 
           if (differenceOfMonth > 4) {
             lastDonationDateCheck = true;
-          } 
+          }
         });
       }
     }
@@ -596,8 +596,8 @@ class _DonorSelectionCriteriaPageState
                               SizedBox(height: 10),
                               //using two fields because if user never donated before dateOfLastDonation should be null
                               //once they really donated it should be updated
-                              data.dateOfLastDonation == null ?
-                              _dateOfLastDonation(data.dateOfLastDonation) : _dateOfLastDonationIsNull(),
+
+                              _dateOfLastDonation(data.dateOfLastDonation),
                               SizedBox(height: 10),
                               _medicallyAdvised(data.medicallyAdvised),
                               SizedBox(height: 10),
@@ -658,11 +658,15 @@ class _DonorSelectionCriteriaPageState
                                             if (lastDonationDateCheck == true &&
                                                 (age > 18 && age < 55) &&
                                                 medicallyAdvised == "No" &&
-                                                vaildIdentitiyCardCheck =="Yes" &&
-                                                freeFromRiskBehaviour =="Yes" &&
-                                                freeFromSeriousCondition =="No" &&
+                                                vaildIdentitiyCardCheck ==
+                                                    "Yes" &&
+                                                freeFromRiskBehaviour ==
+                                                    "Yes" &&
+                                                freeFromSeriousCondition ==
+                                                    "No" &&
                                                 travelAbroad == "No" &&
-                                                presentMedialTreatment =="No" &&
+                                                presentMedialTreatment ==
+                                                    "No" &&
                                                 undergoneSurgery == "No") {
                                               setState(() {
                                                 availability = true;
@@ -750,7 +754,8 @@ class _DonorSelectionCriteriaPageState
                                                           ),
                                                           onPressed: () {
                                                             //use pop route here becuase in slider_widget it should update & come back to same page
-                                                           Navigator.pop(context);
+                                                            Navigator.pop(
+                                                                context);
                                                           })
                                                     ]).show();
                                                 setState(() {
@@ -762,7 +767,6 @@ class _DonorSelectionCriteriaPageState
                                                 _formValidate = true;
                                               });
                                             }
-                                           
                                           },
                                         ),
                                       ),

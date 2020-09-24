@@ -154,7 +154,8 @@ class _SettingViewState extends State<SettingView> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => DonorSelectionCriteriaPage()));
+                                builder: (context) =>
+                                    DonorSelectionCriteriaPage()));
                       },
                     ),
                     ListTile(

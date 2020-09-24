@@ -4,6 +4,7 @@ import 'package:blood_collector/UI/pages/authentication/signup_second_view.dart'
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
@@ -22,6 +23,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   DateTime currentDate = DateTime.now();
+  final dateFormat = DateFormat("yyyy-MM-dd");
   final _formKey = GlobalKey<FormState>();
 
   String firstName = '';
@@ -102,9 +104,8 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void calculateAge() {
-    print(selectedYear);
-     selectedYear =   DateTime.parse(birthDate);
-     var currentYear = DateTime.now().year;
+    selectedYear = DateTime.parse(birthDate);
+    var currentYear = DateTime.now().year;
     setState(() {
       age = (currentYear - selectedYear.year).toInt();
       print(age);
@@ -190,7 +191,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                   _radioItemHolder = data.title;
                                   _radioValue = data.index;
                                   val = _radioItemHolder;
-                                  print(val);
 
                                   gender = val;
                                 });
@@ -210,24 +210,54 @@ class _SignUpPageState extends State<SignUpPage> {
       decoration: boxDecoration,
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
-        child: TextFormField(
-          controller: _birthDate,
-          decoration: inputDecoration.copyWith(
-              hintText: "mm/dd/yyyy",
-              suffixIcon: Icon(
-                Icons.calendar_today,
-                color: Colors.black,
-              )),
-          validator: (value) => value.isEmpty ? 'Name should be filled' : null,
-          onTap: () async {
-            FocusScope.of(context).requestFocus(new FocusNode());
-
-            _selectBDate(context, _birthDate);
+        child: DateTimeField(
+          format: dateFormat,
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              suffixIcon: Icon(Icons.calendar_today, color: Colors.black),
+              hintText: "Event Closing Date"),
+          onShowPicker: (context, currentValue) {
+            return showDatePicker(
+                context: context,
+                firstDate: DateTime(1900),
+                initialDate: currentValue ?? DateTime.now(),
+                lastDate: DateTime(2100));
+          },
+          validator: dateTimeValidator,
+          onChanged: (value) {
+            setState(() {
+              birthDate = DateFormat('yyyy-MM-dd hh:mm').format(value);
+            });
           },
         ),
       ),
     );
   }
+  // Widget _birthDateSelector() {
+  //   return Container(
+  //     width: double.infinity,
+  //     margin: EdgeInsets.symmetric(horizontal: 30.0),
+  //     decoration: boxDecoration,
+  //     child: Padding(
+  //       padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
+  //       child: TextFormField(
+  //         controller: _birthDate,
+  //         decoration: inputDecoration.copyWith(
+  //             hintText: "mm/dd/yyyy",
+  //             suffixIcon: Icon(
+  //               Icons.calendar_today,
+  //               color: Colors.black,
+  //             )),
+  //         validator: (value) => value.isEmpty ? 'Name should be filled' : null,
+  //         onTap: () async {
+  //           FocusScope.of(context).requestFocus(new FocusNode());
+
+  //           _selectBDate(context, _birthDate);
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _bloodGroupTextField() {
     return Container(
@@ -709,129 +739,126 @@ class _SignUpPageState extends State<SignUpPage> {
                       _confirmPasswordField(),
                       SizedBox(height: 20.0),
                       Container(
-                              width: double.infinity,
-                              height: 58,
-                              margin: EdgeInsets.symmetric(horizontal: 30.0),
-                              decoration: boxDecoration,
-                              child: ButtonTheme(
-                                child: RaisedButton(
-                                  elevation: 0.0,
-                                  child: Text("CONTINUE",
-                                      style: TextStyle(
-                                          fontFamily: "Roboto",
-                                          fontSize: 18.0,
-                                          color: Colors.black)),
-                                  textColor: Colors.black,
-                                  color: Colors.red.withOpacity(0.9),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(25.5)),
-                                  onPressed: ()  {
-                                    calculateAge();
-                                  
+                        width: double.infinity,
+                        height: 58,
+                        margin: EdgeInsets.symmetric(horizontal: 30.0),
+                        decoration: boxDecoration,
+                        child: ButtonTheme(
+                          child: RaisedButton(
+                            elevation: 0.0,
+                            child: Text("CONTINUE",
+                                style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 18.0,
+                                    color: Colors.black)),
+                            textColor: Colors.black,
+                            color: Colors.red.withOpacity(0.9),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.5)),
+                            onPressed: () {
+                              calculateAge();
 
-                                    if (_formKey.currentState.validate()) {
-                                      setState(() {
-                                        _errorMessage = "";
-                                        _isLoading = true;
-                                        disabled = false;
-                                      });
-                                    var route = new MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          SignUpSecondPage(
-                                              email: email,
-                                              confirmPassword:
-                                                  confirmPassword,
-                                              uid: uid,
-                                              firstName: firstName,
-                                              lastName: lastName,
-                                              birthDate: birthDate,
-                                              gender: gender,
-                                              mobileNo: mobileNo,
-                                              bloodGroup: bloodGroup,
-                                              address: address,
-                                              userAddLat: userAddLat,
-                                              userAddLng: userAddLng,
-                                              proPicUrl: proPicUrl,
-                                              disabled: disabled,
-                                              age: age),
-                                    );
-                                    Navigator.of(context).push(route);
-                                    //   String response =
-                                    //       await _authService.createUser(
-                                    //           email,
-                                    //           confirmPassword,
-                                    //           uid,
-                                    //           firstName,
-                                    //           lastName,
-                                    //           birthDate,
-                                    //           gender,
-                                    //           mobileNo,
-                                    //           bloodGroup,
-                                    //           address,
-                                    //           userAddLat,
-                                    //           userAddLng,
-                                    //           proPicUrl,
-                                    //           disabled);
-                                    //   if (response != "Success") {
-                                    //     setState(() {
-                                    //       _isLoading = false;
-                                    //       _errorMessage = response;
-                                    //     });
-                                    //   } else {
-                                    //     Alert(
-                                    //         context: context,
-                                    //         type: AlertType.success,
-                                    //         title:
-                                    //             "Your are Successfully signup!",
-                                    //         desc:
-                                    //             "Please Verify Your Email Before Sign in",
-                                    //         style: AlertStyle(
-                                    //             isCloseButton: false,
-                                    //             // backgroundColor: Colors.black,
-                                    //             descStyle: TextStyle(
-                                    //                 fontWeight: FontWeight
-                                    //                     .bold),
-                                    //             alertBorder:
-                                    //                 RoundedRectangleBorder(
-                                    //                     borderRadius:
-                                    //                         BorderRadius
-                                    //                             .circular(5),
-                                    //                     side: BorderSide(
-                                    //                         color:
-                                    //                             Colors.white)),
-                                    //             titleStyle: TextStyle(
-                                    //                 color: Colors.blueAccent)),
-                                    //         buttons: [
-                                    //           DialogButton(
-                                    //               width: 120,
-                                    //               child: Text(
-                                    //                 "ok",
-                                    //                 style: TextStyle(
-                                    //                     color: Colors.white,
-                                    //                     fontSize: 20),
-                                    //               ),
-                                    //               onPressed: () {
-                                    //                 Navigator
-                                    //                     .pushReplacementNamed(
-                                    //                   context,
-                                    //                   AppConstants.SIGN_IN,
-                                    //                 );
-                                    //               })
-                                    //         ]).show();
-                                    //     setState(() {
-                                    //       _isLoading = false;
-                                    //     });
-                                    //   }
-                                    // } else {
-                                    //   setState(() {
-                                    //     _formValidate = true;
-                                    //   });
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
+                              if (_formKey.currentState.validate()) {
+                                setState(() {
+                                  _errorMessage = "";
+                                  _isLoading = true;
+                                  disabled = false;
+                                });
+                                var route = new MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      SignUpSecondPage(
+                                          email: email,
+                                          confirmPassword: confirmPassword,
+                                          uid: uid,
+                                          firstName: firstName,
+                                          lastName: lastName,
+                                          birthDate: birthDate,
+                                          gender: gender,
+                                          mobileNo: mobileNo,
+                                          bloodGroup: bloodGroup,
+                                          address: address,
+                                          userAddLat: userAddLat,
+                                          userAddLng: userAddLng,
+                                          proPicUrl: proPicUrl,
+                                          disabled: disabled,
+                                          age: age),
+                                );
+                                Navigator.of(context).push(route);
+                                //   String response =
+                                //       await _authService.createUser(
+                                //           email,
+                                //           confirmPassword,
+                                //           uid,
+                                //           firstName,
+                                //           lastName,
+                                //           birthDate,
+                                //           gender,
+                                //           mobileNo,
+                                //           bloodGroup,
+                                //           address,
+                                //           userAddLat,
+                                //           userAddLng,
+                                //           proPicUrl,
+                                //           disabled);
+                                //   if (response != "Success") {
+                                //     setState(() {
+                                //       _isLoading = false;
+                                //       _errorMessage = response;
+                                //     });
+                                //   } else {
+                                //     Alert(
+                                //         context: context,
+                                //         type: AlertType.success,
+                                //         title:
+                                //             "Your are Successfully signup!",
+                                //         desc:
+                                //             "Please Verify Your Email Before Sign in",
+                                //         style: AlertStyle(
+                                //             isCloseButton: false,
+                                //             // backgroundColor: Colors.black,
+                                //             descStyle: TextStyle(
+                                //                 fontWeight: FontWeight
+                                //                     .bold),
+                                //             alertBorder:
+                                //                 RoundedRectangleBorder(
+                                //                     borderRadius:
+                                //                         BorderRadius
+                                //                             .circular(5),
+                                //                     side: BorderSide(
+                                //                         color:
+                                //                             Colors.white)),
+                                //             titleStyle: TextStyle(
+                                //                 color: Colors.blueAccent)),
+                                //         buttons: [
+                                //           DialogButton(
+                                //               width: 120,
+                                //               child: Text(
+                                //                 "ok",
+                                //                 style: TextStyle(
+                                //                     color: Colors.white,
+                                //                     fontSize: 20),
+                                //               ),
+                                //               onPressed: () {
+                                //                 Navigator
+                                //                     .pushReplacementNamed(
+                                //                   context,
+                                //                   AppConstants.SIGN_IN,
+                                //                 );
+                                //               })
+                                //         ]).show();
+                                //     setState(() {
+                                //       _isLoading = false;
+                                //     });
+                                //   }
+                                // } else {
+                                //   setState(() {
+                                //     _formValidate = true;
+                                //   });
+                              }
+                            },
+                          ),
+                        ),
+                      ),
                       // Container(
                       //     child: Center(
                       //         child: Row(
@@ -865,24 +892,24 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Future<Null> _selectBDate(context, ctrl) async {
-    DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+  // Future<Null> _selectBDate(context, ctrl) async {
+  //   DateFormat dateFormat = DateFormat('yyyy-MM-dd');
 
-    DateTime _selectedBDate =
-        ctrl.text != "" ? dateFormat.parse(ctrl.text) : DateTime.now();
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: _selectedBDate,
-        firstDate: DateTime(1960, 1),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != _selectedBDate)
-      ctrl.text = DateFormat('yyyy-MM-dd').format(picked);
-    setState(() {
-      // selectedYear = picked.year;
+  //   DateTime _selectedBDate =
+  //       ctrl.text != "" ? dateFormat.parse(ctrl.text) : DateTime.now();
+  //   final DateTime picked = await showDatePicker(
+  //       context: context,
+  //       initialDate: _selectedBDate,
+  //       firstDate: DateTime(1960, 1),
+  //       lastDate: DateTime(2101));
+  //   if (picked != null && picked != _selectedBDate) ctrl.text = picked;
+  //   // ctrl.text = DateFormat('yyyy-MM-dd').format(picked);
+  //   setState(() {
+  //     // selectedYear = picked.year;
 
-      birthDate = ctrl.text;
-    });
-  }
+  //     birthDate = ctrl.text;
+  //   });
+  // }
 
   String validateName(String value) {
     String pattern = r'(^[a-zA-Z ]*$)';
@@ -891,6 +918,13 @@ class _SignUpPageState extends State<SignUpPage> {
       return "Name is required ";
     } else if (!regExp.hasMatch(value)) {
       return "Name must be a-z and A-Z";
+    }
+    return null;
+  }
+
+  String dateTimeValidator(DateTime dateTime) {
+    if (dateTime == null) {
+      return "Date Time Required";
     }
     return null;
   }

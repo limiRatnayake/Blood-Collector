@@ -526,6 +526,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
 
           if (differenceOfMonth > 4) {
             lastDonationDateCheck = true;
+            print(differenceOfMonth);
           }
         });
       }
@@ -633,16 +634,17 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                                           BorderRadius.circular(25.5)),
                                   onPressed: () async {
                                     availabilityCalculate();
-                                    if ((userPreviouslyDonatedOrNot == "No" ||
-                                            lastDonationDateCheck == true) &&
-                                        (widget.age > 18 && widget.age < 55) &&
-                                        medicallyAdvised == "No" &&
-                                        vaildIdentitiyCardCheck == "Yes" &&
-                                        freeFromRiskBehaviour == "Yes" &&
-                                        freeFromSeriousCondition == "No" &&
-                                        travelAbroad == "No" &&
-                                        presentMedialTreatment == "No" &&
-                                        undergoneSurgery == "No") {
+                                    if (userPreviouslyDonatedOrNot == "No" ||
+                                        lastDonationDateCheck == true &&
+                                            (widget.age > 18 &&
+                                                widget.age < 55) &&
+                                            medicallyAdvised == "No" &&
+                                            vaildIdentitiyCardCheck == "Yes" &&
+                                            freeFromRiskBehaviour == "Yes" &&
+                                            freeFromSeriousCondition == "No" &&
+                                            travelAbroad == "No" &&
+                                            presentMedialTreatment == "No" &&
+                                            undergoneSurgery == "No") {
                                       setState(() {
                                         availability = true;
                                         print(availability);
