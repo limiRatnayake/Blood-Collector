@@ -25,6 +25,7 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
 
   bool isInterested = false;
   String participateId;
+  var eventId;
   Map<String, dynamic> interestedData;
   Map<String, dynamic> participants;
 
@@ -47,9 +48,8 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
         .getDocuments()
         .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
               participateId = element.documentID;
-              var eventID = element.data["eventId"];
-
-              if (eventID == widget.docRef) {
+              eventId = element.data["docRef"];
+              if (eventId == widget.docRef) {
                 setState(() {
                   _radioValue = 2;
                 });
@@ -103,7 +103,10 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
                               interestedData = value.data;
                             });
                           }),
-                          participantRef.collection("participants").document(participateId).delete()
+                          participantRef
+                              .collection("participants")
+                              .document(participateId)
+                              .delete()
                         }
                     });
               },

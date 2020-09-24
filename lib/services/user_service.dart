@@ -137,7 +137,6 @@ class UserService extends ChangeNotifier {
       String travelAbroad,
       String presentMedialTreatment,
       String undergoneSurgery,
-      bool availability,
       bool lastDonationDateCheck) async {
     String message = "";
     try {
@@ -154,7 +153,6 @@ class UserService extends ChangeNotifier {
         "travelAbroad": travelAbroad,
         "presentMedialTreatment": presentMedialTreatment,
         "undergoneSurgery": undergoneSurgery,
-        "availability": availability,
         "lastDonationDateCheck": lastDonationDateCheck
       });
       message = "Success";

@@ -71,7 +71,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
   String travelAbroad;
   String presentMedialTreatment;
   String undergoneSurgery;
-  bool availability;
+
   bool lastDonationDateCheck = false;
 
   Widget _userPreviouslyDonatedOrNot() {
@@ -514,7 +514,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
   Widget build(BuildContext context) {
     final AuthServices _authService = Provider.of<AuthServices>(context);
 
-    void availabilityCalculate() {
+    void lastDonateMonthsDifferent() {
       if (dateOfLastDonation != null) {
         var lastDonatedMonth = DateTime.parse(dateOfLastDonation);
         var currentMonth = DateTime.now();
@@ -633,52 +633,27 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                                       borderRadius:
                                           BorderRadius.circular(25.5)),
                                   onPressed: () async {
-                                    availabilityCalculate();
-                                    if (userPreviouslyDonatedOrNot == "No" ||
-                                        lastDonationDateCheck == true &&
-                                            (widget.age > 18 &&
-                                                widget.age < 55) &&
-                                            medicallyAdvised == "No" &&
-                                            vaildIdentitiyCardCheck == "Yes" &&
-                                            freeFromRiskBehaviour == "Yes" &&
-                                            freeFromSeriousCondition == "No" &&
-                                            travelAbroad == "No" &&
-                                            presentMedialTreatment == "No" &&
-                                            undergoneSurgery == "No") {
-                                      setState(() {
-                                        availability = true;
-                                        print(availability);
-                                      });
-                                    } else {
-                                      setState(() {
-                                        availability = false;
-                                        print(availability);
-                                      });
-                                    }
-                                    //  print(gapBetweenDonation);
-                                    // print(widget.email);
-                                    // print(widget.confirmPassword);
-                                    // print(widget.uid);
-                                    // print(widget.firstName);
-                                    // print(widget.lastName);
-                                    // print(widget.birthDate);
-                                    // print(widget.gender);
-                                    // print(widget.mobileNo);
-                                    // print(widget.bloodGroup);
-                                    // print(widget.address);
-                                    // print(widget.userAddLat);
-                                    // print(widget.userAddLng);
-                                    // print(widget.proPicUrl);
-                                    // print(widget.disabled);
-                                    // print(userPreviouslyDonatedOrNot);
-                                    // print(ifYesHowManyTimes);
-                                    // print(dateOfLastDonation);
-                                    // print(medicallyAdvised);
-                                    // print(vaildIdentitiyCardCheck);
-                                    // print(freeFromRiskBehaviour);
-                                    // print(freeFromSeriousCondition);
-                                    // print(travelAbroad);
-                                    // print(widget.age);
+                                    lastDonateMonthsDifferent();
+                                    // if ((userPreviouslyDonatedOrNot == "No" ||
+                                    //         lastDonationDateCheck == true) &&
+                                    //     (widget.age > 18 && widget.age < 55) &&
+                                    //     medicallyAdvised == "No" &&
+                                    //     vaildIdentitiyCardCheck == "Yes" &&
+                                    //     freeFromRiskBehaviour == "Yes" &&
+                                    //     freeFromSeriousCondition == "No" &&
+                                    //     travelAbroad == "No" &&
+                                    //     presentMedialTreatment == "No" &&
+                                    //     undergoneSurgery == "No") {
+                                    //   setState(() {
+                                    //     availability = true;
+                                    //     print(availability);
+                                    //   });
+                                    // } else {
+                                    //   setState(() {
+                                    //     availability = false;
+                                    //     print(availability);
+                                    //   });
+                                    // }
 
                                     if (_formKey.currentState.validate()) {
                                       setState(() {
@@ -712,7 +687,6 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                                               travelAbroad,
                                               presentMedialTreatment,
                                               undergoneSurgery,
-                                              availability,
                                               lastDonationDateCheck,
                                               widget.age);
                                       if (response != "Success") {

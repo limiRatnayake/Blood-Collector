@@ -46,7 +46,6 @@ class AuthServices extends ChangeNotifier {
       String travelAbroad,
       String presentMedialTreatment,
       String undergoneSurgery,
-      bool availability,
       bool lastDonationDateCheck,
       int age) async {
     String message = "";
@@ -82,7 +81,6 @@ class AuthServices extends ChangeNotifier {
           travelAbroad: travelAbroad,
           presentMedialTreatment: presentMedialTreatment,
           undergoneSurgery: undergoneSurgery,
-          availability: availability,
           lastDonationDateCheck: lastDonationDateCheck);
 
       //create a new document for the user with the uid

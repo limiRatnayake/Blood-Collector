@@ -25,7 +25,6 @@ class UserModel {
   String travelAbroad;
   String presentMedialTreatment;
   String undergoneSurgery;
-  bool availability;
   bool lastDonationDateCheck;
 
   UserModel({
@@ -54,7 +53,6 @@ class UserModel {
     this.travelAbroad,
     this.presentMedialTreatment,
     this.undergoneSurgery,
-    this.availability,
     this.lastDonationDateCheck,
   });
 
@@ -86,7 +84,6 @@ class UserModel {
         travelAbroad = snapshot['travelAbroad'] ?? "",
         presentMedialTreatment = snapshot['presentMedialTreatment'] ?? "",
         undergoneSurgery = snapshot['undergoneSurgery'] ?? "",
-        availability = snapshot['availability'] ?? "",
         lastDonationDateCheck = snapshot['lastDonationDateCheck'] ?? "";
 
   toJson() {
@@ -116,7 +113,6 @@ class UserModel {
       "travelAbroad": travelAbroad,
       "presentMedialTreatment": presentMedialTreatment,
       "undergoneSurgery": undergoneSurgery,
-      "availability": availability,
       "lastDonationDateCheck": lastDonationDateCheck
     };
   }

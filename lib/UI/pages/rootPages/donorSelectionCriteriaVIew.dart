@@ -547,7 +547,8 @@ class _DonorSelectionCriteriaPageState
   Widget build(BuildContext context) {
     final AuthServices _authService = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
-    void availabilityCalculate() {
+
+    void lastDonateMonthsDifferent(String dataDateOfLastDonation) {
       if (dateOfLastDonation != null) {
         var lastDonatedMonth = DateTime.parse(dateOfLastDonation);
         var currentMonth = DateTime.now();
@@ -653,31 +654,10 @@ class _DonorSelectionCriteriaPageState
                                               borderRadius:
                                                   BorderRadius.circular(25.5)),
                                           onPressed: () async {
-                                            availabilityCalculate();
+                                            lastDonateMonthsDifferent(
+                                                data.dateOfLastDonation);
                                             calculateAge();
-                                            if (lastDonationDateCheck == true &&
-                                                (age > 18 && age < 55) &&
-                                                medicallyAdvised == "No" &&
-                                                vaildIdentitiyCardCheck ==
-                                                    "Yes" &&
-                                                freeFromRiskBehaviour ==
-                                                    "Yes" &&
-                                                freeFromSeriousCondition ==
-                                                    "No" &&
-                                                travelAbroad == "No" &&
-                                                presentMedialTreatment ==
-                                                    "No" &&
-                                                undergoneSurgery == "No") {
-                                              setState(() {
-                                                availability = true;
-                                                print(availability);
-                                              });
-                                            } else {
-                                              setState(() {
-                                                availability = false;
-                                                print(availability);
-                                              });
-                                            }
+
                                             if (_formKey.currentState
                                                 .validate()) {
                                               setState(() {
@@ -712,8 +692,6 @@ class _DonorSelectionCriteriaPageState
                                                           .presentMedialTreatment,
                                                   undergoneSurgery ??
                                                       data.undergoneSurgery,
-                                                  availability ??
-                                                      data.availability,
                                                   lastDonationDateCheck ??
                                                       data.lastDonationDateCheck);
                                               if (response != "Success") {

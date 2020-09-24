@@ -26,6 +26,7 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
   DocumentReference interestedRef;
   CollectionReference eventRef;
   bool isInterested = false;
+  bool availability;
 
   Map<String, dynamic> interestedData;
   //craete a list of slides
@@ -204,17 +205,35 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
                 onDone: () {
                   calculateAge();
                   print(age);
-                  print(data.availability);
+                  if ((data.userPreviouslyDonatedOrNot == "No" ||
+                          data.lastDonationDateCheck == true) &&
+                      data.medicallyAdvised == "No" &&
+                      data.vaildIdentitiyCardCheck == "Yes" &&
+                      data.freeFromRiskBehaviour == "Yes" &&
+                      data.freeFromSeriousCondition == "No" &&
+                      data.travelAbroad == "No" &&
+                      data.presentMedialTreatment == "No" &&
+                      data.undergoneSurgery == "No") {
+                    setState(() {
+                      availability = true;
+                      print(availability);
+                    });
+                  } else {
+                    setState(() {
+                      availability = false;
+                      print(availability);
+                    });
+                  }
+                  print(availability);
 
-                  if (data.availability == false) {
+                  if (availability == false) {
                     //can't donate
 
                     Alert(
                       context: context,
                       title: "Can't donate",
                     ).show();
-                  } else if (data.availability != false &&
-                      (age > 18 && age < 55)) {
+                  } else if (availability != false && (age > 18 && age < 55)) {
                     //can donate
                     Alert(
                         context: context,
