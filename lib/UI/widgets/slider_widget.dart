@@ -246,9 +246,11 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
                                     color: Colors.white, fontSize: 20),
                               ),
                               onPressed: () async {
-                                String userName = data.firstName +" " + data.lastName;
-                                String response = await _participantService
-                                    .addParticipants(_user, widget.docRef,userName);
+                                String userName =
+                                    data.firstName + " " + data.lastName;
+                                String response =
+                                    await _participantService.addParticipants(
+                                        _user, widget.docRef, userName);
                                 if (response != "Success") {
                                   final snackBar = SnackBar(
                                     content: Text('Error! Try again later.',
