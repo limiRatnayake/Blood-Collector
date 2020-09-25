@@ -30,7 +30,8 @@ class RaisedRequestedPostView extends StatefulWidget {
       this.rejectedReason})
       : super(key: key);
   @override
-  _RaisedRequestedPostViewState createState() => _RaisedRequestedPostViewState();
+  _RaisedRequestedPostViewState createState() =>
+      _RaisedRequestedPostViewState();
 }
 
 class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
@@ -82,7 +83,9 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
                               backgroundImage: NetworkImage(data.proPicUrl),
                             ),
                           ),
-                          title: Row(
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
                                 data.firstName + " " + data.lastName,
@@ -91,10 +94,17 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(width:9),
-                                 widget.approval == true ? Text("Approved", style: TextStyle(color:Colors.red),) : widget.rejectedReason != "None"
-                                                    ? Text("Rejected", style: TextStyle(color:Colors.red))
-                                                    : Text("Approving", style: TextStyle(color:Colors.red)),
+                              SizedBox(width: 9),
+                              widget.approval == true
+                                  ? Text(
+                                      "Approved",
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  : widget.rejectedReason != "None"
+                                      ? Text("Rejected",
+                                          style: TextStyle(color: Colors.red))
+                                      : Text("Approving",
+                                          style: TextStyle(color: Colors.red)),
                             ],
                           ),
                           subtitle: Row(
@@ -106,109 +116,116 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.grey[500]),
                               ),
-                              
-                           
                             ],
                           ),
-                          trailing:  PopupMenuButton<int>(
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 1,
-                      child: Text(
-                        "Edit",
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 2,
-                      child: Text(
-                        "Delete",
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ],
-                  onSelected: (value) {
-                    switch (value) {
-                      case 1:
-                        if (widget.category != "campaign") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditRequestView(
-                                        docRef: widget.docRef,
-                                      )));
-                        } else {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditCampaignView(
-                                        docRef: widget.docRef,
-                                      )));
-                        }
+                          trailing: PopupMenuButton<int>(
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 1,
+                                child: Text(
+                                  "Edit",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 2,
+                                child: Text(
+                                  "Delete",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                            ],
+                            onSelected: (value) {
+                              switch (value) {
+                                case 1:
+                                  if (widget.category != "campaign") {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditRequestView(
+                                                  docRef: widget.docRef,
+                                                )));
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditCampaignView(
+                                                  docRef: widget.docRef,
+                                                )));
+                                  }
 
-                        break;
-                      case 2:
-                        {
-                          Alert(
-                              context: context,
-                              type: AlertType.success,
-                              title:
-                                  "Are you sure you want to delete this event?",
-                              style: AlertStyle(
-                                  isCloseButton: false,
-                                  isOverlayTapDismiss: false,
-                                  backgroundColor: Colors.black,
-                                  alertBorder: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      side: BorderSide(color: Colors.white)),
-                                  titleStyle:
-                                      TextStyle(color: Colors.blueAccent)),
-                              buttons: [
-                                DialogButton(
-                                    child: Text(
-                                      "No",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 20),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    }),
-                                DialogButton(
-                                    child: Text(
-                                      "Yes",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 20),
-                                    ),
-                                    onPressed: () async {
-                                      String response =
-                                          await _eventServices.deleteEvent(widget.docRef);
-                                      if (response == "Success") {
-                                        var snackBar = SnackBar(
-                                          content: Text(
-                                              'Your event is Successfully deleted',
-                                              style: TextStyle(
-                                                  color: Colors.blueGrey)),
-                                        );
-                                        if (widget.imageUrl != null) {
-                                          _eventServices
-                                              .deleteEventImage(widget.imageUrl);
-                                        }
-                                        Scaffold.of(context)
-                                            .showSnackBar(snackBar);
-                                        Navigator.of(context).pop();
-                                      }
-                                    })
-                              ]).show();
-                      
-                        }
-                        break;
-                    }
-                  },
-                )
-                                                    
-                        )
+                                  break;
+                                case 2:
+                                  {
+                                    Alert(
+                                        context: context,
+                                        type: AlertType.success,
+                                        title:
+                                            "Are you sure you want to delete this event?",
+                                        style: AlertStyle(
+                                            isCloseButton: false,
+                                            isOverlayTapDismiss: false,
+                                            backgroundColor: Colors.black,
+                                            alertBorder: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                side: BorderSide(
+                                                    color: Colors.white)),
+                                            titleStyle: TextStyle(
+                                                color: Colors.blueAccent)),
+                                        buttons: [
+                                          DialogButton(
+                                              child: Text(
+                                                "No",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              }),
+                                          DialogButton(
+                                              child: Text(
+                                                "Yes",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20),
+                                              ),
+                                              onPressed: () async {
+                                                String response =
+                                                    await _eventServices
+                                                        .deleteEvent(
+                                                            widget.docRef);
+                                                if (response == "Success") {
+                                                  var snackBar = SnackBar(
+                                                    content: Text(
+                                                        'Your event is Successfully deleted',
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .blueGrey)),
+                                                  );
+                                                  if (widget.imageUrl != null) {
+                                                    _eventServices
+                                                        .deleteEventImage(
+                                                            widget.imageUrl);
+                                                  }
+                                                  Scaffold.of(context)
+                                                      .showSnackBar(snackBar);
+                                                  Navigator.of(context).pop();
+                                                }
+                                              })
+                                        ]).show();
+                                  }
+                                  break;
+                              }
+                            },
+                          ))
                       : Text("try again later");
                 }
               }),

@@ -38,26 +38,26 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
             return Center(child: CircularProgressIndicator());
           } else {
             EventModel data = EventModel.fromMap(snapshot.data.data);
-             var getRequestCloseDate =
-                          DateTime.parse(data.requestClose);
-                      String requestCloseDate =
-                          DateFormat('yMd').format(getRequestCloseDate);
+            var getRequestCloseDate = DateTime.parse(data.requestClose);
+            String requestCloseDate =
+                DateFormat('yMd').format(getRequestCloseDate);
             return Center(
               child: DonatedRequestedPostView(
-                  imageUrl: data.imageUrl,
-                  uid: data.uid,
-                  docRef: data.docRef,
-                  description: data.description,
-                  createdAt: data.createdAt,
-                  category: data.category,
-                  approval: data.approved,
-                  rejectedReason: data.rejectReason,
-                  nameOftheOrganizer:data.nameOftheOrganizer,
-                  startTime:data.startTime,
-                  endTime:data.endTime,
-                  requestCloseDate:requestCloseDate,
-                  placeName:data.placeName,
-                  placeAddress:data.placeAddress),
+                imageUrl: data.imageUrl,
+                uid: data.uid,
+                docRef: data.docRef,
+                description: data.description,
+                createdAt: data.createdAt,
+                category: data.category,
+                approval: data.approved,
+                rejectedReason: data.rejectReason,
+                nameOftheOrganizer: data.nameOftheOrganizer,
+                startTime: data.startTime,
+                endTime: data.endTime,
+                requestCloseDate: requestCloseDate,
+                placeName: data.placeName,
+                placeAddress: data.placeAddress,
+              ),
             );
           }
         });

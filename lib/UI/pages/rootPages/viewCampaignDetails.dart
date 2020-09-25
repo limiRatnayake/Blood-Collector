@@ -1,4 +1,5 @@
 import 'package:blood_collector/UI/widgets/radioButtonWidget.dart';
+import 'package:blood_collector/UI/widgets/campaign_slider_widget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -22,24 +23,38 @@ class ViewCampaignDetails extends StatefulWidget {
 
 //timeline card
 class _ViewDetailsState extends State<ViewCampaignDetails> {
-  DocumentReference interestedRef;
-  CollectionReference eventRef;
+  final participantRef = Firestore.instance;
+  bool participated = false;
+  String participateId;
+  bool inclueInParticipantList;
 
-  Map<String, dynamic> interestedData;
+  _isParticipated() {
+    setState(() {
+      participated = !participated;
+    });
+  }
+
   @override
   void initState() {
-    print(widget.currentUser);
-    interestedRef = Firestore.instance
-        .collection("events")
-        .document(widget.docRef)
-        .collection("interested")
-        .document(widget.currentUser);
+    participantRef
+        .collection("participants")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
+              participateId = element.documentID;
 
+              if (element.data.containsValue(widget.docRef) &&
+                  element.data.containsValue(widget.currentUser)) {
+                setState(() {
+                  inclueInParticipantList = true;
+                });
+              } else if (!(element.data.containsValue(widget.docRef) &&
+                  element.data.containsValue(widget.currentUser))) {
+                setState(() {
+                  inclueInParticipantList = false;
+                });
+              }
+            }));
     super.initState();
-    interestedRef.get().then((value) {
-      interestedData = value.data;
-    });
-    eventRef = Firestore.instance.collection("events");
   }
 
   @override
@@ -47,7 +62,8 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
     final EventService _eventServices = Provider.of<EventService>(context);
     final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
-
+    // print(widget.docRef);
+    // print(widget.currentUser);
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -162,6 +178,7 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                           SizedBox(
                             height: 10.0,
                           ),
+                          //if organizer checked to visible contact number to the public
                           data.visibleState != false
                               ? Card(
                                   child: ListTile(
@@ -177,28 +194,67 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                     }
                   }),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                RaisedButton(
-                  textColor: Colors.black,
-                  color: Colors.red.withOpacity(0.9),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(color: Colors.red)),
-                  child: Row(children: [
-                    Text("Participating",
-                        style: TextStyle(
-                            fontFamily: "Roboto",
-                            fontSize: 18.0,
-                            color: Colors.black)),
-                  ]),
-                  onPressed: () {
-                    _settingModalBottomSheet(context);
-                  },
-                ),
-              ],
-            )
+
+            //wrapping the raisedbutton with the builder to display the snackbar so,
+            //snackbar uses the context from builder
+            //I used it bcz the current container doesn't conatain a builder(in the body)
+            Builder(
+                builder: (context) => Container(
+                    width: MediaQuery.of(context).size.width * 0.78,
+                    child: (RaisedButton(
+                        textColor: Colors.black,
+                        color: Colors.red,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.5)),
+                        onPressed: () {
+                          _isParticipated();
+                          if (inclueInParticipantList != true) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CampaignIntroSliderWidget(
+                                            docRef: widget.docRef,
+                                            currentUser: widget.currentUser)));
+                          } else {
+                            final snackBar = SnackBar(
+                              content:
+                                  Text('Sorry! You are already participated!'),
+                            );
+
+                            // it to show a SnackBar.
+                            Scaffold.of(context).showSnackBar(snackBar);
+                          }
+                        },
+                        child: inclueInParticipantList != true
+                            ? Text(
+                                "Participating",
+                                style: TextStyle(fontSize: 16),
+                              )
+                            : Text("Participated",
+                                style: TextStyle(fontSize: 16))))))
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: [
+            //     RaisedButton(
+            //       textColor: Colors.black,
+            //       color: Colors.red.withOpacity(0.9),
+            //       shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(10.0),
+            //           side: BorderSide(color: Colors.red)),
+            //       child: Row(children: [
+            //         Text("Participating",
+            //             style: TextStyle(
+            //                 fontFamily: "Roboto",
+            //                 fontSize: 18.0,
+            //                 color: Colors.black)),
+            //       ]),
+            //       onPressed: () {
+            //         _settingModalBottomSheet(context);
+            //       },
+            //     ),
+            //   ],
+            // )
           ],
         ),
       ),

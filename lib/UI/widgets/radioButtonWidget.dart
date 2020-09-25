@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/widgets/slider_widget.dart';
+import 'package:blood_collector/UI/widgets/campaign_slider_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -122,7 +122,7 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => IntroSliderWidget(
+                        builder: (context) => CampaignIntroSliderWidget(
                             docRef: widget.docRef,
                             currentUser: widget.currentUser)));
               },
@@ -155,6 +155,10 @@ class _RadioButtonWidgetState extends State<RadioButtonWidget> {
                               }),
                             },
                           interestedRef.delete(),
+                          participantRef
+                              .collection("participants")
+                              .document(participateId)
+                              .delete(),
                           setState(() {
                             interestedRef.get().then((value) {
                               interestedData = value.data;

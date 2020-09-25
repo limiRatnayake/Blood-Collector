@@ -20,7 +20,10 @@ class EventParticipantService extends ChangeNotifier {
       DocumentReference newRef = _ref.document();
 
       ParticipantModel participantModel = new ParticipantModel(
-          docRef: docRef, uid: user.uid, participantName: userName);
+          docRef: docRef,
+          uid: user.uid,
+          participantName: userName,
+          participatedStatus: "participating");
       await newRef.setData(participantModel.toJson());
 
       message = "Success";
@@ -36,8 +39,28 @@ class EventParticipantService extends ChangeNotifier {
     return _ref.where("uid", isEqualTo: uid).getDocuments();
   }
 
-   Future<QuerySnapshot> getParticipantEvents(String docRef) {
-    return Firestore.instance.collection("events").where("docRef", isEqualTo: docRef).getDocuments();
+  Future<QuerySnapshot> getParticipantEvents(String docRef) {
+    return Firestore.instance
+        .collection("events")
+        .where("docRef", isEqualTo: docRef)
+        .getDocuments();
+  }
+
+  //delete an participation event
+  Future<String> updateParticipation(
+      String eventId, String participatedStatus) async {
+    String message = "";
+    try {
+      DocumentReference participantRef = _ref.document(eventId);
+      await participantRef
+          .updateData({"participatedStatus": participatedStatus});
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
   }
 
   // Future<DocumentSnapshot> requestParticipantDetails(String participantId) async {

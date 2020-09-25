@@ -1,5 +1,6 @@
 import 'package:blood_collector/UI/pages/rootPages/donorSelectionCriteriaVIew.dart';
 import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
+import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
@@ -7,28 +8,36 @@ import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class IntroSliderWidget extends StatefulWidget {
+class RequestIntroSliderWidget extends StatefulWidget {
   final String docRef;
   final String currentUser;
 
-  IntroSliderWidget({Key key, this.docRef, this.currentUser}) : super(key: key);
+  RequestIntroSliderWidget({Key key, this.docRef, this.currentUser})
+      : super(key: key);
   @override
-  _IntroSliderWidgetState createState() => _IntroSliderWidgetState();
+  _CampaignIntroSliderWidgetState createState() =>
+      _CampaignIntroSliderWidgetState();
 }
 
-class _IntroSliderWidgetState extends State<IntroSliderWidget> {
+class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
   int age;
   String birthDate;
   DocumentReference interestedRef;
+  DocumentReference requestedRef;
   CollectionReference eventRef;
   bool isInterested = false;
   bool availability;
+  bool isRequestSend = false;
+  bool requestStatus;
 
   Map<String, dynamic> interestedData;
+  Map<String, dynamic> requestedData;
+
   //craete a list of slides
   List<PageViewModel> getPages() {
     return [
@@ -137,14 +146,79 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
         image: Image.asset(
           "assets/slide_three.png",
         ),
-        titleWidget: Text(
-          "Are you ready to Donate ?",
-          style: TextStyle(
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.bold,
-              fontSize: 25.0),
+        titleWidget: Column(
+          children: [
+            Text(
+              "Are you ready to Donate ?",
+              style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            RichText(
+              text: TextSpan(
+                text: "Request the patient details",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+            ),
+          ],
         ),
-        body: "Let's Go!",
+        bodyWidget: Padding(
+          padding: const EdgeInsets.all(25),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              RaisedButton(
+                color: Colors.orange[200],
+                onPressed: () {
+                  _isRequestSend();
+
+                  requestedRef.get().then((value) => {
+                        if (value.data != null)
+                          {
+                            print("like ref is nt null"),
+                            requestedRef.delete(),
+                            setState(() {
+                              requestedRef.get().then((value) {
+                                requestedData = value.data;
+                              });
+                            })
+                          }
+                        else
+                          {
+                            requestedRef.setData({"requestStatus": true}),
+                            setState(() {
+                              requestedRef.get().then((value) {
+                                requestedData = value.data;
+                              });
+                            })
+                          }
+                      });
+                },
+                child: requestedData != null &&
+                        requestedData.containsKey("requestStatus")
+                    ? Text(
+                        "Request Sent",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      )
+                    : Text("Send request",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+              ListTile(
+                leading: Icon(Icons.info_outline),
+                title: Text(
+                    "If the requester accept the request details will show on the 'Request List' page",
+                    style: TextStyle(fontSize: 12)),
+              )
+            ],
+          ),
+        ),
         decoration: PageDecoration(
           pageColor: Colors.orange[50],
           bodyTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
@@ -164,6 +238,12 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
     });
   }
 
+  void _isRequestSend() {
+    setState(() {
+      isRequestSend = !isRequestSend;
+    });
+  }
+
   @override
   void initState() {
     print(widget.currentUser);
@@ -172,10 +252,18 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
         .document(widget.docRef)
         .collection("interested")
         .document(widget.currentUser);
-
+    requestedRef = Firestore.instance
+        .collection("events")
+        .document(widget.docRef)
+        .collection("requested")
+        .document(widget.currentUser);
     super.initState();
     interestedRef.get().then((value) {
       interestedData = value.data;
+    });
+    requestedRef.get().then((value) {
+      requestedData = value.data;
+      requestStatus = value.data["requestStatus"];
     });
     eventRef = Firestore.instance.collection("events");
   }
@@ -226,13 +314,15 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
                   }
                   print(availability);
 
-                  if (availability == false) {
+                  if (availability == false || requestedData == null) {
                     //can't donate
 
                     Alert(
-                      context: context,
-                      title: "Can't donate",
-                    ).show();
+                            context: context,
+                            title: "Can't donate",
+                            content: Text(
+                                "check whether you send the request/ your donor criteria may be not acceptable"))
+                        .show();
                   } else if (availability != false && (age > 18 && age < 55)) {
                     //can donate
                     Alert(
@@ -274,50 +364,26 @@ class _IntroSliderWidgetState extends State<IntroSliderWidget> {
                                 String response =
                                     await _participantService.addParticipants(
                                         _user, widget.docRef, userName);
+
                                 if (response != "Success") {
-                                  final snackBar = SnackBar(
-                                    content: Text('Error! Try again later.',
-                                        style:
-                                            TextStyle(color: Colors.blueGrey)),
+                                  AlertDialog(
+                                    title: Text("Error updating your request!"),
+                                    content: Text("Try again later."),
+                                    actions: [
+                                      FlatButton(
+                                        child: Text('OK'),
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ViewRequestDetails()));
+                                        },
+                                      ),
+                                    ],
                                   );
-                                  Scaffold.of(context).showSnackBar(snackBar);
-                                  Navigator.pop(context);
-                                  setState(() {});
+                                  requestedRef.delete();
                                 } else {
-                                  interestedRef.get().then((value) => {
-                                        if (value.data != null)
-                                          {
-                                            if (value.data.keys
-                                                .contains(widget.docRef))
-                                              {
-                                                Firestore.instance
-                                                    .runTransaction(
-                                                        (Transaction tx) async {
-                                                  DocumentSnapshot docSnapshot =
-                                                      await tx.get(
-                                                          eventRef.document(
-                                                              widget.docRef));
-                                                  if (docSnapshot.exists) {
-                                                    await tx.update(
-                                                        eventRef.document(
-                                                            widget.docRef),
-                                                        <String, dynamic>{
-                                                          'interested': docSnapshot
-                                                                      .data[
-                                                                  "interested"] -
-                                                              1
-                                                        });
-                                                  }
-                                                }),
-                                              },
-                                            interestedRef.delete(),
-                                            setState(() {
-                                              interestedRef.get().then((value) {
-                                                interestedData = value.data;
-                                              });
-                                            })
-                                          }
-                                      });
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

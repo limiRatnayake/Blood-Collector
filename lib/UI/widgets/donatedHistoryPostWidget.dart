@@ -1,8 +1,10 @@
 import 'package:blood_collector/UI/pages/rootPages/editCampaignView.dart';
 import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
 import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -24,33 +26,52 @@ class DonatedRequestedPostView extends StatefulWidget {
   final String placeName;
   final String placeAddress;
 
-  DonatedRequestedPostView(
-      {Key key,
-      this.imageUrl,
-      this.uid,
-      this.docRef,
-      this.createdAt,
-      this.description,
-      this.category,
-      this.approval,
-      this.rejectedReason,
-      this.nameOftheOrganizer,
-      this.startTime,
-      this.endTime,
-      this.requestCloseDate,
-      this.placeName,
-      this.placeAddress})
-      : super(key: key);
+  DonatedRequestedPostView({
+    Key key,
+    this.imageUrl,
+    this.uid,
+    this.docRef,
+    this.createdAt,
+    this.description,
+    this.category,
+    this.approval,
+    this.rejectedReason,
+    this.nameOftheOrganizer,
+    this.startTime,
+    this.endTime,
+    this.requestCloseDate,
+    this.placeName,
+    this.placeAddress,
+  }) : super(key: key);
   @override
   _DonatedRequestedPostViewState createState() =>
       _DonatedRequestedPostViewState();
 }
 
 class _DonatedRequestedPostViewState extends State<DonatedRequestedPostView> {
+  final participantRef = Firestore.instance;
+  String participateId;
+  String participatedStatus;
+
+  @override
+  void initState() {
+    //get the document reference of the Participants collection
+    participantRef
+        .collection("participants")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
+              participateId = element.documentID;
+              participatedStatus = element['participatedStatus'];
+            }));
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final UserService _userService = Provider.of<UserService>(context);
-    final EventService _eventServices = Provider.of<EventService>(context);
+    final EventParticipantService _participantServices =
+        Provider.of<EventParticipantService>(context);
     String date;
 
     //get the event created date
@@ -77,10 +98,8 @@ class _DonatedRequestedPostViewState extends State<DonatedRequestedPostView> {
     return Container(
         child: Card(
       clipBehavior: Clip.antiAlias,
-     
       child: Column(
         children: [
-         
           widget.imageUrl != ""
               ? Container(
                   height: MediaQuery.of(context).size.width - 80,
@@ -104,16 +123,28 @@ class _DonatedRequestedPostViewState extends State<DonatedRequestedPostView> {
                       ? ExpansionTile(
                           leading: GestureDetector(
                             child: CircleAvatar(
-                              radius: 24,
+                              radius: 20,
                               backgroundImage: NetworkImage(data.proPicUrl),
                             ),
                           ),
-                          title: Text(
-                            data.firstName + " " + data.lastName,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                data.firstName + " " + data.lastName,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(width: 9),
+                              participatedStatus == "Cancelled"
+                                  ? Text(
+                                      "Cancelled",
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  : Container()
+                            ],
                           ),
                           subtitle: Text(
                             date,
@@ -159,6 +190,92 @@ class _DonatedRequestedPostViewState extends State<DonatedRequestedPostView> {
                               ),
                             ),
                           ],
+                          trailing: PopupMenuButton<int>(
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 1,
+                                child: Text(
+                                  "Cancel the participation",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 2,
+                                child: Text(
+                                  "Mark as Interested",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                            ],
+                            onSelected: (value) {
+                              switch (value) {
+                                case 1:
+                                  Alert(
+                                      context: context,
+                                      type: AlertType.success,
+                                      title:
+                                          "Are you sure you want to cancel the participation?",
+                                      style: AlertStyle(
+                                          isCloseButton: false,
+                                          isOverlayTapDismiss: false,
+                                          backgroundColor: Colors.black,
+                                          alertBorder: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              side: BorderSide(
+                                                  color: Colors.white)),
+                                          titleStyle: TextStyle(
+                                              color: Colors.blueAccent)),
+                                      buttons: [
+                                        DialogButton(
+                                            child: Text(
+                                              "No",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            }),
+                                        DialogButton(
+                                            child: Text(
+                                              "Yes",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20),
+                                            ),
+                                            onPressed: () async {
+                                              String response =
+                                                  await _participantServices
+                                                      .updateParticipation(
+                                                          participateId,
+                                                          "Cancelled");
+                                              if (response == "Success") {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                      'Participation is cancelled!',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.blueGrey)),
+                                                );
+
+                                                Scaffold.of(context)
+                                                    .showSnackBar(snackBar);
+                                                Navigator.of(context).pop();
+                                              }
+                                            })
+                                      ]).show();
+                                  break;
+                                case 2:
+                                  {}
+                                  break;
+                              }
+                            },
+                          ),
                         )
                       : Text("try again later");
                 }
