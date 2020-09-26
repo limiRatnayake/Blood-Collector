@@ -59,7 +59,7 @@ class _RequestHistoryState extends State<RequestHistory>
             DonatedRequestView(),
             //users event history
             RaisedRequestView(),
-            RequestAcceptenceView()
+            AcceptRequestView()
           ])),
     );
   }

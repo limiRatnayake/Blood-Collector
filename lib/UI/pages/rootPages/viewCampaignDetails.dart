@@ -1,5 +1,5 @@
 import 'package:blood_collector/UI/widgets/radioButtonWidget.dart';
-import 'package:blood_collector/UI/widgets/campaign_slider_widget.dart';
+import 'package:blood_collector/UI/widgets/slider_campaign_widget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';

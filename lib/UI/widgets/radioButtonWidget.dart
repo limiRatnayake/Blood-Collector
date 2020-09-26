@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/widgets/campaign_slider_widget.dart';
+import 'package:blood_collector/UI/widgets/slider_campaign_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 

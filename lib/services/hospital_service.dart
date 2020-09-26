@@ -15,17 +15,14 @@ class HospitalDetailsServices extends ChangeNotifier {
 //   }
 
   Future<List<HospitalListModel>> getHospitals() async {
-   
     try {
-     List<DocumentSnapshot> snapshot = (await _ref.getDocuments())
-              .documents;
+      List<DocumentSnapshot> snapshot = (await _ref.getDocuments()).documents;
 
       List<HospitalListModel> hospitals = snapshot
           .map<HospitalListModel>((doc) => HospitalListModel.fromMap(doc.data))
           .toList();
 
       return hospitals;
-
     } catch (e) {
       print(e);
       return null;

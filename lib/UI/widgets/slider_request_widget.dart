@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -34,6 +35,9 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
   bool availability;
   bool isRequestSend = false;
   bool requestStatus;
+
+//use DateFormat from intl package.
+  String requestSentOn = DateFormat('yyyy-MM-dd hh:mm').format(DateTime.now());
 
   Map<String, dynamic> interestedData;
   Map<String, dynamic> requestedData;
@@ -190,7 +194,11 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                           }
                         else
                           {
-                            requestedRef.setData({"requestStatus": true}),
+                            requestedRef.setData({
+                              "requestStatus": "sent",
+                              "requestSentOn": requestSentOn,
+                              "requesterId": widget.currentUser
+                            }),
                             setState(() {
                               requestedRef.get().then((value) {
                                 requestedData = value.data;
