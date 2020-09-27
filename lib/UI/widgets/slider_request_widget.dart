@@ -195,8 +195,9 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                         else
                           {
                             requestedRef.setData({
+                              "docRef": widget.docRef,
                               "requestStatus": "sent",
-                              "requestSentOn": requestSentOn,
+                              "requestSentOn": DateTime.now(),
                               "requesterId": widget.currentUser
                             }),
                             setState(() {

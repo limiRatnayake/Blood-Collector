@@ -3,6 +3,7 @@ import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/hospital_service.dart';
+import 'package:blood_collector/services/request_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 
@@ -30,6 +31,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => UserService()),
         ChangeNotifierProvider(create: (_) => EventService()),
         ChangeNotifierProvider(create: (_) => EventParticipantService()),
+        ChangeNotifierProvider(create: (_) => RequestAcceptenceService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

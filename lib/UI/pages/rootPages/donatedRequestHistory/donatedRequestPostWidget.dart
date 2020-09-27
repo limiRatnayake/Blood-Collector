@@ -1,15 +1,11 @@
-import 'package:blood_collector/UI/pages/rootPages/editCampaignView.dart';
-import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
-import 'package:blood_collector/UI/widgets/donatedHistoryPostWidget.dart';
-import 'package:blood_collector/UI/widgets/requestHistoryPostWidget.dart';
+import 'package:blood_collector/UI/widgets/donatedCampaignHistoryWidget.dart';
+import 'package:blood_collector/UI/widgets/donatedRequestHistoryWidget.dart';
 import 'package:blood_collector/models/event_model.dart';
-import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class DonatedRequestedGetEvents extends StatefulWidget {
   final String uid;
@@ -42,23 +38,32 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
             String requestCloseDate =
                 DateFormat('yMd').format(getRequestCloseDate);
             return Center(
-              child: DonatedRequestedPostView(
-                imageUrl: data.imageUrl,
-                uid: data.uid,
-                docRef: data.docRef,
-                description: data.description,
-                createdAt: data.createdAt,
-                category: data.category,
-                approval: data.approved,
-                rejectedReason: data.rejectReason,
-                nameOftheOrganizer: data.nameOftheOrganizer,
-                startTime: data.startTime,
-                endTime: data.endTime,
-                requestCloseDate: requestCloseDate,
-                placeName: data.placeName,
-                placeAddress: data.placeAddress,
-              ),
-            );
+                child: data.category != "request"
+                    ? DonatedCampaignPostView(
+                        imageUrl: data.imageUrl,
+                        uid: data.uid,
+                        docRef: data.docRef,
+                        description: data.description,
+                        createdAt: data.createdAt,
+                        category: data.category,
+                        approval: data.approved,
+                        rejectedReason: data.rejectReason,
+                        nameOftheOrganizer: data.nameOftheOrganizer,
+                        startTime: data.startTime,
+                        endTime: data.endTime,
+                        requestCloseDate: requestCloseDate,
+                        placeName: data.placeName,
+                        placeAddress: data.placeAddress,
+                      )
+                    : DonatedRequestPostView(
+                        imageUrl: data.imageUrl,
+                        uid: data.uid,
+                        docRef: data.docRef,
+                        description: data.description,
+                        createdAt: data.createdAt,
+                        category: data.category,
+                        approval: data.approved,
+                      ));
           }
         });
   }

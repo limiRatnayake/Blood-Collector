@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class DonatedRequestedPostView extends StatefulWidget {
+class DonatedRequestPostView extends StatefulWidget {
   final String imageUrl;
   final String uid;
   final String docRef;
@@ -18,15 +18,8 @@ class DonatedRequestedPostView extends StatefulWidget {
   final String createdAt;
   final String category;
   final bool approval;
-  final String rejectedReason;
-  final String nameOftheOrganizer;
-  final String startTime;
-  final String endTime;
-  final String requestCloseDate;
-  final String placeName;
-  final String placeAddress;
 
-  DonatedRequestedPostView({
+  DonatedRequestPostView({
     Key key,
     this.imageUrl,
     this.uid,
@@ -35,20 +28,12 @@ class DonatedRequestedPostView extends StatefulWidget {
     this.description,
     this.category,
     this.approval,
-    this.rejectedReason,
-    this.nameOftheOrganizer,
-    this.startTime,
-    this.endTime,
-    this.requestCloseDate,
-    this.placeName,
-    this.placeAddress,
   }) : super(key: key);
   @override
-  _DonatedRequestedPostViewState createState() =>
-      _DonatedRequestedPostViewState();
+  _DonatedRequestPostViewState createState() => _DonatedRequestPostViewState();
 }
 
-class _DonatedRequestedPostViewState extends State<DonatedRequestedPostView> {
+class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
   final participantRef = Firestore.instance;
   String participateId;
   String participatedStatus;
@@ -153,43 +138,7 @@ class _DonatedRequestedPostViewState extends State<DonatedRequestedPostView> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey[500]),
                           ),
-                          children: [
-                            ListTile(
-                              leading: Icon(Icons.opacity),
-                              title: Text("Organizered By"),
-                              subtitle: Text(
-                                widget.nameOftheOrganizer,
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.access_time),
-                              title: Text("Time"),
-                              subtitle:
-                                  Text(widget.startTime + " " + widget.endTime),
-                            ),
-                            ListTile(
-                                leading: Icon(Icons.event_available),
-                                title: Text("When they need blood"),
-                                subtitle: Text(widget.requestCloseDate)),
-                            ListTile(
-                              leading: Icon(Icons.local_hospital),
-                              title: Text("Place Name"),
-                              subtitle: Text(widget.placeName),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.location_on),
-                              title: Text("Place Address"),
-                              subtitle: Text(widget.placeAddress),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.opacity),
-                              title: Text("Description"),
-                              subtitle: Text(
-                                widget.description,
-                              ),
-                            ),
-                          ],
+                          children: [],
                           trailing: PopupMenuButton<int>(
                             itemBuilder: (context) => [
                               PopupMenuItem(
