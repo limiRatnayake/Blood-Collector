@@ -34,27 +34,27 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
   bool inclueInRequestList;
   String reqId;
 
-  @override
-  void initState() {
-    Firestore.instance
-        .collection("events")
-        .document(widget.docRef)
-        .collection("requested")
-        .getDocuments()
-        .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
-              reqId = element.documentID;
-            }));
-    reqRef = Firestore.instance
-        .collection("events")
-        .document(widget.docRef)
-        .collection("requested")
-        .document(widget.requesterId);
+  // @override
+  // void initState() {
+  //   Firestore.instance
+  //       .collection("events")
+  //       .document(widget.docRef)
+  //       .collection("requested")
+  //       .getDocuments()
+  //       .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
+  //             reqId = element.documentID;
+  //           }));
+  //   reqRef = Firestore.instance
+  //       .collection("events")
+  //       .document(widget.docRef)
+  //       .collection("requested")
+  //       .document(widget.requesterId);
 
-    super.initState();
-    reqRef.get().then((value) {
-      requestData = value.data;
-    });
-  }
+  //   super.initState();
+  //   reqRef.get().then((value) {
+  //     requestData = value.data;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

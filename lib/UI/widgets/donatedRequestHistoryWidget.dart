@@ -5,6 +5,7 @@ import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -12,32 +13,47 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 class DonatedRequestPostView extends StatefulWidget {
   final String imageUrl;
+  final String currentUser;
   final String uid;
   final String docRef;
   final String description;
   final String createdAt;
   final String category;
   final bool approval;
+  final String bloodGroup;
+  final String unitsOfBlood;
+  final String requestCloseDate;
+  final String hospitalName;
+  final String hospitalAddress;
+  final String patientName;
 
-  DonatedRequestPostView({
-    Key key,
-    this.imageUrl,
-    this.uid,
-    this.docRef,
-    this.createdAt,
-    this.description,
-    this.category,
-    this.approval,
-  }) : super(key: key);
+  DonatedRequestPostView(
+      {Key key,
+      this.imageUrl,
+      this.currentUser,
+      this.uid,
+      this.docRef,
+      this.createdAt,
+      this.description,
+      this.category,
+      this.approval,
+      this.bloodGroup,
+      this.unitsOfBlood,
+      this.requestCloseDate,
+      this.hospitalName,
+      this.hospitalAddress,
+      this.patientName})
+      : super(key: key);
   @override
   _DonatedRequestPostViewState createState() => _DonatedRequestPostViewState();
 }
 
 class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
   final participantRef = Firestore.instance;
+  DocumentReference requestRef;
   String participateId;
   String participatedStatus;
-
+  String requestedStatus;
   @override
   void initState() {
     //get the document reference of the Participants collection
@@ -48,8 +64,18 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
               participateId = element.documentID;
               participatedStatus = element['participatedStatus'];
             }));
+    requestRef = Firestore.instance
+        .collection("events")
+        .document(widget.docRef)
+        .collection("requested")
+        .document(widget.currentUser);
 
     super.initState();
+    requestRef.get().then((value) {
+      setState(() {
+        requestedStatus = value.data["requestStatus"];
+      });
+    });
   }
 
   @override
@@ -138,7 +164,43 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey[500]),
                           ),
-                          children: [],
+                          children: [
+                            ListTile(
+                              leading: Icon(Icons.opacity),
+                              title: Text("Requested Blood Type"),
+                              subtitle: Text(
+                                widget.bloodGroup,
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.check_box_outline_blank),
+                              title: Text("Units of Blood"),
+                              subtitle: Text(widget.unitsOfBlood),
+                            ),
+                            ListTile(
+                                leading: Icon(Icons.event_available),
+                                title: Text("When they need blood"),
+                                subtitle:
+                                    Text(widget.requestCloseDate.toString())),
+                            ListTile(
+                              leading: Icon(Icons.local_hospital),
+                              title: Text("Hospital Name"),
+                              subtitle: Text(widget.hospitalName),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.directions),
+                              title: Text("Hospital Address"),
+                              subtitle: Text(widget.hospitalAddress),
+                            ),
+                            requestedStatus != "Rejected"
+                                ? ListTile(
+                                    leading: Icon(Icons.person),
+                                    title: Text("Patient Name"),
+                                    subtitle: Text(widget.patientName),
+                                  )
+                                : Container()
+                          ],
                           trailing: PopupMenuButton<int>(
                             itemBuilder: (context) => [
                               PopupMenuItem(

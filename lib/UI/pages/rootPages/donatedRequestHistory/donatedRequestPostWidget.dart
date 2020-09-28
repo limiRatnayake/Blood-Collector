@@ -10,12 +10,10 @@ import 'package:provider/provider.dart';
 class DonatedRequestedGetEvents extends StatefulWidget {
   final String uid;
   final String docRef;
+  final String currentUser;
 
-  DonatedRequestedGetEvents({
-    Key key,
-    this.uid,
-    this.docRef,
-  }) : super(key: key);
+  DonatedRequestedGetEvents({Key key, this.uid, this.docRef, this.currentUser})
+      : super(key: key);
   @override
   _DonatedRequestedGetEventsState createState() =>
       _DonatedRequestedGetEventsState();
@@ -63,7 +61,13 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         createdAt: data.createdAt,
                         category: data.category,
                         approval: data.approved,
-                      ));
+                        bloodGroup: data.bloodGroup,
+                        unitsOfBlood: data.unitsOfBlood,
+                        requestCloseDate: requestCloseDate,
+                        hospitalName: data.hospitalName,
+                        hospitalAddress: data.hospitalAddress,
+                        patientName: data.patientName,
+                        currentUser: widget.currentUser));
           }
         });
   }

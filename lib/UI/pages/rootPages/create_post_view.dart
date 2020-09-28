@@ -26,6 +26,7 @@ class CreatePostView extends StatefulWidget {
   final String userFName;
   final String userLName;
   final String userPhoneNumber;
+  final String patientName;
   final bool notifyState;
   final String nameOfTheOrganizer;
   final String pickUpStartDate;
@@ -55,6 +56,7 @@ class CreatePostView extends StatefulWidget {
       this.userFName,
       this.userLName,
       this.userPhoneNumber,
+      this.patientName,
       this.notifyState,
       this.nameOfTheOrganizer,
       this.pickUpStartDate,
@@ -136,7 +138,7 @@ class _PostViewState extends State<CreatePostView> {
 
   @override
   Widget build(BuildContext context) {
-    //get parameter type FirebaseUser 
+    //get parameter type FirebaseUser
     FirebaseUser _user = Provider.of<AuthServices>(context).user;
     EventService _eventService = Provider.of<EventService>(context);
 
@@ -269,36 +271,36 @@ class _PostViewState extends State<CreatePostView> {
                                 });
 
                                 String response = await _eventService.addEvent(
-                                  _user,
-                                  widget.bloodGroup,
-                                  widget.replacementAvailability,
-                                  widget.unitsOfBlood,
-                                  widget.requestClose,
-                                  widget.hospitalName,
-                                  widget.hospitalAddress,
-                                  widget.hospitalLat,
-                                  widget.hospitalLng,
-                                  widget.userFName,
-                                  widget.userLName,
-                                  widget.userPhoneNumber,
-                                  widget.notifyState,
-                                  widget.nameOfTheOrganizer,
-                                  widget.pickUpStartDate,
-                                  widget.pickUpEndDate,
-                                  widget.startTime,
-                                  widget.endTime,
-                                  widget.placeName,
-                                  widget.placeAddress,
-                                  widget.placeLat,
-                                  widget.placeLng,
-                                  widget.orgernizerConatctNo,
-                                  description,
-                                  imgName, //imgName
-                                  imageExtention,
-                                  imgUrl,
-                                  category,
-                                  widget.visibleState
-                                );
+                                    _user,
+                                    widget.bloodGroup,
+                                    widget.replacementAvailability,
+                                    widget.unitsOfBlood,
+                                    widget.requestClose,
+                                    widget.hospitalName,
+                                    widget.hospitalAddress,
+                                    widget.hospitalLat,
+                                    widget.hospitalLng,
+                                    widget.userFName,
+                                    widget.userLName,
+                                    widget.userPhoneNumber,
+                                    widget.patientName,
+                                    widget.notifyState,
+                                    widget.nameOfTheOrganizer,
+                                    widget.pickUpStartDate,
+                                    widget.pickUpEndDate,
+                                    widget.startTime,
+                                    widget.endTime,
+                                    widget.placeName,
+                                    widget.placeAddress,
+                                    widget.placeLat,
+                                    widget.placeLng,
+                                    widget.orgernizerConatctNo,
+                                    description,
+                                    imgName, //imgName
+                                    imageExtention,
+                                    imgUrl,
+                                    category,
+                                    widget.visibleState);
                                 if (response != "Success") {
                                   setState(() {
                                     _isLoading = false;

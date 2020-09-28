@@ -63,7 +63,10 @@ class _DonatedRequestViewState extends State<DonatedRequestView> {
                             itemBuilder: (context, index) {
                               ParticipantModel data = dataList[index];
 
-                              return DonatedRequestedGetEvents(uid: data.uid, docRef: data.docRef,);
+                              return DonatedRequestedGetEvents(
+                                  uid: data.uid,
+                                  docRef: data.docRef,
+                                  currentUser: _authServices.user.uid);
                             }))
                     : Padding(
                         padding: EdgeInsets.all(15),

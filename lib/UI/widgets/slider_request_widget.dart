@@ -272,7 +272,6 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
     });
     requestedRef.get().then((value) {
       requestedData = value.data;
-      requestStatus = value.data["requestStatus"];
     });
     eventRef = Firestore.instance.collection("events");
   }

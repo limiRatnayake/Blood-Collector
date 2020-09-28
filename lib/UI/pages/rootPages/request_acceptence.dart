@@ -29,7 +29,7 @@ class _AcceptRequestViewState extends State<AcceptRequestView> {
       body: Container(
         // padding: EdgeInsets.only(left: 10, right: 10, top: 45),
         child: FutureBuilder(
-            future: _requestServices.getRequests(_authServices.user.uid),
+            future: _requestServices.getRequestsList(_authServices.user.uid),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(child: CircularProgressIndicator());

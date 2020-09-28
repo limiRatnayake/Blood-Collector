@@ -12,8 +12,8 @@ class RequestAcceptenceService extends ChangeNotifier {
   RequestAcceptenceService() : _db = Firestore.instance {
     _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
   }
-//get the requests sub collection by the events
-  Future<List<RequestAcceptModel>> getRequests(String currentUser) async {
+//show the event creator the list of requsters
+  Future<List<RequestAcceptModel>> getRequestsList(String currentUser) async {
     List<RequestAcceptModel> _requestsList = [];
     String docRef;
     try {

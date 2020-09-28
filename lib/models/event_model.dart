@@ -12,6 +12,7 @@ class EventModel {
   String userFName;
   String userLName;
   String userPhoneNumber;
+  String patientName;
   bool notifyState;
   String nameOftheOrganizer;
   String pickUpStartDate;
@@ -34,43 +35,44 @@ class EventModel {
   bool visibleState;
   int likes;
   int interested;
-  EventModel({
-    this.docRef,
-    this.uid,
-    this.bloodGroup,
-    this.replacementAvailability,
-    this.unitsOfBlood,
-    this.requestClose,
-    this.hospitalName,
-    this.hospitalAddress,
-    this.hospitalLat,
-    this.hospitalLng,
-    this.userFName,
-    this.userLName,
-    this.userPhoneNumber,
-    this.notifyState,
-    this.nameOftheOrganizer,
-    this.pickUpStartDate,
-    this.pickUpEndDate,
-    this.startTime,
-    this.endTime,
-    this.placeName,
-    this.placeAddress,
-    this.placeLat,
-    this.placeLng,
-    this.orgernizerConatctNo,
-    this.description,
-    this.imageName,
-    this.imageExtention,
-    this.imageUrl,
-    this.approved,
-    this.rejectReason,
-    this.createdAt,
-    this.category,
-    this.visibleState,
-    this.likes,
-    this.interested
-  });
+
+  EventModel(
+      {this.docRef,
+      this.uid,
+      this.bloodGroup,
+      this.replacementAvailability,
+      this.unitsOfBlood,
+      this.requestClose,
+      this.hospitalName,
+      this.hospitalAddress,
+      this.hospitalLat,
+      this.hospitalLng,
+      this.userFName,
+      this.userLName,
+      this.userPhoneNumber,
+      this.patientName,
+      this.notifyState,
+      this.nameOftheOrganizer,
+      this.pickUpStartDate,
+      this.pickUpEndDate,
+      this.startTime,
+      this.endTime,
+      this.placeName,
+      this.placeAddress,
+      this.placeLat,
+      this.placeLng,
+      this.orgernizerConatctNo,
+      this.description,
+      this.imageName,
+      this.imageExtention,
+      this.imageUrl,
+      this.approved,
+      this.rejectReason,
+      this.createdAt,
+      this.category,
+      this.visibleState,
+      this.likes,
+      this.interested});
 
   EventModel.fromMap(Map snapshot)
       : docRef = snapshot['docRef'] ?? "",
@@ -87,6 +89,7 @@ class EventModel {
         userFName = snapshot['userFName'] ?? "",
         userLName = snapshot['userLName'] ?? "",
         userPhoneNumber = snapshot['userPhoneNumber'] ?? "",
+        patientName = snapshot['patientName'] ?? "",
         notifyState = snapshot['notifyState'] ?? null,
         nameOftheOrganizer = snapshot['nameOftheOrganizer'] ?? "",
         pickUpStartDate = snapshot['pickUpStartDate'] ?? "",
@@ -125,6 +128,7 @@ class EventModel {
       "userFName": userFName,
       "userLName": userLName,
       "userPhoneNumber": userPhoneNumber,
+      "patientName": patientName,
       "notifyState": notifyState,
       "nameOftheOrganizer": nameOftheOrganizer,
       "pickUpStartDate": pickUpStartDate,
@@ -144,10 +148,9 @@ class EventModel {
       "rejectReason": rejectReason,
       "createdAt": createdAt,
       "category": category,
-      "visibleState":visibleState,
+      "visibleState": visibleState,
       "likes": likes,
       "interested": interested,
-
     };
   }
 }

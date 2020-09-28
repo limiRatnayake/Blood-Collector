@@ -50,6 +50,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   String userLName;
   String userPhoneNumber;
   bool disabled;
+  String patientName;
 
   bool notifyState;
   String firstName;
@@ -62,6 +63,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   String _bloodGroup = 'Select Blood Type';
   bool _formValidate = false;
   String _radioItemHolder = "Yes";
+  bool _visibleState = false;
 
   void selectBloodType(String value) {
     setState(() {
@@ -211,7 +213,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
     );
   }
 
-  Widget _userFNameDeatils() {
+  Widget _patientName() {
     return Container(
       width: double.infinity,
       height: 58,
@@ -220,9 +222,8 @@ class _RequestBloodViewState extends State<RequestBloodView> {
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
-          controller: userFNameController,
           decoration: InputDecoration(
-              hintText: "First Name",
+              hintText: "Patient Name",
               hintStyle: TextStyle(
                 fontSize: 16.0,
                 fontFamily: "Roboto",
@@ -230,8 +231,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
               enabledBorder: InputBorder.none),
           validator: validateFormData,
           onChanged: (value) {
-            value = userFNameController.text;
-            userFName = value;
+            patientName = value;
           },
         ),
       ),
@@ -318,20 +318,21 @@ class _RequestBloodViewState extends State<RequestBloodView> {
       print('Form is vaild');
       var route = new MaterialPageRoute(
         builder: (BuildContext context) => CreatePostView(
-          bloodGroup: bloodGroup,
-          replacementAvailability: replacementAvailability,
-          unitsOfBlood: unitsOfBlood,
-          requestClose: requestClose,
-          hospitalName: hospitalName,
-          hospitalAddress: hospitalAddress,
-          hospitalLat: hospitalLat,
-          hospitalLng: hospitalLng,
-          userFName: userFName ?? firstName,
-          userLName: userLName ?? lastName,
-          userPhoneNumber: userPhoneNumber ?? mobilePhone,
-          notifyState: _notifyState,
-          category: "request",
-        ),
+            bloodGroup: bloodGroup,
+            replacementAvailability: replacementAvailability,
+            unitsOfBlood: unitsOfBlood,
+            requestClose: requestClose,
+            hospitalName: hospitalName,
+            hospitalAddress: hospitalAddress,
+            hospitalLat: hospitalLat,
+            hospitalLng: hospitalLng,
+            userFName: userFName ?? firstName,
+            userLName: userLName ?? lastName,
+            userPhoneNumber: userPhoneNumber ?? mobilePhone,
+            patientName: patientName,
+            notifyState: _notifyState,
+            category: "request",
+            visibleState: _visibleState),
       );
       Navigator.of(context).push(route);
     } else {
@@ -445,6 +446,40 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                 Divider(
                   height: 50.0,
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 25.0),
+                  child: Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: Text(
+                          "Patient Details",
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 16.0,
+                              color: Colors.black54),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 25.0),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "Patient Name that provided to the hospital",
+                        style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                      ),
+                    ],
+                  ),
+                ),
+                _patientName(),
+                SizedBox(
+                  height: 10.0,
+                ),
                 _userDetailsBuilder(context),
                 SizedBox(
                   height: 10.0,
@@ -544,7 +579,6 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                       'Select One',
                     ),
                     isExpanded: true,
-                  
                     validator: (value) {
                       if (value == null) {
                         return "Select the hospital";
@@ -819,7 +853,21 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                       },
                     ),
                   ),
-                )
+                ),
+                Container(
+                    width: double.infinity,
+                    height: 58,
+                    margin: EdgeInsets.symmetric(horizontal: 15.0),
+                    child: CheckboxListTile(
+                      title: Text("Yes, visible it"),
+                      value: _visibleState,
+                      onChanged: (value) {
+                        setState(() {
+                          _visibleState = value;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    )),
               ],
             );
           }
