@@ -81,7 +81,7 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                           ),
                         ),
                         title: Text(data.firstName + " " + data.lastName),
-                        subtitle: Text(widget.requestSentOn),
+                        // subtitle: Text(widget.requestSentOn),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

@@ -162,7 +162,8 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 ParticipantListView(
-                                                    docRef: widget.docRef)));
+                                                  docRef: widget.docRef,
+                                                )));
                                   },
                                 )
                               ],

@@ -18,7 +18,7 @@ class _ParticipantDataTableViewState extends State<ParticipantDataTableView> {
   @override
   Widget build(BuildContext context) {
     final UserService _userService = Provider.of<UserService>(context);
-
+    print(widget.uid);
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: FutureBuilder(
@@ -27,6 +27,9 @@ class _ParticipantDataTableViewState extends State<ParticipantDataTableView> {
             if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             } else {
+              // List<UserModel> users = snapshot.data.documents
+              //     .map<UserModel>((doc) => UserModel.fromMap(doc.data))
+              //     .toList();
               List<UserModel> users = snapshot.data;
               List<DataRow> dataRowItems = [];
               for (int i = 0; i < users.length; i++) {
@@ -38,18 +41,23 @@ class _ParticipantDataTableViewState extends State<ParticipantDataTableView> {
                     Text(users[i].lastName),
                   )
                 ]));
-                // dropDownItems.add(DropdownMenuItem(
-                //   child: Text(hospitalItems[i].bloodBankName),
-                //   value: "${hospitalItems[i].bloodBankName}",
-                // ));
               }
-
-              return DataTable(columns: [
-                DataColumn(
-                  label: Text("First Name"),
-                ),
-                DataColumn(label: Text("Last Name")),
-              ], rows: dataRowItems);
+              return users.length > 0
+                  ? DataTable(columns: [
+                      DataColumn(
+                        label: Text("First Name"),
+                      ),
+                      DataColumn(label: Text("Last Name")),
+                    ], rows: dataRowItems.toList())
+                  : Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Center(
+                        child: Text(
+                          "Please check again later.",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
             }
           }),
     );

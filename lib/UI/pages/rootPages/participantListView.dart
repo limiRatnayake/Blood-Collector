@@ -38,6 +38,21 @@ class _ParticipantListViewState extends State<ParticipantListView> {
                   .map<ParticipantModel>(
                       (doc) => ParticipantModel.fromMap(doc.data))
                   .toList();
+              List<DataRow> dataRow = [];
+              for (int i = 0; i < dataList.length; i++) {
+                dataRow.add(DataRow(cells: [
+                  DataCell(
+                    Text(dataList[i].docRef),
+                  ),
+                  DataCell(
+                    Text(dataList[i].uid),
+                  )
+                ]));
+                // dropDownItems.add(DropdownMenuItem(
+                //   child: Text(hospitalItems[i].bloodBankName),
+                //   value: "${hospitalItems[i].bloodBankName}",
+                // ));
+              }
               return dataList.length > 0
                   ? Container(
                       child: ListView.builder(
