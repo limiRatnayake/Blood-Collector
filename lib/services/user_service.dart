@@ -27,21 +27,21 @@ class UserService extends ChangeNotifier {
     return postSnapshot;
   }
 
-  Future<List<UserModel>> getUsersForParticipantList(String uid) async {
-    try {
-      List<DocumentSnapshot> snapshot =
-          (await _ref.where("uid", isEqualTo: uid).getDocuments()).documents;
+  // Future<List<UserModel>> getUsersForParticipantList(String uid) async {
+  //   try {
+  //     List<DocumentSnapshot> snapshot =
+  //         (await _ref.where("uid", isEqualTo: uid).getDocuments()).documents;
 
-      List<UserModel> users = snapshot
-          .map<UserModel>((doc) => UserModel.fromMap(doc.data))
-          .toList();
+  //     List<UserModel> users = snapshot
+  //         .map<UserModel>((doc) => UserModel.fromMap(doc.data))
+  //         .toList();
 
-      return users;
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
+  //     return users;
+  //   } catch (e) {
+  //     print(e);
+  //     return null;
+  //   }
+  // }
 
   Future<String> updateUserProfile(
     String uid,

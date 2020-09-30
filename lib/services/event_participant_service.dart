@@ -46,22 +46,28 @@ class EventParticipantService extends ChangeNotifier {
 
 //get participant for an particular event
 
-  // Future<List<QuerySnapshot>> getParticipantForAnEvent(String docRef) async {
+  // Future<List<UserModel>> getParticipantForAnEvent(String docRef) async {
   //   List<UserModel> _usersList = [];
   //   String uid;
 
-  //   List<QuerySnapshot> snapshot;
+  
   //   try {
   //     _ref.where("docRef", isEqualTo: docRef).getDocuments().then(
   //         (QuerySnapshot snapshot) =>
   //             snapshot.documents.forEach((element) async {
   //               uid = element.data["uid"];
   //               print(uid);
+  //               List<DocumentSnapshot> users =
+  //           (await _userRef.where("uid", isEqualTo: uid).getDocuments())
+  //               .documents;
+
+  //       _usersList =
+  //           users.map<UserModel>((doc) => UserModel.fromMap(doc.data)).toList();
   //             }));
-  //     print(uid);
+
 
   //     // notifyListeners();
-  //     return snapshot;
+  //     return _usersList;
   //   } catch (e) {
   //     print(e);
   //     return null;
@@ -77,7 +83,7 @@ class EventParticipantService extends ChangeNotifier {
 
   //     for (int x = 0; x < events.length; x++) {
   //       String uid = events[x].data['uid'];
-  //       print(uid);
+  //       // print(uid);
   //       // docId = events[x].documentID;
   //       // print(docId);
   //       List<DocumentSnapshot> users =
@@ -101,10 +107,10 @@ class EventParticipantService extends ChangeNotifier {
 
   //delete an participation event
   Future<String> updateParticipation(
-      String eventId, String participatedStatus) async {
+      String participantId, String participatedStatus) async {
     String message = "";
     try {
-      DocumentReference participantRef = _ref.document(eventId);
+      DocumentReference participantRef = _ref.document(participantId);
       await participantRef
           .updateData({"participatedStatus": participatedStatus});
       message = "Success";

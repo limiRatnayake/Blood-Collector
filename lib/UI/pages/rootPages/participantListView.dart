@@ -60,7 +60,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
                           itemBuilder: (context, index) {
                             ParticipantModel data = dataList[index];
 
-                            return ParticipantDataTableView(uid: data.uid);
+                            return ParticipantDataTableView(uid: data.uid, participantId: data.participantId);
                           }))
                   : Padding(
                       padding: EdgeInsets.all(15),
