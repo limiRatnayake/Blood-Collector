@@ -191,7 +191,7 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
                         onPressed: () {
                           _isParticipated();
                           print(inclueInParticipantList);
-                          if (inclueInParticipantList != true) {
+                          if (inclueInParticipantList != false) {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -209,7 +209,7 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
                             Scaffold.of(context).showSnackBar(snackBar);
                           }
                         },
-                        child: inclueInParticipantList != true
+                        child: inclueInParticipantList != false
                             ? Text(
                                 "Participating",
                                 style: TextStyle(fontSize: 16),
