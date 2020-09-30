@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class DonatedCampaignPostView extends StatefulWidget {
+  final String participantId;
   final String imageUrl;
   final String uid;
   final String docRef;
@@ -28,6 +29,7 @@ class DonatedCampaignPostView extends StatefulWidget {
 
   DonatedCampaignPostView({
     Key key,
+    this.participantId,
     this.imageUrl,
     this.uid,
     this.docRef,
@@ -252,7 +254,7 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                               String response =
                                                   await _participantServices
                                                       .updateParticipation(
-                                                          participateId,
+                                                          widget.participantId,
                                                           "Cancelled");
                                               if (response == "Success") {
                                                 var snackBar = SnackBar(

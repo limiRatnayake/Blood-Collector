@@ -44,15 +44,9 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
         .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
               participateId = element.documentID;
 
-              if (element.data.containsValue(widget.docRef) &&
-                  element.data.containsValue(widget.currentUser)) {
+              if (element.data.containsValue(widget.docRef)) {
                 setState(() {
                   inclueInParticipantList = true;
-                });
-              } else if (!(element.data.containsValue(widget.docRef) &&
-                  element.data.containsValue(widget.currentUser))) {
-                setState(() {
-                  inclueInParticipantList = false;
                 });
               }
             }));
@@ -196,6 +190,7 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
                             borderRadius: BorderRadius.circular(25.5)),
                         onPressed: () {
                           _isParticipated();
+                          print(inclueInParticipantList);
                           if (inclueInParticipantList != true) {
                             Navigator.push(
                                 context,

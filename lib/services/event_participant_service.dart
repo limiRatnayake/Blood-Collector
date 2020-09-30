@@ -1,4 +1,5 @@
 import 'package:blood_collector/models/participant_model.dart';
+import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class EventParticipantService extends ChangeNotifier {
   Firestore _db;
   CollectionReference _ref;
+  CollectionReference _userRef;
 
   EventParticipantService() : _db = Firestore.instance {
     _ref = _db.collection(AppConstants.EVENTS_PARTICIPANTS_COLLECTION);
+    _userRef = _db.collection(AppConstants.USERS_COLLECTION);
   }
 
   Future<String> addParticipants(
@@ -20,6 +23,7 @@ class EventParticipantService extends ChangeNotifier {
       DocumentReference newRef = _ref.document();
 
       ParticipantModel participantModel = new ParticipantModel(
+          participantId: newRef.documentID,
           docRef: docRef,
           uid: user.uid,
           participantName: userName,
@@ -35,15 +39,15 @@ class EventParticipantService extends ChangeNotifier {
     return message;
   }
 
+//get user participanted evebts to history
   Future<QuerySnapshot> getParticipant(String uid) {
     return _ref.where("uid", isEqualTo: uid).getDocuments();
   }
 
-  Future<QuerySnapshot> getParticipantEvents(String docRef) {
-    return Firestore.instance
-        .collection("events")
-        .where("docRef", isEqualTo: docRef)
-        .getDocuments();
+//get participant for an particular event
+
+  Future<QuerySnapshot> getParticipantForAnEvent(String docRef) {
+    return _ref.where("docRef", isEqualTo: docRef).getDocuments();
   }
 
   //delete an participation event

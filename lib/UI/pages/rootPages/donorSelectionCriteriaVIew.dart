@@ -548,7 +548,8 @@ class _DonorSelectionCriteriaPageState
     final AuthServices _authService = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
 
-    void lastDonateMonthsDifferent(String dataDateOfLastDonation) {
+    void lastDonateMonthsDifferent() {
+      print(dateOfLastDonation);
       if (dateOfLastDonation != null) {
         var lastDonatedMonth = DateTime.parse(dateOfLastDonation);
         var currentMonth = DateTime.now();
@@ -557,8 +558,8 @@ class _DonorSelectionCriteriaPageState
           var differenceInDays =
               currentMonth.difference(lastDonatedMonth).inDays;
           var differenceOfMonth = (differenceInDays) ~/ 30;
-
-          if (differenceOfMonth > 4) {
+          print(differenceOfMonth);
+          if (differenceOfMonth >= 4) {
             lastDonationDateCheck = true;
           }
         });
@@ -654,10 +655,9 @@ class _DonorSelectionCriteriaPageState
                                               borderRadius:
                                                   BorderRadius.circular(25.5)),
                                           onPressed: () async {
-                                            lastDonateMonthsDifferent(
-                                                data.dateOfLastDonation);
+                                            lastDonateMonthsDifferent();
                                             calculateAge();
-
+                                            print(lastDonationDateCheck);
                                             if (_formKey.currentState
                                                 .validate()) {
                                               setState(() {

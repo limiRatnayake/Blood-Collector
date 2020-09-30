@@ -233,6 +233,51 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
           bodyTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
         ),
       ),
+      PageViewModel(
+        image: Image.asset(
+          "assets/slide_four.png",
+        ),
+        titleWidget: Column(
+          children: [
+            Text(
+              "Once you donate",
+              style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            RichText(
+              text: TextSpan(
+                text: "They will check whether you are a matching donor",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+            ),
+          ],
+        ),
+        bodyWidget: Padding(
+          padding: const EdgeInsets.all(25),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              RichText(
+                text: TextSpan(
+                  text:
+                      "If you are a matching donor and you actually donated mark as you were donated ",
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+        ),
+        decoration: PageDecoration(
+          pageColor: Colors.red[100],
+          bodyTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
+        ),
+      ),
     ];
   }
 
@@ -285,134 +330,133 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
     FirebaseUser _user = Provider.of<AuthServices>(context).user;
 
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: FutureBuilder(
-          future: _userService.requestUserDetails(_authService.user.uid),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              UserModel data = UserModel.fromMap(snapshot.data.data);
-              birthDate = data.birthDate;
+        body: FutureBuilder(
+            future: _userService.requestUserDetails(_authService.user.uid),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                UserModel data = UserModel.fromMap(snapshot.data.data);
+                birthDate = data.birthDate;
 
-              return IntroductionScreen(
-                pages: getPages(),
-                onDone: () {
-                  calculateAge();
-                  print(age);
-                  if ((data.userPreviouslyDonatedOrNot == "No" ||
-                          data.lastDonationDateCheck == true) &&
-                      data.medicallyAdvised == "No" &&
-                      data.vaildIdentitiyCardCheck == "Yes" &&
-                      data.freeFromRiskBehaviour == "Yes" &&
-                      data.freeFromSeriousCondition == "No" &&
-                      data.travelAbroad == "No" &&
-                      data.presentMedialTreatment == "No" &&
-                      data.undergoneSurgery == "No") {
-                    setState(() {
-                      availability = true;
-                      print(availability);
-                    });
-                  } else {
-                    setState(() {
-                      availability = false;
-                      print(availability);
-                    });
-                  }
-                  print(availability);
+                return IntroductionScreen(
+                  pages: getPages(),
+                  onDone: () {
+                    calculateAge();
+                    print(age);
+                    if ((data.userPreviouslyDonatedOrNot == "No" ||
+                            data.lastDonationDateCheck == true) &&
+                        data.medicallyAdvised == "No" &&
+                        data.vaildIdentitiyCardCheck == "Yes" &&
+                        data.freeFromRiskBehaviour == "Yes" &&
+                        data.freeFromSeriousCondition == "No" &&
+                        data.travelAbroad == "No" &&
+                        data.presentMedialTreatment == "No" &&
+                        data.undergoneSurgery == "No") {
+                      setState(() {
+                        availability = true;
+                        print(availability);
+                      });
+                    } else {
+                      setState(() {
+                        availability = false;
+                        print(availability);
+                      });
+                    }
+                    print(availability);
 
-                  if (availability == false || requestedData == null) {
-                    //can't donate
+                    if (availability == false || requestedData == null) {
+                      //can't donate
 
-                    Alert(
-                            context: context,
-                            title: "Can't donate",
-                            content: Text(
-                                "check whether you send the request/ your donor criteria may be not acceptable"))
-                        .show();
-                  } else if (availability != false && (age > 18 && age < 55)) {
-                    //can donate
-                    Alert(
-                        context: context,
-                        type: AlertType.info,
-                        title: "Would you like to donate blood!",
-                        // content: Container(
-                        //     child: Text(
-                        //         "Go to your settings and change the location permission!",
-                        //         style: TextStyle(
-                        //             fontSize: 15, color: Colors.white))),
-                        style: AlertStyle(
-                            backgroundColor: Colors.black,
-                            alertBorder: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                side: BorderSide(color: Colors.white)),
-                            titleStyle: TextStyle(color: Colors.blueAccent)),
-                        buttons: [
-                          DialogButton(
-                              width: 120,
-                              child: Text(
-                                "Cancel",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              }),
-                          DialogButton(
-                              width: 120,
-                              child: Text(
-                                "Yes, I want to",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
-                              ),
-                              onPressed: () async {
-                                String userName =
-                                    data.firstName + " " + data.lastName;
-                                String response =
-                                    await _participantService.addParticipants(
-                                        _user, widget.docRef, userName);
+                      Alert(
+                              context: context,
+                              title: "Can't donate",
+                              content: Text(
+                                  "check whether you send the request/ your donor criteria may be not acceptable"))
+                          .show();
+                    } else if (availability != false &&
+                        (age > 18 && age < 55)) {
+                      //can donate
+                      Alert(
+                          context: context,
+                          type: AlertType.info,
+                          title: "Would you like to donate blood!",
+                          // content: Container(
+                          //     child: Text(
+                          //         "Go to your settings and change the location permission!",
+                          //         style: TextStyle(
+                          //             fontSize: 15, color: Colors.white))),
+                          style: AlertStyle(
+                              backgroundColor: Colors.black,
+                              alertBorder: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  side: BorderSide(color: Colors.white)),
+                              titleStyle: TextStyle(color: Colors.blueAccent)),
+                          buttons: [
+                            DialogButton(
+                                width: 120,
+                                child: Text(
+                                  "Cancel",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                }),
+                            DialogButton(
+                                width: 120,
+                                child: Text(
+                                  "Yes, I want to",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                                onPressed: () async {
+                                  String userName =
+                                      data.firstName + " " + data.lastName;
+                                  String response =
+                                      await _participantService.addParticipants(
+                                          _user, widget.docRef, userName);
 
-                                if (response != "Success") {
-                                  AlertDialog(
-                                    title: Text("Error updating your request!"),
-                                    content: Text("Try again later."),
-                                    actions: [
-                                      FlatButton(
-                                        child: Text('OK'),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ViewRequestDetails()));
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                  requestedRef.delete();
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              RequestHistory()));
-                                }
-                              })
-                        ]).show();
-                  }
-                },
-                done: Text(
-                  "Donate",
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-                globalBackgroundColor: Colors.white,
-                // showSkipButton: true,
-                // skip: const Text("Skip"),
-              );
-            }
-          }),
-    ));
+                                  if (response != "Success") {
+                                    AlertDialog(
+                                      title:
+                                          Text("Error updating your request!"),
+                                      content: Text("Try again later."),
+                                      actions: [
+                                        FlatButton(
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ViewRequestDetails()));
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                    requestedRef.delete();
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RequestHistory()));
+                                  }
+                                })
+                          ]).show();
+                    }
+                  },
+                  done: Text(
+                    "Go test",
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
+                  globalBackgroundColor: Colors.white,
+                  // showSkipButton: true,
+                  // skip: const Text("Skip"),
+                );
+              }
+            }));
   }
 }

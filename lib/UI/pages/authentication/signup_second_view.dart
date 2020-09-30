@@ -524,7 +524,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
               currentMonth.difference(lastDonatedMonth).inDays;
           var differenceOfMonth = (differenceInDays) ~/ 30;
 
-          if (differenceOfMonth > 4) {
+          if (differenceOfMonth >= 4) {
             lastDonationDateCheck = true;
             print(differenceOfMonth);
           }

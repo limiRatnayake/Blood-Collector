@@ -64,6 +64,7 @@ class _DonatedRequestViewState extends State<DonatedRequestView> {
                               ParticipantModel data = dataList[index];
 
                               return DonatedRequestedGetEvents(
+                                  participantId: data.participantId,
                                   uid: data.uid,
                                   docRef: data.docRef,
                                   currentUser: _authServices.user.uid);

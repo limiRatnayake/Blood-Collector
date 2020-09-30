@@ -47,11 +47,6 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                 setState(() {
                   inclueInParticipantList = true;
                 });
-              } else if (!(element.data.containsValue(widget.docRef) &&
-                  element.data.containsValue(widget.currentUser))) {
-                setState(() {
-                  inclueInParticipantList = false;
-                });
               }
             }));
     super.initState();
@@ -62,8 +57,7 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
     final EventService _eventServices = Provider.of<EventService>(context);
     final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
-    // print(widget.docRef);
-    // print(widget.currentUser);
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -208,6 +202,7 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                             borderRadius: BorderRadius.circular(25.5)),
                         onPressed: () {
                           _isParticipated();
+
                           if (inclueInParticipantList != true) {
                             Navigator.push(
                                 context,

@@ -1,5 +1,7 @@
 import 'package:blood_collector/UI/pages/rootPages/editCampaignView.dart';
 import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
+import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreCampaignMore.dart';
+import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreRequestsMore.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
@@ -254,20 +256,28 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
           ButtonBar(
             alignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.explore),
-                    onPressed: () {},
-                  ),
-                  Text(
-                    "Explore More",
-                    style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[800]),
-                  ),
-                ],
+              FlatButton.icon(
+                icon: Icon(Icons.explore),
+                label: Text('Explore More'),
+                onPressed: () {
+                  if (widget.category != "campaign") {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ExploreRequestsMore(
+                                  docRef: widget.docRef,
+                                  uid: widget.uid,
+                                )));
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ExploreCampaignMore(
+                                  docRef: widget.docRef,
+                                  uid: widget.uid,
+                                )));
+                  }
+                },
               ),
             ],
           ),

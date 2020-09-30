@@ -8,11 +8,13 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DonatedRequestedGetEvents extends StatefulWidget {
+  final String participantId;
   final String uid;
   final String docRef;
   final String currentUser;
 
-  DonatedRequestedGetEvents({Key key, this.uid, this.docRef, this.currentUser})
+  DonatedRequestedGetEvents(
+      {Key key, this.participantId, this.uid, this.docRef, this.currentUser})
       : super(key: key);
   @override
   _DonatedRequestedGetEventsState createState() =>
@@ -38,6 +40,7 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
             return Center(
                 child: data.category != "request"
                     ? DonatedCampaignPostView(
+                        participantId: widget.participantId,
                         imageUrl: data.imageUrl,
                         uid: data.uid,
                         docRef: data.docRef,
@@ -54,6 +57,7 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         placeAddress: data.placeAddress,
                       )
                     : DonatedRequestPostView(
+                        participantId: widget.participantId,
                         imageUrl: data.imageUrl,
                         uid: data.uid,
                         docRef: data.docRef,
