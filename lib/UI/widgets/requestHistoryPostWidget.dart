@@ -62,6 +62,8 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
       } else {
         date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
       }
+    } else {
+      date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
     }
 
     return Container(

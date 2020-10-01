@@ -65,7 +65,7 @@ class _PostViewState extends State<PostView> {
     final UserService _userService = Provider.of<UserService>(context);
     final EventService _eventServices = Provider.of<EventService>(context);
     String date;
-
+    // print(widget.createdAt);
     //get the event created date
     var checkedTime = DateTime.parse(widget.createdAt);
 
@@ -85,6 +85,8 @@ class _PostViewState extends State<PostView> {
       } else {
         date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
       }
+    } else {
+      date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
     }
 
     return Container(
