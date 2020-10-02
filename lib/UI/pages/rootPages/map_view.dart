@@ -4,7 +4,9 @@ import 'dart:collection';
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
 import 'package:blood_collector/models/event_model.dart';
+import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_service.dart';
+import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -21,6 +23,7 @@ class _MapViewState extends State<MapView> {
   var currentLocation;
   // GoogleMapController mapController;
   Completer<GoogleMapController> _controller = Completer();
+  var events = [];
   // List<Marker> _markers = <Marker>[];
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
@@ -77,6 +80,7 @@ class _MapViewState extends State<MapView> {
   }
 
   void populateRequestEvents() {
+    events = [];
     Firestore.instance
         .collection("events")
         .where("category", isEqualTo: "request")
@@ -84,6 +88,10 @@ class _MapViewState extends State<MapView> {
         .then((docs) {
       if (docs.documents.isNotEmpty) {
         for (int i = 0; i < docs.documents.length; ++i) {
+          setState(() {
+            events.add(docs.documents[i].documentID);
+          });
+
           initMarker(docs.documents[i].data, docs.documents[i].documentID);
         }
       }
@@ -104,6 +112,7 @@ class _MapViewState extends State<MapView> {
   }
 
   filterMarkers() {
+    events = [];
     Firestore.instance
         .collection("events")
         .where("category", isEqualTo: "campaign")
@@ -120,6 +129,11 @@ class _MapViewState extends State<MapView> {
               .then((calDist) {
             //3km distance events
             if (calDist / 1000 < 3) {
+              setState(() {
+                events.add(
+                  docs.documents[i].documentID,
+                );
+              });
               placeFilteredMarker(docs.documents[i].data,
                   docs.documents[i].documentID, calDist / 1000);
             }
@@ -149,139 +163,194 @@ class _MapViewState extends State<MapView> {
     final EventService _eventServices = Provider.of<EventService>(context);
 
     return Align(
-        alignment: Alignment.bottomLeft,
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 20.0),
-          height: 120,
-          child: FutureBuilder(
-              future: _eventServices.getCampaignEvents(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
-                } else {
-                  // EventModel data = EventModel.fromMap(snapshot.data.data);
-                  List<EventModel> dataList = snapshot.data.documents
-                      .map<EventModel>((doc) => EventModel.fromMap(doc.data))
-                      .toList();
-
-                  return dataList.length > 0
-                      ? ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: dataList.length,
-                          itemBuilder: (context, index) {
-                            EventModel data = dataList[index];
-
-                            return _boxes(data.imageUrl, data.placeLat,
-                                data.placeLng, data.nameOftheOrganizer);
-                          })
-                      : Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Center(
-                            child: Text(
-                              "Please check again later.",
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
-                }
-              }),
-        ));
-  }
-
-  Widget _boxes(String imageUrl, String lat, String long, String camapignName) {
-    // var placeLat = double.parse(lat);
-    // var placeLng = double.parse(long);
-    return GestureDetector(
-      // onTap: () {
-      //   _gotoLocation(placeLat, placeLng);
-      // },
+      alignment: Alignment.bottomLeft,
       child: Container(
-        child: new FittedBox(
-            child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            imageUrl != null
-                ? Container(
-                    width: 180,
-                    margin: EdgeInsets.only(right: 20),
-                    height: 100,
-                    decoration: BoxDecoration(
-                        color: Colors.orange.shade400,
-                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Image(
-                            image: NetworkImage(imageUrl),
-                            height: 60,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            camapignName,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
+        margin: EdgeInsets.symmetric(vertical: 10.0),
+        child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: events.length,
+            itemBuilder: (BuildContext ctxt, int index) {
+              return FutureBuilder(
+                  future: _eventServices
+                      .requestEventsDetails(events[index].toString()),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      EventModel data = EventModel.fromMap(snapshot.data.data);
 
-                          // Text(
-                          //   "20 Items",
-                          //   style: TextStyle(fontSize: 16, color: Colors.white),
-                          // ),
-                        ],
-                      ),
-                    ),
-                  )
-                : Container(
-                    width: 180,
-                    margin: EdgeInsets.only(right: 20),
-                    height: 120,
-                    decoration: BoxDecoration(
-                        color: Colors.orange.shade400,
-                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            camapignName,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          // Text(
-                          //   "20 Items",
-                          //   style: TextStyle(fontSize: 16, color: Colors.white),
-                          // ),
-                        ],
-                      ),
-                    ),
-                  ),
-          ],
-        )),
+                      return Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: data.category != "campaign"
+                              ? _requestBoxes(
+                                  data.uid,
+                                  data.imageUrl,
+                                  data.hospitalLat,
+                                  data.hospitalLng,
+                                  data.userFName,
+                                  data.userLName,
+                                  data.requestClose,
+                                  data.hospitalName)
+                              : _campaignBoxes(
+                                  data.uid,
+                                  data.imageUrl,
+                                  data.placeLat,
+                                  data.placeLng,
+                                  data.nameOftheOrganizer,
+                                  data.placeAddress,
+                                  data.startTime,
+                                  data.endTime,
+                                  data.pickUpStartDate,
+                                  data.pickUpEndDate));
+                    }
+                  });
+            }),
       ),
     );
   }
 
-  // Future<void> _gotoLocation(double lat, double long) async {
-  //   final GoogleMapController controller = await _controller.future;
-  //   controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-  //     target: LatLng(lat, long),
-  //     zoom: 15,
-  //     tilt: 50.0,
-  //     bearing: 45.0,
-  //   )));
-  // }
+  Widget _requestBoxes(
+      String uid,
+      String imageUrl,
+      String hospitalLat,
+      String hospitalLong,
+      String userFName,
+      String userLName,
+      String requestClose,
+      String hospitalName) {
+    final UserService _userService = Provider.of<UserService>(context);
+    var lat = double.parse(hospitalLat);
+    var long = double.parse(hospitalLong);
+    return GestureDetector(
+        onTap: () {
+          _gotoLocation(lat, long);
+        },
+        child: Container(
+          alignment: Alignment.bottomLeft,
+          width: MediaQuery.of(context).size.width * 0.90,
+          height: 300,
+          child: Card(
+            child: Wrap(
+              children: [
+                FutureBuilder(
+                    future: _userService.requestUserDetails(uid),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(child: CircularProgressIndicator());
+                      } else {
+                        UserModel data = UserModel.fromMap(snapshot.data.data);
+
+                        return data != null
+                            ? ListTile(
+                                leading: GestureDetector(
+                                  child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage:
+                                        NetworkImage(data.proPicUrl),
+                                  ),
+                                ),
+                                title:
+                                    Text(data.firstName + " " + data.lastName),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text("Close on: " + " " + requestClose),
+                                    Text(
+                                      hospitalName,
+                                      style: TextStyle(fontSize: 11),
+                                    )
+                                  ],
+                                ),
+                                trailing: imageUrl != ""
+                                    ? Image.network(
+                                        imageUrl,
+                                        fit: BoxFit.fitHeight,
+                                      )
+                                    : null)
+                            : Text("try again later");
+                      }
+                    }),
+
+                // imageUrl != null ? Text("data") : Text("null")
+              ],
+            ),
+          ),
+        ));
+  }
+
+  Widget _campaignBoxes(
+      String uid,
+      String imageUrl,
+      String placeLat,
+      String placeLng,
+      String nameOftheOrganizer,
+      String placeAddress,
+      String startTime,
+      String endTime,
+      String pickUpStartDate,
+      String pickUpEndDate) {
+    final UserService _userService = Provider.of<UserService>(context);
+    var lat = double.parse(placeLat);
+    var long = double.parse(placeLng);
+    return GestureDetector(
+        onTap: () {
+          _gotoLocation(lat, long);
+        },
+        child: Container(
+          alignment: Alignment.bottomLeft,
+          width: MediaQuery.of(context).size.width * 0.90,
+          child: Card(
+            child: FutureBuilder(
+                future: _userService.requestUserDetails(uid),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    UserModel data = UserModel.fromMap(snapshot.data.data);
+
+                    return data != null
+                        ? ListTile(
+                            leading: GestureDetector(
+                              child: CircleAvatar(
+                                radius: 20,
+                                backgroundImage: NetworkImage(data.proPicUrl),
+                              ),
+                            ),
+                            title: Text(nameOftheOrganizer),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("Campaign StartOn: " +
+                                    " " +
+                                    pickUpStartDate),
+                                Text(
+                                  placeAddress,
+                                  style: TextStyle(fontSize: 11),
+                                )
+                              ],
+                            ),
+                            trailing: imageUrl != ""
+                                ? Image.network(
+                                    imageUrl,
+                                    fit: BoxFit.fitHeight,
+                                  )
+                                : null)
+                        : Text("try again later");
+                  }
+                }),
+          ),
+        ));
+  }
+
+  Future<void> _gotoLocation(double lat, double long) async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: LatLng(lat, long),
+      zoom: 15,
+      tilt: 50.0,
+      bearing: 45.0,
+    )));
+  }
 }

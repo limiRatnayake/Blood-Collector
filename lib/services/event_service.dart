@@ -128,9 +128,9 @@ class EventService extends ChangeNotifier {
     return _ref.where("uid", isEqualTo: uid).getDocuments();
   }
 
-  Future<QuerySnapshot> getCampaignEvents() {
-    return _ref.where("category", isEqualTo: "campaign").getDocuments();
-  }
+  // Future<QuerySnapshot> getCampaignEvents() {
+  //   return _ref.where("category", isEqualTo: "campaign").getDocuments();
+  // }
 
   Future<DocumentSnapshot> requestEventsDetails(String docRef) async {
     DocumentSnapshot postSnapshot = (await _ref.document(docRef).get());
