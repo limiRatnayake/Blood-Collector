@@ -20,6 +20,7 @@ class MapView extends StatefulWidget {
 
 class _MapViewState extends State<MapView> {
   bool mapToggle = false;
+  double zoomVal = 3.0;
   var currentLocation;
   // GoogleMapController mapController;
   Completer<GoogleMapController> _controller = Completer();
@@ -71,10 +72,13 @@ class _MapViewState extends State<MapView> {
                             currentLocation.longitude),
                         zoom: 17),
                     markers: Set<Marker>.of(markers.values),
-                    myLocationEnabled: true,
+                    myLocationEnabled: false,
+                    zoomGesturesEnabled: true,
+                    zoomControlsEnabled: false,
                   )
                 : Center(child: Text("Loading..")),
           ),
+          _zoomFunction(),
           _buildConatiner(context)
         ]));
   }
@@ -166,6 +170,7 @@ class _MapViewState extends State<MapView> {
       alignment: Alignment.bottomLeft,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10.0),
+        height: 120,
         child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: events.length,
@@ -228,53 +233,44 @@ class _MapViewState extends State<MapView> {
         child: Container(
           alignment: Alignment.bottomLeft,
           width: MediaQuery.of(context).size.width * 0.90,
-          height: 300,
           child: Card(
-            child: Wrap(
-              children: [
-                FutureBuilder(
-                    future: _userService.requestUserDetails(uid),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(child: CircularProgressIndicator());
-                      } else {
-                        UserModel data = UserModel.fromMap(snapshot.data.data);
+            child: FutureBuilder(
+                future: _userService.requestUserDetails(uid),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    UserModel data = UserModel.fromMap(snapshot.data.data);
 
-                        return data != null
-                            ? ListTile(
-                                leading: GestureDetector(
-                                  child: CircleAvatar(
-                                    radius: 20,
-                                    backgroundImage:
-                                        NetworkImage(data.proPicUrl),
-                                  ),
-                                ),
-                                title:
-                                    Text(data.firstName + " " + data.lastName),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("Close on: " + " " + requestClose),
-                                    Text(
-                                      hospitalName,
-                                      style: TextStyle(fontSize: 11),
-                                    )
-                                  ],
-                                ),
-                                trailing: imageUrl != ""
-                                    ? Image.network(
-                                        imageUrl,
-                                        fit: BoxFit.fitHeight,
-                                      )
-                                    : null)
-                            : Text("try again later");
-                      }
-                    }),
-
-                // imageUrl != null ? Text("data") : Text("null")
-              ],
-            ),
+                    return data != null
+                        ? ListTile(
+                            leading: GestureDetector(
+                              child: CircleAvatar(
+                                radius: 20,
+                                backgroundImage: NetworkImage(data.proPicUrl),
+                              ),
+                            ),
+                            title: Text(data.firstName + " " + data.lastName),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("Close on: " + " " + requestClose),
+                                Text(
+                                  hospitalName,
+                                  style: TextStyle(fontSize: 11),
+                                )
+                              ],
+                            ),
+                            trailing: imageUrl != ""
+                                ? Image.network(
+                                    imageUrl,
+                                    fit: BoxFit.fitHeight,
+                                  )
+                                : null)
+                        : Text("try again later");
+                  }
+                }),
           ),
         ));
   }
@@ -352,5 +348,51 @@ class _MapViewState extends State<MapView> {
       tilt: 50.0,
       bearing: 45.0,
     )));
+  }
+
+  Widget _zoomFunction() {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Column(
+        children: [
+          //zoomin button
+          IconButton(
+              icon: Icon(
+                Icons.zoom_in,
+                color: Color(0xff6200ee),
+                size: 30,
+              ),
+              onPressed: () {
+                zoomVal++;
+                _zoomIn(zoomVal);
+              }),
+          //zoomout button
+          IconButton(
+              icon: Icon(
+                Icons.zoom_out,
+                color: Color(0xff6200ee),
+                size: 30,
+              ),
+              onPressed: () {
+                zoomVal--;
+                _zoomOut(zoomVal);
+              }),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _zoomOut(double zoomVal) async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(currentLocation.latitude, currentLocation.longitude),
+        zoom: zoomVal)));
+  }
+
+  Future<void> _zoomIn(double zoomVal) async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(currentLocation.latitude, currentLocation.longitude),
+        zoom: zoomVal)));
   }
 }
