@@ -1,6 +1,7 @@
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class NotificationView extends StatefulWidget {
   @override
@@ -10,11 +11,11 @@ class NotificationView extends StatefulWidget {
 class _NotificationViewState extends State<NotificationView> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<Message> _messages;
-  _getToken() {
-    _firebaseMessaging.getToken().then((token) {
-      print(token);
-    });
-  }
+  // _getToken() {
+  //   _firebaseMessaging.getToken().then((token) {
+
+  //   });
+  // }
 
   _configureFirebaseListners() {
     _firebaseMessaging.configure(
@@ -33,6 +34,23 @@ class _NotificationViewState extends State<NotificationView> {
     );
   }
 
+  handleNotificationMsg(Map<String, dynamic> message) {
+    Alert(
+        context: context,
+        title: message['notification']['title'],
+        desc: message['notification']['body'],
+        buttons: [
+          DialogButton(
+              child: Text(
+                "Ok",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+        ]).show();
+  }
+
 //get the firebase message
   _setMessage(Map<String, dynamic> messages) {
     final notification = messages['notification'];
@@ -49,7 +67,7 @@ class _NotificationViewState extends State<NotificationView> {
   @override
   void initState() {
     super.initState();
-    _getToken();
+    // _getToken();
     _configureFirebaseListners();
     _messages = List<Message>();
   }

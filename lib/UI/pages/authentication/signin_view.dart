@@ -1,5 +1,7 @@
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -98,34 +100,11 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  // Widget _passwordTextField() {
-  //   return Container(
-  //     width: double.infinity,
-  //     height: 58,
-  //     margin: EdgeInsets.symmetric(horizontal: 30.0),
-  //     decoration: boxDecoration,
-  //     child: Padding(
-  //       padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-  //       child: TextFormField(
-  //         decoration: inputDecoration.copyWith(hintText: "Password"),
-  //         validator: (value) => value.isEmpty || value.length < 6
-  //             ? 'Password cannot be blank'
-  //             : null,
-  //         obscureText: true, //visibiity of the password
-  //         onChanged: (value) {
-  //           setState(() {
-  //             password = value;
-  //           });
-  //         },
-  //       ),
-
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     final AuthServices _authService = Provider.of<AuthServices>(context);
+    PushNotificationService _pushNotificationService =
+        PushNotificationService();
 
     return SafeArea(
       child: Scaffold(
@@ -243,7 +222,11 @@ class _SignInPageState extends State<SignInPage> {
                                                     _isLoading = false;
                                                     _errorMessage = response;
                                                   });
-                                                } else
+                                                } else {
+                                                  _pushNotificationService
+                                                      .getDeviceToken(
+                                                          _authService.user.uid,
+                                                          context);
                                                   Alert(
                                                       context: context,
                                                       type: AlertType.success,
@@ -286,9 +269,10 @@ class _SignInPageState extends State<SignInPage> {
                                                               );
                                                             })
                                                       ]).show();
-                                                setState(() {
-                                                  _isLoading = false;
-                                                });
+                                                  setState(() {
+                                                    _isLoading = false;
+                                                  });
+                                                }
                                               } else {
                                                 setState(() {
                                                   _formValidate = true;

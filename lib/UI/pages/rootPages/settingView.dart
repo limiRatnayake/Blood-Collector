@@ -5,6 +5,7 @@ import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
 import 'package:blood_collector/UI/widgets/bottom_navigator.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,6 +27,8 @@ class _SettingViewState extends State<SettingView> {
   Widget build(BuildContext context) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
+    PushNotificationService _pushNotificationService =
+        PushNotificationService();
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
@@ -51,6 +54,7 @@ class _SettingViewState extends State<SettingView> {
                             } else {
                               UserModel data =
                                   UserModel.fromMap(snapshot.data.data);
+
                               return Column(
                                 children: <Widget>[
                                   Center(

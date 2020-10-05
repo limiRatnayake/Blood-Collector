@@ -1,5 +1,9 @@
+import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/services/push_notification_service.dart';
+import 'package:blood_collector/services/user_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -12,7 +16,6 @@ Widget button(String label, Function onTap) {
   return Material(
     color: Colors.red.withOpacity(0.9),
     borderRadius: BorderRadius.circular(30.0),
-    
     child: InkWell(
       onTap: onTap,
       splashColor: Colors.white24,
@@ -42,55 +45,53 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Container(
-                 
-                  height: 350.0,
-                  child: Center(
-                    child: Image.asset(
-                      "assets/logo.png",
-                    ),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Container(
+                height: 350.0,
+                child: Center(
+                  child: Image.asset(
+                    "assets/logo.png",
                   ),
-                ), // container - circle & center text
-                SizedBox(
-                  height: 105.0,
                 ),
-                new Column(children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Text(
-                        'Continue with: ',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      button("Sign In", () {
-                        _buildNavigateSignInPage();
-                      }),
-                      SizedBox(
-                        height: 25.0,
-                      ),
-                      button("Create an account", () {
-                        _buildNavigateSignUpPage();
-                      }),
-                    ],
-                  ),
-                ])
-              ],
-            ),
+              ), // container - circle & center text
+              SizedBox(
+                height: 105.0,
+              ),
+              new Column(children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(
+                      'Continue with: ',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    button("Sign In", () {
+                      _buildNavigateSignInPage();
+                    }),
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    button("Create an account", () {
+                      _buildNavigateSignUpPage();
+                    }),
+                  ],
+                ),
+              ])
+            ],
           ),
         ),
-      
+      ),
     );
   }
 }

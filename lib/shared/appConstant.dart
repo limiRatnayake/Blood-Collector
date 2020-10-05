@@ -20,4 +20,6 @@ class AppConstants {
   static const String HOSPITALS_COLLECTION = "hospitals";
   static const String EVENTS_COLLECTION = "events";
   static const String EVENTS_PARTICIPANTS_COLLECTION = "participants";
+  static const String TOKENS_COLLECTION = "deviceTokens";
+  static const String NOTIFICATION_COLLECTION = "notifications";
 }

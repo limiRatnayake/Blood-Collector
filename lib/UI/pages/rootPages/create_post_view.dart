@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
+import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -141,6 +142,8 @@ class _PostViewState extends State<CreatePostView> {
     //get parameter type FirebaseUser
     FirebaseUser _user = Provider.of<AuthServices>(context).user;
     EventService _eventService = Provider.of<EventService>(context);
+    PushNotificationService _pushNotificationService =
+        PushNotificationService();
 
     return SafeArea(
         child: Scaffold(
@@ -307,6 +310,12 @@ class _PostViewState extends State<CreatePostView> {
                                     _errorMessage = response;
                                   });
                                 } else {
+                                  if (widget.notifyState != true) {
+                                    print("notify was denied!");
+                                  } else {
+                                    _pushNotificationService.addNotification(
+                                        "message from device", _user);
+                                  }
                                   Alert(
                                       context: context,
                                       type: AlertType.success,
