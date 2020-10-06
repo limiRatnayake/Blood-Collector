@@ -314,7 +314,9 @@ class _PostViewState extends State<CreatePostView> {
                                     print("notify was denied!");
                                   } else {
                                     _pushNotificationService.addNotification(
-                                        "message from device", _user);
+                                        "message from device",
+                                        widget.bloodGroup,
+                                        _user);
                                   }
                                   Alert(
                                       context: context,

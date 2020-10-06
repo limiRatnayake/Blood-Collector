@@ -2,6 +2,7 @@ class NotificationModel {
   final String uid;
   final String docRef;
   final String message;
+  final String bloodGroup;
   final String createdAt;
   final String closeOn;
 
@@ -9,6 +10,7 @@ class NotificationModel {
     this.uid,
     this.docRef,
     this.message,
+    this.bloodGroup,
     this.createdAt,
     this.closeOn,
   });
@@ -18,6 +20,8 @@ class NotificationModel {
         docRef = snapshot['docRef'] ?? "",
         message =
             snapshot['message'] ?? "", //if the value is not there it is empty
+        bloodGroup = snapshot['bloodGroup'] ??
+            "", //if the value is not there it is empty
         createdAt = snapshot['createdAt'] ?? "",
         closeOn = snapshot['closeOn'] ?? "";
 
@@ -26,6 +30,7 @@ class NotificationModel {
       "uid": uid,
       "docRef": docRef,
       "message": message,
+      "bloodGroup": bloodGroup,
       "createdAt": createdAt,
       "closeOn": closeOn,
     };

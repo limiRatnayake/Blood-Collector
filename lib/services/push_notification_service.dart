@@ -56,6 +56,7 @@ class PushNotificationService extends ChangeNotifier {
         .document(tokenId);
 
     tokenRef.get().then((value) async {
+      print(fcmToken);
       tokenData = value.data;
       if (tokenData != null && tokenData.containsValue(fcmToken)) {
         print("It already containes");
@@ -76,6 +77,7 @@ class PushNotificationService extends ChangeNotifier {
 
   Future<void> addNotification(
     String message,
+    String bloodGroup,
     FirebaseUser user,
   ) async {
     try {
@@ -85,6 +87,7 @@ class PushNotificationService extends ChangeNotifier {
       NotificationModel notification = NotificationModel(
           uid: user.uid,
           message: message,
+          bloodGroup: bloodGroup,
           createdAt: now.toString(),
           closeOn: tomorrow.toString());
       await newRef.setData(notification.toJson());
