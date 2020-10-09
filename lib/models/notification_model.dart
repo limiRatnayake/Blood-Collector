@@ -1,6 +1,6 @@
 class NotificationModel {
   final String uid;
-  final String docRef;
+  final String notificationId;
   final String message;
   final String bloodGroup;
   final String createdAt;
@@ -8,7 +8,7 @@ class NotificationModel {
 
   NotificationModel({
     this.uid,
-    this.docRef,
+    this.notificationId,
     this.message,
     this.bloodGroup,
     this.createdAt,
@@ -17,7 +17,7 @@ class NotificationModel {
 
   NotificationModel.fromMap(Map snapshot)
       : uid = snapshot['uid'] ?? "",
-        docRef = snapshot['docRef'] ?? "",
+        notificationId = snapshot['notificationId'] ?? "",
         message =
             snapshot['message'] ?? "", //if the value is not there it is empty
         bloodGroup = snapshot['bloodGroup'] ??
@@ -28,7 +28,7 @@ class NotificationModel {
   toJson() {
     return {
       "uid": uid,
-      "docRef": docRef,
+      "notificationId": notificationId,
       "message": message,
       "bloodGroup": bloodGroup,
       "createdAt": createdAt,

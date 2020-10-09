@@ -85,6 +85,7 @@ class PushNotificationService extends ChangeNotifier {
       final tomorrow = new DateTime(now.year, now.month, now.day + 1);
       DocumentReference newRef = _notificationRef.document();
       NotificationModel notification = NotificationModel(
+          notificationId: newRef.documentID,
           uid: user.uid,
           message: message,
           bloodGroup: bloodGroup,
@@ -95,5 +96,27 @@ class PushNotificationService extends ChangeNotifier {
       print(e);
     }
     notifyListeners();
+  }
+
+  Future<QuerySnapshot> getUserNotifications(String uid) {
+    return _userRef
+        .document(uid)
+        .collection("user_notification")
+        .getDocuments();
+  }
+
+//delete a notification from the us
+  Future<String> deleteNotification(String notificationId) async {
+    String message = "";
+    try {
+      _userRef.document(notificationId).delete();
+
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
   }
 }

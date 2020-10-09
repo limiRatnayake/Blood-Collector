@@ -349,6 +349,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
+      backgroundColor: Colors.grey[100],
       body: Padding(
         padding: const EdgeInsets.only(top: 18.0),
         child: SingleChildScrollView(
@@ -521,6 +522,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                       textColor: Colors.black,
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.red),
                           borderRadius: BorderRadius.circular(25.5)),
                       onPressed: () {
                         _submitTheForm();

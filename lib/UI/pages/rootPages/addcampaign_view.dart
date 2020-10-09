@@ -42,7 +42,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   String requestCloseOn;
   int eventTime;
   bool _formValidate = false;
-    bool _visibleState = false;
+  bool _visibleState = false;
 
   BoxDecoration _boxDecoration() {
     return BoxDecoration(
@@ -148,7 +148,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                 return showDatePicker(
                     context: context,
                     // from todays date subtract the pass dates so that it will show only future days
-                    firstDate:DateTime.now().subtract(Duration(days: 0)),
+                    firstDate: DateTime.now().subtract(Duration(days: 0)),
                     initialDate: currentValue ?? DateTime.now(),
                     lastDate: DateTime(2100));
               },
@@ -621,7 +621,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     );
   }
 
- Widget _visibleContactNumberToPubic() {
+  Widget _visibleContactNumberToPubic() {
     return Column(
       children: [
         Padding(
@@ -655,6 +655,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
       ],
     );
   }
+
   void _submitTheForm() {
     final _form = _formKey.currentState;
     if (_form.validate()) {
@@ -664,7 +665,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
           nameOfTheOrganizer: nameOfTheOrOrganizer,
           pickUpStartDate: pickUpStartDate,
           pickUpEndDate: pickUpEndDate,
-          requestClose:requestCloseOn,
+          requestClose: requestCloseOn,
           startTime: startTime,
           endTime: endTime,
           placeName: oragnizePlaceName,
@@ -688,6 +689,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       body: Padding(
         padding: const EdgeInsets.only(top: 18.0),
         child: SingleChildScrollView(
@@ -709,7 +711,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                   height: 10.0,
                 ),
                 _conatctTextFeild(),
-                  SizedBox(
+                SizedBox(
                   height: 10.0,
                 ),
                 _visibleContactNumberToPubic(),
@@ -749,7 +751,9 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                       textColor: Colors.black,
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.5)),
+                        side: BorderSide(color: Colors.red),
+                        borderRadius: BorderRadius.circular(25.5),
+                      ),
                       onPressed: () => _submitTheForm(),
                     ),
                   ),

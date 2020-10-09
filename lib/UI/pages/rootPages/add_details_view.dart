@@ -18,9 +18,9 @@ class _RequestViewState extends State<RequestView> {
           child: Scaffold(
             appBar: AppBar(
               iconTheme: IconThemeData(color: Colors.black),
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.grey[200],
               bottom: TabBar(
-                indicatorColor: Colors.red,
+                indicatorColor: Colors.black,
                 indicatorWeight: 3.0,
                 labelColor: Colors.black,
                 tabs: <Widget>[

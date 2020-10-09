@@ -9,6 +9,7 @@ import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +39,12 @@ class _MapViewState extends State<MapView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+//lock the portrait mode otherwise it is hard to scroll through the map
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     //get the current user location
     Geolocator().getCurrentPosition().then((value) {
       setState(() {
@@ -47,6 +54,17 @@ class _MapViewState extends State<MapView> {
         filterMarkers();
       });
     });
+  }
+
+  @override
+  dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
   }
 
   @override
@@ -232,7 +250,7 @@ class _MapViewState extends State<MapView> {
         },
         child: Container(
           alignment: Alignment.bottomLeft,
-          width: MediaQuery.of(context).size.width * 0.90,
+          width: MediaQuery.of(context).size.width * 0.70,
           child: Card(
             child: FutureBuilder(
                 future: _userService.requestUserDetails(uid),
@@ -295,7 +313,7 @@ class _MapViewState extends State<MapView> {
         },
         child: Container(
           alignment: Alignment.bottomLeft,
-          width: MediaQuery.of(context).size.width * 0.90,
+          width: MediaQuery.of(context).size.width - 60,
           child: Card(
             child: FutureBuilder(
                 future: _userService.requestUserDetails(uid),

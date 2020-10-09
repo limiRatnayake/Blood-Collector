@@ -1,6 +1,12 @@
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
+import 'package:blood_collector/models/notification_model.dart';
+import 'package:blood_collector/models/user_model.dart';
+import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/push_notification_service.dart';
+import 'package:blood_collector/services/user_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class NotificationView extends StatefulWidget {
@@ -21,15 +27,15 @@ class _NotificationViewState extends State<NotificationView> {
     _firebaseMessaging.configure(
       onMessage: (message) async {
         print("onMessage: $message");
-        _setMessage(message);
+        // _setMessage(message);
       },
       onResume: (message) async {
         print("onMessage: $message");
-        _setMessage(message);
+        // _setMessage(message);
       },
       onLaunch: (message) async {
         print("onMessage: $message");
-        _setMessage(message);
+        // _setMessage(message);
       },
     );
   }
@@ -74,25 +80,73 @@ class _NotificationViewState extends State<NotificationView> {
 
   @override
   Widget build(BuildContext context) {
+    final PushNotificationService _notificationsService =
+        Provider.of<PushNotificationService>(context);
+    final AuthServices _authServices = Provider.of<AuthServices>(context);
+    final UserService _userService = Provider.of<UserService>(context);
+
     return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: const Size(double.infinity, kToolbarHeight),
-          child: AppTopBar(
-            title: "Notification",
-          )),
-      body: ListView.builder(
-        itemCount: null == _messages ? 0 : _messages.length,
-        itemBuilder: (context, index) {
-          print(_messages[index].message);
-          return Card(
-            child: ListTile(
-              leading: Icon(Icons.picture_in_picture),
-              title: Text(_messages[index].message),
-              // subtitle: Text(_messages[index].message),
-            ),
-          );
-        },
+      appBar: AppBar(
+        title: Text("Notifications"),
       ),
+      body: FutureBuilder(
+          future: _notificationsService
+              .getUserNotifications(_authServices.user.uid),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            } else {
+              List<NotificationModel> dataList = snapshot.data.documents
+                  .map<NotificationModel>(
+                      (doc) => NotificationModel.fromMap(doc.data))
+                  .toList();
+
+              return dataList.length > 0
+                  ? ListView.builder(
+                      itemCount: dataList.length,
+                      itemBuilder: (context, index) {
+                        NotificationModel notifyData = dataList[index];
+
+                        return Card(
+                            child: FutureBuilder(
+                                future: _userService
+                                    .requestUserDetails(_authServices.user.uid),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                        child: CircularProgressIndicator());
+                                  } else {
+                                    UserModel userData =
+                                        UserModel.fromMap(snapshot.data.data);
+
+                                    return ListTile(
+                                      leading: GestureDetector(
+                                        child: CircleAvatar(
+                                          radius: 20,
+                                          backgroundImage:
+                                              NetworkImage(userData.proPicUrl),
+                                        ),
+                                      ),
+                                      title: Text(notifyData.message),
+                                      trailing: IconButton(
+                                          icon: Icon(Icons.delete),
+                                          onPressed: null),
+                                    );
+                                  }
+                                }));
+                      },
+                    )
+                  : Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Center(
+                        child: Text(
+                          "There Is not Notifications",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+            }
+          }),
     );
   }
 }

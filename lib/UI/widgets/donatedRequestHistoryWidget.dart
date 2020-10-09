@@ -107,6 +107,8 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
       } else {
         date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
       }
+    } else {
+      date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
     }
 
     return Container(

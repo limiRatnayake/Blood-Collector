@@ -193,16 +193,12 @@ class _PostViewState extends State<CreatePostView> {
                     child: _image == null
                         ? DottedBorder(
                             color: Colors.black,
-                            padding: EdgeInsets.only(
-                              top: 30,
-                              right: 150,
-                              bottom: 30,
-                              left: 150,
-                            ),
+                            padding: EdgeInsets.all(12),
                             strokeWidth: 2,
                             radius: Radius.circular(12),
                             dashPattern: [6, 6],
-                            child: Center(
+                            child: Container(
+                              alignment: Alignment.center,
                               child: Icon(
                                 Icons.backup,
                                 size: 90,
@@ -314,7 +310,7 @@ class _PostViewState extends State<CreatePostView> {
                                     print("notify was denied!");
                                   } else {
                                     _pushNotificationService.addNotification(
-                                        "message from device",
+                                        "Requesting ${widget.bloodGroup} in ${widget.hospitalName}",
                                         widget.bloodGroup,
                                         _user);
                                   }
