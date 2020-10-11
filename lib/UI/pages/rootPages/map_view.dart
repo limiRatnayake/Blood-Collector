@@ -28,7 +28,7 @@ class _MapViewState extends State<MapView> {
   var events = [];
   // List<Marker> _markers = <Marker>[];
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
+  BitmapDescriptor customIcon;
   // void _onMapCreated(controller) {
   //   setState(() {
   //     mapController = controller;
@@ -51,8 +51,13 @@ class _MapViewState extends State<MapView> {
         currentLocation = value;
         mapToggle = true;
         populateRequestEvents();
-        filterMarkers();
+        campaignFilterMarkers();
       });
+    });
+    BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(0, 5)), 'assets/location-pin.png')
+        .then((d) {
+      customIcon = d;
     });
   }
 
@@ -133,7 +138,7 @@ class _MapViewState extends State<MapView> {
     });
   }
 
-  filterMarkers() {
+  campaignFilterMarkers() {
     events = [];
     Firestore.instance
         .collection("events")
@@ -149,8 +154,8 @@ class _MapViewState extends State<MapView> {
               .distanceBetween(currentLocation.latitude,
                   currentLocation.longitude, placeLat, placeLng)
               .then((calDist) {
-            //3km distance events
-            if (calDist / 1000 < 3) {
+            //5km distance events
+            if (calDist / 1000 < 5) {
               setState(() {
                 events.add(
                   docs.documents[i].documentID,
@@ -173,8 +178,10 @@ class _MapViewState extends State<MapView> {
 
     final MarkerId markerID = MarkerId(markIdVal);
 
-    final Marker marker =
-        Marker(markerId: markerID, position: LatLng(placeLat, placeLng));
+    final Marker marker = Marker(
+        markerId: markerID,
+        position: LatLng(placeLat, placeLng),
+        icon: customIcon);
     setState(() {
       markers[markerID] = marker;
     });

@@ -628,9 +628,11 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
           padding: const EdgeInsets.only(left: 25.0),
           child: Row(
             children: <Widget>[
-              Text(
-                "Do you like to visible the Conatact Number to Public",
-                style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+              Flexible(
+                child: Text(
+                  "Do you like to visible the Conatact Number to Public",
+                  style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                ),
               ),
             ],
           ),

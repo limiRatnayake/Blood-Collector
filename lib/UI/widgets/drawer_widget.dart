@@ -95,6 +95,11 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
+            title: Text("Save Events"),
+            leading: Icon(Icons.bookmark),
+            onTap: () {},
+          ),
+          ListTile(
             title: Text("Setting"),
             leading: Icon(Icons.settings),
             onTap: () {

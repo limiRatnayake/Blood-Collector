@@ -36,12 +36,19 @@ class _PostViewState extends State<PostView> {
   DocumentReference likeRef;
   CollectionReference eventRef;
   bool isLiked = false;
+  bool isSaved = false;
 
   Map<String, dynamic> likeData;
 
   _isLiked() {
     setState(() {
       isLiked = !isLiked;
+    });
+  }
+
+  _isSaved() {
+    setState(() {
+      isSaved = !isSaved;
     });
   }
 
@@ -276,11 +283,15 @@ class _PostViewState extends State<PostView> {
               Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.map),
-                    onPressed: () {},
+                    icon: isSaved != true
+                        ? Icon(Icons.bookmark_border)
+                        : Icon(Icons.bookmark),
+                    onPressed: () {
+                      _isSaved();
+                    },
                   ),
                   Text(
-                    "Map",
+                    "Save",
                     style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
