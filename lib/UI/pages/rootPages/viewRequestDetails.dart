@@ -44,7 +44,8 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
         .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
               participateId = element.documentID;
 
-              if (element.data.containsValue(widget.docRef)) {
+              if (element.data.containsValue(widget.docRef) &&
+                  element.data.containsValue(widget.currentUser)) {
                 setState(() {
                   inclueInParticipantList = true;
                 });
@@ -191,12 +192,12 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
                         onPressed: () {
                           _isParticipated();
                           print(inclueInParticipantList);
-                          if (inclueInParticipantList != false) {
+                          if (inclueInParticipantList != true) {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        RequestIntroSliderWidget(
+                                        CampaignIntroSliderWidget(
                                             docRef: widget.docRef,
                                             currentUser: widget.currentUser)));
                           } else {
@@ -209,7 +210,7 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
                             Scaffold.of(context).showSnackBar(snackBar);
                           }
                         },
-                        child: inclueInParticipantList != false
+                        child: inclueInParticipantList != true
                             ? Text(
                                 "Participating",
                                 style: TextStyle(fontSize: 16),
