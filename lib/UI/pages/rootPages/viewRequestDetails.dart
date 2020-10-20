@@ -28,6 +28,7 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
   final participantRef = Firestore.instance;
   bool participated = false;
   String participateId;
+  bool participatedStatus;
   bool inclueInParticipantList;
 
   _isParticipated() {
@@ -45,9 +46,18 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
               participateId = element.documentID;
 
               if (element.data.containsValue(widget.docRef) &&
-                  element.data.containsValue(widget.currentUser)) {
+                  element.data.containsValue(widget.currentUser) &&
+                  !(element.data.containsValue("Cancelled"))) {
                 setState(() {
                   inclueInParticipantList = true;
+                });
+              }
+              //if user mark as a participant they can't participate for another one
+              //until this one is finished
+              if (element.data.containsValue("participating") &&
+                  element.data.containsValue(widget.currentUser)) {
+                setState(() {
+                  participatedStatus = true;
                 });
               }
             }));
@@ -192,18 +202,19 @@ class _ViewDetailsState extends State<ViewRequestDetails> {
                         onPressed: () {
                           _isParticipated();
                           print(inclueInParticipantList);
-                          if (inclueInParticipantList != true) {
+                          if (inclueInParticipantList != true &&
+                              participatedStatus != true) {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        CampaignIntroSliderWidget(
+                                        RequestIntroSliderWidget(
                                             docRef: widget.docRef,
                                             currentUser: widget.currentUser)));
                           } else {
                             final snackBar = SnackBar(
-                              content:
-                                  Text('Sorry! You are already participated!'),
+                              content: Text(
+                                  'Sorry! You are already participated for an event!'),
                             );
 
                             // it to show a SnackBar.

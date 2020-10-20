@@ -62,11 +62,14 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
     //get the document reference of the Participants collection
     participantRef
         .collection("participants")
-        .getDocuments()
-        .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
-              participateId = element.documentID;
-              participatedStatus = element['participatedStatus'];
-            }));
+        .document(widget.participantId)
+        .get()
+        .then((value) {
+      setState(() {
+        participatedStatus = value.data["participatedStatus"];
+      });
+    });
+
     requestRef = Firestore.instance
         .collection("events")
         .document(widget.docRef)
