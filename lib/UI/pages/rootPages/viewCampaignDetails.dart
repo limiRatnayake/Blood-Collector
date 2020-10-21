@@ -26,6 +26,7 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
   final participantRef = Firestore.instance;
   bool participated = false;
   String participateId;
+  bool participatedStatus;
   bool inclueInParticipantList;
 
   _isParticipated() {
@@ -46,6 +47,14 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                   element.data.containsValue(widget.currentUser)) {
                 setState(() {
                   inclueInParticipantList = true;
+                });
+              }
+              //if user mark as a participant they can't participate for another one
+              //until this one is finished
+              if (element.data.containsValue("participating") &&
+                  element.data.containsValue(widget.currentUser)) {
+                setState(() {
+                  participatedStatus = true;
                 });
               }
             }));
@@ -203,7 +212,8 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                         onPressed: () {
                           _isParticipated();
 
-                          if (inclueInParticipantList != true) {
+                          if (inclueInParticipantList != true &&
+                              participatedStatus != true) {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -213,8 +223,8 @@ class _ViewDetailsState extends State<ViewCampaignDetails> {
                                             currentUser: widget.currentUser)));
                           } else {
                             final snackBar = SnackBar(
-                              content:
-                                  Text('Sorry! You are already participated!'),
+                              content: Text(
+                                  'Sorry! You are already participated an event!'),
                             );
 
                             // it to show a SnackBar.

@@ -300,77 +300,86 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                 }
               }),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text("Once you actually donated "),
-                RaisedButton(
-                    color: Colors.blueAccent,
-                    onPressed: () {
-                      Alert(
-                          context: context,
-                          type: AlertType.success,
-                          title: "Did you matches to the patient?",
-                          style: AlertStyle(
-                              isCloseButton: false,
-                              isOverlayTapDismiss: false,
-                              backgroundColor: Colors.black,
-                              alertBorder: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  side: BorderSide(color: Colors.white)),
-                              titleStyle: TextStyle(color: Colors.blueAccent)),
-                          buttons: [
-                            DialogButton(
-                                child: Text(
-                                  "No",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                }),
-                            DialogButton(
-                                child: Text(
-                                  "Yes",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                                onPressed: () async {
-                                  String response = await _participantServices
-                                      .updateParticipation(
-                                          widget.participantId, "Participated");
-                                  if (response == "Success") {
-                                    var snackBar = SnackBar(
-                                      content: Text(
-                                          'Your last donation date is updated!',
+              padding: const EdgeInsets.all(8.0),
+              child: participatedStatus != "Cancelled"
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text("Once you actually donated "),
+                        RaisedButton(
+                            color: Colors.blueAccent,
+                            onPressed: () {
+                              Alert(
+                                  context: context,
+                                  type: AlertType.success,
+                                  title: "Did you actually donated?",
+                                  style: AlertStyle(
+                                      isCloseButton: false,
+                                      isOverlayTapDismiss: false,
+                                      backgroundColor: Colors.black,
+                                      alertBorder: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          side:
+                                              BorderSide(color: Colors.white)),
+                                      titleStyle:
+                                          TextStyle(color: Colors.blueAccent)),
+                                  buttons: [
+                                    DialogButton(
+                                        child: Text(
+                                          "No",
                                           style: TextStyle(
-                                              color: Colors.blueGrey)),
-                                      action: SnackBarAction(
-                                        label: 'Go',
+                                              color: Colors.white,
+                                              fontSize: 20),
+                                        ),
                                         onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SettingView()));
-                                        },
-                                      ),
-                                    );
+                                          Navigator.of(context).pop();
+                                        }),
+                                    DialogButton(
+                                        child: Text(
+                                          "Yes",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20),
+                                        ),
+                                        onPressed: () async {
+                                          String response =
+                                              await _participantServices
+                                                  .updateParticipation(
+                                                      widget.participantId,
+                                                      "Participated");
+                                          if (response == "Success") {
+                                            var snackBar = SnackBar(
+                                              content: Text(
+                                                  'Your last donation date is updated!',
+                                                  style: TextStyle(
+                                                      color: Colors.blueGrey)),
+                                              action: SnackBarAction(
+                                                label: 'Go',
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              SettingView()));
+                                                },
+                                              ),
+                                            );
 
-                                    Scaffold.of(context).showSnackBar(snackBar);
-                                    Navigator.of(context).pop();
-                                  }
-                                })
-                          ]).show();
-                    },
-                    child: Text(
-                      "Mark as Donated",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )),
-              ],
-            ),
-          )
+                                            Scaffold.of(context)
+                                                .showSnackBar(snackBar);
+                                            Navigator.of(context).pop();
+                                          }
+                                        })
+                                  ]).show();
+                            },
+                            child: Text(
+                              "Mark as Donated",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )),
+                      ],
+                    )
+                  : Container())
         ],
       ),
     ));
