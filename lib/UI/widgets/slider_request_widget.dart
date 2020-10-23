@@ -146,93 +146,93 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
               borderRadius: BorderRadius.circular(18.0),
             ),
           )),
-      PageViewModel(
-        image: Image.asset(
-          "assets/slide_three.png",
-        ),
-        titleWidget: Column(
-          children: [
-            Text(
-              "Are you ready to Donate ?",
-              style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            RichText(
-              text: TextSpan(
-                text: "Request the patient details",
-                style: TextStyle(color: Colors.black, fontSize: 16),
-              ),
-            ),
-          ],
-        ),
-        bodyWidget: Padding(
-          padding: const EdgeInsets.all(25),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              RaisedButton(
-                color: Colors.orange[200],
-                onPressed: () {
-                  _isRequestSend();
+      // PageViewModel(
+      //   image: Image.asset(
+      //     "assets/slide_three.png",
+      //   ),
+      //   titleWidget: Column(
+      //     children: [
+      //       Text(
+      //         "Are you ready to Donate ?",
+      //         style: TextStyle(
+      //             fontFamily: 'Roboto',
+      //             fontWeight: FontWeight.bold,
+      //             fontSize: 20.0),
+      //       ),
+      //       SizedBox(
+      //         height: 15,
+      //       ),
+      //       RichText(
+      //         text: TextSpan(
+      //           text: "Request the patient details",
+      //           style: TextStyle(color: Colors.black, fontSize: 16),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      //   bodyWidget: Padding(
+      //     padding: const EdgeInsets.all(25),
+      //     child: Column(
+      //       mainAxisAlignment: MainAxisAlignment.center,
+      //       crossAxisAlignment: CrossAxisAlignment.center,
+      //       children: [
+      //         RaisedButton(
+      //           color: Colors.orange[200],
+      //           onPressed: () {
+      //             _isRequestSend();
 
-                  requestedRef.get().then((value) => {
-                        if (value.data != null)
-                          {
-                            print("like ref is nt null"),
-                            requestedRef.delete(),
-                            setState(() {
-                              requestedRef.get().then((value) {
-                                requestedData = value.data;
-                              });
-                            })
-                          }
-                        else
-                          {
-                            requestedRef.setData({
-                              "docRef": widget.docRef,
-                              "requestStatus": "sent",
-                              "requestSentOn": requestSentOn,
-                              "requesterId": widget.currentUser
-                            }),
-                            setState(() {
-                              requestedRef.get().then((value) {
-                                requestedData = value.data;
-                              });
-                            })
-                          }
-                      });
-                },
-                child: requestedData != null &&
-                        requestedData.containsKey("requestStatus")
-                    ? Text(
-                        "Request Sent",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      )
-                    : Text("Send request",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-              ),
-              ListTile(
-                leading: Icon(Icons.info_outline),
-                title: Text(
-                    "If the requester accept the request details will show on the 'Request List' page",
-                    style: TextStyle(fontSize: 12)),
-              )
-            ],
-          ),
-        ),
-        decoration: PageDecoration(
-          pageColor: Colors.orange[50],
-          bodyTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
-        ),
-      ),
+      //             requestedRef.get().then((value) => {
+      //                   if (value.data != null)
+      //                     {
+      //                       print("like ref is nt null"),
+      //                       requestedRef.delete(),
+      //                       setState(() {
+      //                         requestedRef.get().then((value) {
+      //                           requestedData = value.data;
+      //                         });
+      //                       })
+      //                     }
+      //                   else
+      //                     {
+      //                       requestedRef.setData({
+      //                         "docRef": widget.docRef,
+      //                         "requestStatus": "sent",
+      //                         "requestSentOn": requestSentOn,
+      //                         "requesterId": widget.currentUser
+      //                       }),
+      //                       setState(() {
+      //                         requestedRef.get().then((value) {
+      //                           requestedData = value.data;
+      //                         });
+      //                       })
+      //                     }
+      //                 });
+      //           },
+      //           child: requestedData != null &&
+      //                   requestedData.containsKey("requestStatus")
+      //               ? Text(
+      //                   "Request Sent",
+      //                   style: TextStyle(
+      //                       fontSize: 16, fontWeight: FontWeight.bold),
+      //                 )
+      //               : Text("Send request",
+      //                   style: TextStyle(
+      //                       fontSize: 16, fontWeight: FontWeight.bold)),
+      //         ),
+      //         ListTile(
+      //           leading: Icon(Icons.info_outline),
+      //           title: Text(
+      //               "If the requester accept the request details will show on the 'Request List' page",
+      //               style: TextStyle(fontSize: 12)),
+      //         )
+      //       ],
+      //     ),
+      //   ),
+      //   decoration: PageDecoration(
+      //     pageColor: Colors.orange[50],
+      //     bodyTextStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
+      //   ),
+      // ),
       PageViewModel(
         image: Image.asset(
           "assets/slide_four.png",
@@ -365,14 +365,14 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                     }
                     print(availability);
 
-                    if (availability == false || requestedData == null) {
+                    if (availability == false) {
                       //can't donate
 
                       Alert(
                               context: context,
                               title: "Can't donate",
                               content: Text(
-                                  "check whether you send the request/ your donor criteria may be not acceptable"))
+                                  "your donor criteria may be not acceptable"))
                           .show();
                     } else if (availability != false &&
                         (age > 18 && age < 55)) {
@@ -401,7 +401,7 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                             DialogButton(
                                 width: 120,
                                 child: Text(
-                                  "Yes, I want to",
+                                  "Yes, send a request",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16),
                                 ),
@@ -432,6 +432,19 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                                     );
                                     requestedRef.delete();
                                   } else {
+                                    requestedRef.get().then((value) => {
+                                          requestedRef.setData({
+                                            "docRef": widget.docRef,
+                                            "requestStatus": "sent",
+                                            "requestSentOn": requestSentOn,
+                                            "requesterId": widget.currentUser
+                                          }),
+                                          setState(() {
+                                            requestedRef.get().then((value) {
+                                              requestedData = value.data;
+                                            });
+                                          })
+                                        });
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
