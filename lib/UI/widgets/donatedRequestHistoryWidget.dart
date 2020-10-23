@@ -1,6 +1,7 @@
 import 'package:blood_collector/UI/pages/rootPages/editCampaignView.dart';
 import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
+import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/event_service.dart';
@@ -54,6 +55,7 @@ class DonatedRequestPostView extends StatefulWidget {
 class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
   final participantRef = Firestore.instance;
   DocumentReference requestRef;
+  DocumentReference requestedRef;
   String participateId;
   String participatedStatus;
   String requestedStatus;
@@ -157,12 +159,28 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                 ),
                               ),
                               SizedBox(width: 9),
-                              participatedStatus == "Cancelled"
-                                  ? Text(
-                                      "Cancelled",
-                                      style: TextStyle(color: Colors.red),
-                                    )
-                                  : Container()
+                              FutureBuilder(
+                                  future: _participantServices
+                                      .getParticipantDetails(
+                                          widget.participantId),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    } else {
+                                      ParticipantModel data =
+                                          ParticipantModel.fromMap(
+                                              snapshot.data.data);
+                                      return data.participatedStatus ==
+                                              "Cancelled"
+                                          ? Text(
+                                              "Cancelled",
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            )
+                                          : Container();
+                                    }
+                                  }),
                             ],
                           ),
                           subtitle: Text(

@@ -44,13 +44,19 @@ class EventParticipantService extends ChangeNotifier {
     return _ref.where("uid", isEqualTo: uid).getDocuments();
   }
 
+//get information of a particular particpant
+  Future<DocumentSnapshot> getParticipantDetails(String participantId) async {
+    DocumentSnapshot postSnapshot = (await _ref.document(participantId).get());
+    notifyListeners();
+    return postSnapshot;
+  }
+
 //get participant for an particular event
 
   // Future<List<UserModel>> getParticipantForAnEvent(String docRef) async {
   //   List<UserModel> _usersList = [];
   //   String uid;
 
-  
   //   try {
   //     _ref.where("docRef", isEqualTo: docRef).getDocuments().then(
   //         (QuerySnapshot snapshot) =>
@@ -64,7 +70,6 @@ class EventParticipantService extends ChangeNotifier {
   //       _usersList =
   //           users.map<UserModel>((doc) => UserModel.fromMap(doc.data)).toList();
   //             }));
-
 
   //     // notifyListeners();
   //     return _usersList;

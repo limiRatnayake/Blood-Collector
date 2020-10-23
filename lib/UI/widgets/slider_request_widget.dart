@@ -8,7 +8,6 @@ import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +34,7 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
   bool availability;
   bool isRequestSend = false;
   bool requestStatus;
+  bool _sendRequest = false;
 
 //use DateFormat from intl package.
   String requestSentOn = DateFormat('yyyy-MM-dd hh:mm').format(DateTime.now());
@@ -381,13 +381,8 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                           context: context,
                           type: AlertType.info,
                           title: "Would you like to donate blood!",
-                          // content: Container(
-                          //     child: Text(
-                          //         "Go to your settings and change the location permission!",
-                          //         style: TextStyle(
-                          //             fontSize: 15, color: Colors.white))),
                           style: AlertStyle(
-                              backgroundColor: Colors.black,
+                              backgroundColor: Colors.white,
                               alertBorder: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5),
                                   side: BorderSide(color: Colors.white)),
@@ -398,7 +393,7 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                                 child: Text(
                                   "Cancel",
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
+                                      color: Colors.white, fontSize: 16),
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop();
@@ -408,7 +403,7 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                                 child: Text(
                                   "Yes, I want to",
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
+                                      color: Colors.white, fontSize: 16),
                                 ),
                                 onPressed: () async {
                                   String userName =

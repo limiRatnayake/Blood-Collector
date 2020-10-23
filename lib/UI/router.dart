@@ -11,7 +11,7 @@ import 'package:blood_collector/UI/widgets/home_widget.dart';
 import 'package:blood_collector/UI/pages/authentication/signin_view.dart';
 import 'package:blood_collector/UI/pages/splash_view.dart';
 
-class Router {
+class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppConstants.SPLASH:

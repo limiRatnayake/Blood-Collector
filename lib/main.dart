@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
             appBarTheme: AppBarTheme(color: Colors.white, elevation: 0)),
         // home: Wrapper(),
         initialRoute: AppConstants.SPLASH,
-        onGenerateRoute: Router.generateRoute,
+        onGenerateRoute: Routers.generateRoute,
       ),
     );
   }
