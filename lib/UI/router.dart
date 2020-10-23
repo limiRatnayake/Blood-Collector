@@ -2,10 +2,6 @@ import 'package:blood_collector/UI/pages/authentication/auth_view.dart';
 import 'package:blood_collector/UI/pages/authentication/forgot_password.dart';
 import 'package:blood_collector/UI/pages/authentication/signup_second_view.dart';
 import 'package:blood_collector/UI/pages/authentication/signup_view.dart';
-import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
-import 'package:blood_collector/UI/pages/rootPages/raised_request.dart';
-import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
-import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -24,7 +20,7 @@ class Router {
         return MaterialPageRoute(builder: ((_) => AuthPage()));
       case AppConstants.SIGN_UP:
         return MaterialPageRoute(builder: (_) => SignUpPage());
-         case AppConstants.SIGN_UP_SECOND_PAGE:
+      case AppConstants.SIGN_UP_SECOND_PAGE:
         return MaterialPageRoute(builder: (_) => SignUpSecondPage());
       case AppConstants.SIGN_IN:
         return MaterialPageRoute(builder: (_) => SignInPage());
