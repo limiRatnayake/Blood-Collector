@@ -1,12 +1,8 @@
-import 'package:blood_collector/UI/pages/rootPages/editCampaignView.dart';
-import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
 import 'package:blood_collector/models/user_model.dart';
-import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/request_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -85,63 +81,70 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            IconButton(
-                                icon: Icon(Icons.done),
-                                color: Colors.black,
-                                onPressed: () async {
-                                  if (widget.requestStatus != "Accepted") {
-                                    String response =
-                                        await _requestsServices.updateRequests(
-                                            widget.requesterId, "Accepted");
-                                    if (response != "Success") {
-                                      final snackBar = SnackBar(
-                                        content: Text(
-                                            'Error accepting the requests',
-                                            style: TextStyle(
-                                                color: Colors.blueGrey)),
-                                      );
-                                      Scaffold.of(context)
-                                          .showSnackBar(snackBar);
-                                    } else {
-                                      Alert(
-                                          context: context,
-                                          type: AlertType.success,
-                                          title: "Request was accepted!",
-                                          style: AlertStyle(
-                                              backgroundColor: Colors.white,
-                                              alertBorder:
-                                                  RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      side: BorderSide(
-                                                          color: Colors.white)),
-                                              titleStyle: TextStyle(
-                                                  color: Colors.blueAccent)),
-                                          buttons: [
-                                            DialogButton(
-                                                width: 120,
-                                                child: Text(
-                                                  "ok",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 20),
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                })
-                                          ]).show();
-                                    }
-                                  } else if (widget.requestStatus ==
-                                      "Accepted") {
-                                    final snackBar = SnackBar(
-                                      content: Text('It already accepted',
-                                          style: TextStyle(
-                                              color: Colors.blueGrey)),
-                                    );
-                                    Scaffold.of(context).showSnackBar(snackBar);
-                                  }
-                                }),
+                            widget.requestStatus != "Accepted"
+                                ? IconButton(
+                                    icon: Icon(Icons.done),
+                                    color: Colors.blue,
+                                    onPressed: () async {
+                                      if (widget.requestStatus != "Accepted") {
+                                        String response =
+                                            await _requestsServices
+                                                .updateRequests(
+                                                    widget.requesterId,
+                                                    "Accepted");
+                                        if (response != "Success") {
+                                          final snackBar = SnackBar(
+                                            content: Text(
+                                                'Error accepting the requests',
+                                                style: TextStyle(
+                                                    color: Colors.blueGrey)),
+                                          );
+                                          Scaffold.of(context)
+                                              .showSnackBar(snackBar);
+                                        } else {
+                                          Alert(
+                                              context: context,
+                                              type: AlertType.success,
+                                              title: "Request was accepted!",
+                                              style: AlertStyle(
+                                                  backgroundColor: Colors.white,
+                                                  alertBorder:
+                                                      RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          side: BorderSide(
+                                                              color: Colors
+                                                                  .white)),
+                                                  titleStyle: TextStyle(
+                                                      color:
+                                                          Colors.blueAccent)),
+                                              buttons: [
+                                                DialogButton(
+                                                    width: 120,
+                                                    child: Text(
+                                                      "ok",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    })
+                                              ]).show();
+                                        }
+                                      } else if (widget.requestStatus ==
+                                          "Accepted") {
+                                        final snackBar = SnackBar(
+                                          content: Text('It already accepted',
+                                              style: TextStyle(
+                                                  color: Colors.blueGrey)),
+                                        );
+                                        Scaffold.of(context)
+                                            .showSnackBar(snackBar);
+                                      }
+                                    })
+                                : Container(),
                             IconButton(
                                 color: Colors.black,
                                 icon: Icon(Icons.clear),

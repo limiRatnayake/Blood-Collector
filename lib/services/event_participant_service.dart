@@ -51,6 +51,21 @@ class EventParticipantService extends ChangeNotifier {
     return postSnapshot;
   }
 
+  //delete an event
+  Future<String> deleteAParticipant(String participantId) async {
+    String message = "";
+    try {
+      _ref.document(participantId).delete();
+
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
+  }
+
 //get participant for an particular event
 
   // Future<List<UserModel>> getParticipantForAnEvent(String docRef) async {

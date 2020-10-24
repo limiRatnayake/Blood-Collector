@@ -57,21 +57,11 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
   DocumentReference requestRef;
   DocumentReference requestedRef;
   String participateId;
-  String participatedStatus;
+  // String participatedStatus;
+  String cancelParticipatedStatus;
   String requestedStatus;
   @override
   void initState() {
-    //get the document reference of the Participants collection
-    participantRef
-        .collection("participants")
-        .document(widget.participantId)
-        .get()
-        .then((value) {
-      setState(() {
-        participatedStatus = value.data["participatedStatus"];
-      });
-    });
-
     requestRef = Firestore.instance
         .collection("events")
         .document(widget.docRef)
@@ -82,6 +72,7 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
     requestRef.get().then((value) {
       setState(() {
         requestedStatus = value.data["requestStatus"];
+        print(requestedStatus);
       });
     });
   }
@@ -159,6 +150,9 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                 ),
                               ),
                               SizedBox(width: 9),
+
+                              /*once it delete the participantId is gonna be null it through an error
+                              so, as solution it check whether the id is null or not*/
                               FutureBuilder(
                                   future: _participantServices
                                       .getParticipantDetails(
@@ -171,16 +165,19 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                       ParticipantModel data =
                                           ParticipantModel.fromMap(
                                               snapshot.data.data);
-                                      return data.participatedStatus ==
-                                              "Cancelled"
-                                          ? Text(
+                                      cancelParticipatedStatus =
+                                          data.participatedStatus;
+                                      return (data != null &&
+                                              data.participatedStatus !=
+                                                  "Cancelled")
+                                          ? Container()
+                                          : Text(
                                               "Cancelled",
                                               style:
                                                   TextStyle(color: Colors.red),
-                                            )
-                                          : Container();
+                                            );
                                     }
-                                  }),
+                                  })
                             ],
                           ),
                           subtitle: Text(
@@ -219,7 +216,7 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                               title: Text("Hospital Address"),
                               subtitle: Text(widget.hospitalAddress),
                             ),
-                            requestedStatus != "Rejected"
+                            requestedStatus == "Accepted"
                                 ? ListTile(
                                     leading: Icon(Icons.person),
                                     title: Text("Patient Name"),
@@ -229,15 +226,25 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                           ],
                           trailing: PopupMenuButton<int>(
                             itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: 1,
-                                child: Text(
-                                  "Cancel the participation",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              ),
+                              cancelParticipatedStatus != "Cancelled"
+                                  ? PopupMenuItem(
+                                      value: 1,
+                                      child: Text(
+                                        "Cancel the participation",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                    )
+                                  : PopupMenuItem(
+                                      value: 1,
+                                      child: Text(
+                                        "Delete",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                    ),
                               PopupMenuItem(
                                 value: 2,
                                 child: Text(
@@ -251,61 +258,124 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                             onSelected: (value) {
                               switch (value) {
                                 case 1:
-                                  Alert(
-                                      context: context,
-                                      type: AlertType.success,
-                                      title:
-                                          "Are you sure you want to cancel the participation?",
-                                      style: AlertStyle(
-                                          isCloseButton: false,
-                                          isOverlayTapDismiss: false,
-                                          backgroundColor: Colors.black,
-                                          alertBorder: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              side: BorderSide(
-                                                  color: Colors.white)),
-                                          titleStyle: TextStyle(
-                                              color: Colors.blueAccent)),
-                                      buttons: [
-                                        DialogButton(
-                                            child: Text(
-                                              "No",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            }),
-                                        DialogButton(
-                                            child: Text(
-                                              "Yes",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20),
-                                            ),
-                                            onPressed: () async {
-                                              String response =
-                                                  await _participantServices
-                                                      .updateParticipation(
-                                                          widget.participantId,
-                                                          "Cancelled");
-                                              if (response == "Success") {
-                                                var snackBar = SnackBar(
-                                                  content: Text(
-                                                      'Participation is cancelled!',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.blueGrey)),
-                                                );
+                                  cancelParticipatedStatus != "Cancelled"
+                                      ? Alert(
+                                          context: context,
+                                          type: AlertType.success,
+                                          title:
+                                              "Are you sure you want to cancel the participation?",
+                                          style: AlertStyle(
+                                              isCloseButton: false,
+                                              isOverlayTapDismiss: false,
+                                              backgroundColor: Colors.black,
+                                              alertBorder:
+                                                  RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      side: BorderSide(
+                                                          color: Colors.white)),
+                                              titleStyle: TextStyle(
+                                                  color: Colors.blueAccent)),
+                                          buttons: [
+                                              DialogButton(
+                                                  child: Text(
+                                                    "No",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  }),
+                                              DialogButton(
+                                                  child: Text(
+                                                    "Yes",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  ),
+                                                  onPressed: () async {
+                                                    String response =
+                                                        await _participantServices
+                                                            .updateParticipation(
+                                                                widget
+                                                                    .participantId,
+                                                                "Cancelled");
+                                                    if (response == "Success") {
+                                                      var snackBar = SnackBar(
+                                                        content: Text(
+                                                            'Participation is cancelled!',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .blueGrey)),
+                                                      );
+                                                      requestRef.delete();
+                                                      Scaffold.of(context)
+                                                          .showSnackBar(
+                                                              snackBar);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    }
+                                                  })
+                                            ]).show()
+                                      : Alert(
+                                          context: context,
+                                          type: AlertType.warning,
+                                          title: "Are you sure?",
+                                          style: AlertStyle(
+                                              isCloseButton: false,
+                                              isOverlayTapDismiss: false,
+                                              backgroundColor: Colors.black,
+                                              alertBorder:
+                                                  RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      side: BorderSide(
+                                                          color: Colors.white)),
+                                              titleStyle: TextStyle(
+                                                  color: Colors.blueAccent)),
+                                          buttons: [
+                                              DialogButton(
+                                                  child: Text(
+                                                    "No",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  }),
+                                              DialogButton(
+                                                  child: Text(
+                                                    "Yes",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  ),
+                                                  onPressed: () async {
+                                                    String response =
+                                                        await _participantServices
+                                                            .deleteAParticipant(
+                                                                widget
+                                                                    .participantId);
+                                                    if (response == "Success") {
+                                                      var snackBar = SnackBar(
+                                                        content: Text(
+                                                            'It is successfully deleted!',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .blueGrey)),
+                                                      );
 
-                                                Scaffold.of(context)
-                                                    .showSnackBar(snackBar);
-                                                Navigator.of(context).pop();
-                                              }
-                                            })
-                                      ]).show();
+                                                      Scaffold.of(context)
+                                                          .showSnackBar(
+                                                              snackBar);
+                                                      Navigator.pop(context);
+                                                    }
+                                                  })
+                                            ]).show();
                                   break;
                                 case 2:
                                   {}
@@ -319,7 +389,7 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
               }),
           Padding(
               padding: const EdgeInsets.all(8.0),
-              child: participatedStatus != "Cancelled"
+              child: cancelParticipatedStatus != "Cancelled"
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

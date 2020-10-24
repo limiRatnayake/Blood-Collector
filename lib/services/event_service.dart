@@ -121,7 +121,7 @@ class EventService extends ChangeNotifier {
   }
 
   Future<QuerySnapshot> getEvents() {
-    return _ref.getDocuments();
+    return _ref.orderBy("createdAt", descending: true).getDocuments();
   }
 
   Future<QuerySnapshot> getUserEvents(String uid) {

@@ -399,9 +399,9 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                                   Navigator.of(context).pop();
                                 }),
                             DialogButton(
-                                width: 120,
+                                width: 130,
                                 child: Text(
-                                  "Yes, send a request",
+                                  "Send a Request",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16),
                                 ),
