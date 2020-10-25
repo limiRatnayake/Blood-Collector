@@ -121,7 +121,11 @@ class EventService extends ChangeNotifier {
   }
 
   Future<QuerySnapshot> getEvents() {
-    return _ref.orderBy("createdAt", descending: true).getDocuments();
+    //create a composite index in firebase console
+    return _ref
+        .where("approved", isEqualTo: true)
+        .orderBy("createdAt", descending: true)
+        .getDocuments();
   }
 
   Future<QuerySnapshot> getUserEvents(String uid) {

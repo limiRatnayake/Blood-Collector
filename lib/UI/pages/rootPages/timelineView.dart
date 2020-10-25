@@ -90,6 +90,9 @@ class _TimelineViewState extends State<TimelineView> {
                                   itemBuilder: (context, index) {
                                     EventModel data = dataList[index];
 
+                                    // return data.approved != true
+                                    //     ? Container()
+                                    //     :
                                     return PostView(
                                         currentUser: currentUser,
                                         imageUrl: data.imageUrl,
