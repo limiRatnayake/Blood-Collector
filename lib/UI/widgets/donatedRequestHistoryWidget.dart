@@ -310,6 +310,9 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                                                 color: Colors
                                                                     .blueGrey)),
                                                       );
+                                                      /* if user cancel on participting to an event
+                                                       delete the request that sent
+                                                       */
                                                       requestRef.delete();
                                                       Scaffold.of(context)
                                                           .showSnackBar(
