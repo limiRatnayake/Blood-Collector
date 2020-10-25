@@ -29,14 +29,14 @@ class _NotificationViewState extends State<NotificationView> {
         print("onMessage: $message");
         // _setMessage(message);
       },
-      onResume: (message) async {
-        print("onMessage: $message");
-        // _setMessage(message);
-      },
-      onLaunch: (message) async {
-        print("onMessage: $message");
-        // _setMessage(message);
-      },
+      // onResume: (message) async {
+      //   print("onMessage: $message");
+      //   // _setMessage(message);
+      // },
+      // onLaunch: (message) async {
+      //   print("onMessage: $message");
+      //   // _setMessage(message);
+      // },
     );
   }
 
