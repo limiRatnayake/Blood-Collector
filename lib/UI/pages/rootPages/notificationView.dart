@@ -40,36 +40,6 @@ class _NotificationViewState extends State<NotificationView> {
     );
   }
 
-  handleNotificationMsg(Map<String, dynamic> message) {
-    Alert(
-        context: context,
-        title: message['notification']['title'],
-        desc: message['notification']['body'],
-        buttons: [
-          DialogButton(
-              child: Text(
-                "Ok",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
-        ]).show();
-  }
-
-//get the firebase message
-  _setMessage(Map<String, dynamic> messages) {
-    final notification = messages['notification'];
-    final data = messages['data'];
-    final String titile = notification['title'];
-    final String body = notification['body'];
-    final String message = data['message'];
-    setState(() {
-      Message m = Message(titile, body, message);
-      _messages.add(m);
-    });
-  }
-
   @override
   void initState() {
     super.initState();

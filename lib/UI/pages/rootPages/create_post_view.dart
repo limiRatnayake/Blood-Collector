@@ -306,14 +306,6 @@ class _PostViewState extends State<CreatePostView> {
                                     _errorMessage = response;
                                   });
                                 } else {
-                                  if (widget.notifyState != true) {
-                                    print("notify was denied!");
-                                  } else {
-                                    _pushNotificationService.addNotification(
-                                        "Requesting ${widget.bloodGroup} in ${widget.hospitalName}",
-                                        widget.bloodGroup,
-                                        _user);
-                                  }
                                   Alert(
                                       context: context,
                                       type: AlertType.success,
