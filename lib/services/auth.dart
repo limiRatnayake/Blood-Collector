@@ -71,6 +71,7 @@ class AuthServices extends ChangeNotifier {
           email: email,
           proPicUrl: proPicUrl,
           disabled: false,
+          notificationCount: 0,
           userPreviouslyDonatedOrNot: userPreviouslyDonatedOrNot,
           ifYesHowManyTimes: ifYesHowManyTimes,
           dateOfLastDonation: dateOfLastDonation,

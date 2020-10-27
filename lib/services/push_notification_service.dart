@@ -106,10 +106,14 @@ class PushNotificationService extends ChangeNotifier {
   }
 
 //delete a notification from the us
-  Future<String> deleteNotification(String notificationId) async {
+  Future<String> deleteNotification(String uid, String notificationId) async {
     String message = "";
     try {
-      _userRef.document(notificationId).delete();
+      _userRef
+          .document(uid)
+          .collection("user_notification")
+          .document(notificationId)
+          .delete();
 
       message = "Success";
     } catch (error) {

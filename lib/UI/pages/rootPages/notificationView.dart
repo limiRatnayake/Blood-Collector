@@ -4,10 +4,11 @@ import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class NotificationView extends StatefulWidget {
   @override
@@ -16,12 +17,6 @@ class NotificationView extends StatefulWidget {
 
 class _NotificationViewState extends State<NotificationView> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  List<Message> _messages;
-  // _getToken() {
-  //   _firebaseMessaging.getToken().then((token) {
-
-  //   });
-  // }
 
   _configureFirebaseListners() {
     _firebaseMessaging.configure(
@@ -40,12 +35,21 @@ class _NotificationViewState extends State<NotificationView> {
     );
   }
 
+  _updateNotificationCount() {
+    FirebaseAuth.instance.currentUser().then((currentUser) => {
+          Firestore.instance
+              .collection("users")
+              .document(currentUser.uid)
+              .updateData({"notificationCount": 0})
+        });
+  }
+
   @override
   void initState() {
     super.initState();
     // _getToken();
     _configureFirebaseListners();
-    _messages = List<Message>();
+    _updateNotificationCount();
   }
 
   @override
@@ -100,7 +104,15 @@ class _NotificationViewState extends State<NotificationView> {
                                       title: Text(notifyData.message),
                                       trailing: IconButton(
                                           icon: Icon(Icons.delete),
-                                          onPressed: null),
+                                          onPressed: () async {
+                                            String message =
+                                                await _notificationsService
+                                                    .deleteNotification(
+                                                        _authServices.user.uid,
+                                                        notifyData
+                                                            .notificationId);
+                                            print(message);
+                                          }),
                                     );
                                   }
                                 }));
@@ -118,17 +130,5 @@ class _NotificationViewState extends State<NotificationView> {
             }
           }),
     );
-  }
-}
-
-class Message {
-  String titile;
-  String body;
-  String message;
-
-  Message(titile, body, message) {
-    this.titile = titile;
-    this.body = body;
-    this.message = message;
   }
 }

@@ -1,4 +1,5 @@
 class NotificationModel {
+  final String userNotifyId;
   final String uid;
   final String notificationId;
   final String message;
@@ -7,6 +8,7 @@ class NotificationModel {
   final String closeOn;
 
   NotificationModel({
+    this.userNotifyId,
     this.uid,
     this.notificationId,
     this.message,
@@ -16,7 +18,8 @@ class NotificationModel {
   });
 
   NotificationModel.fromMap(Map snapshot)
-      : uid = snapshot['uid'] ?? "",
+      : userNotifyId = snapshot['userNotifyId'] ?? "",
+        uid = snapshot['uid'] ?? "",
         notificationId = snapshot['notificationId'] ?? "",
         message =
             snapshot['message'] ?? "", //if the value is not there it is empty
@@ -27,6 +30,7 @@ class NotificationModel {
 
   toJson() {
     return {
+      "userNotifyId": userNotifyId,
       "uid": uid,
       "notificationId": notificationId,
       "message": message,
