@@ -1,5 +1,5 @@
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
-import 'package:blood_collector/models/notification_model.dart';
+import 'package:blood_collector/models/user_notification_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/push_notification_service.dart';
@@ -94,6 +94,7 @@ class _NotificationViewState extends State<NotificationView> {
                                         UserModel.fromMap(snapshot.data.data);
 
                                     return ListTile(
+                                      onTap: () {},
                                       leading: GestureDetector(
                                         child: CircleAvatar(
                                           radius: 20,
@@ -109,9 +110,16 @@ class _NotificationViewState extends State<NotificationView> {
                                                 await _notificationsService
                                                     .deleteNotification(
                                                         _authServices.user.uid,
-                                                        notifyData
-                                                            .notificationId);
+                                                        notifyData.notifyId);
                                             print(message);
+                                            final snackBar = SnackBar(
+                                              content: Text(
+                                                  'Notification has been deleted',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            );
+                                            Scaffold.of(context)
+                                                .showSnackBar(snackBar);
                                           }),
                                     );
                                   }

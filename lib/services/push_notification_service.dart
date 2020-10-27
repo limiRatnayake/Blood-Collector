@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:blood_collector/models/event_model.dart';
-import 'package:blood_collector/models/notification_model.dart';
+import 'package:blood_collector/models/user_notification_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -75,28 +75,28 @@ class PushNotificationService extends ChangeNotifier {
     });
   }
 
-  Future<void> addNotification(
-    String message,
-    String bloodGroup,
-    FirebaseUser user,
-  ) async {
-    try {
-      final now = DateTime.now();
-      final tomorrow = new DateTime(now.year, now.month, now.day + 1);
-      DocumentReference newRef = _notificationRef.document();
-      NotificationModel notification = NotificationModel(
-          notificationId: newRef.documentID,
-          uid: user.uid,
-          message: message,
-          bloodGroup: bloodGroup,
-          createdAt: now.toString(),
-          closeOn: tomorrow.toString());
-      await newRef.setData(notification.toJson());
-    } catch (e) {
-      print(e);
-    }
-    notifyListeners();
-  }
+  // Future<void> addNotification(
+  //   String message,
+  //   String bloodGroup,
+  //   FirebaseUser user,
+  // ) async {
+  //   try {
+  //     final now = DateTime.now();
+  //     final tomorrow = new DateTime(now.year, now.month, now.day + 1);
+  //     DocumentReference newRef = _notificationRef.document();
+  //     NotificationModel notification = NotificationModel(
+  //         notificationId: newRef.documentID,
+  //         uid: user.uid,
+  //         message: message,
+  //         bloodGroup: bloodGroup,
+  //         createdAt: now.toString(),
+  //         closeOn: tomorrow.toString());
+  //     await newRef.setData(notification.toJson());
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  //   notifyListeners();
+  // }
 
   Future<QuerySnapshot> getUserNotifications(String uid) {
     return _userRef
@@ -106,13 +106,13 @@ class PushNotificationService extends ChangeNotifier {
   }
 
 //delete a notification from the us
-  Future<String> deleteNotification(String uid, String notificationId) async {
+  Future<String> deleteNotification(String uid, String userNotifyId) async {
     String message = "";
     try {
       _userRef
           .document(uid)
           .collection("user_notification")
-          .document(notificationId)
+          .document(userNotifyId)
           .delete();
 
       message = "Success";
