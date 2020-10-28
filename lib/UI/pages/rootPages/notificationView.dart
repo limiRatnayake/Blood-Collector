@@ -1,3 +1,4 @@
+import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/models/user_notification_model.dart';
 import 'package:blood_collector/models/user_model.dart';
@@ -8,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class NotificationView extends StatefulWidget {
@@ -59,6 +61,8 @@ class _NotificationViewState extends State<NotificationView> {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
 
+    String createdAt;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Notifications"),
@@ -80,50 +84,89 @@ class _NotificationViewState extends State<NotificationView> {
                       itemCount: dataList.length,
                       itemBuilder: (context, index) {
                         NotificationModel notifyData = dataList[index];
+                        createdAt = notifyData.createdAt;
 
-                        return Card(
-                            child: FutureBuilder(
-                                future: _userService
-                                    .requestUserDetails(_authServices.user.uid),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Center(
-                                        child: CircularProgressIndicator());
-                                  } else {
-                                    UserModel userData =
-                                        UserModel.fromMap(snapshot.data.data);
+                        return Column(
+                          children: [
+                            ListTile(
+                              title: Text(createdAt),
+                            ),
+                            Card(
+                                child: FutureBuilder(
+                                    future: _userService.requestUserDetails(
+                                        _authServices.user.uid),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      } else {
+                                        UserModel userData = UserModel.fromMap(
+                                            snapshot.data.data);
 
-                                    return ListTile(
-                                      onTap: () {},
-                                      leading: GestureDetector(
-                                        child: CircleAvatar(
-                                          radius: 20,
-                                          backgroundImage:
-                                              NetworkImage(userData.proPicUrl),
-                                        ),
-                                      ),
-                                      title: Text(notifyData.message),
-                                      trailing: IconButton(
-                                          icon: Icon(Icons.delete),
-                                          onPressed: () async {
-                                            String message =
-                                                await _notificationsService
-                                                    .deleteNotification(
-                                                        _authServices.user.uid,
-                                                        notifyData.notifyId);
-                                            print(message);
-                                            final snackBar = SnackBar(
-                                              content: Text(
-                                                  'Notification has been deleted',
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                            );
-                                            Scaffold.of(context)
-                                                .showSnackBar(snackBar);
-                                          }),
-                                    );
-                                  }
-                                }));
+                                        return ListTile(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ViewRequestDetails(
+                                                            docRef: notifyData
+                                                                .docRef,
+                                                            uid: notifyData
+                                                                .notifyBy,
+                                                            currentUser:
+                                                                _authServices
+                                                                    .user
+                                                                    .uid)));
+                                          },
+                                          leading: GestureDetector(
+                                            child: CircleAvatar(
+                                              radius: 20,
+                                              backgroundImage: NetworkImage(
+                                                  userData.proPicUrl),
+                                            ),
+                                          ),
+                                          title: Text(
+                                            notifyData.message +
+                                                " " +
+                                                "Blood Group",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          subtitle: Text(
+                                            "In" +
+                                                " " +
+                                                notifyData.hospitalName,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          trailing: IconButton(
+                                              icon: Icon(Icons.delete),
+                                              onPressed: () async {
+                                                String message =
+                                                    await _notificationsService
+                                                        .deleteNotification(
+                                                            _authServices
+                                                                .user.uid,
+                                                            notifyData
+                                                                .notifyId);
+                                                print(message);
+                                                final snackBar = SnackBar(
+                                                  content: Text(
+                                                      'Notification has been deleted',
+                                                      style: TextStyle(
+                                                          color: Colors.white)),
+                                                );
+                                                Scaffold.of(context)
+                                                    .showSnackBar(snackBar);
+                                              }),
+                                        );
+                                      }
+                                    })),
+                          ],
+                        );
                       },
                     )
                   : Padding(
