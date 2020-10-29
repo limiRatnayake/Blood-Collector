@@ -84,89 +84,95 @@ class _NotificationViewState extends State<NotificationView> {
                       itemCount: dataList.length,
                       itemBuilder: (context, index) {
                         NotificationModel notifyData = dataList[index];
-                        createdAt = notifyData.createdAt;
+                        // createdAt = notifyData.createdOn;
+                        // var checkedTime = DateTime.parse(createdAt);
+                        // var newDt = DateFormat.yMMMEd().format(checkedTime);
+                        // Timestamp myTimeStamp = Timestamp.fromDate(
+                        //     notifyData.createdOn); //To TimeStamp
+                        DateTime today = DateTime.now();
+                        DateTime createdOn = notifyData.createdOn.toDate();
+                        var todayFormat =
+                            DateFormat.yMMMEd().add_jm().format(createdOn);
+                        var createdOnFormat =
+                            DateFormat.yMMMEd().add_jm().format(createdOn);
 
-                        return Column(
-                          children: [
-                            ListTile(
-                              title: Text(createdAt),
-                            ),
-                            Card(
-                                child: FutureBuilder(
-                                    future: _userService.requestUserDetails(
-                                        _authServices.user.uid),
-                                    builder: (context, snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return Center(
-                                            child: CircularProgressIndicator());
-                                      } else {
-                                        UserModel userData = UserModel.fromMap(
-                                            snapshot.data.data);
+                        return Card(
+                            child: FutureBuilder(
+                                future: _userService
+                                    .requestUserDetails(_authServices.user.uid),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                        child: CircularProgressIndicator());
+                                  } else {
+                                    UserModel userData =
+                                        UserModel.fromMap(snapshot.data.data);
 
-                                        return ListTile(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ViewRequestDetails(
-                                                            docRef: notifyData
-                                                                .docRef,
-                                                            uid: notifyData
-                                                                .notifyBy,
-                                                            currentUser:
-                                                                _authServices
-                                                                    .user
-                                                                    .uid)));
-                                          },
-                                          leading: GestureDetector(
-                                            child: CircleAvatar(
-                                              radius: 20,
-                                              backgroundImage: NetworkImage(
-                                                  userData.proPicUrl),
-                                            ),
-                                          ),
-                                          title: Text(
-                                            notifyData.message +
-                                                " " +
-                                                "Blood Group",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          subtitle: Text(
-                                            "In" +
-                                                " " +
-                                                notifyData.hospitalName,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          trailing: IconButton(
-                                              icon: Icon(Icons.delete),
-                                              onPressed: () async {
-                                                String message =
-                                                    await _notificationsService
-                                                        .deleteNotification(
+                                    return ListTile(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ViewRequestDetails(
+                                                        docRef:
+                                                            notifyData.docRef,
+                                                        uid:
+                                                            notifyData.notifyBy,
+                                                        currentUser:
                                                             _authServices
-                                                                .user.uid,
-                                                            notifyData
-                                                                .notifyId);
-                                                print(message);
-                                                final snackBar = SnackBar(
-                                                  content: Text(
-                                                      'Notification has been deleted',
-                                                      style: TextStyle(
-                                                          color: Colors.white)),
-                                                );
-                                                Scaffold.of(context)
-                                                    .showSnackBar(snackBar);
-                                              }),
-                                        );
-                                      }
-                                    })),
-                          ],
-                        );
+                                                                .user.uid)));
+                                      },
+                                      leading: GestureDetector(
+                                        child: CircleAvatar(
+                                          radius: 20,
+                                          backgroundImage:
+                                              NetworkImage(userData.proPicUrl),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        notifyData.message +
+                                            " " +
+                                            "Blood Group",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      subtitle: Text(
+                                        "In" +
+                                            " " +
+                                            notifyData.hospitalName +
+                                            " " +
+                                            "\n" +
+                                            createdOnFormat +
+                                            "\n" +
+                                            "Tap to view more",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      isThreeLine: true,
+                                      trailing: IconButton(
+                                          icon: Icon(Icons.delete),
+                                          onPressed: () async {
+                                            String message =
+                                                await _notificationsService
+                                                    .deleteNotification(
+                                                        _authServices.user.uid,
+                                                        notifyData.notifyId);
+                                            print(message);
+                                            final snackBar = SnackBar(
+                                              content: Text(
+                                                  'Notification has been deleted',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            );
+                                            Scaffold.of(context)
+                                                .showSnackBar(snackBar);
+                                          }),
+                                    );
+                                  }
+                                }));
                       },
                     )
                   : Padding(

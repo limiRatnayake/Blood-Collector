@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class NotificationModel {
   final String notifyId;
   final String docRef;
@@ -5,7 +7,7 @@ class NotificationModel {
   final String notifyBy;
   final String message;
   final String hospitalName;
-  final String createdAt;
+  final Timestamp createdOn;
 
   NotificationModel({
     this.notifyId,
@@ -14,7 +16,7 @@ class NotificationModel {
     this.notifyBy,
     this.message,
     this.hospitalName,
-    this.createdAt,
+    this.createdOn,
   });
 
   NotificationModel.fromMap(Map snapshot)
@@ -25,7 +27,7 @@ class NotificationModel {
             snapshot['notifyBy'] ?? "", //if the value is not there it is empty
         message = snapshot['message'] ?? "",
         hospitalName = snapshot['hospitalName'] ?? "",
-        createdAt = snapshot['createdAt'] ?? "";
+        createdOn = snapshot['createdOn'] ?? null;
 
   toJson() {
     return {
@@ -35,7 +37,7 @@ class NotificationModel {
       "notifyBy": notifyBy,
       "message": message,
       "hospitalName": hospitalName,
-      "createdAt": createdAt
+      "createdAt": createdOn
     };
   }
 }
