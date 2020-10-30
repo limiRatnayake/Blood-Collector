@@ -1,26 +1,26 @@
-import 'package:blood_collector/UI/widgets/participantDataTableView.dart';
+import 'package:blood_collector/UI/widgets/participantListViewWidget.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ParticipantListView extends StatefulWidget {
+class ListOfParticipantView extends StatefulWidget {
   final String docRef;
 
-  ParticipantListView({
+  ListOfParticipantView({
     Key key,
     this.docRef,
   }) : super(key: key);
   @override
-  _ParticipantListViewState createState() => _ParticipantListViewState();
+  _ListOfParticipantViewState createState() => _ListOfParticipantViewState();
 }
 
-class _ParticipantListViewState extends State<ParticipantListView> {
+class _ListOfParticipantViewState extends State<ListOfParticipantView> {
   @override
   Widget build(BuildContext context) {
     final EventParticipantService _participantServices =
         Provider.of<EventParticipantService>(context);
-    print(widget.docRef);
+
     return Scaffold(
       appBar: AppBar(
         // actionsIconTheme: null,
@@ -38,21 +38,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
                   .map<ParticipantModel>(
                       (doc) => ParticipantModel.fromMap(doc.data))
                   .toList();
-              List<DataRow> dataRow = [];
-              for (int i = 0; i < dataList.length; i++) {
-                dataRow.add(DataRow(cells: [
-                  DataCell(
-                    Text(dataList[i].docRef),
-                  ),
-                  DataCell(
-                    Text(dataList[i].uid),
-                  )
-                ]));
-                // dropDownItems.add(DropdownMenuItem(
-                //   child: Text(hospitalItems[i].bloodBankName),
-                //   value: "${hospitalItems[i].bloodBankName}",
-                // ));
-              }
+
               return dataList.length > 0
                   ? Container(
                       child: ListView.builder(
@@ -60,7 +46,9 @@ class _ParticipantListViewState extends State<ParticipantListView> {
                           itemBuilder: (context, index) {
                             ParticipantModel data = dataList[index];
 
-                            return ParticipantDataTableView(uid: data.uid, participantId: data.participantId);
+                            return ParticipantListView(
+                                uid: data.uid,
+                                participantId: data.participantId);
                           }))
                   : Padding(
                       padding: EdgeInsets.all(15),

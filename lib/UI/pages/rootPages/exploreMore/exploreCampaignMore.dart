@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/pages/rootPages/participantListView.dart';
+import 'package:blood_collector/UI/pages/rootPages/ListOfParticipantView.dart';
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/preventDooubleTap.dart';
 import 'package:blood_collector/UI/widgets/slider_campaign_widget.dart';
@@ -161,7 +161,7 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                ParticipantListView(
+                                                ListOfParticipantView(
                                                   docRef: widget.docRef,
                                                 )));
                                   },

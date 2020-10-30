@@ -1,5 +1,6 @@
 import 'package:blood_collector/UI/pages/rootPages/editCampaignView.dart';
 import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
+import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/event_service.dart';
@@ -54,6 +55,7 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
   final participantRef = Firestore.instance;
   String participateId;
   String participatedStatus;
+  String cancelParticipatedStatus;
 
   @override
   void initState() {
@@ -142,12 +144,32 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                 ),
                               ),
                               SizedBox(width: 9),
-                              participatedStatus == "Cancelled"
-                                  ? Text(
-                                      "Cancelled",
-                                      style: TextStyle(color: Colors.red),
-                                    )
-                                  : Container()
+                              FutureBuilder(
+                                  future: _participantServices
+                                      .getParticipantDetails(
+                                          widget.participantId),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    } else {
+                                      ParticipantModel data =
+                                          ParticipantModel.fromMap(
+                                              snapshot.data.data);
+                                      cancelParticipatedStatus =
+                                          data.participatedStatus;
+
+                                      return (data != null &&
+                                              data.participatedStatus !=
+                                                  "Cancelled")
+                                          ? Container()
+                                          : Text(
+                                              "Cancelled",
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            );
+                                    }
+                                  })
                             ],
                           ),
                           subtitle: Text(
@@ -194,91 +216,178 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                               ),
                             ),
                           ],
-                          trailing: PopupMenuButton<int>(
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: 1,
-                                child: Text(
-                                  "Cancel the participation",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 2,
-                                child: Text(
-                                  "Mark as Interested",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w700),
-                                ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.arrow_drop_down),
+                              PopupMenuButton<int>(
+                                itemBuilder: (context) => [
+                                  cancelParticipatedStatus != "Cancelled"
+                                      ? PopupMenuItem(
+                                          value: 1,
+                                          child: Text(
+                                            "Cancel the participation",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        )
+                                      : PopupMenuItem(
+                                          value: 1,
+                                          child: Text(
+                                            "Delete",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        ),
+                                  PopupMenuItem(
+                                    value: 2,
+                                    child: Text(
+                                      "Mark as Interested",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                ],
+                                onSelected: (value) {
+                                  switch (value) {
+                                    case 1:
+                                      cancelParticipatedStatus != "Cancelled"
+                                          ? Alert(
+                                              context: context,
+                                              type: AlertType.success,
+                                              title:
+                                                  "Are you sure you want to cancel the participation?",
+                                              style: AlertStyle(
+                                                  isCloseButton: false,
+                                                  isOverlayTapDismiss: false,
+                                                  backgroundColor: Colors.black,
+                                                  alertBorder: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      side: BorderSide(
+                                                          color: Colors.white)),
+                                                  titleStyle: TextStyle(
+                                                      color:
+                                                          Colors.blueAccent)),
+                                              buttons: [
+                                                  DialogButton(
+                                                      child: Text(
+                                                        "No",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20),
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }),
+                                                  DialogButton(
+                                                      child: Text(
+                                                        "Yes",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20),
+                                                      ),
+                                                      onPressed: () async {
+                                                        String response =
+                                                            await _participantServices
+                                                                .updateParticipation(
+                                                                    widget
+                                                                        .participantId,
+                                                                    "Cancelled");
+                                                        if (response ==
+                                                            "Success") {
+                                                          var snackBar =
+                                                              SnackBar(
+                                                            content: Text(
+                                                                'Participation is cancelled!',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .blueGrey)),
+                                                          );
+
+                                                          Scaffold.of(context)
+                                                              .showSnackBar(
+                                                                  snackBar);
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        }
+                                                      })
+                                                ]).show()
+                                          : Alert(
+                                              context: context,
+                                              type: AlertType.warning,
+                                              title: "Are you sure?",
+                                              style: AlertStyle(
+                                                  isCloseButton: false,
+                                                  isOverlayTapDismiss: false,
+                                                  backgroundColor: Colors.black,
+                                                  alertBorder:
+                                                      RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          side: BorderSide(
+                                                              color: Colors
+                                                                  .white)),
+                                                  titleStyle: TextStyle(
+                                                      color: Colors.blueAccent)),
+                                              buttons: [
+                                                  DialogButton(
+                                                      child: Text(
+                                                        "No",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20),
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }),
+                                                  DialogButton(
+                                                      child: Text(
+                                                        "Yes",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 20),
+                                                      ),
+                                                      onPressed: () async {
+                                                        String response =
+                                                            await _participantServices
+                                                                .deleteAParticipant(
+                                                                    widget
+                                                                        .participantId);
+                                                        if (response ==
+                                                            "Success") {
+                                                          var snackBar =
+                                                              SnackBar(
+                                                            content: Text(
+                                                                'It is successfully deleted!',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .blueGrey)),
+                                                          );
+
+                                                          Scaffold.of(context)
+                                                              .showSnackBar(
+                                                                  snackBar);
+                                                          Navigator.pop(
+                                                              context);
+                                                        }
+                                                      })
+                                                ]).show();
+                                      break;
+                                    case 2:
+                                      {}
+                                      break;
+                                  }
+                                },
                               ),
                             ],
-                            onSelected: (value) {
-                              switch (value) {
-                                case 1:
-                                  Alert(
-                                      context: context,
-                                      type: AlertType.success,
-                                      title:
-                                          "Are you sure you want to cancel the participation?",
-                                      style: AlertStyle(
-                                          isCloseButton: false,
-                                          isOverlayTapDismiss: false,
-                                          backgroundColor: Colors.black,
-                                          alertBorder: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              side: BorderSide(
-                                                  color: Colors.white)),
-                                          titleStyle: TextStyle(
-                                              color: Colors.blueAccent)),
-                                      buttons: [
-                                        DialogButton(
-                                            child: Text(
-                                              "No",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            }),
-                                        DialogButton(
-                                            child: Text(
-                                              "Yes",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20),
-                                            ),
-                                            onPressed: () async {
-                                              String response =
-                                                  await _participantServices
-                                                      .updateParticipation(
-                                                          widget.participantId,
-                                                          "Cancelled");
-                                              if (response == "Success") {
-                                                var snackBar = SnackBar(
-                                                  content: Text(
-                                                      'Participation is cancelled!',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.blueGrey)),
-                                                );
-
-                                                Scaffold.of(context)
-                                                    .showSnackBar(snackBar);
-                                                Navigator.of(context).pop();
-                                              }
-                                            })
-                                      ]).show();
-                                  break;
-                                case 2:
-                                  {}
-                                  break;
-                              }
-                            },
                           ),
                         )
                       : Text("try again later");
