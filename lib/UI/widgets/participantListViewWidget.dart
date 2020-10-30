@@ -33,10 +33,13 @@ class _ParticipantListViewState extends State<ParticipantListView> {
 
     super.initState();
     participantRef.get().then((value) {
-      setState(() {
-        participatedStatus = value.data["participatedStatus"];
-      });
+      participantData = value.data;
     });
+    // participantRef.get().then((value) {
+    //   setState(() {
+    //     participatedStatus = value.data["participatedStatus"];
+    //   });
+    // });
   }
 
   @override
@@ -66,6 +69,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
                 title: Text(data.firstName + " " + data.lastName),
                 subtitle: Text(data.bloodGroup),
                 trailing: RaisedButton(
+                    color: Colors.blue.shade50,
                     onPressed: () async {
                       _isParticipated();
 
@@ -88,9 +92,13 @@ class _ParticipantListViewState extends State<ParticipantListView> {
                               }
                           });
                     },
-                    child: participatedStatus != "participated"
-                        ? Text("participating")
-                        : Text("participated")),
+                    child: participantData != null &&
+                            participantData.containsValue("participated")
+                        ? Text(
+                            "participated",
+                            style: TextStyle(color: Colors.blue),
+                          )
+                        : Text("participating")),
               );
             }
           }),

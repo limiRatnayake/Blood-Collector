@@ -38,18 +38,30 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
                   .map<ParticipantModel>(
                       (doc) => ParticipantModel.fromMap(doc.data))
                   .toList();
-
               return dataList.length > 0
-                  ? Container(
-                      child: ListView.builder(
-                          itemCount: dataList.length,
-                          itemBuilder: (context, index) {
-                            ParticipantModel data = dataList[index];
+                  ? Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          // crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text("Name"),
+                            Text("Name"),
+                          ],
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                              itemCount: dataList.length,
+                              itemBuilder: (context, index) {
+                                ParticipantModel data = dataList[index];
 
-                            return ParticipantListView(
-                                uid: data.uid,
-                                participantId: data.participantId);
-                          }))
+                                return ParticipantListView(
+                                    uid: data.uid,
+                                    participantId: data.participantId);
+                              }),
+                        )
+                      ],
+                    )
                   : Padding(
                       padding: EdgeInsets.all(15),
                       child: Center(
