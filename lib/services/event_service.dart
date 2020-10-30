@@ -11,10 +11,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class EventService extends ChangeNotifier {
   Firestore _db;
   CollectionReference _ref;
+  CollectionReference _userRef;
   FirebaseStorage _storageRef = FirebaseStorage.instance;
 
   EventService() : _db = Firestore.instance {
     _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
+    _userRef = _db.collection(AppConstants.USERS_COLLECTION);
   }
 
   Future<String> addEvent(
@@ -132,11 +134,13 @@ class EventService extends ChangeNotifier {
     return _ref.where("uid", isEqualTo: uid).getDocuments();
   }
 
-  // Future<QuerySnapshot> getCampaignEvents() {
-  //   return _ref.where("category", isEqualTo: "campaign").getDocuments();
-  // }
-
   Future<DocumentSnapshot> requestEventsDetails(String docRef) async {
+    DocumentSnapshot postSnapshot = (await _ref.document(docRef).get());
+    notifyListeners();
+    return postSnapshot;
+  }
+
+  Future<DocumentSnapshot> getSavedEvents(String docRef) async {
     DocumentSnapshot postSnapshot = (await _ref.document(docRef).get());
     notifyListeners();
     return postSnapshot;

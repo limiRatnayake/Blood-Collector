@@ -346,8 +346,10 @@ class _PostViewState extends State<PostView> {
                                         });
                                   }
                                 }),
-                                savedEventRef
-                                    .setData({"docRef": widget.docRef}),
+                                savedEventRef.setData({
+                                  "docRef": widget.docRef,
+                                  "savedAt": DateTime.now().toString()
+                                }),
                                 setState(() {
                                   savedEventRef.get().then((value) {
                                     savedEventData = value.data;

@@ -27,6 +27,9 @@ class UserService extends ChangeNotifier {
     return postSnapshot;
   }
 
+  Future<QuerySnapshot> getSavedEvents(String uid) {
+    return _ref.document(uid).collection("savedEvents").getDocuments();
+  }
   // Future<List<UserModel>> getUsersForParticipantList(String uid) async {
   //   try {
   //     List<DocumentSnapshot> snapshot =
