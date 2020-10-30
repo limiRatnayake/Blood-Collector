@@ -34,11 +34,14 @@ class PostView extends StatefulWidget {
 
 class _PostViewState extends State<PostView> {
   DocumentReference likeRef;
+  DocumentReference savedEventRef;
   CollectionReference eventRef;
   bool isLiked = false;
   bool isSaved = false;
+  var savedEventDocs;
 
   Map<String, dynamic> likeData;
+  Map<String, dynamic> savedEventData;
 
   _isLiked() {
     setState(() {
@@ -59,10 +62,18 @@ class _PostViewState extends State<PostView> {
         .document(widget.docRef)
         .collection("likes")
         .document(widget.currentUser);
+    savedEventRef = Firestore.instance
+        .collection("users")
+        .document(widget.currentUser)
+        .collection("savedEvents")
+        .document(widget.docRef);
 
     super.initState();
     likeRef.get().then((value) {
       likeData = value.data;
+    });
+    savedEventRef.get().then((value) {
+      savedEventData = value.data;
     });
     eventRef = Firestore.instance.collection("events");
   }
@@ -283,11 +294,67 @@ class _PostViewState extends State<PostView> {
               Row(
                 children: [
                   IconButton(
-                    icon: isSaved != true
-                        ? Icon(Icons.bookmark_border)
-                        : Icon(Icons.bookmark),
+                    icon: savedEventData != null &&
+                            savedEventData.containsValue(widget.docRef)
+                        ? Icon(Icons.bookmark)
+                        : Icon(Icons.bookmark_border),
                     onPressed: () {
                       _isSaved();
+
+                      savedEventRef.get().then((value) => {
+                            if (value.data != null)
+                              {
+                                print("like ref is nt null"),
+                                if (value.data.values.contains(widget.docRef))
+                                  {
+                                    Firestore.instance
+                                        .runTransaction((Transaction tx) async {
+                                      DocumentSnapshot docSnapshot =
+                                          await tx.get(
+                                              eventRef.document(widget.docRef));
+                                      if (docSnapshot.exists) {
+                                        await tx.update(
+                                            eventRef.document(widget.docRef),
+                                            <String, dynamic>{
+                                              'savedEvents': docSnapshot
+                                                      .data["savedEvents"] -
+                                                  1
+                                            });
+                                      }
+                                    }),
+                                  },
+                                savedEventRef.delete(),
+                                setState(() {
+                                  savedEventRef.get().then((value) {
+                                    savedEventData = value.data;
+                                  });
+                                })
+                              }
+                            else
+                              {
+                                Firestore.instance
+                                    .runTransaction((Transaction tx) async {
+                                  DocumentSnapshot docSnapshot = await tx
+                                      .get(eventRef.document(widget.docRef));
+                                  if (docSnapshot.exists) {
+                                    await tx.update(
+                                        eventRef.document(widget.docRef),
+                                        <String, dynamic>{
+                                          'savedEvents':
+                                              docSnapshot.data["savedEvents"] +
+                                                  1
+                                        });
+                                  }
+                                }),
+                                savedEventRef
+                                    .setData({"docRef": widget.docRef}),
+                                setState(() {
+                                  savedEventRef.get().then((value) {
+                                    savedEventData = value.data;
+                                  });
+                                })
+                              }
+                          });
                     },
                   ),
                   Text(

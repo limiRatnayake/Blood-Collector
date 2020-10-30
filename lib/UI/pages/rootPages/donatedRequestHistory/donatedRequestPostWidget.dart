@@ -62,7 +62,7 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         uid: data.uid,
                         docRef: data.docRef,
                         description: data.description,
-                        createdAt: data.createdAt,
+                        // createdAt: data.createdAt,
                         category: data.category,
                         approval: data.approved,
                         bloodGroup: data.bloodGroup,

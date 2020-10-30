@@ -1,3 +1,4 @@
+import 'package:blood_collector/UI/pages/rootPages/SavedEventView.dart';
 import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
@@ -97,7 +98,10 @@ class DrawerWidget extends StatelessWidget {
           ListTile(
             title: Text("Save Events"),
             leading: Icon(Icons.bookmark),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SavedEventView()));
+            },
           ),
           ListTile(
             title: Text("Setting"),
