@@ -300,6 +300,10 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                                         await _participantServices
                                                             .updateParticipation(
                                                                 widget
+                                                                    .currentUser,
+                                                                DateTime.now()
+                                                                    .toString(),
+                                                                widget
                                                                     .participantId,
                                                                 "Cancelled");
                                                     if (response == "Success") {
@@ -437,6 +441,8 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                           String response =
                                               await _participantServices
                                                   .updateParticipation(
+                                                      widget.currentUser,
+                                                      DateTime.now().toString(),
                                                       widget.participantId,
                                                       "Participated");
                                           if (response == "Success") {

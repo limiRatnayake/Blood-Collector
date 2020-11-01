@@ -27,7 +27,8 @@ class EventParticipantService extends ChangeNotifier {
           docRef: docRef,
           uid: user.uid,
           participantName: userName,
-          participatedStatus: "participating");
+          participatedStatus: "participating",
+          lastModifyDate: DateTime.now().toString());
       await newRef.setData(participantModel.toJson());
 
       message = "Success";
@@ -126,13 +127,15 @@ class EventParticipantService extends ChangeNotifier {
   }
 
   //delete an participation event
-  Future<String> updateParticipation(
+  Future<String> updateParticipation(String uid, String date,
       String participantId, String participatedStatus) async {
     String message = "";
     try {
       DocumentReference participantRef = _ref.document(participantId);
-      await participantRef
-          .updateData({"participatedStatus": participatedStatus});
+      DocumentReference usersRef = _userRef.document(uid);
+      await participantRef.updateData(
+          {"participatedStatus": participatedStatus, "lastModifyDate": date});
+      await usersRef.updateData({"dateOfLastDonation": date});
       message = "Success";
     } catch (error) {
       print(error);

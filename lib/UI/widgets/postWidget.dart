@@ -269,7 +269,8 @@ class _PostViewState extends State<PostView> {
                                 builder: (context) => ViewCampaignDetails(
                                     docRef: widget.docRef,
                                     uid: widget.uid,
-                                    currentUser: widget.currentUser)));
+                                    currentUser: widget.currentUser,
+                                    image: widget.imageUrl)));
                       } else {
                         Navigator.push(
                             context,
@@ -277,7 +278,8 @@ class _PostViewState extends State<PostView> {
                                 builder: (context) => ViewRequestDetails(
                                     docRef: widget.docRef,
                                     uid: widget.uid,
-                                    currentUser: widget.currentUser)));
+                                    currentUser: widget.currentUser,
+                                    image: widget.imageUrl)));
                       }
                     },
                     icon: Icon(Icons.remove_red_eye),

@@ -55,14 +55,14 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         requestCloseDate: requestCloseDate,
                         placeName: data.placeName,
                         placeAddress: data.placeAddress,
-                      )
+                        currentUser: widget.currentUser)
                     : DonatedRequestPostView(
                         participantId: widget.participantId,
                         imageUrl: data.imageUrl,
                         uid: data.uid,
                         docRef: data.docRef,
                         description: data.description,
-                        // createdAt: data.createdAt,
+                        createdAt: data.createdAt,
                         category: data.category,
                         approval: data.approved,
                         bloodGroup: data.bloodGroup,

@@ -132,6 +132,89 @@ class _ExploreRequestsMoreState extends State<ExploreRequestsMore> {
                                   title: Text("Hospital Address"),
                                   subtitle: Text(data.hospitalAddress),
                                 ),
+                                Divider(
+                                  height: 1,
+                                ),
+                                Card(
+                                    child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(data.likes.toString()),
+                                            RichText(
+                                                text: TextSpan(children: [
+                                              WidgetSpan(
+                                                child: Icon(Icons.favorite,
+                                                    size: 20),
+                                              ),
+                                              TextSpan(
+                                                  text: " Likes",
+                                                  style: TextStyle(
+                                                      color: Colors.black)),
+                                            ]))
+                                          ],
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(data.savedEvents.toString()),
+                                            RichText(
+                                                text: TextSpan(children: [
+                                              WidgetSpan(
+                                                child: Icon(Icons.bookmark,
+                                                    size: 20),
+                                              ),
+                                              TextSpan(
+                                                  text: " Saved",
+                                                  style: TextStyle(
+                                                      color: Colors.black)),
+                                            ]))
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("0"),
+                                            Text("Notified"),
+                                          ],
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("0"),
+                                            Text("Unit Filled"),
+                                          ],
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("0"),
+                                            Text("User Accepted"),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ))
                               ],
                             );
                           }

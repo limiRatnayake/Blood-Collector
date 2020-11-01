@@ -4,20 +4,23 @@ class ParticipantModel {
   final String uid;
   final String participantName;
   final String participatedStatus;
+  final String lastModifyDate;
 
   ParticipantModel(
       {this.participantId,
       this.docRef,
       this.uid,
       this.participantName,
-      this.participatedStatus});
+      this.participatedStatus,
+      this.lastModifyDate});
 
   ParticipantModel.fromMap(Map snapshot)
       : docRef = snapshot['docRef'] ?? "",
         participantId = snapshot['participantId'] ?? "",
         uid = snapshot['uid'] ?? "",
         participantName = snapshot['participantName'] ?? "",
-        participatedStatus = snapshot['participatedStatus'] ?? "";
+        participatedStatus = snapshot['participatedStatus'] ?? "",
+        lastModifyDate = snapshot['lastModifyDate'] ?? "";
 
   toJson() {
     return {
@@ -25,7 +28,8 @@ class ParticipantModel {
       "docRef": docRef,
       "uid": uid,
       "participantName": participantName,
-      "participatedStatus": participatedStatus
+      "participatedStatus": participatedStatus,
+      "lastModifyDate": lastModifyDate
     };
   }
 }

@@ -19,6 +19,7 @@ class DonatedCampaignPostView extends StatefulWidget {
   final String description;
   final String createdAt;
   final String category;
+  final String currentUser;
   final bool approval;
   final String rejectedReason;
   final String nameOftheOrganizer;
@@ -37,6 +38,7 @@ class DonatedCampaignPostView extends StatefulWidget {
     this.createdAt,
     this.description,
     this.category,
+    this.currentUser,
     this.approval,
     this.rejectedReason,
     this.nameOftheOrganizer,
@@ -293,12 +295,15 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                                             fontSize: 20),
                                                       ),
                                                       onPressed: () async {
-                                                        String response =
-                                                            await _participantServices
-                                                                .updateParticipation(
-                                                                    widget
-                                                                        .participantId,
-                                                                    "Cancelled");
+                                                        String response = await _participantServices
+                                                            .updateParticipation(
+                                                                widget
+                                                                    .currentUser,
+                                                                DateTime.now()
+                                                                    .toString(),
+                                                                widget
+                                                                    .participantId,
+                                                                "Cancelled");
                                                         if (response ==
                                                             "Success") {
                                                           var snackBar =
