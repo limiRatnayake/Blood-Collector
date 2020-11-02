@@ -143,7 +143,7 @@ class UserService extends ChangeNotifier {
   Future<String> updateDonorSelectionCriteria(
       String uid,
       String userPreviouslyDonatedOrNot,
-      String ifYesHowManyTimes,
+      int ifYesHowManyTimes,
       String dateOfLastDonation,
       String medicallyAdvised,
       String vaildIdentitiyCardCheck,

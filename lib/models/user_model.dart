@@ -17,7 +17,7 @@ class UserModel {
 
   int notificationCount;
   String userPreviouslyDonatedOrNot;
-  String ifYesHowManyTimes;
+  int ifYesHowManyTimes;
   String dateOfLastDonation;
   String medicallyAdvised;
   String vaildIdentitiyCardCheck;
@@ -78,7 +78,7 @@ class UserModel {
         notificationCount = snapshot['notificationCount'] ?? 0,
         userPreviouslyDonatedOrNot =
             snapshot['userPreviouslyDonatedOrNot'] ?? "",
-        ifYesHowManyTimes = snapshot['ifYesHowManyTimes'] ?? "",
+        ifYesHowManyTimes = snapshot['ifYesHowManyTimes'] ?? 0,
         dateOfLastDonation = snapshot['dateOfLastDonation'] ?? "",
         medicallyAdvised = snapshot['medicallyAdvised'] ?? "",
         vaildIdentitiyCardCheck = snapshot['vaildIdentitiyCardCheck'] ?? "",

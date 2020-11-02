@@ -62,7 +62,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
   String answer = "Select a value";
 
   String userPreviouslyDonatedOrNot;
-  String ifYesHowManyTimes;
+  int ifYesHowManyTimes;
   String dateOfLastDonation;
   String medicallyAdvised;
   String vaildIdentitiyCardCheck;
@@ -137,7 +137,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
               validator: validateHowManyTimes,
               onChanged: (value) {
                 setState(() {
-                  ifYesHowManyTimes = value;
+                  ifYesHowManyTimes = int.parse(value) ?? 0;
                 });
               },
             ),

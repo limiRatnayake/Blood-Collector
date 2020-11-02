@@ -37,7 +37,7 @@ class AuthServices extends ChangeNotifier {
       String proPicUrl,
       bool disabled,
       String userPreviouslyDonatedOrNot,
-      String ifYesHowManyTimes,
+      int ifYesHowManyTimes,
       String dateOfLastDonation,
       String medicallyAdvised,
       String vaildIdentitiyCardCheck,

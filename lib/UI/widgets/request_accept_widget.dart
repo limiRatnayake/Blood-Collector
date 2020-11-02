@@ -90,6 +90,7 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                                         String response =
                                             await _requestsServices
                                                 .updateRequests(
+                                                    widget.docRef,
                                                     widget.requesterId,
                                                     "Accepted");
                                         if (response != "Success") {
@@ -152,7 +153,9 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                                   if (widget.requestStatus != "Rejected") {
                                     String response =
                                         await _requestsServices.updateRequests(
-                                            widget.requesterId, "Rejected");
+                                            widget.docRef,
+                                            widget.requesterId,
+                                            "Rejected");
                                     if (response != "Success") {
                                       final snackBar = SnackBar(
                                         content: Text(

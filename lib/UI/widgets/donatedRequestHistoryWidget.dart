@@ -2,9 +2,11 @@ import 'package:blood_collector/UI/pages/rootPages/editCampaignView.dart';
 import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:blood_collector/models/participant_model.dart';
+import 'package:blood_collector/models/request_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/event_service.dart';
+import 'package:blood_collector/services/request_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -58,23 +60,22 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
   DocumentReference requestedRef;
   String participateId;
   // String participatedStatus;
-  String cancelParticipatedStatus;
+  String participatedStatus;
   String requestedStatus;
   @override
   void initState() {
-    requestRef = Firestore.instance
-        .collection("events")
-        .document(widget.docRef)
-        .collection("requested")
-        .document(widget.currentUser);
+    // requestRef = Firestore.instance
+    //     .collection("events")
+    //     .document(widget.docRef)
+    //     .collection("requested")
+    //     .document(widget.currentUser);
 
+    // requestRef.get().then((value) {
+    //   setState(() {
+    //     requestedStatus = value.data["requestStatus"];
+    //   });
+    // });
     super.initState();
-    requestRef.get().then((value) {
-      setState(() {
-        requestedStatus = value.data["requestStatus"];
-        print(requestedStatus);
-      });
-    });
   }
 
   @override
@@ -82,6 +83,8 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
     final UserService _userService = Provider.of<UserService>(context);
     final EventParticipantService _participantServices =
         Provider.of<EventParticipantService>(context);
+    final RequestAcceptenceService _requestServices =
+        Provider.of<RequestAcceptenceService>(context);
     String date;
 
     //get the event created date
@@ -165,12 +168,26 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                       ParticipantModel data =
                                           ParticipantModel.fromMap(
                                               snapshot.data.data);
-                                      cancelParticipatedStatus =
+                                      participatedStatus =
                                           data.participatedStatus;
+
                                       return (data != null &&
                                               data.participatedStatus !=
                                                   "Cancelled")
-                                          ? Container()
+                                          ? data.participatedStatus != "Donated"
+                                              ? requestedStatus != "Accepted"
+                                                  ? Text(
+                                                      "Accepting..",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .purpleAccent),
+                                                    )
+                                                  : Container()
+                                              : Text(
+                                                  "Donated",
+                                                  style: TextStyle(
+                                                      color: Colors.purple),
+                                                )
                                           : Text(
                                               "Cancelled",
                                               style:
@@ -216,17 +233,33 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                               title: Text("Hospital Address"),
                               subtitle: Text(widget.hospitalAddress),
                             ),
-                            requestedStatus == "Accepted"
-                                ? ListTile(
-                                    leading: Icon(Icons.person),
-                                    title: Text("Patient Name"),
-                                    subtitle: Text(widget.patientName),
-                                  )
-                                : Container()
+                            FutureBuilder(
+                                future: _requestServices.getUserRequestDetails(
+                                    widget.currentUser, widget.docRef),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                        child: CircularProgressIndicator());
+                                  } else {
+                                    RequestAcceptModel reqData =
+                                        RequestAcceptModel.fromMap(
+                                            snapshot.data.data);
+                                    requestedStatus = reqData.requestStatus;
+                                    return reqData != null &&
+                                            reqData.requestStatus == "Accepted"
+                                        ? ListTile(
+                                            leading: Icon(Icons.person),
+                                            title: Text("Patient Name"),
+                                            subtitle: Text(widget.patientName),
+                                          )
+                                        : Container();
+                                  }
+                                })
                           ],
                           trailing: PopupMenuButton<int>(
                             itemBuilder: (context) => [
-                              cancelParticipatedStatus != "Cancelled"
+                              participatedStatus != "Cancelled" &&
+                                      participatedStatus != "Donated"
                                   ? PopupMenuItem(
                                       value: 1,
                                       child: Text(
@@ -258,7 +291,8 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                             onSelected: (value) {
                               switch (value) {
                                 case 1:
-                                  cancelParticipatedStatus != "Cancelled"
+                                  participatedStatus != "Cancelled" &&
+                                          participatedStatus != "Donated"
                                       ? Alert(
                                           context: context,
                                           type: AlertType.success,
@@ -394,89 +428,94 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                       : Text("try again later");
                 }
               }),
-          Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: cancelParticipatedStatus != "Cancelled"
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text("Once you actually donated "),
-                        RaisedButton(
-                            color: Colors.blueAccent,
-                            onPressed: () {
-                              Alert(
-                                  context: context,
-                                  type: AlertType.success,
-                                  title: "Did you actually donated?",
-                                  style: AlertStyle(
-                                      isCloseButton: false,
-                                      isOverlayTapDismiss: false,
-                                      backgroundColor: Colors.black,
-                                      alertBorder: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          side:
-                                              BorderSide(color: Colors.white)),
-                                      titleStyle:
-                                          TextStyle(color: Colors.blueAccent)),
-                                  buttons: [
-                                    DialogButton(
-                                        child: Text(
-                                          "No",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        }),
-                                    DialogButton(
-                                        child: Text(
-                                          "Yes",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20),
-                                        ),
-                                        onPressed: () async {
-                                          String response =
-                                              await _participantServices
-                                                  .updateParticipation(
-                                                      widget.currentUser,
-                                                      DateTime.now().toString(),
-                                                      widget.participantId,
-                                                      "Participated");
-                                          if (response == "Success") {
-                                            var snackBar = SnackBar(
-                                              content: Text(
-                                                  'Your last donation date is updated!',
-                                                  style: TextStyle(
-                                                      color: Colors.blueGrey)),
-                                              action: SnackBarAction(
-                                                label: 'Go',
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              SettingView()));
-                                                },
-                                              ),
-                                            );
+          requestedStatus == "Accepted"
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: (participatedStatus != "Cancelled" &&
+                          participatedStatus != "Donated")
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text("Once you actually donated "),
+                            RaisedButton(
+                                color: Colors.blueAccent,
+                                onPressed: () {
+                                  Alert(
+                                      context: context,
+                                      type: AlertType.success,
+                                      title: "Did you actually donated?",
+                                      style: AlertStyle(
+                                          isCloseButton: false,
+                                          isOverlayTapDismiss: false,
+                                          backgroundColor: Colors.black,
+                                          alertBorder: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              side: BorderSide(
+                                                  color: Colors.white)),
+                                          titleStyle: TextStyle(
+                                              color: Colors.blueAccent)),
+                                      buttons: [
+                                        DialogButton(
+                                            child: Text(
+                                              "No",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            }),
+                                        DialogButton(
+                                            child: Text(
+                                              "Yes",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20),
+                                            ),
+                                            onPressed: () async {
+                                              String response =
+                                                  await _participantServices
+                                                      .updateParticipation(
+                                                          widget.currentUser,
+                                                          DateTime.now()
+                                                              .toString(),
+                                                          widget.participantId,
+                                                          "Donated");
+                                              if (response == "Success") {
+                                                var snackBar = SnackBar(
+                                                  content: Text(
+                                                      'Your last donation date is updated!',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.blueGrey)),
+                                                  action: SnackBarAction(
+                                                    label: 'Go',
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  SettingView()));
+                                                    },
+                                                  ),
+                                                );
 
-                                            Scaffold.of(context)
-                                                .showSnackBar(snackBar);
-                                            Navigator.of(context).pop();
-                                          }
-                                        })
-                                  ]).show();
-                            },
-                            child: Text(
-                              "Mark as Donated",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                      ],
-                    )
-                  : Container())
+                                                Scaffold.of(context)
+                                                    .showSnackBar(snackBar);
+                                                Navigator.of(context).pop();
+                                              }
+                                            })
+                                      ]).show();
+                                },
+                                child: Text(
+                                  "Mark as Donated",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )),
+                          ],
+                        )
+                      : Container())
+              : Container()
         ],
       ),
     ));

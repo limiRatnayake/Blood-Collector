@@ -34,7 +34,7 @@ class _DonorSelectionCriteriaPageState
   String birthDate;
 
   String userPreviouslyDonatedOrNot;
-  String ifYesHowManyTimes;
+  int ifYesHowManyTimes;
   String dateOfLastDonation;
   String medicallyAdvised;
   String vaildIdentitiyCardCheck;
@@ -121,7 +121,7 @@ class _DonorSelectionCriteriaPageState
               // validator: validateName,
               onChanged: (value) {
                 setState(() {
-                  ifYesHowManyTimes = value;
+                  ifYesHowManyTimes = int.parse(value);
                 });
               },
             ),
@@ -594,7 +594,8 @@ class _DonorSelectionCriteriaPageState
                               _userPreviouslyDonatedOrNot(
                                   data.userPreviouslyDonatedOrNot),
                               SizedBox(height: 10),
-                              _ifYesHowManyTimes(data.ifYesHowManyTimes),
+                              _ifYesHowManyTimes(
+                                  data.ifYesHowManyTimes.toString()),
                               SizedBox(height: 10),
                               //using two fields because if user never donated before dateOfLastDonation should be null
                               //once they really donated it should be updated

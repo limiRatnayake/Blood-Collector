@@ -13,6 +13,17 @@ class RequestAcceptenceService extends ChangeNotifier {
     _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
   }
 
+  Future<DocumentSnapshot> getUserRequestDetails(
+      String uid, String docRef) async {
+    DocumentSnapshot postSnapshot = (await _ref
+        .document(docRef)
+        .collection("requested")
+        .document(uid)
+        .get());
+    notifyListeners();
+    return postSnapshot;
+  }
+
 //show the event creator the list of requsters
   Future<List<RequestAcceptModel>> getRequestsList(String currentUser) async {
     List<RequestAcceptModel> _requestsList = [];
@@ -47,30 +58,37 @@ class RequestAcceptenceService extends ChangeNotifier {
   }
 
   //update subcollection
-  Future updateRequests(String requsterId, String requestStatus) async {
+  Future updateRequests(
+      String docRef, String requsterId, String requestStatus) async {
     String message = "";
-    String docRef;
+    // String docRef;
     try {
-      List<DocumentSnapshot> events =
-          (await _ref.where("category", isEqualTo: "request").getDocuments())
-              .documents;
-      for (int x = 0; x < events.length; x++) {
-        //to get the event documentID
-        docRef = events[0].reference.documentID;
-        _ref
-            .document(docRef)
-            .collection("requested")
-            .getDocuments()
-            .then((res) {
-          res.documents.forEach((result) {
-            _ref
-                .document(docRef)
-                .collection("requested")
-                .document(requsterId)
-                .updateData({"requestStatus": requestStatus});
-          });
-        });
-      }
+      // List<DocumentSnapshot> events =
+      //     (await _ref.where("category", isEqualTo: "request").getDocuments())
+      //         .documents;
+      // for (int x = 0; x < events.length; x++) {
+      //   //to get the event documentID
+      //   docRef = events[0].reference.documentID;
+      //   _ref
+      //       .document(docRef)
+      //       .collection("requested")
+      //       .getDocuments()
+      //       .then((res) {
+      //     res.documents.forEach((result) {
+      //       _ref
+      //           .document(docRef)
+      //           .collection("requested")
+      //           .document(requsterId)
+      //           .updateData({"requestStatus": requestStatus});
+      //     });
+      //   });
+      // }
+      _ref
+          .document(docRef)
+          .collection("requested")
+          .document(requsterId)
+          .updateData({"requestStatus": requestStatus});
+
       message = "Success";
     } catch (error) {
       print(error);

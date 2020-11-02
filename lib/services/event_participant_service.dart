@@ -132,10 +132,21 @@ class EventParticipantService extends ChangeNotifier {
     String message = "";
     try {
       DocumentReference participantRef = _ref.document(participantId);
-      DocumentReference usersRef = _userRef.document(uid);
+      // DocumentReference usersRef = _userRef.document(uid);
+      Firestore.instance.runTransaction((Transaction tx) async {
+        DocumentSnapshot docSnapshot = await tx.get(_userRef.document(uid));
+        if (docSnapshot.exists) {
+          await tx.update(_userRef.document(uid), <String, dynamic>{
+            "userPreviouslyDonatedOrNot": "Yes",
+            "dateOfLastDonation": date,
+            "lastDonationDateCheck": false,
+            'ifYesHowManyTimes': docSnapshot.data["ifYesHowManyTimes"] + 1
+          });
+        }
+      });
       await participantRef.updateData(
           {"participatedStatus": participatedStatus, "lastModifyDate": date});
-      await usersRef.updateData({"dateOfLastDonation": date});
+
       message = "Success";
     } catch (error) {
       print(error);

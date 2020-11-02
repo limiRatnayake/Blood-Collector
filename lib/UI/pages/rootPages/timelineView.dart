@@ -31,6 +31,24 @@ class _TimelineViewState extends State<TimelineView> {
                   .document(currentUser.uid)
                   .get()
                   .then((DocumentSnapshot result) {
+                if (result["dateOfLastDonation"] != null) {
+                  var lastDonatedMonth =
+                      DateTime.parse(result["dateOfLastDonation"]);
+                  var currentMonth = DateTime.now();
+
+                  setState(() {
+                    var differenceInDays =
+                        currentMonth.difference(lastDonatedMonth).inDays;
+                    var differenceOfMonth = (differenceInDays) ~/ 30;
+                    print(differenceOfMonth);
+                    if (differenceOfMonth >= 4) {
+                      Firestore.instance
+                          .collection("users")
+                          .document(currentUser.uid)
+                          .updateData({"lastDonationDateCheck": true});
+                    }
+                  });
+                }
                 if (result["address"] == "") {
                   Future<Null>.delayed(Duration.zero, () {
                     Scaffold.of(context).showSnackBar(
