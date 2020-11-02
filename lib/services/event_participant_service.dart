@@ -126,8 +126,27 @@ class EventParticipantService extends ChangeNotifier {
     return _ref.where("docRef", isEqualTo: docRef).getDocuments();
   }
 
-  //delete an participation event
+  //update the participating event
   Future<String> updateParticipation(String uid, String date,
+      String participantId, String participatedStatus) async {
+    String message = "";
+    try {
+      DocumentReference participantRef = _ref.document(participantId);
+
+      await participantRef.updateData(
+          {"participatedStatus": participatedStatus, "lastModifyDate": date});
+
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
+  }
+
+  //update the participating event plus user last donor selection criteria
+  Future<String> updateDataOfParticipating(String uid, String date,
       String participantId, String participatedStatus) async {
     String message = "";
     try {

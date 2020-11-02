@@ -64,11 +64,11 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
   String requestedStatus;
   @override
   void initState() {
-    // requestRef = Firestore.instance
-    //     .collection("events")
-    //     .document(widget.docRef)
-    //     .collection("requested")
-    //     .document(widget.currentUser);
+    requestRef = Firestore.instance
+        .collection("events")
+        .document(widget.docRef)
+        .collection("requested")
+        .document(widget.currentUser);
 
     // requestRef.get().then((value) {
     //   setState(() {
@@ -156,45 +156,58 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
 
                               /*once it delete the participantId is gonna be null it through an error
                               so, as solution it check whether the id is null or not*/
-                              FutureBuilder(
-                                  future: _participantServices
-                                      .getParticipantDetails(
-                                          widget.participantId),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Center(
-                                          child: CircularProgressIndicator());
-                                    } else {
-                                      ParticipantModel data =
-                                          ParticipantModel.fromMap(
-                                              snapshot.data.data);
-                                      participatedStatus =
-                                          data.participatedStatus;
+                              widget.participantId != null
+                                  ? FutureBuilder(
+                                      future: _participantServices
+                                          .getParticipantDetails(
+                                              widget.participantId),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        } else {
+                                          ParticipantModel data =
+                                              ParticipantModel.fromMap(
+                                                  snapshot.data.data);
+                                          participatedStatus =
+                                              data.participatedStatus;
 
-                                      return (data != null &&
-                                              data.participatedStatus !=
-                                                  "Cancelled")
-                                          ? data.participatedStatus != "Donated"
-                                              ? requestedStatus != "Accepted"
-                                                  ? Text(
-                                                      "Accepting..",
+                                          return (data != null &&
+                                                  data.participatedStatus !=
+                                                      "Cancelled")
+                                              ? data.participatedStatus !=
+                                                      "Donated"
+                                                  ? requestedStatus !=
+                                                          "Accepted"
+                                                      ? Text(
+                                                          "Accepting..",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .purpleAccent),
+                                                        )
+                                                      : requestedStatus !=
+                                                              "Rejected"
+                                                          ? Text(
+                                                              "Rejected!",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .red),
+                                                            )
+                                                          : Container()
+                                                  : Text(
+                                                      "Donated",
                                                       style: TextStyle(
-                                                          color: Colors
-                                                              .purpleAccent),
+                                                          color: Colors.purple),
                                                     )
-                                                  : Container()
                                               : Text(
-                                                  "Donated",
+                                                  "Cancelled",
                                                   style: TextStyle(
-                                                      color: Colors.purple),
-                                                )
-                                          : Text(
-                                              "Cancelled",
-                                              style:
-                                                  TextStyle(color: Colors.red),
-                                            );
-                                    }
-                                  })
+                                                      color: Colors.red),
+                                                );
+                                        }
+                                      })
+                                  : Container()
                             ],
                           ),
                           subtitle: Text(
@@ -476,7 +489,7 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                             onPressed: () async {
                                               String response =
                                                   await _participantServices
-                                                      .updateParticipation(
+                                                      .updateDataOfParticipating(
                                                           widget.currentUser,
                                                           DateTime.now()
                                                               .toString(),
@@ -500,7 +513,6 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                                     },
                                                   ),
                                                 );
-
                                                 Scaffold.of(context)
                                                     .showSnackBar(snackBar);
                                                 Navigator.of(context).pop();

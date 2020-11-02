@@ -191,7 +191,7 @@ class _ExploreRequestsMoreState extends State<ExploreRequestsMore> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("0"),
+                                            Text(data.notifyCount.toString()),
                                             Text("Notified"),
                                           ],
                                         ),
@@ -207,7 +207,7 @@ class _ExploreRequestsMoreState extends State<ExploreRequestsMore> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("0"),
+                                            Text(data.userAccepted.toString()),
                                             Text("User Accepted"),
                                           ],
                                         ),

@@ -87,6 +87,7 @@ class EventService extends ChangeNotifier {
         visibleState: visibleState,
         likes: 0,
         savedEvents: 0,
+        userAccepted: 0,
         uid: user.uid,
         approved: false,
         rejectReason: "None",

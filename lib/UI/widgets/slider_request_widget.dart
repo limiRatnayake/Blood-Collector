@@ -437,7 +437,8 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                                             "docRef": widget.docRef,
                                             "requestStatus": "sent",
                                             "requestSentOn": requestSentOn,
-                                            "requesterId": widget.currentUser
+                                            "requesterId": widget.currentUser,
+                                            "rejected": false
                                           }),
                                           setState(() {
                                             requestedRef.get().then((value) {

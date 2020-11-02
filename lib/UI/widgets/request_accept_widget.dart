@@ -24,33 +24,24 @@ class AcceptRequestCard extends StatefulWidget {
 }
 
 class _AcceptRequestCardState extends State<AcceptRequestCard> {
-  DocumentReference reqRef;
+  CollectionReference eventRef;
+  DocumentReference eventsRef;
+
   Map<String, dynamic> requestData;
   bool _isReqDisabled;
   bool inclueInRequestList;
   String reqId;
+  int userAccepted;
 
-  // @override
-  // void initState() {
-  //   Firestore.instance
-  //       .collection("events")
-  //       .document(widget.docRef)
-  //       .collection("requested")
-  //       .getDocuments()
-  //       .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
-  //             reqId = element.documentID;
-  //           }));
-  //   reqRef = Firestore.instance
-  //       .collection("events")
-  //       .document(widget.docRef)
-  //       .collection("requested")
-  //       .document(widget.requesterId);
-
-  //   super.initState();
-  //   reqRef.get().then((value) {
-  //     requestData = value.data;
-  //   });
-  // }
+  @override
+  void initState() {
+    super.initState();
+    eventsRef = Firestore.instance.collection("events").document(widget.docRef);
+    eventsRef.get().then((value) {
+      userAccepted = value.data["userAccepted"];
+    });
+    eventRef = Firestore.instance.collection("events");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,18 +72,37 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            widget.requestStatus != "Accepted"
+                            widget.requestStatus != "Accepted" &&
+                                    widget.requestStatus != "Rejected"
                                 ? IconButton(
                                     icon: Icon(Icons.done),
                                     color: Colors.blue,
                                     onPressed: () async {
                                       if (widget.requestStatus != "Accepted") {
+                                        Firestore.instance.runTransaction(
+                                            (Transaction tx) async {
+                                          DocumentSnapshot docSnapshot =
+                                              await tx.get(eventRef
+                                                  .document(widget.docRef));
+                                          if (docSnapshot.exists) {
+                                            await tx.update(
+                                                eventRef
+                                                    .document(widget.docRef),
+                                                <String, dynamic>{
+                                                  'userAccepted':
+                                                      docSnapshot.data[
+                                                              "userAccepted"] +
+                                                          1
+                                                });
+                                          }
+                                        });
                                         String response =
                                             await _requestsServices
                                                 .updateRequests(
                                                     widget.docRef,
                                                     widget.requesterId,
-                                                    "Accepted");
+                                                    "Accepted",
+                                                    false);
                                         if (response != "Success") {
                                           final snackBar = SnackBar(
                                             content: Text(
@@ -151,11 +161,31 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                                 icon: Icon(Icons.clear),
                                 onPressed: () async {
                                   if (widget.requestStatus != "Rejected") {
+                                    if (userAccepted > 0) {
+                                      Firestore.instance.runTransaction(
+                                          (Transaction tx) async {
+                                        DocumentSnapshot docSnapshot =
+                                            await tx.get(eventRef
+                                                .document(widget.docRef));
+
+                                        if (docSnapshot.exists) {
+                                          await tx.update(
+                                              eventRef.document(widget.docRef),
+                                              <String, dynamic>{
+                                                'userAccepted': docSnapshot
+                                                        .data["userAccepted"] -
+                                                    1
+                                              });
+                                        }
+                                      });
+                                    }
+
                                     String response =
                                         await _requestsServices.updateRequests(
                                             widget.docRef,
                                             widget.requesterId,
-                                            "Rejected");
+                                            "Rejected",
+                                            true);
                                     if (response != "Success") {
                                       final snackBar = SnackBar(
                                         content: Text(
@@ -166,43 +196,14 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                                       Scaffold.of(context)
                                           .showSnackBar(snackBar);
                                     } else {
-                                      Alert(
-                                          context: context,
-                                          type: AlertType.warning,
-                                          title: "Request was rejected!",
-                                          style: AlertStyle(
-                                              backgroundColor: Colors.white,
-                                              alertBorder:
-                                                  RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      side: BorderSide(
-                                                          color: Colors.white)),
-                                              titleStyle: TextStyle(
-                                                  color: Colors.blueAccent)),
-                                          buttons: [
-                                            DialogButton(
-                                                width: 120,
-                                                child: Text(
-                                                  "ok",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 20),
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                })
-                                          ]).show();
+                                      final snackBar = SnackBar(
+                                        content: Text('It  Rejected',
+                                            style: TextStyle(
+                                                color: Colors.blueGrey)),
+                                      );
+                                      Scaffold.of(context)
+                                          .showSnackBar(snackBar);
                                     }
-                                  } else if (widget.requestStatus ==
-                                      "Rejected") {
-                                    final snackBar = SnackBar(
-                                      content: Text('It already Rejected',
-                                          style: TextStyle(
-                                              color: Colors.blueGrey)),
-                                    );
-                                    Scaffold.of(context).showSnackBar(snackBar);
                                   }
                                 })
                           ],

@@ -39,9 +39,12 @@ class RequestAcceptenceService extends ChangeNotifier {
         docRef = events[0].reference.documentID;
         // docId = events[x].documentID;
         // print(docId);
-        List<DocumentSnapshot> requests =
-            (await _ref.document(docRef).collection("requested").getDocuments())
-                .documents;
+        List<DocumentSnapshot> requests = (await _ref
+                .document(docRef)
+                .collection("requested")
+                .where("rejected", isEqualTo: false)
+                .getDocuments())
+            .documents;
 
         _requestsList = requests
             .map<RequestAcceptModel>(
@@ -58,8 +61,8 @@ class RequestAcceptenceService extends ChangeNotifier {
   }
 
   //update subcollection
-  Future updateRequests(
-      String docRef, String requsterId, String requestStatus) async {
+  Future updateRequests(String docRef, String requsterId, String requestStatus,
+      bool rejectedStatus) async {
     String message = "";
     // String docRef;
     try {
@@ -87,7 +90,8 @@ class RequestAcceptenceService extends ChangeNotifier {
           .document(docRef)
           .collection("requested")
           .document(requsterId)
-          .updateData({"requestStatus": requestStatus});
+          .updateData(
+              {"requestStatus": requestStatus, "rejected": rejectedStatus});
 
       message = "Success";
     } catch (error) {
