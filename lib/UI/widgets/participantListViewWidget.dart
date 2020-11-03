@@ -7,8 +7,15 @@ import 'package:provider/provider.dart';
 
 class ParticipantListView extends StatefulWidget {
   final String uid;
+  final String docRef;
   final String participantId;
-  ParticipantListView({Key key, this.uid, this.participantId})
+  final String participatedStatus;
+  ParticipantListView(
+      {Key key,
+      this.uid,
+      this.docRef,
+      this.participantId,
+      this.participatedStatus})
       : super(key: key);
   @override
   _ParticipantListViewState createState() => _ParticipantListViewState();
@@ -18,6 +25,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
   bool participated = false;
   String participatedStatus;
   DocumentReference participantRef;
+  CollectionReference eventRef;
   Map<String, dynamic> participantData;
   _isParticipated() {
     setState(() {
@@ -30,6 +38,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
     participantRef = Firestore.instance
         .collection("participants")
         .document(widget.participantId);
+    eventRef = Firestore.instance.collection("events");
 
     super.initState();
     participantRef.get().then((value) {
@@ -68,37 +77,103 @@ class _ParticipantListViewState extends State<ParticipantListView> {
                 ),
                 title: Text(data.firstName + " " + data.lastName),
                 subtitle: Text(data.bloodGroup),
-                trailing: RaisedButton(
-                    color: Colors.blue.shade50,
-                    onPressed: () async {
-                      _isParticipated();
-
-                      participantRef.get().then((value) => {
-                            if (value.data["participatedStatus"] !=
-                                "participated")
-                              {
-                                participantRef.updateData(
-                                    {"participatedStatus": "participated"}),
-                                setState(() {
-                                  participantRef.get().then((value) {
-                                    participantData = value.data;
-                                  });
-                                })
-                              }
-                            else
-                              {
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text("Already participated")))
-                              }
-                          });
-                    },
-                    child: participantData != null &&
-                            participantData.containsValue("participated")
-                        ? Text(
-                            "participated",
-                            style: TextStyle(color: Colors.blue),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    widget.participatedStatus != "Donated"
+                        ? RaisedButton(
+                            color: Colors.green.shade400,
+                            onPressed: () async {
+                              await _participantServices
+                                  .updateDataOfParticipating(
+                                      widget.uid,
+                                      DateTime.now().toString(),
+                                      widget.participantId,
+                                      "Donated");
+                              Firestore.instance
+                                  .runTransaction((Transaction tx) async {
+                                DocumentSnapshot docSnapshot = await tx
+                                    .get(eventRef.document(widget.docRef));
+                                if (docSnapshot.exists) {
+                                  await tx.update(
+                                      eventRef.document(widget.docRef),
+                                      <String, dynamic>{
+                                        'ActualParticipants': docSnapshot
+                                                .data["ActualParticipants"] +
+                                            1
+                                      });
+                                }
+                              });
+                            },
+                            child: Text(
+                              "Yes",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           )
-                        : Text("participating")),
+                        : Container(),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    RaisedButton(
+                      color: Colors.red.shade400,
+                      onPressed: () async {
+                        Firestore.instance
+                            .runTransaction((Transaction tx) async {
+                          DocumentSnapshot docSnapshot =
+                              await tx.get(eventRef.document(widget.docRef));
+                          if (docSnapshot.exists) {
+                            await tx.update(
+                                eventRef.document(widget.docRef),
+                                <String, dynamic>{
+                                  'MissedParticipants':
+                                      docSnapshot.data["MissedParticipants"] + 1
+                                });
+                          }
+                        });
+                        await _participantServices.updateDataOfParticipating(
+                            widget.uid,
+                            DateTime.now().toString(),
+                            widget.participantId,
+                            "Not participated");
+                      },
+                      child: Text(
+                        "No",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
+                ),
+                // trailing: RaisedButton(
+                //     color: Colors.blue.shade50,
+                //     onPressed: () async {
+                //       _isParticipated();
+
+                //       participantRef.get().then((value) => {
+                //             if (value.data["participatedStatus"] !=
+                //                 "participated")
+                //               {
+                //                 participantRef.updateData(
+                //                     {"participatedStatus": "participated"}),
+                //                 setState(() {
+                //                   participantRef.get().then((value) {
+                //                     participantData = value.data;
+                //                   });
+                //                 })
+                //               }
+                //             else
+                //               {
+                //                 Scaffold.of(context).showSnackBar(SnackBar(
+                //                     content: Text("Already participated")))
+                //               }
+                //           });
+                //     },
+                //     child: participantData != null &&
+                //             participantData.containsValue("participated")
+                //         ? Text(
+                //             "participated",
+                //             style: TextStyle(color: Colors.blue),
+                //           )
+                //         : Text("participating")),
               );
             }
           }),

@@ -119,13 +119,11 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                   subtitle:
                                       Text(data.startTime + " " + data.endTime),
                                 ),
-
                                 ListTile(
                                     leading: Icon(Icons.event_available),
                                     title: Text("When they need blood"),
                                     subtitle:
                                         Text(requestCloseDate.toString())),
-
                                 ListTile(
                                   leading: Icon(Icons.local_hospital),
                                   title: Text("Place Name"),
@@ -136,16 +134,12 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                   title: Text("Place Address"),
                                   subtitle: Text(data.placeAddress),
                                 ),
-                                //if organizer checked to visible contact number to the public
-                                data.visibleState != false
-                                    ? ListTile(
-                                        leading: Icon(Icons.phone),
-                                        title: Text("Organizer Contact Number"),
-                                        subtitle:
-                                            Text(data.orgernizerConatctNo),
-                                        // trailing: Text(data.userPhoneNumber),
-                                      )
-                                    : Container(),
+                                ListTile(
+                                  leading: Icon(Icons.phone),
+                                  title: Text("Organizer Contact Number"),
+                                  subtitle: Text(data.orgernizerConatctNo),
+                                  // trailing: Text(data.userPhoneNumber),
+                                ),
                                 ListTile(
                                   leading: Icon(Icons.person),
                                   title: Text(
@@ -165,7 +159,91 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                                   docRef: widget.docRef,
                                                 )));
                                   },
-                                )
+                                ),
+                                Divider(
+                                  height: 1,
+                                ),
+                                Card(
+                                    child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(data.likes.toString()),
+                                            RichText(
+                                                text: TextSpan(children: [
+                                              WidgetSpan(
+                                                child: Icon(Icons.favorite,
+                                                    size: 20),
+                                              ),
+                                              TextSpan(
+                                                  text: " Likes",
+                                                  style: TextStyle(
+                                                      color: Colors.black)),
+                                            ]))
+                                          ],
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(data.savedEvents.toString()),
+                                            RichText(
+                                                text: TextSpan(children: [
+                                              WidgetSpan(
+                                                child: Icon(Icons.bookmark,
+                                                    size: 20),
+                                              ),
+                                              TextSpan(
+                                                  text: " Saved",
+                                                  style: TextStyle(
+                                                      color: Colors.black)),
+                                            ]))
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(data.totalParticipants
+                                                .toString()),
+                                            Text("Total Engage"),
+                                          ],
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("0"),
+                                            Text("Actual Engage"),
+                                          ],
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("0"),
+                                            Text("Avoidance"),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ))
                               ],
                             );
                           }

@@ -55,6 +55,8 @@ class DonatedCampaignPostView extends StatefulWidget {
 
 class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
   final participantRef = Firestore.instance;
+  CollectionReference eventRef;
+
   String participateId;
   String participatedStatus;
   String cancelParticipatedStatus;
@@ -69,7 +71,7 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
               participateId = element.documentID;
               participatedStatus = element['participatedStatus'];
             }));
-
+    eventRef = Firestore.instance.collection("events");
     super.initState();
   }
 
@@ -146,32 +148,35 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                 ),
                               ),
                               SizedBox(width: 9),
-                              FutureBuilder(
-                                  future: _participantServices
-                                      .getParticipantDetails(
-                                          widget.participantId),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Center(
-                                          child: CircularProgressIndicator());
-                                    } else {
-                                      ParticipantModel data =
-                                          ParticipantModel.fromMap(
-                                              snapshot.data.data);
-                                      cancelParticipatedStatus =
-                                          data.participatedStatus;
+                              widget.participantId != null
+                                  ? FutureBuilder(
+                                      future: _participantServices
+                                          .getParticipantDetails(
+                                              widget.participantId),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        } else {
+                                          ParticipantModel data =
+                                              ParticipantModel.fromMap(
+                                                  snapshot.data.data);
+                                          cancelParticipatedStatus =
+                                              data.participatedStatus;
 
-                                      return (data != null &&
-                                              data.participatedStatus !=
-                                                  "Cancelled")
-                                          ? Container()
-                                          : Text(
-                                              "Cancelled",
-                                              style:
-                                                  TextStyle(color: Colors.red),
-                                            );
-                                    }
-                                  })
+                                          return (data != null &&
+                                                  data.participatedStatus !=
+                                                      "Cancelled")
+                                              ? Container()
+                                              : Text(
+                                                  "Cancelled",
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                );
+                                        }
+                                      })
+                                  : Container()
                             ],
                           ),
                           subtitle: Text(
@@ -306,6 +311,29 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                                                 "Cancelled");
                                                         if (response ==
                                                             "Success") {
+                                                          Firestore.instance
+                                                              .runTransaction(
+                                                                  (Transaction
+                                                                      tx) async {
+                                                            DocumentSnapshot
+                                                                docSnapshot =
+                                                                await tx.get(eventRef
+                                                                    .document(widget
+                                                                        .docRef));
+                                                            if (docSnapshot
+                                                                .exists) {
+                                                              await tx.update(
+                                                                  eventRef
+                                                                      .document(
+                                                                          widget
+                                                                              .docRef),
+                                                                  <String, dynamic>{
+                                                                    'totalParticipants':
+                                                                        docSnapshot.data["totalParticipants"] -
+                                                                            1
+                                                                  });
+                                                            }
+                                                          });
                                                           var snackBar =
                                                               SnackBar(
                                                             content: Text(

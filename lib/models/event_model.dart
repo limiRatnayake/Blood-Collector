@@ -37,6 +37,7 @@ class EventModel {
   int savedEvents;
   int userAccepted;
   int notifyCount;
+  int totalParticipants;
 
   EventModel(
       {this.docRef,
@@ -76,7 +77,8 @@ class EventModel {
       this.likes,
       this.savedEvents,
       this.userAccepted,
-      this.notifyCount});
+      this.notifyCount,
+      this.totalParticipants});
 
   EventModel.fromMap(Map snapshot)
       : docRef = snapshot['docRef'] ?? "",
@@ -117,7 +119,8 @@ class EventModel {
         likes = snapshot['likes'] ?? 0,
         savedEvents = snapshot['savedEvents'] ?? 0,
         userAccepted = snapshot['userAccepted'] ?? 0,
-        notifyCount = snapshot['notifyCount'] ?? 0;
+        notifyCount = snapshot['notifyCount'] ?? 0,
+        totalParticipants = snapshot['totalParticipants'] ?? 0;
 
   toJson() {
     return {
@@ -159,6 +162,7 @@ class EventModel {
       "savedEvents": savedEvents,
       "userAccepted": userAccepted,
       "notifyCount": notifyCount,
+      "totalParticipants": totalParticipants,
     };
   }
 }

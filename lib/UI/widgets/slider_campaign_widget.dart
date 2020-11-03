@@ -276,6 +276,20 @@ class _CampaignIntroSliderWidgetState extends State<CampaignIntroSliderWidget> {
                                 String response =
                                     await _participantService.addParticipants(
                                         _user, widget.docRef, userName);
+                                Firestore.instance
+                                    .runTransaction((Transaction tx) async {
+                                  DocumentSnapshot docSnapshot = await tx
+                                      .get(eventRef.document(widget.docRef));
+                                  if (docSnapshot.exists) {
+                                    await tx.update(
+                                        eventRef.document(widget.docRef),
+                                        <String, dynamic>{
+                                          'totalParticipants': docSnapshot
+                                                  .data["totalParticipants"] +
+                                              1
+                                        });
+                                  }
+                                });
                                 if (response != "Success") {
                                   final snackBar = SnackBar(
                                     content: Text('Error! Try again later.',
@@ -286,40 +300,6 @@ class _CampaignIntroSliderWidgetState extends State<CampaignIntroSliderWidget> {
                                   Navigator.pop(context);
                                   setState(() {});
                                 } else {
-                                  interestedRef.get().then((value) => {
-                                        if (value.data != null)
-                                          {
-                                            if (value.data.keys
-                                                .contains(widget.docRef))
-                                              {
-                                                Firestore.instance
-                                                    .runTransaction(
-                                                        (Transaction tx) async {
-                                                  DocumentSnapshot docSnapshot =
-                                                      await tx.get(
-                                                          eventRef.document(
-                                                              widget.docRef));
-                                                  if (docSnapshot.exists) {
-                                                    await tx.update(
-                                                        eventRef.document(
-                                                            widget.docRef),
-                                                        <String, dynamic>{
-                                                          'interested': docSnapshot
-                                                                      .data[
-                                                                  "interested"] -
-                                                              1
-                                                        });
-                                                  }
-                                                }),
-                                              },
-                                            interestedRef.delete(),
-                                            setState(() {
-                                              interestedRef.get().then((value) {
-                                                interestedData = value.data;
-                                              });
-                                            })
-                                          }
-                                      });
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

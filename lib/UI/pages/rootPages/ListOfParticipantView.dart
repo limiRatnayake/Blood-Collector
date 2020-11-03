@@ -46,7 +46,7 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
                           // crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text("Name"),
-                            Text("Name"),
+                            Text("Participated/" + "\n" + "Not Participated"),
                           ],
                         ),
                         Expanded(
@@ -57,7 +57,10 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
 
                                 return ParticipantListView(
                                     uid: data.uid,
-                                    participantId: data.participantId);
+                                    docRef: data.docRef,
+                                    participantId: data.participantId,
+                                    participatedStatus:
+                                        data.participatedStatus);
                               }),
                         )
                       ],

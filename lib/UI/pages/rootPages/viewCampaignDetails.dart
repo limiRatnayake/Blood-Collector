@@ -46,7 +46,8 @@ class _ViewCampaignDetailsState extends State<ViewCampaignDetails> {
               participateId = element.documentID;
 
               if (element.data.containsValue(widget.docRef) &&
-                  element.data.containsValue(widget.currentUser)) {
+                  element.data.containsValue(widget.currentUser) &&
+                  !(element.data.containsValue("Cancelled"))) {
                 setState(() {
                   inclueInParticipantList = true;
                 });
