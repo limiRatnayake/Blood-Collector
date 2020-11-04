@@ -16,9 +16,7 @@ Widget buildParticipantsList(BuildContext context, DocumentSnapshot document,
   final UserService _userService = Provider.of<UserService>(context);
   final EventParticipantService _participantServices =
       Provider.of<EventParticipantService>(context);
-  // final tripType = trip.types();
-  List<String> answerType = ['Yes', 'No'];
-  String value = "Yes";
+
   return FutureBuilder(
       future: _userService.requestUserDetails(participants.uid),
       builder: (context, snapshot) {
@@ -37,80 +35,68 @@ Widget buildParticipantsList(BuildContext context, DocumentSnapshot document,
             ),
             title: Text(data.firstName + " " + data.lastName),
             subtitle: Text(data.bloodGroup),
-            // trailing: DropdownButtonFormField(
-            //   isExpanded: true,
-            //   value: value,
-            //   decoration: InputDecoration(enabledBorder: InputBorder.none),
-            //   // validator: validateBloodGroup,
-            //   items: answerType.map((answerType) {
-            //     return DropdownMenuItem(
-            //       value: answerType,
-            //       child: Text(answerType),
-            //     );
-            //   }).toList(),
-            //   onChanged: (value) {},
-            // ),
-            // trailing: Row(
-            //   mainAxisSize: MainAxisSize.min,
-            //   // space between two icons
-            //   children: <Widget>[
-            //     participants.participatedStatus != "Donated"
-            //         ? IconButton(
-            //             icon: Icon(
-            //               Icons.done,
-            //               color: Colors.green,
-            //             ),
-            //             onPressed: () async {
-            //               await _participantServices.updateDataOfParticipating(
-            //                   participants.uid,
-            //                   DateTime.now().toString(),
-            //                   participants.participantId,
-            //                   "Donated");
-            //               Firestore.instance
-            //                   .runTransaction((Transaction tx) async {
-            //                 DocumentSnapshot docSnapshot = await tx
-            //                     .get(eventRef.document(participants.docRef));
-            //                 if (docSnapshot.exists) {
-            //                   await tx.update(
-            //                       eventRef.document(participants.docRef),
-            //                       <String, dynamic>{
-            //                         'ActualParticipants':
-            //                             docSnapshot.data["ActualParticipants"] +
-            //                                 1
-            //                       });
-            //                 }
-            //               });
-            //             },
-            //           )
-            //         : Container(), // icon-1
-            //     IconButton(
-            //       icon: Icon(
-            //         Icons.close_outlined,
-            //         color: Colors.red,
-            //       ),
-            //       onPressed: () async {
-            //         await _participantServices.updateDataOfParticipating(
-            //             participants.uid,
-            //             DateTime.now().toString(),
-            //             participants.participantId,
-            //             "Not participated");
-            //         Firestore.instance.runTransaction((Transaction tx) async {
-            //           DocumentSnapshot docSnapshot =
-            //               await tx.get(eventRef.document(participants.docRef));
-            //           if (docSnapshot.exists) {
-            //             await tx.update(
-            //                 eventRef.document(participants.docRef),
-            //                 <String, dynamic>{
-            //                   'ActualParticipants':
-            //                       docSnapshot.data["ActualParticipants"] - 1
-            //                 });
-            //           }
-            //         });
-            //       },
-            //     ), // icon-1
-            //     // icon-2
-            //   ],
-            // ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              // space between two icons
+              children: <Widget>[
+                participants.participatedStatus != "Donated"
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.done,
+                          color: Colors.green,
+                        ),
+                        onPressed: () async {
+                          await _participantServices.updateDataOfParticipating(
+                              participants.uid,
+                              DateTime.now().toString(),
+                              participants.participantId,
+                              "Donated");
+                          Firestore.instance
+                              .runTransaction((Transaction tx) async {
+                            DocumentSnapshot docSnapshot = await tx
+                                .get(eventRef.document(participants.docRef));
+                            if (docSnapshot.exists) {
+                              await tx.update(
+                                  eventRef.document(participants.docRef),
+                                  <String, dynamic>{
+                                    'actualParticipants':
+                                        docSnapshot.data["actualParticipants"] +
+                                            1
+                                  });
+                            }
+                          });
+                        },
+                      )
+                    : IconButton(
+                        icon: Icon(
+                          Icons.dangerous,
+                          color: Colors.red,
+                        ),
+                        onPressed: () async {
+                          await _participantServices.updateDataOfParticipating(
+                              participants.uid,
+                              DateTime.now().toString(),
+                              participants.participantId,
+                              "Not participated");
+                          Firestore.instance
+                              .runTransaction((Transaction tx) async {
+                            DocumentSnapshot docSnapshot = await tx
+                                .get(eventRef.document(participants.docRef));
+                            if (docSnapshot.exists) {
+                              await tx.update(
+                                  eventRef.document(participants.docRef),
+                                  <String, dynamic>{
+                                    'actualParticipants':
+                                        docSnapshot.data["actualParticipants"] -
+                                            1
+                                  });
+                            }
+                          });
+                        },
+                      ), // icon-1
+                // icon-2
+              ],
+            ),
           );
         }
       });

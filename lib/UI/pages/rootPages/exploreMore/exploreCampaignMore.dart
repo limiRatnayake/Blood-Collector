@@ -102,6 +102,8 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                 DateTime.parse(data.requestClose);
                             String requestCloseDate =
                                 DateFormat('yMd').format(getRequestCloseDate);
+                            int avoidance = data.totalParticipants -
+                                data.actualParticipants;
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
@@ -228,7 +230,8 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("0"),
+                                            Text(data.actualParticipants
+                                                .toString()),
                                             Text("Actual Engage"),
                                           ],
                                         ),
@@ -236,7 +239,7 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("0"),
+                                            Text(avoidance.toString()),
                                             Text("Avoidance"),
                                           ],
                                         ),
