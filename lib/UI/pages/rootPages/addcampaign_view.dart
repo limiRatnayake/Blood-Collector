@@ -1,6 +1,7 @@
 // import 'package:blood_collector/UI/widgets/post_view.dart';
 import 'dart:async';
 import 'package:blood_collector/UI/pages/rootPages/create_post_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   String placeLat;
   String placeLng;
   String organizerPhoneNumber;
-  String requestCloseOn;
+  Timestamp requestCloseOn;
   int eventTime;
   bool _formValidate = false;
   bool _visibleState = false;
@@ -370,7 +371,9 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
               validator: dateTimeValidator,
               onChanged: (value) {
                 setState(() {
-                  requestCloseOn = DateFormat('yyyy-MM-dd').format(value);
+                  requestCloseOn = Timestamp.fromDate(value);
+
+                  // requestCloseOn = DateFormat('yyyy-MM-dd').format(value);
                 });
               },
             ),

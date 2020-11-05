@@ -34,9 +34,9 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
             return Center(child: CircularProgressIndicator());
           } else {
             EventModel data = EventModel.fromMap(snapshot.data.data);
-            var getRequestCloseDate = DateTime.parse(data.requestClose);
-            String requestCloseDate =
-                DateFormat('yMd').format(getRequestCloseDate);
+            // var getRequestCloseDate = DateTime.parse(data.requestClose);
+            // String requestCloseDate =
+            //     DateFormat('yMd').format(data.requestClose);
             return Center(
                 child: data.category != "request"
                     ? DonatedCampaignPostView(
@@ -52,7 +52,7 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         nameOftheOrganizer: data.nameOftheOrganizer,
                         startTime: data.startTime,
                         endTime: data.endTime,
-                        requestCloseDate: requestCloseDate,
+                        requestCloseDate: data.requestClose.toString(),
                         placeName: data.placeName,
                         placeAddress: data.placeAddress,
                         currentUser: widget.currentUser)
@@ -67,7 +67,7 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         approval: data.approved,
                         bloodGroup: data.bloodGroup,
                         unitsOfBlood: data.unitsOfBlood,
-                        requestCloseDate: requestCloseDate,
+                        requestCloseDate: data.requestClose.toString(),
                         hospitalName: data.hospitalName,
                         hospitalAddress: data.hospitalAddress,
                         patientName: data.patientName,

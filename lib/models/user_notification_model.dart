@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NotificationModel {
-  final String notifyId;
-  final String docRef;
-  final String notificationId;
-  final String notifyBy;
-  final String message;
-  final String hospitalName;
-  final Timestamp createdOn;
+  String notifyId;
+  String docRef;
+  String notificationId;
+  String notifyBy;
+  String message;
+  String hospitalName;
+  Timestamp createdOn;
 
   NotificationModel({
     this.notifyId,

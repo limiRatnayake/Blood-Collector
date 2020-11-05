@@ -404,8 +404,8 @@ class _EditRequestViewState extends State<EditRequestView> {
                                     style: TextStyle(color: Colors.black45),
                                   ),
                                   subtitle: DateTimeField(
-                                    initialValue:
-                                        format.parse(data.requestClose),
+                                    // initialValue:format.parse(data.requestClose),
+                                    initialValue: data.requestClose.toDate(),
                                     format: format,
                                     onShowPicker: (context, currentValue) {
                                       return showDatePicker(

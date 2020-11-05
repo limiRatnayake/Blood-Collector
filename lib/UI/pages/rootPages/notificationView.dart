@@ -26,14 +26,14 @@ class _NotificationViewState extends State<NotificationView> {
         print("onMessage: $message");
         // _setMessage(message);
       },
-      // onResume: (message) async {
-      //   print("onMessage: $message");
-      //   // _setMessage(message);
-      // },
-      // onLaunch: (message) async {
-      //   print("onMessage: $message");
-      //   // _setMessage(message);
-      // },
+      onResume: (message) async {
+        print("onMessage: $message");
+        // _setMessage(message);
+      },
+      onLaunch: (message) async {
+        print("onMessage: $message");
+        // _setMessage(message);
+      },
     );
   }
 
@@ -61,8 +61,6 @@ class _NotificationViewState extends State<NotificationView> {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
 
-    String createdAt;
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Notifications"),
@@ -89,12 +87,11 @@ class _NotificationViewState extends State<NotificationView> {
                         // var newDt = DateFormat.yMMMEd().format(checkedTime);
                         // Timestamp myTimeStamp = Timestamp.fromDate(
                         //     notifyData.createdOn); //To TimeStamp
-                        DateTime today = DateTime.now();
+
                         DateTime createdOn = notifyData.createdOn.toDate();
-                        var todayFormat =
-                            DateFormat.yMMMEd().add_jm().format(createdOn);
-                        var createdOnFormat =
-                            DateFormat.yMMMEd().add_jm().format(createdOn);
+
+                        String createdOnFormat =
+                            DateFormat.yMMMEd().format(createdOn);
 
                         return Card(
                             child: FutureBuilder(

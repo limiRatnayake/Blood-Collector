@@ -83,7 +83,8 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                             future: _eventServices.requestEventsDetails(docRef),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
-                                return Center(child: CircularProgressIndicator());
+                                return Center(
+                                    child: CircularProgressIndicator());
                               } else {
                                 EventModel data =
                                     EventModel.fromMap(snapshot.data.data);
@@ -362,7 +363,9 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                                   (context, currentValue) {
                                                 return showDatePicker(
                                                     context: context,
-                                                    firstDate: DateTime.now().subtract(Duration(days: 0)),
+                                                    firstDate: DateTime.now()
+                                                        .subtract(
+                                                            Duration(days: 0)),
                                                     initialDate: currentValue ??
                                                         DateTime.now(),
                                                     lastDate: DateTime(2100));
@@ -395,7 +398,9 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                                   (context, currentValue) {
                                                 return showDatePicker(
                                                     context: context,
-                                                    firstDate:DateTime.now().subtract(Duration(days: 0)),
+                                                    firstDate: DateTime.now()
+                                                        .subtract(
+                                                            Duration(days: 0)),
                                                     initialDate: currentValue ??
                                                         DateTime.now(),
                                                     lastDate: DateTime(2100));
@@ -543,7 +548,9 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                         style: TextStyle(color: Colors.black45),
                                       ),
                                       subtitle: DateTimeField(
-                                        initialValue:format.parse(data.requestClose),
+                                        // initialValue:format.parse(data.requestClose),
+                                        initialValue:
+                                            data.requestClose.toDate(),
                                         format: format,
                                         decoration: InputDecoration(
                                             border: InputBorder.none,
@@ -554,7 +561,8 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                         onShowPicker: (context, currentValue) {
                                           return showDatePicker(
                                               context: context,
-                                              firstDate:DateTime.now().subtract(Duration(days: 1)),
+                                              firstDate: DateTime.now()
+                                                  .subtract(Duration(days: 1)),
                                               initialDate: currentValue ??
                                                   DateTime.now(),
                                               lastDate: DateTime(2100));
@@ -640,9 +648,11 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                                       await _eventServices
                                                           .updateCampaignEvents(
                                                     docRef,
-                                                    description ??data.description,
+                                                    description ??
+                                                        data.description,
                                                     imgName ?? data.imageName,
-                                                    imageExtention ?? data.imageExtention,
+                                                    imageExtention ??
+                                                        data.imageExtention,
                                                     imgUrl ?? data.imageUrl,
                                                     nameOfTheOrOrganizer ??
                                                         data.nameOftheOrganizer,

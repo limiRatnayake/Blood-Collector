@@ -98,10 +98,10 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                           } else {
                             EventModel data =
                                 EventModel.fromMap(snapshot.data.data);
-                            var getRequestCloseDate =
-                                DateTime.parse(data.requestClose);
-                            String requestCloseDate =
-                                DateFormat('yMd').format(getRequestCloseDate);
+                            // var getRequestCloseDate =
+                            // DateTime.parse(data.requestClose);
+                            // String requestCloseDate =
+                            //     DateFormat('yMd').format(data.requestClose);
                             int avoidance = data.totalParticipants -
                                 data.actualParticipants;
                             return Column(
@@ -125,7 +125,7 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                     leading: Icon(Icons.event_available),
                                     title: Text("When they need blood"),
                                     subtitle:
-                                        Text(requestCloseDate.toString())),
+                                        Text(data.requestClose.toString())),
                                 ListTile(
                                   leading: Icon(Icons.local_hospital),
                                   title: Text("Place Name"),

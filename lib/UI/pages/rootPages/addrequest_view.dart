@@ -6,6 +6,7 @@ import 'package:blood_collector/services/hospital_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class RequestBloodView extends StatefulWidget {
 class _RequestBloodViewState extends State<RequestBloodView> {
   var selectedType;
   final _formKey = GlobalKey<FormState>();
+  final dateFormat = DateFormat("yyyy-MM-dd");
   List<String> _bloodGroupType = [
     "Select Blood Type",
     'A+',
@@ -41,7 +43,8 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   String bloodGroup = '';
   String replacementAvailability = "";
   String unitsOfBlood = '';
-  String requestClose = '';
+  // String requestClose = '';
+  Timestamp requestClose;
   String hospitalName = '';
   String hospitalAddress = '';
   String hospitalLat = '';
@@ -195,20 +198,42 @@ class _RequestBloodViewState extends State<RequestBloodView> {
       decoration: _boxDecoration(),
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
-        child: TextFormField(
-          controller: _campaignDate,
-          decoration: inputDecoration.copyWith(
-              hintText: "Event Close on",
-              suffixIcon: Icon(
-                Icons.calendar_today,
-                color: Colors.black,
-              )),
-          validator: (value) => value.isEmpty ? 'Event date is required' : null,
-          onTap: () async {
-            FocusScope.of(context).requestFocus(new FocusNode());
-            _selectDate(context, _campaignDate);
+        child: DateTimeField(
+          format: dateFormat,
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              suffixIcon: Icon(Icons.calendar_today, color: Colors.black),
+              hintText: "Event Closing Date"),
+          onShowPicker: (context, currentValue) {
+            return showDatePicker(
+                context: context,
+                firstDate: DateTime.now().subtract(Duration(days: 0)),
+                initialDate: currentValue ?? DateTime.now(),
+                lastDate: DateTime(2100));
+          },
+          validator: dateTimeValidator,
+          onChanged: (value) {
+            setState(() {
+              requestClose = Timestamp.fromDate(value);
+
+              // requestCloseOn = DateFormat('yyyy-MM-dd').format(value);
+            });
           },
         ),
+        // child: TextFormField(
+        //   controller: _campaignDate,
+        //   decoration: inputDecoration.copyWith(
+        //       hintText: "Event Close on",
+        //       suffixIcon: Icon(
+        //         Icons.calendar_today,
+        //         color: Colors.black,
+        //       )),
+        //   validator: (value) => value.isEmpty ? 'Event date is required' : null,
+        //   onTap: () async {
+        //     FocusScope.of(context).requestFocus(new FocusNode());
+        //     _selectDate(context, _campaignDate);
+        //   },
+        // ),
       ),
     );
   }
@@ -912,6 +937,13 @@ class _RequestBloodViewState extends State<RequestBloodView> {
       return 'Mobile Number must be of 10 digit';
     } else if (!regExp.hasMatch(value)) {
       return "Name must be numeric vaue";
+    }
+    return null;
+  }
+
+  String dateTimeValidator(DateTime dateTime) {
+    if (dateTime == null) {
+      return "Date Time Required";
     }
     return null;
   }

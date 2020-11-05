@@ -5,6 +5,7 @@ import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -19,7 +20,7 @@ class CreatePostView extends StatefulWidget {
   final String bloodGroup;
   final String replacementAvailability;
   final String unitsOfBlood;
-  final String requestClose;
+  final Timestamp requestClose;
   final String hospitalName;
   final String hospitalAddress;
   final String hospitalLat;

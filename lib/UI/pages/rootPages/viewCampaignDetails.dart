@@ -180,10 +180,10 @@ class _ViewCampaignDetailsState extends State<ViewCampaignDetails> {
                         } else {
                           EventModel data =
                               EventModel.fromMap(snapshot.data.data);
-                          var getRequestCloseDate =
-                              DateTime.parse(data.requestClose);
-                          String requestCloseDate =
-                              DateFormat('yMd').format(getRequestCloseDate);
+                          // var getRequestCloseDate =
+                          // DateTime.parse(data.requestClose);
+                          // String requestCloseDate =
+                          //     DateFormat('yMd').format(data.requestClose);
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
@@ -208,7 +208,7 @@ class _ViewCampaignDetailsState extends State<ViewCampaignDetails> {
                                         leading: Icon(Icons.event_available),
                                         title: Text("When they need blood"),
                                         subtitle:
-                                            Text(requestCloseDate.toString())),
+                                            Text(data.requestClose.toString())),
                                     ListTile(
                                       leading: Icon(Icons.local_hospital),
                                       title: Text("Place Name"),

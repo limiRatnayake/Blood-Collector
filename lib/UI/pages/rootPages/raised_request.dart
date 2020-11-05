@@ -1,4 +1,3 @@
-
 import 'package:blood_collector/UI/widgets/requestHistoryPostWidget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -40,8 +39,8 @@ class _RaisedRequestViewState extends State<RaisedRequestView> {
                                   itemCount: dataList.length,
                                   itemBuilder: (context, index) {
                                     EventModel data = dataList[index];
-                                   
-                                        return RaisedRequestedPostView( 
+                                    print(data.docRef);
+                                    return RaisedRequestedPostView(
                                         imageUrl: data.imageUrl,
                                         uid: data.uid,
                                         docRef: data.docRef,
@@ -49,8 +48,9 @@ class _RaisedRequestViewState extends State<RaisedRequestView> {
                                         createdAt: data.createdAt,
                                         category: data.category,
                                         approval: data.approved,
-                                        rejectedReason:data.rejectReason);
-                              
+                                        rejectedReason: data.rejectReason,
+                                        status: data.status,
+                                        requestClose: data.requestClose);
                                   }))
                         ],
                       )

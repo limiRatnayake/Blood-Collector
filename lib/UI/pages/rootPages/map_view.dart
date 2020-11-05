@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class MapView extends StatefulWidget {
@@ -246,11 +247,15 @@ class _MapViewState extends State<MapView> {
       String hospitalLong,
       String userFName,
       String userLName,
-      String requestClose,
+      Timestamp requestClose,
       String hospitalName) {
     final UserService _userService = Provider.of<UserService>(context);
     var lat = double.parse(hospitalLat);
     var long = double.parse(hospitalLong);
+    DateTime createdOn = requestClose.toDate();
+    var requestCloseFormat = DateFormat.yMMMEd().format(createdOn);
+    // var createdOnFormat =
+    //     DateFormat.yMMMEd().add_jm().format(createdOn);
     return GestureDetector(
         onTap: () {
           _gotoLocation(lat, long);
@@ -280,7 +285,9 @@ class _MapViewState extends State<MapView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("Close on: " + " " + requestClose),
+                                Text("Close on: " +
+                                    " " +
+                                    requestCloseFormat.toString()),
                                 Text(
                                   hospitalName,
                                   style: TextStyle(fontSize: 11),

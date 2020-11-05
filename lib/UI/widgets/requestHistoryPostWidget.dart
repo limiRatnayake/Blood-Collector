@@ -5,6 +5,7 @@ import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreRequestsMo
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,8 @@ class RaisedRequestedPostView extends StatefulWidget {
   final String category;
   final bool approval;
   final String rejectedReason;
+  final String status;
+  final Timestamp requestClose;
 
   RaisedRequestedPostView(
       {Key key,
@@ -29,7 +32,9 @@ class RaisedRequestedPostView extends StatefulWidget {
       this.description,
       this.category,
       this.approval,
-      this.rejectedReason})
+      this.rejectedReason,
+      this.status,
+      this.requestClose})
       : super(key: key);
   @override
   _RaisedRequestedPostViewState createState() =>
@@ -37,10 +42,32 @@ class RaisedRequestedPostView extends StatefulWidget {
 }
 
 class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
+  EventService _eventServices;
+
+  @override
+  void initState() {
+    print(widget.rejectedReason);
+    // DateTime requestClose = DateTime.parse(widget.requestClose);
+    // TODO: implement initState
+    super.initState();
+    Firestore.instance
+        .collection("events")
+        .where("requestClose", isLessThanOrEqualTo: DateTime.now())
+        .getDocuments()
+        .then((value) async {
+      await Firestore.instance
+          .collection("events")
+          .document(widget.docRef)
+          .updateData({
+        "status": "Close",
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final UserService _userService = Provider.of<UserService>(context);
-    final EventService _eventServices = Provider.of<EventService>(context);
+    _eventServices = Provider.of<EventService>(context);
     String date;
 
     //get the event created date
@@ -101,8 +128,10 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
                               SizedBox(width: 9),
                               widget.approval == true
                                   ? Text(
-                                      "Approved",
-                                      style: TextStyle(color: Colors.red),
+                                      widget.status,
+                                      style: TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold),
                                     )
                                   : widget.rejectedReason != "None"
                                       ? Text("Rejected",
@@ -113,13 +142,13 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
                           ),
                           subtitle: Row(
                             children: [
-                              Text(
-                                date,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[500]),
-                              ),
+                              // Text(
+                              //   date,
+                              //   style: TextStyle(
+                              //       fontSize: 12,
+                              //       fontWeight: FontWeight.bold,
+                              //       color: Colors.grey[500]),
+                              // ),
                             ],
                           ),
                           trailing: PopupMenuButton<int>(

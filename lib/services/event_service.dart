@@ -24,7 +24,7 @@ class EventService extends ChangeNotifier {
     String bloodGroup,
     String replacementAvailability,
     String unitsOfBlood,
-    String requestClose,
+    Timestamp requestClose,
     String hospitalName,
     String hospitalAddress,
     String hospitalLat,
@@ -55,44 +55,44 @@ class EventService extends ChangeNotifier {
     try {
       DocumentReference newRef = _ref.document();
       EventModel eventModel = new EventModel(
-        docRef: newRef.documentID,
-        bloodGroup: bloodGroup,
-        replacementAvailability: replacementAvailability,
-        unitsOfBlood: unitsOfBlood,
-        requestClose: requestClose,
-        hospitalName: hospitalName,
-        hospitalAddress: hospitalAddress,
-        hospitalLat: hospitalLat,
-        hospitalLng: hospitalLng,
-        userFName: userFName,
-        userLName: userLName,
-        userPhoneNumber: userPhoneNumber,
-        patientName: patientName,
-        notifyState: notifyState,
-        nameOftheOrganizer: nameOftheOrganizer,
-        pickUpStartDate: pickUpStartDate,
-        pickUpEndDate: pickUpEndDate,
-        startTime: startTime,
-        endTime: endTime,
-        placeName: placeName,
-        placeAddress: placeAddress,
-        placeLat: placeLat,
-        placeLng: placeLng,
-        orgernizerConatctNo: orgernizerConatctNo,
-        description: description,
-        imageName: imgName,
-        imageExtention: imageExtention,
-        imageUrl: imgUrl,
-        category: category,
-        visibleState: visibleState,
-        likes: 0,
-        savedEvents: 0,
-        userAccepted: 0,
-        uid: user.uid,
-        approved: false,
-        rejectReason: "None",
-        createdAt: new DateTime.now().toString(),
-      );
+          docRef: newRef.documentID,
+          bloodGroup: bloodGroup,
+          replacementAvailability: replacementAvailability,
+          unitsOfBlood: unitsOfBlood,
+          requestClose: requestClose,
+          hospitalName: hospitalName,
+          hospitalAddress: hospitalAddress,
+          hospitalLat: hospitalLat,
+          hospitalLng: hospitalLng,
+          userFName: userFName,
+          userLName: userLName,
+          userPhoneNumber: userPhoneNumber,
+          patientName: patientName,
+          notifyState: notifyState,
+          nameOftheOrganizer: nameOftheOrganizer,
+          pickUpStartDate: pickUpStartDate,
+          pickUpEndDate: pickUpEndDate,
+          startTime: startTime,
+          endTime: endTime,
+          placeName: placeName,
+          placeAddress: placeAddress,
+          placeLat: placeLat,
+          placeLng: placeLng,
+          orgernizerConatctNo: orgernizerConatctNo,
+          description: description,
+          imageName: imgName,
+          imageExtention: imageExtention,
+          imageUrl: imgUrl,
+          category: category,
+          visibleState: visibleState,
+          likes: 0,
+          savedEvents: 0,
+          userAccepted: 0,
+          uid: user.uid,
+          approved: false,
+          rejectReason: "None",
+          createdAt: new DateTime.now().toString(),
+          status: "Open");
 
       await newRef.setData(eventModel.toJson());
       message = "Success";
@@ -127,6 +127,8 @@ class EventService extends ChangeNotifier {
     //create a composite index in firebase console
     return _ref
         .where("approved", isEqualTo: true)
+        .where("requestClose", isGreaterThanOrEqualTo: DateTime.now())
+        .orderBy("requestClose", descending: false)
         .orderBy("createdAt", descending: true)
         .getDocuments();
   }
@@ -234,6 +236,29 @@ class EventService extends ChangeNotifier {
         "endTime": endTime,
         "requestClose": requestClose,
       });
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
+  }
+
+  Future<String> updateEventCloseStatus(String docRef) async {
+    String message = "";
+    try {
+      DocumentReference newRef = _ref.document(docRef);
+      _ref
+          .where("requestClose",
+              isGreaterThanOrEqualTo: DateTime.now().toString())
+          .getDocuments()
+          .then((value) async {
+        await newRef.updateData({
+          "status": "Close",
+        });
+      });
+
       message = "Success";
     } catch (error) {
       print(error);

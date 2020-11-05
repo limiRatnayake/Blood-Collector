@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class EventModel {
   String docRef;
   String uid;
   String bloodGroup;
   String replacementAvailability;
   String unitsOfBlood;
-  String requestClose;
+  Timestamp requestClose;
   String hospitalName;
   String hospitalAddress;
   String hospitalLat;
@@ -39,6 +41,7 @@ class EventModel {
   int notifyCount;
   int totalParticipants;
   int actualParticipants;
+  String status;
 
   EventModel(
       {this.docRef,
@@ -80,7 +83,8 @@ class EventModel {
       this.userAccepted,
       this.notifyCount,
       this.totalParticipants,
-      this.actualParticipants});
+      this.actualParticipants,
+      this.status});
 
   EventModel.fromMap(Map snapshot)
       : docRef = snapshot['docRef'] ?? "",
@@ -89,7 +93,7 @@ class EventModel {
         replacementAvailability = snapshot['replacementAvailability'] ??
             "", //if the value is not there it is empty
         unitsOfBlood = snapshot['unitsOfBlood'] ?? "",
-        requestClose = snapshot['requestClose'] ?? "",
+        requestClose = snapshot['requestClose'] ?? null,
         hospitalName = snapshot['hospitalName'] ?? "",
         hospitalAddress = snapshot['hospitalAddress'] ?? "",
         hospitalLat = snapshot['hospitalLat'] ?? "",
@@ -123,7 +127,8 @@ class EventModel {
         userAccepted = snapshot['userAccepted'] ?? 0,
         notifyCount = snapshot['notifyCount'] ?? 0,
         totalParticipants = snapshot['totalParticipants'] ?? 0,
-        actualParticipants = snapshot['actualParticipants'] ?? 0;
+        actualParticipants = snapshot['actualParticipants'] ?? 0,
+        status = snapshot['status'] ?? "";
 
   toJson() {
     return {
@@ -167,6 +172,7 @@ class EventModel {
       "notifyCount": notifyCount,
       "totalParticipants": totalParticipants,
       "actualParticipants": actualParticipants,
+      "status": status,
     };
   }
 }
