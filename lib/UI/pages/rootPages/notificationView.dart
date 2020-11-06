@@ -1,8 +1,10 @@
 import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
+import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_notification_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -60,6 +62,7 @@ class _NotificationViewState extends State<NotificationView> {
         Provider.of<PushNotificationService>(context);
     final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
+    final EventService _eventServices = Provider.of<EventService>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -88,10 +91,10 @@ class _NotificationViewState extends State<NotificationView> {
                         // Timestamp myTimeStamp = Timestamp.fromDate(
                         //     notifyData.createdOn); //To TimeStamp
 
-                        DateTime createdOn = notifyData.createdOn.toDate();
+                        // DateTime createdOn = notifyData.createdOn.toDate();
 
-                        String createdOnFormat =
-                            DateFormat.yMMMEd().format(createdOn);
+                        // String createdOnFormat =
+                        // DateFormat.yMMMEd().format(createdOn);
 
                         return Card(
                             child: FutureBuilder(
@@ -106,19 +109,25 @@ class _NotificationViewState extends State<NotificationView> {
                                         UserModel.fromMap(snapshot.data.data);
 
                                     return ListTile(
-                                      onTap: () {
+                                      onTap: () async {
+                                        DocumentSnapshot doc =
+                                            await _eventServices
+                                                .requestEventsDetails(
+                                                    notifyData.docRef);
+                                        EventModel data =
+                                            EventModel.fromMap(doc.data);
+
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ViewRequestDetails(
-                                                        docRef:
-                                                            notifyData.docRef,
-                                                        uid:
-                                                            notifyData.notifyBy,
-                                                        currentUser:
-                                                            _authServices
-                                                                .user.uid)));
+                                                      docRef: notifyData.docRef,
+                                                      uid: notifyData.notifyBy,
+                                                      currentUser: _authServices
+                                                          .user.uid,
+                                                      image: data.imageUrl,
+                                                    )));
                                       },
                                       leading: GestureDetector(
                                         child: CircleAvatar(
@@ -140,8 +149,6 @@ class _NotificationViewState extends State<NotificationView> {
                                             " " +
                                             notifyData.hospitalName +
                                             " " +
-                                            "\n" +
-                                            createdOnFormat +
                                             "\n" +
                                             "Tap to view more",
                                         style: TextStyle(

@@ -7,7 +7,7 @@ class NotificationModel {
   String notifyBy;
   String message;
   String hospitalName;
-  Timestamp createdOn;
+  // Timestamp createdOn;
 
   NotificationModel({
     this.notifyId,
@@ -16,7 +16,7 @@ class NotificationModel {
     this.notifyBy,
     this.message,
     this.hospitalName,
-    this.createdOn,
+    // this.createdOn,
   });
 
   NotificationModel.fromMap(Map snapshot)
@@ -26,8 +26,8 @@ class NotificationModel {
         notifyBy =
             snapshot['notifyBy'] ?? "", //if the value is not there it is empty
         message = snapshot['message'] ?? "",
-        hospitalName = snapshot['hospitalName'] ?? "",
-        createdOn = snapshot['createdOn'] ?? null;
+        hospitalName = snapshot['hospitalName'] ?? "";
+  // createdOn = snapshot['createdOn'] ?? null;
 
   toJson() {
     return {
@@ -37,7 +37,7 @@ class NotificationModel {
       "notifyBy": notifyBy,
       "message": message,
       "hospitalName": hospitalName,
-      "createdAt": createdOn
+      // "createdAt": createdOn
     };
   }
 }
