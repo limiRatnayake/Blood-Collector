@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/widgets/requestHistoryPostWidget.dart';
+import 'package:blood_collector/UI/widgets/raisedRequestHistoryWidget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
@@ -39,7 +39,7 @@ class _RaisedRequestViewState extends State<RaisedRequestView> {
                                   itemCount: dataList.length,
                                   itemBuilder: (context, index) {
                                     EventModel data = dataList[index];
-                                    print(data.docRef);
+
                                     return RaisedRequestedPostView(
                                         imageUrl: data.imageUrl,
                                         uid: data.uid,

@@ -98,12 +98,13 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                           } else {
                             EventModel data =
                                 EventModel.fromMap(snapshot.data.data);
+                            // print(data.actualParticipants);
+                            // print(data.avoidParticipants);
                             // var getRequestCloseDate =
                             // DateTime.parse(data.requestClose);
                             // String requestCloseDate =
                             //     DateFormat('yMd').format(data.requestClose);
-                            int avoidance = data.totalParticipants -
-                                data.actualParticipants;
+
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
@@ -158,8 +159,13 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 ListOfParticipantView(
-                                                  docRef: widget.docRef,
-                                                )));
+                                                    docRef: widget.docRef,
+                                                    totalEngage:
+                                                        data.totalParticipants,
+                                                    actualEngage:
+                                                        data.actualParticipants,
+                                                    avoidParticipants: data
+                                                        .avoidParticipants)));
                                   },
                                 ),
                                 Divider(
@@ -239,7 +245,8 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(avoidance.toString()),
+                                            Text(data.avoidParticipants
+                                                .toString()),
                                             Text("Avoidance"),
                                           ],
                                         ),

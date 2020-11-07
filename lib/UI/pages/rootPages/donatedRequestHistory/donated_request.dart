@@ -1,5 +1,5 @@
 import 'package:blood_collector/UI/pages/rootPages/donatedRequestHistory/donatedRequestPostWidget.dart';
-import 'package:blood_collector/UI/widgets/requestHistoryPostWidget.dart';
+import 'package:blood_collector/UI/widgets/raisedRequestHistoryWidget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/services/auth.dart';

@@ -1,4 +1,5 @@
 import 'package:blood_collector/UI/widgets/participantListViewWidget.dart';
+import 'package:blood_collector/UI/widgets/submitParticipants.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,10 +8,16 @@ import 'package:provider/provider.dart';
 
 class ListOfParticipantView extends StatefulWidget {
   final String docRef;
+  final int totalEngage;
+  final int actualEngage;
+  final int avoidParticipants;
 
   ListOfParticipantView({
     Key key,
     this.docRef,
+    this.totalEngage,
+    this.actualEngage,
+    this.avoidParticipants,
   }) : super(key: key);
   @override
   _ListOfParticipantViewState createState() => _ListOfParticipantViewState();
@@ -102,16 +109,38 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
   Widget build(BuildContext context) {
     final EventParticipantService _participantServices =
         Provider.of<EventParticipantService>(context);
+    int participatedTotal = widget.actualEngage + widget.avoidParticipants;
 
     return Scaffold(
-      appBar: AppBar(
-        // actionsIconTheme: null,
-        iconTheme: IconThemeData(color: Colors.black),
+      appBar: PreferredSize(
+          preferredSize: const Size(double.infinity, kToolbarHeight),
+          child: SubmitAppTopBar(title: "Settings", docRef: widget.docRef)),
 
-        title: Text("Participant List"),
-      ),
       body: Column(
         children: [
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Icon(
+                  Icons.info,
+                  color: Colors.blue.shade300,
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                Flexible(
+                    child: Text(
+                  "After updating all the participant details don't forget to click the submit button",
+                  style: TextStyle(color: Colors.grey.shade700),
+                ))
+              ],
+            ),
+          ),
+
           //search textfield
           Padding(
             padding:
@@ -151,7 +180,12 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
                 itemCount: _resultsList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return buildParticipantsList(
-                      context, _resultsList[index], eventRef);
+                      context,
+                      _resultsList[index],
+                      eventRef,
+                      widget.totalEngage,
+                      widget.actualEngage,
+                      widget.avoidParticipants);
                 }),
           )
         ],

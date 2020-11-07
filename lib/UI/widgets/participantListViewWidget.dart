@@ -10,8 +10,13 @@ import 'package:provider/provider.dart';
 // import 'package:travel_budget/models/Trip.dart';
 // import 'package:travel_budget/views/detail_trip_view.dart';
 
-Widget buildParticipantsList(BuildContext context, DocumentSnapshot document,
-    CollectionReference eventRef) {
+Widget buildParticipantsList(
+    BuildContext context,
+    DocumentSnapshot document,
+    CollectionReference eventRef,
+    int totalEngage,
+    int actualEngage,
+    int avoidParticipants) {
   final participants = ParticipantModel.fromMap(document.data);
   final UserService _userService = Provider.of<UserService>(context);
   final EventParticipantService _participantServices =
@@ -51,23 +56,43 @@ Widget buildParticipantsList(BuildContext context, DocumentSnapshot document,
                               DateTime.now().toString(),
                               participants.participantId,
                               "Donated");
-                          Firestore.instance
-                              .runTransaction((Transaction tx) async {
+                          Firestore.instance.runTransaction((tx) async {
                             DocumentSnapshot docSnapshot = await tx
                                 .get(eventRef.document(participants.docRef));
                             if (docSnapshot.exists) {
-                              await tx.update(
-                                  eventRef.document(participants.docRef),
-                                  <String, dynamic>{
-                                    'actualParticipants':
-                                        docSnapshot.data["actualParticipants"] +
-                                            1
-                                  });
+                              int newFollowerCount =
+                                  docSnapshot.data['actualParticipants'] + 1;
+
+                              // Perform an update on the document
+                              tx.update(eventRef.document(participants.docRef),
+                                  {'actualParticipants': newFollowerCount});
+
+                              if (avoidParticipants != 0) {
+                                int avoidance =
+                                    docSnapshot.data['avoidParticipants'] - 1;
+                                tx.update(
+                                    eventRef.document(participants.docRef),
+                                    {'avoidParticipants': avoidance});
+                              }
+
+                              // await tx.update(
+                              //     eventRef.document(participants.docRef),
+                              //     <String, dynamic>{
+                              //       'actualParticipants':
+                              //           docSnapshot.data["actualParticipants"] +
+                              //               1,
+                              //       'avoidParticipants':
+                              //           docSnapshot.data["avoidParticipants"] -
+                              //               1,
+                              //     });
                             }
                           });
                         },
                       )
-                    : IconButton(
+                    : Container(),
+
+                participants.participatedStatus != "Not participated"
+                    ? IconButton(
                         icon: Icon(
                           Icons.dangerous,
                           color: Colors.red,
@@ -78,22 +103,55 @@ Widget buildParticipantsList(BuildContext context, DocumentSnapshot document,
                               DateTime.now().toString(),
                               participants.participantId,
                               "Not participated");
-                          Firestore.instance
-                              .runTransaction((Transaction tx) async {
+
+                          Firestore.instance.runTransaction((tx) async {
                             DocumentSnapshot docSnapshot = await tx
                                 .get(eventRef.document(participants.docRef));
                             if (docSnapshot.exists) {
-                              await tx.update(
-                                  eventRef.document(participants.docRef),
-                                  <String, dynamic>{
-                                    'actualParticipants':
-                                        docSnapshot.data["actualParticipants"] -
-                                            1
-                                  });
+                              if (actualEngage != 0) {
+                                int newFollowerCount =
+                                    docSnapshot.data['actualParticipants'] - 1;
+                                // Perform an update on the document
+                                tx.update(
+                                    eventRef.document(participants.docRef),
+                                    {'actualParticipants': newFollowerCount});
+                              }
+
+                              int avoidance =
+                                  docSnapshot.data['avoidParticipants'] + 1;
+                              tx.update(eventRef.document(participants.docRef),
+                                  {'avoidParticipants': avoidance});
+
+                              // await tx.update(
+                              //     eventRef.document(participants.docRef),
+                              //     <String, dynamic>{
+                              //       'actualParticipants':
+                              //           docSnapshot.data["actualParticipants"] +
+                              //               1,
+                              //       'avoidParticipants':
+                              //           docSnapshot.data["avoidParticipants"] -
+                              //               1,
+                              //     });
                             }
                           });
-                        },
-                      ), // icon-1
+                          // Firestore.instance.runTransaction((tx) async {
+                          //   DocumentSnapshot docSnapshot = await tx
+                          //       .get(eventRef.document(participants.docRef));
+                          //   if (actualEngage >= 0) {
+                          //     await tx.update(
+                          //         eventRef.document(participants.docRef),
+                          //         <String, dynamic>{
+                          //           'actualParticipants':
+                          //               docSnapshot.data["actualParticipants"] -
+                          //                   1,
+                          //           'avoidParticipants':
+                          //               docSnapshot.data["avoidParticipants"] +
+                          //                   1,
+                          //         });
+                          //   }
+                          // });
+                        })
+                    : Container(), // icon-1
                 // icon-2
               ],
             ),

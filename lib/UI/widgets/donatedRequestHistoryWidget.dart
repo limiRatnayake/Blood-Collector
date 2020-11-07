@@ -1,15 +1,11 @@
-import 'package:blood_collector/UI/pages/rootPages/editCampaignView.dart';
-import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/models/request_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
-import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/request_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -27,29 +23,29 @@ class DonatedRequestPostView extends StatefulWidget {
   final bool approval;
   final String bloodGroup;
   final String unitsOfBlood;
-  final String requestCloseDate;
+  final Timestamp requestCloseDate;
   final String hospitalName;
   final String hospitalAddress;
   final String patientName;
 
-  DonatedRequestPostView(
-      {Key key,
-      this.participantId,
-      this.imageUrl,
-      this.currentUser,
-      this.uid,
-      this.docRef,
-      this.createdAt,
-      this.description,
-      this.category,
-      this.approval,
-      this.bloodGroup,
-      this.unitsOfBlood,
-      this.requestCloseDate,
-      this.hospitalName,
-      this.hospitalAddress,
-      this.patientName})
-      : super(key: key);
+  DonatedRequestPostView({
+    Key key,
+    this.participantId,
+    this.imageUrl,
+    this.currentUser,
+    this.uid,
+    this.docRef,
+    this.createdAt,
+    this.description,
+    this.category,
+    this.approval,
+    this.bloodGroup,
+    this.unitsOfBlood,
+    this.requestCloseDate,
+    this.hospitalName,
+    this.hospitalAddress,
+    this.patientName,
+  }) : super(key: key);
   @override
   _DonatedRequestPostViewState createState() => _DonatedRequestPostViewState();
 }
@@ -108,6 +104,15 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
       }
     } else {
       date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
+    }
+
+    DateTime createdOn = widget.requestCloseDate.toDate();
+    DateTime currentDate = DateTime.now();
+
+    String createdOnFormat = DateFormat.yMMMEd().format(createdOn);
+
+    if (createdOn.compareTo(currentDate) > 0) {
+      print(createdOn);
     }
 
     return Container(

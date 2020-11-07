@@ -41,6 +41,7 @@ class EventModel {
   int notifyCount;
   int totalParticipants;
   int actualParticipants;
+  int avoidParticipants;
   String status;
 
   EventModel(
@@ -84,6 +85,7 @@ class EventModel {
       this.notifyCount,
       this.totalParticipants,
       this.actualParticipants,
+      this.avoidParticipants,
       this.status});
 
   EventModel.fromMap(Map snapshot)
@@ -128,6 +130,7 @@ class EventModel {
         notifyCount = snapshot['notifyCount'] ?? 0,
         totalParticipants = snapshot['totalParticipants'] ?? 0,
         actualParticipants = snapshot['actualParticipants'] ?? 0,
+        avoidParticipants = snapshot['avoidParticipants'] ?? 0,
         status = snapshot['status'] ?? "";
 
   toJson() {
@@ -172,6 +175,7 @@ class EventModel {
       "notifyCount": notifyCount,
       "totalParticipants": totalParticipants,
       "actualParticipants": actualParticipants,
+      "avoidParticipants": avoidParticipants,
       "status": status,
     };
   }

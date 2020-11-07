@@ -268,6 +268,24 @@ class EventService extends ChangeNotifier {
     return message;
   }
 
+  Future<String> addSubmitState(String docRef) async {
+    String message = "";
+    try {
+      DocumentReference newRef = _ref.document(docRef);
+
+      await newRef.updateData({
+        "submitList": "submitted",
+      });
+
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
+  }
+
 //delete an event
   Future<String> deleteEvent(String docRef) async {
     String message = "";

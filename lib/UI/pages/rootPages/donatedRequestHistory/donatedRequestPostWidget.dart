@@ -67,11 +67,12 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         approval: data.approved,
                         bloodGroup: data.bloodGroup,
                         unitsOfBlood: data.unitsOfBlood,
-                        requestCloseDate: data.requestClose.toString(),
+                        requestCloseDate: data.requestClose,
                         hospitalName: data.hospitalName,
                         hospitalAddress: data.hospitalAddress,
                         patientName: data.patientName,
-                        currentUser: widget.currentUser));
+                        currentUser: widget.currentUser,
+                      ));
           }
         });
   }

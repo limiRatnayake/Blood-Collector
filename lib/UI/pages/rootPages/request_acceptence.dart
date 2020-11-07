@@ -1,4 +1,4 @@
-import 'package:blood_collector/UI/widgets/requestHistoryPostWidget.dart';
+import 'package:blood_collector/UI/widgets/raisedRequestHistoryWidget.dart';
 import 'package:blood_collector/UI/widgets/request_accept_widget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/request_model.dart';

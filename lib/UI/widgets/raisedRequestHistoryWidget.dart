@@ -46,13 +46,13 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
 
   @override
   void initState() {
-    print(widget.rejectedReason);
     // DateTime requestClose = DateTime.parse(widget.requestClose);
     // TODO: implement initState
     super.initState();
+
     Firestore.instance
         .collection("events")
-        .where("requestClose", isLessThanOrEqualTo: DateTime.now())
+        .where("requestClose", isGreaterThanOrEqualTo: DateTime.now())
         .getDocuments()
         .then((value) async {
       await Firestore.instance
