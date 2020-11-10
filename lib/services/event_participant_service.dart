@@ -45,8 +45,22 @@ class EventParticipantService extends ChangeNotifier {
     return _ref.where("uid", isEqualTo: uid).getDocuments();
   }
 
-  Future<QuerySnapshot> getParticipantsForEvent(String docRef) {
-    return _ref.where("uid", isEqualTo: docRef).getDocuments();
+  Future<List<ParticipantModel>> getParticipantForParticularEvent(
+      String docRef) async {
+    try {
+      List<DocumentSnapshot> snapshot =
+          (await _ref.where("docRef", isEqualTo: docRef).getDocuments())
+              .documents;
+
+      List<ParticipantModel> eventParticipants = snapshot
+          .map<ParticipantModel>((doc) => ParticipantModel.fromMap(doc.data))
+          .toList();
+
+      return eventParticipants;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
 //get information of a particular particpant

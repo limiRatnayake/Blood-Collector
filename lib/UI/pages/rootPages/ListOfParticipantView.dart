@@ -122,11 +122,9 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
           ? PreferredSize(
               preferredSize: const Size(double.infinity, kToolbarHeight),
               child: SubmitAppTopBar(
-                  title: "Settings",
-                  docRef: widget.docRef,
-                  totalParticipants: widget.totalEngage,
-                  actualParticipants: widget.actualEngage,
-                  avoidParticipants: widget.avoidParticipants))
+                title: "Settings",
+                docRef: widget.docRef,
+              ))
           : PreferredSize(
               preferredSize: const Size(double.infinity, kToolbarHeight),
               child: AppBar(
