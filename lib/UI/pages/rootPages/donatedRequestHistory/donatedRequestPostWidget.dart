@@ -52,7 +52,7 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         nameOftheOrganizer: data.nameOftheOrganizer,
                         startTime: data.startTime,
                         endTime: data.endTime,
-                        requestCloseDate: data.requestClose.toString(),
+                        requestCloseDate: data.requestClose,
                         placeName: data.placeName,
                         placeAddress: data.placeAddress,
                         currentUser: widget.currentUser)

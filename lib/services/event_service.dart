@@ -92,7 +92,12 @@ class EventService extends ChangeNotifier {
           approved: false,
           rejectReason: "None",
           createdAt: new DateTime.now().toString(),
-          status: "Open");
+          notifyCount: 0,
+          totalParticipants: 0,
+          actualParticipants: 0,
+          avoidParticipants: 0,
+          status: "Open",
+          submitListStatus: "still not");
 
       await newRef.setData(eventModel.toJson());
       message = "Success";
@@ -213,7 +218,7 @@ class EventService extends ChangeNotifier {
     String pickUpEndDate,
     String startTime,
     String endTime,
-    String requestClose,
+    Timestamp requestClose,
   ) async {
     String message = "";
     try {
@@ -268,13 +273,25 @@ class EventService extends ChangeNotifier {
     return message;
   }
 
-  Future<String> addSubmitState(String docRef) async {
+  Future<String> addSubmitState(String docRef, String uid) async {
     String message = "";
     try {
       DocumentReference newRef = _ref.document(docRef);
 
+      Firestore.instance.runTransaction((Transaction tx) async {
+        DocumentSnapshot docSnapshot = await tx.get(_userRef.document(uid));
+        if (docSnapshot.exists) {
+          await tx.update(_userRef.document(uid), <String, dynamic>{
+            "userPreviouslyDonatedOrNot": "Yes",
+            "dateOfLastDonation": DateTime.now().toString(),
+            "lastDonationDateCheck": false,
+            'ifYesHowManyTimes': docSnapshot.data["ifYesHowManyTimes"] + 1
+          });
+        }
+      });
+
       await newRef.updateData({
-        "submitList": "submitted",
+        "submitListStatus": "submitted",
       });
 
       message = "Success";

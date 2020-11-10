@@ -1,20 +1,29 @@
 import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreCampaignMore.dart';
 import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
 import 'package:blood_collector/models/event_model.dart';
+import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
+import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SubmitAppTopBar extends StatefulWidget {
   final String title;
   final String docRef;
+  final int totalParticipants;
+  final int actualParticipants;
+  final int avoidParticipants;
 
   SubmitAppTopBar({
     @required this.title,
     @required this.docRef,
+    @required this.totalParticipants,
+    @required this.actualParticipants,
+    @required this.avoidParticipants,
   });
 
   @override
@@ -40,17 +49,27 @@ class _SubmitAppTopBarState extends State<SubmitAppTopBar> {
     final AuthServices _authService = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
     final EventService _eventService = Provider.of<EventService>(context);
+    final EventParticipantService _participantService =
+        Provider.of<EventParticipantService>(context);
+    // final participants = ParticipantModel.fromMap(widget.resultListDocs.data);
 
     return FutureBuilder(
-        future: _eventService.requestEventsDetails(widget.docRef),
+        future: _participantService.getParticipantsForEvent(widget.docRef),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           } else {
-            EventModel data = EventModel.fromMap(snapshot.data.data);
-
-            return (data.totalParticipants ==
-                    data.actualParticipants + data.avoidParticipants)
+            List<ParticipantModel> dataList = snapshot.data.documents
+                .map<ParticipantModel>(
+                    (doc) => ParticipantModel.fromMap(doc.data))
+                .toList();
+//  List<HospitalListModel> hospitalItems = snapshot.data;
+            String participantUsers;
+            for (int i = 0; i < dataList.length; i++) {
+              participantUsers = dataList[i].uid;
+            }
+            return (widget.totalParticipants ==
+                    widget.actualParticipants + widget.avoidParticipants)
                 ? FlatButton(
                     child: Text("Submit"),
                     onPressed: () {
@@ -72,8 +91,10 @@ class _SubmitAppTopBarState extends State<SubmitAppTopBar> {
                                     FlatButton(
                                       child: Text("Submit"),
                                       onPressed: () async {
-                                        String response = await _eventService
-                                            .addSubmitState(widget.docRef);
+                                        String response =
+                                            await _eventService.addSubmitState(
+                                                widget.docRef,
+                                                participantUsers);
                                         if (response != "Success") {
                                           final snackBar = SnackBar(
                                             content: Text(

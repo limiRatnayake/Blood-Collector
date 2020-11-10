@@ -24,64 +24,56 @@ class _SavedEventViewState extends State<SavedEventView> {
 
     _eventServices = Provider.of<EventService>(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Saved"),
-      ),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          ///First sliver is the App Bar
-          // SliverAppBar(
-          //   ///Properties of app bar
-          //   backgroundColor: Colors.white,
-          //   floating: false,
-          //   pinned: true,
-          //   expandedHeight: 200.0,
-          getImagesList()
-          //   ///Properties of the App Bar when it is expanded
-          //   flexibleSpace: FlexibleSpaceBar(
-          //     centerTitle: true,
-          //     title: Text(
-          //       "SliverGrid Widget",
-          //       style: TextStyle(
-          //         color: Colors.black87,
-          //         fontSize: 20.0,
-          //         fontWeight: FontWeight.bold,
-          //         // fontFamily: Utils.ubuntuRegularFont
-          //       ),
-          //     ),
-          //     background: Container(
-          //       decoration: BoxDecoration(
-          //         border: Border(
-          //           top: BorderSide(
-          //             color: Colors.black26,
-          //             width: 1.0,
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-        ],
-      ),
-    );
-  }
-
-  Widget listItem(String title) => Container(
-        height: 100.0,
-        color: Colors.blue.shade200,
-        child: Center(
-          child: Text(
-            "$title",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 10.0,
-              fontWeight: FontWeight.bold,
-              // fontFamily: Utils.ubuntuRegularFont
+      body: Container(
+          child: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            // expandedHeight: 156.0,
+            title: Text(
+              "Saved Event",
             ),
           ),
-        ),
-      );
+          getImagesList()
+        ],
+      )),
+      // body: CustomScrollView(
+      //   slivers: <Widget>[
+      //     ///First sliver is the App Bar
+      //     // SliverAppBar(
+      //     //   ///Properties of app bar
+      //     //   backgroundColor: Colors.white,
+      //     //   floating: false,
+      //     //   pinned: true,
+      //     //   expandedHeight: 200.0,
+      //     getImagesList()
+      //     //   ///Properties of the App Bar when it is expanded
+      //     //   flexibleSpace: FlexibleSpaceBar(
+      //     //     centerTitle: true,
+      //     //     title: Text(
+      //     //       "SliverGrid Widget",
+      //     //       style: TextStyle(
+      //     //         color: Colors.black87,
+      //     //         fontSize: 20.0,
+      //     //         fontWeight: FontWeight.bold,
+      //     //         // fontFamily: Utils.ubuntuRegularFont
+      //     //       ),
+      //     //     ),
+      //     //     background: Container(
+      //     //       decoration: BoxDecoration(
+      //     //         border: Border(
+      //     //           top: BorderSide(
+      //     //             color: Colors.black26,
+      //     //             width: 1.0,
+      //     //           ),
+      //     //         ),
+      //     //       ),
+      //     //     ),
+      //     //   ),
+      //     // ),
+      //   ],
+      // ),
+    );
+  }
 
   Widget getImagesList() {
     // List<ImageModel> images;
@@ -90,9 +82,11 @@ class _SavedEventViewState extends State<SavedEventView> {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.only(left: 15),
-                child: Text("No saved events found"),
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Text("No saved events found"),
+                ),
               ),
             );
           } else {

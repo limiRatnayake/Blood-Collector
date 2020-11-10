@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class NotificationModel {
   String notifyId;
   String docRef;
@@ -11,8 +9,8 @@ class NotificationModel {
 
   NotificationModel({
     this.notifyId,
-    this.notificationId,
     this.docRef,
+    this.notificationId,
     this.notifyBy,
     this.message,
     this.hospitalName,

@@ -1,5 +1,7 @@
+import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/participantListViewWidget.dart';
 import 'package:blood_collector/UI/widgets/submitParticipants.dart';
+import 'package:blood_collector/UI/widgets/submittedParticipantList.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +13,7 @@ class ListOfParticipantView extends StatefulWidget {
   final int totalEngage;
   final int actualEngage;
   final int avoidParticipants;
+  final String submitListStatus;
 
   ListOfParticipantView({
     Key key,
@@ -18,6 +21,7 @@ class ListOfParticipantView extends StatefulWidget {
     this.totalEngage,
     this.actualEngage,
     this.avoidParticipants,
+    this.submitListStatus,
   }) : super(key: key);
   @override
   _ListOfParticipantViewState createState() => _ListOfParticipantViewState();
@@ -26,6 +30,8 @@ class ListOfParticipantView extends StatefulWidget {
 class _ListOfParticipantViewState extends State<ListOfParticipantView> {
   TextEditingController _searchController = TextEditingController();
   CollectionReference eventRef;
+  CollectionReference userRef;
+  ParticipantModel participants;
   List _allParticipants = [];
   List _resultsList = [];
   Future resultsLoaded;
@@ -36,6 +42,7 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
     //listen to the changes that happens in the searchController and listen to the changes
     _searchController.addListener(_onSearchChanged);
     eventRef = Firestore.instance.collection("events");
+    userRef = Firestore.instance.collection("users");
   }
 
   @override
@@ -109,37 +116,49 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
   Widget build(BuildContext context) {
     final EventParticipantService _participantServices =
         Provider.of<EventParticipantService>(context);
-    int participatedTotal = widget.actualEngage + widget.avoidParticipants;
 
     return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: const Size(double.infinity, kToolbarHeight),
-          child: SubmitAppTopBar(title: "Settings", docRef: widget.docRef)),
+      appBar: widget.submitListStatus != "submitted"
+          ? PreferredSize(
+              preferredSize: const Size(double.infinity, kToolbarHeight),
+              child: SubmitAppTopBar(
+                  title: "Settings",
+                  docRef: widget.docRef,
+                  totalParticipants: widget.totalEngage,
+                  actualParticipants: widget.actualEngage,
+                  avoidParticipants: widget.avoidParticipants))
+          : PreferredSize(
+              preferredSize: const Size(double.infinity, kToolbarHeight),
+              child: AppBar(
+                title: Text("Actual Participant List"),
+              )),
 
       body: Column(
         children: [
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Icon(
-                  Icons.info,
-                  color: Colors.blue.shade300,
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Flexible(
-                    child: Text(
-                  "After updating all the participant details don't forget to click the submit button",
-                  style: TextStyle(color: Colors.grey.shade700),
-                ))
-              ],
-            ),
-          ),
+          widget.submitListStatus != "submitted"
+              ? Padding(
+                  padding: const EdgeInsets.only(
+                      left: 30.0, right: 30.0, bottom: 30.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(
+                        Icons.info,
+                        color: Colors.blue.shade300,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Flexible(
+                          child: Text(
+                        "After updating all the participant details don't forget to click the submit button",
+                        style: TextStyle(color: Colors.grey.shade700),
+                      ))
+                    ],
+                  ),
+                )
+              : Container(),
 
           //search textfield
           Padding(
@@ -174,20 +193,34 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
               Text("Participated/" + "\n" + "Not Participated"),
             ],
           ),
-          Expanded(
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: _resultsList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return buildParticipantsList(
-                      context,
-                      _resultsList[index],
-                      eventRef,
-                      widget.totalEngage,
-                      widget.actualEngage,
-                      widget.avoidParticipants);
-                }),
-          )
+          widget.submitListStatus != "submitted"
+              ? Expanded(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _resultsList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return buildParticipantsList(
+                            context,
+                            _resultsList[index],
+                            eventRef,
+                            userRef,
+                            widget.totalEngage,
+                            widget.actualEngage,
+                            widget.avoidParticipants);
+                      }),
+                )
+              : Expanded(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _resultsList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return actualParticipantList(
+                          context,
+                          _resultsList[index],
+                          eventRef,
+                        );
+                      }),
+                )
         ],
       ),
       // body: FutureBuilder(

@@ -40,9 +40,13 @@ class EventParticipantService extends ChangeNotifier {
     return message;
   }
 
-//get user participanted evebts to history
+//get user participanted events to history
   Future<QuerySnapshot> getParticipant(String uid) {
     return _ref.where("uid", isEqualTo: uid).getDocuments();
+  }
+
+  Future<QuerySnapshot> getParticipantsForEvent(String docRef) {
+    return _ref.where("uid", isEqualTo: docRef).getDocuments();
   }
 
 //get information of a particular particpant
@@ -146,23 +150,23 @@ class EventParticipantService extends ChangeNotifier {
   }
 
   //update the participating event plus user last donor selection criteria
-  Future<String> updateDataOfParticipating(String uid, String date,
-      String participantId, String participatedStatus) async {
+  Future<String> updateDataOfParticipating(
+      String date, String participantId, String participatedStatus) async {
     String message = "";
     try {
       DocumentReference participantRef = _ref.document(participantId);
-      // DocumentReference usersRef = _userRef.document(uid);
-      Firestore.instance.runTransaction((Transaction tx) async {
-        DocumentSnapshot docSnapshot = await tx.get(_userRef.document(uid));
-        if (docSnapshot.exists) {
-          await tx.update(_userRef.document(uid), <String, dynamic>{
-            "userPreviouslyDonatedOrNot": "Yes",
-            "dateOfLastDonation": date,
-            "lastDonationDateCheck": false,
-            'ifYesHowManyTimes': docSnapshot.data["ifYesHowManyTimes"] + 1
-          });
-        }
-      });
+
+      // Firestore.instance.runTransaction((Transaction tx) async {
+      //   DocumentSnapshot docSnapshot = await tx.get(_userRef.document(uid));
+      //   if (docSnapshot.exists) {
+      //     await tx.update(_userRef.document(uid), <String, dynamic>{
+      //       "userPreviouslyDonatedOrNot": "Yes",
+      //       "dateOfLastDonation": date,
+      //       "lastDonationDateCheck": false,
+      //       'ifYesHowManyTimes': docSnapshot.data["ifYesHowManyTimes"] + 1
+      //     });
+      //   }
+      // });
       await participantRef.updateData(
           {"participatedStatus": participatedStatus, "lastModifyDate": date});
 

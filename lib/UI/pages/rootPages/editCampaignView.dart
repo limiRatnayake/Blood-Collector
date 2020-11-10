@@ -42,7 +42,7 @@ class _EditCampaignViewState extends State<EditCampaignView> {
   String organizerPhoneNumber;
   String pickUpStartDate;
   String pickUpEndDate;
-  String requestCloseOn;
+  Timestamp requestCloseOn;
   String startTime;
   String endTime;
   String organizePlaceAddress;
@@ -571,8 +571,10 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                         onChanged: (value) {
                                           setState(() {
                                             requestCloseOn =
-                                                DateFormat('yyyy-MM-dd')
-                                                    .format(value);
+                                                Timestamp.fromDate(value);
+                                            // requestCloseOn =
+                                            //     DateFormat('yyyy-MM-dd')
+                                            //         .format(value);
                                           });
                                         },
                                       ),

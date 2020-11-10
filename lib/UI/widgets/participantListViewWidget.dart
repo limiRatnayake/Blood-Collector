@@ -14,6 +14,7 @@ Widget buildParticipantsList(
     BuildContext context,
     DocumentSnapshot document,
     CollectionReference eventRef,
+    CollectionReference userRef,
     int totalEngage,
     int actualEngage,
     int avoidParticipants) {
@@ -52,13 +53,28 @@ Widget buildParticipantsList(
                         ),
                         onPressed: () async {
                           await _participantServices.updateDataOfParticipating(
-                              participants.uid,
                               DateTime.now().toString(),
                               participants.participantId,
                               "Donated");
+                          //update actual participating count and avoid participants
                           Firestore.instance.runTransaction((tx) async {
                             DocumentSnapshot docSnapshot = await tx
                                 .get(eventRef.document(participants.docRef));
+                            // DocumentSnapshot userdDocSnapshot = await tx
+                            //     .get(userRef.document(participants.uid));
+                            // if (userdDocSnapshot.exists) {
+                            //   await tx.update(
+                            //       userRef.document(participants.uid),
+                            //       <String, dynamic>{
+                            //         "userPreviouslyDonatedOrNot": "Yes",
+                            //         "dateOfLastDonation":
+                            //             DateTime.now().toString(),
+                            //         "lastDonationDateCheck": false,
+                            //         'ifYesHowManyTimes': userdDocSnapshot
+                            //                 .data["ifYesHowManyTimes"] +
+                            //             1
+                            //       });
+                            // }
                             if (docSnapshot.exists) {
                               int newFollowerCount =
                                   docSnapshot.data['actualParticipants'] + 1;
@@ -99,7 +115,6 @@ Widget buildParticipantsList(
                         ),
                         onPressed: () async {
                           await _participantServices.updateDataOfParticipating(
-                              participants.uid,
                               DateTime.now().toString(),
                               participants.participantId,
                               "Not participated");
@@ -107,6 +122,21 @@ Widget buildParticipantsList(
                           Firestore.instance.runTransaction((tx) async {
                             DocumentSnapshot docSnapshot = await tx
                                 .get(eventRef.document(participants.docRef));
+                            // DocumentSnapshot userdDocSnapshot = await tx
+                            //     .get(userRef.document(participants.uid));
+                            // if (userdDocSnapshot.exists) {
+                            //   await tx.update(
+                            //       userRef.document(participants.uid),
+                            //       <String, dynamic>{
+                            //         "userPreviouslyDonatedOrNot": "Yes",
+                            //         "dateOfLastDonation":
+                            //             DateTime.now().toString(),
+                            //         "lastDonationDateCheck": false,
+                            //         'ifYesHowManyTimes': userdDocSnapshot
+                            //                 .data["ifYesHowManyTimes"] -
+                            //             1
+                            //       });
+                            // }
                             if (docSnapshot.exists) {
                               if (actualEngage != 0) {
                                 int newFollowerCount =
@@ -121,17 +151,6 @@ Widget buildParticipantsList(
                                   docSnapshot.data['avoidParticipants'] + 1;
                               tx.update(eventRef.document(participants.docRef),
                                   {'avoidParticipants': avoidance});
-
-                              // await tx.update(
-                              //     eventRef.document(participants.docRef),
-                              //     <String, dynamic>{
-                              //       'actualParticipants':
-                              //           docSnapshot.data["actualParticipants"] +
-                              //               1,
-                              //       'avoidParticipants':
-                              //           docSnapshot.data["avoidParticipants"] -
-                              //               1,
-                              //     });
                             }
                           });
                           // Firestore.instance.runTransaction((tx) async {

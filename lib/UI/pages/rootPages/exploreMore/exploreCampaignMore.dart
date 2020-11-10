@@ -98,12 +98,9 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                           } else {
                             EventModel data =
                                 EventModel.fromMap(snapshot.data.data);
-                            // print(data.actualParticipants);
-                            // print(data.avoidParticipants);
-                            // var getRequestCloseDate =
-                            // DateTime.parse(data.requestClose);
-                            // String requestCloseDate =
-                            //     DateFormat('yMd').format(data.requestClose);
+                            DateTime requestClose = data.requestClose.toDate();
+                            String requestCloseDate =
+                                DateFormat('yMd').format(requestClose);
 
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -125,8 +122,7 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                 ListTile(
                                     leading: Icon(Icons.event_available),
                                     title: Text("When they need blood"),
-                                    subtitle:
-                                        Text(data.requestClose.toString())),
+                                    subtitle: Text(requestCloseDate)),
                                 ListTile(
                                   leading: Icon(Icons.local_hospital),
                                   title: Text("Place Name"),
@@ -160,12 +156,14 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                             builder: (context) =>
                                                 ListOfParticipantView(
                                                     docRef: widget.docRef,
-                                                    totalEngage:
-                                                        data.totalParticipants,
+                                                    totalEngage: data
+                                                        .totalParticipants,
                                                     actualEngage:
                                                         data.actualParticipants,
-                                                    avoidParticipants: data
-                                                        .avoidParticipants)));
+                                                    avoidParticipants:
+                                                        data.avoidParticipants,
+                                                    submitListStatus: data
+                                                        .submitListStatus)));
                                   },
                                 ),
                                 Divider(

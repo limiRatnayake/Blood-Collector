@@ -99,7 +99,7 @@ class _NotificationViewState extends State<NotificationView> {
                         return Card(
                             child: FutureBuilder(
                                 future: _userService
-                                    .requestUserDetails(_authServices.user.uid),
+                                    .requestUserDetails(notifyData.notifyBy),
                                 builder: (context, snapshot) {
                                   if (!snapshot.hasData) {
                                     return Center(

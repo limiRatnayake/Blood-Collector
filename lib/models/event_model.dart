@@ -43,6 +43,7 @@ class EventModel {
   int actualParticipants;
   int avoidParticipants;
   String status;
+  String submitListStatus;
 
   EventModel(
       {this.docRef,
@@ -86,7 +87,8 @@ class EventModel {
       this.totalParticipants,
       this.actualParticipants,
       this.avoidParticipants,
-      this.status});
+      this.status,
+      this.submitListStatus});
 
   EventModel.fromMap(Map snapshot)
       : docRef = snapshot['docRef'] ?? "",
@@ -131,7 +133,8 @@ class EventModel {
         totalParticipants = snapshot['totalParticipants'] ?? 0,
         actualParticipants = snapshot['actualParticipants'] ?? 0,
         avoidParticipants = snapshot['avoidParticipants'] ?? 0,
-        status = snapshot['status'] ?? "";
+        status = snapshot['status'] ?? "",
+        submitListStatus = snapshot['submitListStatus'] ?? "";
 
   toJson() {
     return {
@@ -177,6 +180,7 @@ class EventModel {
       "actualParticipants": actualParticipants,
       "avoidParticipants": avoidParticipants,
       "status": status,
+      "submitListStatus": submitListStatus,
     };
   }
 }

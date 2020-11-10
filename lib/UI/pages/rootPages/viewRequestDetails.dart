@@ -181,10 +181,9 @@ class _ViewRequestDetailsState extends State<ViewRequestDetails> {
                         } else {
                           EventModel data =
                               EventModel.fromMap(snapshot.data.data);
-                          // var getRequestCloseDate =
-                          //     DateTime.parse(data.requestClose);
-                          // String requestCloseDate =
-                          //     DateFormat('yMd').format(data.requestClose);
+                          DateTime requestClose = data.requestClose.toDate();
+                          String requestCloseDate =
+                              DateFormat('yMd').format(requestClose);
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
@@ -208,8 +207,7 @@ class _ViewRequestDetailsState extends State<ViewRequestDetails> {
                                     ListTile(
                                         leading: Icon(Icons.event_available),
                                         title: Text("When they need blood"),
-                                        subtitle:
-                                            Text(data.requestClose.toString())),
+                                        subtitle: Text(requestCloseDate)),
                                     ListTile(
                                       leading: Icon(Icons.local_hospital),
                                       title: Text("Hospital Name"),

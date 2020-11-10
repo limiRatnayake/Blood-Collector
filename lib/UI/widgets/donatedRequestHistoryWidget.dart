@@ -54,6 +54,7 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
   final participantRef = Firestore.instance;
   DocumentReference requestRef;
   DocumentReference requestedRef;
+  CollectionReference userRef;
   String participateId;
   // String participatedStatus;
   String participatedStatus;
@@ -72,6 +73,7 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
     //   });
     // });
     super.initState();
+    userRef = Firestore.instance.collection("users");
   }
 
   @override
@@ -495,12 +497,37 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                               String response =
                                                   await _participantServices
                                                       .updateDataOfParticipating(
-                                                          widget.currentUser,
                                                           DateTime.now()
                                                               .toString(),
                                                           widget.participantId,
                                                           "Donated");
                                               if (response == "Success") {
+                                                Firestore.instance
+                                                    .runTransaction(
+                                                        (Transaction tx) async {
+                                                  DocumentSnapshot docSnapshot =
+                                                      await tx.get(userRef
+                                                          .document(widget
+                                                              .currentUser));
+                                                  if (docSnapshot.exists) {
+                                                    await tx.update(
+                                                        userRef.document(
+                                                            widget.currentUser),
+                                                        <String, dynamic>{
+                                                          "userPreviouslyDonatedOrNot":
+                                                              "Yes",
+                                                          "dateOfLastDonation":
+                                                              DateTime.now()
+                                                                  .toString(),
+                                                          "lastDonationDateCheck":
+                                                              false,
+                                                          'ifYesHowManyTimes':
+                                                              docSnapshot.data[
+                                                                      "ifYesHowManyTimes"] +
+                                                                  1
+                                                        });
+                                                  }
+                                                });
                                                 var snackBar = SnackBar(
                                                   content: Text(
                                                       'Your last donation date is updated!',

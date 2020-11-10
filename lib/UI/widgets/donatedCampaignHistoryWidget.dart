@@ -25,7 +25,7 @@ class DonatedCampaignPostView extends StatefulWidget {
   final String nameOftheOrganizer;
   final String startTime;
   final String endTime;
-  final String requestCloseDate;
+  final Timestamp requestCloseDate;
   final String placeName;
   final String placeAddress;
 
@@ -80,6 +80,9 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
     final UserService _userService = Provider.of<UserService>(context);
     final EventParticipantService _participantServices =
         Provider.of<EventParticipantService>(context);
+    DateTime requestClose = widget.requestCloseDate.toDate();
+    String requestCloseDate = DateFormat('yMd').format(requestClose);
+
     String date;
 
     //get the event created date
@@ -204,7 +207,7 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                             ListTile(
                                 leading: Icon(Icons.event_available),
                                 title: Text("When they need blood"),
-                                subtitle: Text(widget.requestCloseDate)),
+                                subtitle: Text(requestCloseDate)),
                             ListTile(
                               leading: Icon(Icons.local_hospital),
                               title: Text("Place Name"),
@@ -311,10 +314,31 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                                                 "Cancelled");
                                                         if (response ==
                                                             "Success") {
+                                                          // Firestore.instance
+                                                          //     .runTransaction(
+                                                          //         (tx) async {
+                                                          //   DocumentSnapshot
+                                                          //       docSnapshot =
+                                                          //       await tx.get(eventRef
+                                                          //           .document(widget
+                                                          //               .docRef));
+                                                          //   if (docSnapshot
+                                                          //       .exists) {
+                                                          //     await tx.update(
+                                                          //         eventRef
+                                                          //             .document(
+                                                          //                 widget
+                                                          //                     .docRef),
+                                                          //         <String, dynamic>{
+                                                          //           'totalParticipants':
+                                                          //               docSnapshot.data["totalParticipants"] -
+                                                          //                   1
+                                                          //         });
+                                                          //   }
+                                                          // });
                                                           Firestore.instance
                                                               .runTransaction(
-                                                                  (Transaction
-                                                                      tx) async {
+                                                                  (tx) async {
                                                             DocumentSnapshot
                                                                 docSnapshot =
                                                                 await tx.get(eventRef
@@ -322,15 +346,19 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                                                         .docRef));
                                                             if (docSnapshot
                                                                 .exists) {
-                                                              await tx.update(
+                                                              int newFollowerCount =
+                                                                  docSnapshot.data[
+                                                                          'totalParticipants'] -
+                                                                      1;
+                                                              // Perform an update on the document
+                                                              tx.update(
                                                                   eventRef
                                                                       .document(
                                                                           widget
                                                                               .docRef),
-                                                                  <String, dynamic>{
+                                                                  {
                                                                     'totalParticipants':
-                                                                        docSnapshot.data["totalParticipants"] -
-                                                                            1
+                                                                        newFollowerCount
                                                                   });
                                                             }
                                                           });
