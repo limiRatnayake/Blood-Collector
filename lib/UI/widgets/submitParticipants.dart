@@ -1,8 +1,6 @@
-import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreCampaignMore.dart';
-import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
+import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/participant_model.dart';
-import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/event_service.dart';
@@ -107,12 +105,7 @@ class _SubmitAppTopBarState extends State<SubmitAppTopBar> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          ExploreCampaignMore(
-                                                            docRef:
-                                                                widget.docRef,
-                                                            uid: _authService
-                                                                .user.uid,
-                                                          )));
+                                                          RequestHistory()));
                                             }
                                           }
                                         })
