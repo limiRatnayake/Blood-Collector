@@ -44,6 +44,8 @@ class EventModel {
   int avoidParticipants;
   String status;
   String submitListStatus;
+  String districts;
+  String area;
 
   EventModel(
       {this.docRef,
@@ -88,7 +90,9 @@ class EventModel {
       this.actualParticipants,
       this.avoidParticipants,
       this.status,
-      this.submitListStatus});
+      this.submitListStatus,
+      this.districts,
+      this.area});
 
   EventModel.fromMap(Map snapshot)
       : docRef = snapshot['docRef'] ?? "",
@@ -134,7 +138,9 @@ class EventModel {
         actualParticipants = snapshot['actualParticipants'] ?? 0,
         avoidParticipants = snapshot['avoidParticipants'] ?? 0,
         status = snapshot['status'] ?? "",
-        submitListStatus = snapshot['submitListStatus'] ?? "";
+        submitListStatus = snapshot['submitListStatus'] ?? "",
+        districts = snapshot['districts'] ?? "",
+        area = snapshot['area'] ?? "";
 
   toJson() {
     return {
@@ -181,6 +187,8 @@ class EventModel {
       "avoidParticipants": avoidParticipants,
       "status": status,
       "submitListStatus": submitListStatus,
+      "districts": districts,
+      "area": area,
     };
   }
 }

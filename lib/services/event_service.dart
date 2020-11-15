@@ -53,6 +53,8 @@ class EventService extends ChangeNotifier {
     String imgUrl,
     String category,
     bool visibleState,
+    String districts,
+    String area,
   ) async {
     String message = "";
     try {
@@ -88,6 +90,8 @@ class EventService extends ChangeNotifier {
           imageUrl: imgUrl,
           category: category,
           visibleState: visibleState,
+          districts: districts,
+          area: area,
           likes: 0,
           savedEvents: 0,
           userAccepted: 0,

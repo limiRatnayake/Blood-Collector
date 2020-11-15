@@ -41,9 +41,58 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   String placeLng;
   String organizerPhoneNumber;
   Timestamp requestCloseOn;
+  String districts;
+  String area;
   int eventTime;
+  String _districts = 'Select districts';
+  String _area = 'Select a area';
   bool _formValidate = false;
   bool _visibleState = false;
+
+  List<String> _districtTypes = [
+    "Select districts",
+    "Colombo",
+    'Kandy',
+    'Galle',
+    'Ampara',
+    'Anuradhapura',
+    'Badulla',
+    'Batticaloa',
+    'Gampaha',
+    'Hambantota',
+    'Jaffna',
+    'Kalutara',
+    'Kegalle',
+    'Kilinochchi',
+    'Kuruneala',
+    'Mannar',
+    'Matara',
+    'Monaragala',
+    'Mullativu',
+    'Nuwara Eliya',
+    'Polonnaruwa',
+    'Puttalam',
+    'Ratnapura',
+    'Trincomalee',
+    'Vavuniya',
+  ];
+
+  List<String> _colomboArea = [
+    "Select a area",
+    "Piliyandala",
+    'Nugegoda',
+    'Dehiwala',
+    'Maharagama',
+    'Colombo 6',
+  ];
+  List<String> _kandyArea = [
+    "Select a area",
+    "Piliyandala",
+    'Nugegoda',
+    'Dehiwala',
+    'Maharagama',
+    'Colombo 6',
+  ];
 
   BoxDecoration _boxDecoration() {
     return BoxDecoration(
@@ -57,6 +106,18 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
         ]);
   }
 
+  void selectDistrictsType(String value) {
+    setState(() {
+      _districts = value;
+    });
+  }
+
+  void selectAreaType(String value) {
+    setState(() {
+      _area = value;
+    });
+  }
+
 //import fluttertoast pub dev package - 5sec toast
   void showToastError() {
     Fluttertoast.showToast(
@@ -65,6 +126,116 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
         gravity: ToastGravity.TOP,
         backgroundColor: Colors.grey[200],
         textColor: Colors.red);
+  }
+
+  Widget _districtsTextField() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 25.0),
+          child: Row(
+            children: <Widget>[
+              Text(
+                "Choose the district and its area",
+                style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 8.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Flexible(
+              child: Container(
+                width: double.infinity,
+                height: 68,
+                margin: EdgeInsets.symmetric(horizontal: 15.0),
+                decoration: _boxDecoration(),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 7, left: 24, right: 16),
+                  child: DropdownButtonFormField(
+                    value: _districts,
+                    decoration: InputDecoration(
+                        hintText: 'Select a districts',
+                        hintStyle:
+                            TextStyle(fontSize: 14.0, fontFamily: "Roboto"),
+                        enabledBorder: InputBorder.none),
+                    validator: validateDistricts,
+                    onChanged: (value) {
+                      selectDistrictsType(value);
+                      setState(() {
+                        districts = value;
+                        print(districts);
+                      });
+                    },
+                    items: _districtTypes.map((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              child: Container(
+                width: double.infinity,
+                height: 68,
+                margin: EdgeInsets.symmetric(horizontal: 15.0),
+                decoration: _boxDecoration(),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 7, left: 24, right: 16),
+                  child: DropdownButtonFormField(
+                      value: _area,
+                      decoration: InputDecoration(
+                          hintText: 'Area',
+                          hintStyle:
+                              TextStyle(fontSize: 14.0, fontFamily: "Roboto"),
+                          enabledBorder: InputBorder.none),
+                      validator: validateDistricts,
+                      onChanged: (value) {
+                        selectAreaType(value);
+                        setState(() {
+                          area = value;
+                        });
+                      },
+                      items: _lists()),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  List<dynamic> _lists() {
+    return _switchList();
+  }
+
+  _switchList() {
+    switch (districts) {
+      case "Colombo":
+        return _colomboArea.map((String value) {
+          return DropdownMenuItem(
+            value: value,
+            child: Text(value),
+          );
+        }).toList();
+      case "Kandy":
+        return _kandyArea.map((String value) {
+          return DropdownMenuItem(
+            value: value,
+            child: Text(value),
+          );
+        }).toList();
+        break;
+      default:
+    }
   }
 
   Widget _companyNameField() {
@@ -665,21 +836,23 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     final _form = _formKey.currentState;
     if (_form.validate()) {
       print('Form is vaild');
+
       var route = new MaterialPageRoute(
         builder: (BuildContext context) => CreatePostView(
-          nameOfTheOrganizer: nameOfTheOrOrganizer,
-          pickUpStartDate: pickUpStartDate,
-          pickUpEndDate: pickUpEndDate,
-          requestClose: requestCloseOn,
-          startTime: startTime,
-          endTime: endTime,
-          placeName: oragnizePlaceName,
-          placeAddress: organizePlaceAddress,
-          placeLat: placeLat,
-          placeLng: placeLng,
-          orgernizerConatctNo: organizerPhoneNumber,
-          visibleState: _visibleState,
-        ),
+            nameOfTheOrganizer: nameOfTheOrOrganizer,
+            pickUpStartDate: pickUpStartDate,
+            pickUpEndDate: pickUpEndDate,
+            requestClose: requestCloseOn,
+            startTime: startTime,
+            endTime: endTime,
+            placeName: oragnizePlaceName,
+            placeAddress: organizePlaceAddress,
+            placeLat: placeLat,
+            placeLng: placeLng,
+            orgernizerConatctNo: organizerPhoneNumber,
+            visibleState: _visibleState,
+            districts: districts,
+            area: area),
       );
       Navigator.of(context).push(route);
     } else {
@@ -720,6 +893,10 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                   height: 10.0,
                 ),
                 _visibleContactNumberToPubic(),
+                SizedBox(
+                  height: 10.0,
+                ),
+                _districtsTextField(),
                 SizedBox(
                   height: 10.0,
                 ),
@@ -817,6 +994,13 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
       return 'Mobile Number must be of 10 digit';
     } else if (!regExp.hasMatch(value)) {
       return "It should be only 0-9 values!";
+    }
+    return null;
+  }
+
+  String validateDistricts(String value) {
+    if (value == "Select a districts") {
+      return 'Please select a districts';
     }
     return null;
   }

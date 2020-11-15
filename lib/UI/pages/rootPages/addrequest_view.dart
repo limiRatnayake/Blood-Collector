@@ -32,6 +32,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
     'B-',
     'AB-'
   ];
+
   TextEditingController addressController = new TextEditingController();
   TextEditingController addressLatController = new TextEditingController();
   TextEditingController addressLngController = new TextEditingController();
@@ -41,6 +42,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   TextEditingController _campaignDate = TextEditingController();
 
   String bloodGroup = '';
+
   String replacementAvailability = "";
   String unitsOfBlood = '';
   // String requestClose = '';
@@ -64,6 +66,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   bool _notifyState = false;
   int _radioValue = 1;
   String _bloodGroup = 'Select Blood Type';
+
   bool _formValidate = false;
   String _radioItemHolder = "Yes";
   bool _visibleState = false;
@@ -443,6 +446,9 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                   height: 10.0,
                 ),
                 _availableDateTextField(),
+                SizedBox(
+                  height: 10.0,
+                ),
                 SizedBox(
                   height: 10.0,
                 ),
