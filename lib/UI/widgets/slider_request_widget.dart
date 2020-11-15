@@ -4,6 +4,7 @@ import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
+import 'package:blood_collector/services/request_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -301,20 +302,14 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
   @override
   void initState() {
     print(widget.currentUser);
-    interestedRef = Firestore.instance
-        .collection("events")
-        .document(widget.docRef)
-        .collection("interested")
-        .document(widget.currentUser);
+
     requestedRef = Firestore.instance
         .collection("events")
         .document(widget.docRef)
         .collection("requested")
         .document(widget.currentUser);
     super.initState();
-    interestedRef.get().then((value) {
-      interestedData = value.data;
-    });
+
     requestedRef.get().then((value) {
       requestedData = value.data;
     });
@@ -325,6 +320,8 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
   Widget build(BuildContext context) {
     final AuthServices _authService = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
+    final RequestAcceptenceService _reqAcceptService =
+        Provider.of<RequestAcceptenceService>(context);
     final EventParticipantService _participantService =
         Provider.of<EventParticipantService>(context);
     FirebaseUser _user = Provider.of<AuthServices>(context).user;
@@ -408,9 +405,15 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                                 onPressed: () async {
                                   String userName =
                                       data.firstName + " " + data.lastName;
-                                  String response =
-                                      await _participantService.addParticipants(
-                                          _user, widget.docRef, userName);
+                                  String response = await _participantService
+                                      .addRequestEventParticipants(
+                                          _user,
+                                          widget.docRef,
+                                          userName,
+                                          "sent",
+                                          requestSentOn,
+                                          widget.currentUser,
+                                          false);
 
                                   if (response != "Success") {
                                     AlertDialog(
@@ -432,20 +435,26 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                                     );
                                     requestedRef.delete();
                                   } else {
-                                    requestedRef.get().then((value) => {
-                                          requestedRef.setData({
-                                            "docRef": widget.docRef,
-                                            "requestStatus": "sent",
-                                            "requestSentOn": requestSentOn,
-                                            "requesterId": widget.currentUser,
-                                            "rejected": false
-                                          }),
-                                          setState(() {
-                                            requestedRef.get().then((value) {
-                                              requestedData = value.data;
-                                            });
-                                          })
-                                        });
+                                    // requestedRef.get().then((value) => {
+                                    //       requestedRef.setData({
+                                    //         "docRef": widget.docRef,
+                                    //         "requestStatus": "sent",
+                                    //         "requestSentOn": requestSentOn,
+                                    //         "requesterId": widget.currentUser,
+                                    //         "rejected": false
+                                    //       }),
+                                    //       setState(() {
+                                    //         requestedRef.get().then((value) {
+                                    //           requestedData = value.data;
+                                    //         });
+                                    //       })
+                                    //     });
+                                    // _reqAcceptService.addRequestDetails(
+                                    //     widget.docRef,
+                                    //     "sent",
+                                    //     requestSentOn,
+                                    //     widget.currentUser,
+                                    //     false);
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(

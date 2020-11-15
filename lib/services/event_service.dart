@@ -12,11 +12,14 @@ class EventService extends ChangeNotifier {
   Firestore _db;
   CollectionReference _ref;
   CollectionReference _userRef;
+  CollectionReference _participantsRef;
   FirebaseStorage _storageRef = FirebaseStorage.instance;
 
   EventService() : _db = Firestore.instance {
     _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
     _userRef = _db.collection(AppConstants.USERS_COLLECTION);
+    _participantsRef =
+        _db.collection(AppConstants.EVENTS_PARTICIPANTS_COLLECTION);
   }
 
   Future<String> addEvent(
@@ -273,26 +276,31 @@ class EventService extends ChangeNotifier {
     return message;
   }
 
-  Future<String> addSubmitState(String docRef, String uid) async {
+  Future<String> addSubmitState(
+    String docRef,
+  ) async {
     String message = "";
     try {
       DocumentReference newRef = _ref.document(docRef);
-
-      Firestore.instance.runTransaction((Transaction tx) async {
-        DocumentSnapshot docSnapshot = await tx.get(_userRef.document(uid));
-        if (docSnapshot.exists) {
-          await tx.update(_userRef.document(uid), <String, dynamic>{
-            "userPreviouslyDonatedOrNot": "Yes",
-            "dateOfLastDonation": DateTime.now().toString(),
-            "lastDonationDateCheck": false,
-            'ifYesHowManyTimes': docSnapshot.data["ifYesHowManyTimes"] + 1
-          });
-        }
+      var actualParticipants = await _participantsRef
+          .where("docRef", isEqualTo: docRef)
+          .where("participatedStatus", isEqualTo: "Donated")
+          .getDocuments();
+      var avoidParticipants = await _participantsRef
+          .where("docRef", isEqualTo: docRef)
+          .where("participatedStatus", isEqualTo: "Not participated")
+          .getDocuments();
+      newRef.updateData({
+        "actualParticipants": actualParticipants.documents.length,
+        "avoidParticipants": avoidParticipants.documents.length,
+        "submitListStatus": "submitted"
       });
+      // newRef.updateData(
+      //     {"avoidParticipants": avoidParticipants.documents.length});
 
-      await newRef.updateData({
-        "submitListStatus": "submitted",
-      });
+      // await newRef.updateData({
+      //   "submitListStatus": "submitted",
+      // });
 
       message = "Success";
     } catch (error) {

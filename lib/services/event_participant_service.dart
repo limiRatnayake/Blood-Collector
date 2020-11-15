@@ -1,4 +1,5 @@
 import 'package:blood_collector/models/participant_model.dart';
+import 'package:blood_collector/models/request_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,8 +11,10 @@ class EventParticipantService extends ChangeNotifier {
   Firestore _db;
   CollectionReference _ref;
   CollectionReference _userRef;
+  CollectionReference _eventRef;
 
   EventParticipantService() : _db = Firestore.instance {
+    _eventRef = _db.collection(AppConstants.EVENTS_COLLECTION);
     _ref = _db.collection(AppConstants.EVENTS_PARTICIPANTS_COLLECTION);
     _userRef = _db.collection(AppConstants.USERS_COLLECTION);
   }
@@ -40,6 +43,48 @@ class EventParticipantService extends ChangeNotifier {
     return message;
   }
 
+  Future<String> addRequestEventParticipants(
+    FirebaseUser user,
+    String docRef,
+    String userName,
+    String requestStatus,
+    String requestSentOn,
+    String requesterId,
+    bool rejected,
+  ) async {
+    String message = "";
+    try {
+      DocumentReference newRef = _ref.document();
+      DocumentReference requestRef =
+          _eventRef.document(docRef).collection("requested").document(user.uid);
+
+      ParticipantModel participantModel = new ParticipantModel(
+          participantId: newRef.documentID,
+          docRef: docRef,
+          uid: user.uid,
+          participantName: userName,
+          participatedStatus: "participating",
+          lastModifyDate: DateTime.now().toString());
+      await newRef.setData(participantModel.toJson());
+      RequestAcceptModel reqAcceptModel = new RequestAcceptModel(
+          docRef: docRef,
+          requestStatus: requestStatus,
+          requestSentOn: requestSentOn,
+          requesterId: requesterId,
+          rejected: rejected,
+          participantsID: newRef.documentID);
+
+      await requestRef.setData(reqAcceptModel.toJson());
+
+      message = "Success";
+      notifyListeners();
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    return message;
+  }
+
 //get user participanted events to history
   Future<QuerySnapshot> getParticipant(String uid) {
     return _ref.where("uid", isEqualTo: uid).getDocuments();
@@ -48,9 +93,11 @@ class EventParticipantService extends ChangeNotifier {
   Future<List<ParticipantModel>> getParticipantForParticularEvent(
       String docRef) async {
     try {
-      List<DocumentSnapshot> snapshot =
-          (await _ref.where("docRef", isEqualTo: docRef).getDocuments())
-              .documents;
+      List<DocumentSnapshot> snapshot = (await _ref
+              .where("docRef", isEqualTo: docRef)
+              .where("participatedStatus", isEqualTo: "Donated")
+              .getDocuments())
+          .documents;
 
       List<ParticipantModel> eventParticipants = snapshot
           .map<ParticipantModel>((doc) => ParticipantModel.fromMap(doc.data))
@@ -142,6 +189,12 @@ class EventParticipantService extends ChangeNotifier {
 
   Future<QuerySnapshot> getParticipantForAnEvent(String docRef) {
     return _ref.where("docRef", isEqualTo: docRef).getDocuments();
+  }
+
+  Future<DocumentSnapshot> participantDetails(String participantId) async {
+    DocumentSnapshot postSnapshot = (await _ref.document(participantId).get());
+    notifyListeners();
+    return postSnapshot;
   }
 
   //update the participating event

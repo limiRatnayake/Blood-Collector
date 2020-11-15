@@ -1,6 +1,8 @@
+import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
+import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,168 +17,269 @@ Widget buildParticipantsList(
     DocumentSnapshot document,
     CollectionReference eventRef,
     CollectionReference userRef,
+    String docRef,
     int totalEngage,
     int actualEngage,
     int avoidParticipants) {
   final participants = ParticipantModel.fromMap(document.data);
   final UserService _userService = Provider.of<UserService>(context);
+  final EventService _eventService = Provider.of<EventService>(context);
   final EventParticipantService _participantServices =
       Provider.of<EventParticipantService>(context);
 
-  return FutureBuilder(
-      future: _userService.requestUserDetails(participants.uid),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
-        } else {
-          UserModel data = UserModel.fromMap(snapshot.data.data);
+  return Container(
+      child: FutureBuilder(
+          future: _userService.requestUserDetails(participants.uid),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            } else {
+              UserModel data = UserModel.fromMap(snapshot.data.data);
 
-          return ListTile(
-            leading: CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.grey,
-              backgroundImage: NetworkImage(
-                data.proPicUrl,
-              ),
-            ),
-            title: Text(data.firstName + " " + data.lastName),
-            subtitle: Text(data.bloodGroup),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              // space between two icons
-              children: <Widget>[
-                participants.participatedStatus != "Donated"
-                    ? IconButton(
-                        icon: Icon(
-                          Icons.done,
-                          color: Colors.green,
-                        ),
-                        onPressed: () async {
-                          await _participantServices.updateDataOfParticipating(
-                              DateTime.now().toString(),
-                              participants.participantId,
-                              "Donated");
-                          //update actual participating count and avoid participants
-                          Firestore.instance.runTransaction((tx) async {
-                            DocumentSnapshot docSnapshot = await tx
-                                .get(eventRef.document(participants.docRef));
-                            // DocumentSnapshot userdDocSnapshot = await tx
-                            //     .get(userRef.document(participants.uid));
-                            // if (userdDocSnapshot.exists) {
-                            //   await tx.update(
-                            //       userRef.document(participants.uid),
-                            //       <String, dynamic>{
-                            //         "userPreviouslyDonatedOrNot": "Yes",
-                            //         "dateOfLastDonation":
-                            //             DateTime.now().toString(),
-                            //         "lastDonationDateCheck": false,
-                            //         'ifYesHowManyTimes': userdDocSnapshot
-                            //                 .data["ifYesHowManyTimes"] +
-                            //             1
-                            //       });
-                            // }
-                            if (docSnapshot.exists) {
-                              int newFollowerCount =
-                                  docSnapshot.data['actualParticipants'] + 1;
+              return ListTile(
+                  leading: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: NetworkImage(
+                      data.proPicUrl,
+                    ),
+                  ),
+                  title: Text(data.firstName + " " + data.lastName),
+                  subtitle: Text(data.bloodGroup),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FutureBuilder(
+                          future: _participantServices
+                              .participantDetails(participants.participantId),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              ParticipantModel docData =
+                                  ParticipantModel.fromMap(snapshot.data.data);
 
-                              // Perform an update on the document
-                              tx.update(eventRef.document(participants.docRef),
-                                  {'actualParticipants': newFollowerCount});
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  participants.participatedStatus != "Donated"
+                                      ? IconButton(
+                                          icon: Icon(
+                                            Icons.done,
+                                            color: Colors.green,
+                                          ),
+                                          onPressed: () async {
+                                            String response =
+                                                await _participantServices
+                                                    .updateDataOfParticipating(
+                                                        DateTime.now()
+                                                            .toString(),
+                                                        participants
+                                                            .participantId,
+                                                        "Donated");
+                                            // if (response == "Success") {
+                                            //   //update actual participating count and avoid participants
+                                            //   Firestore.instance
+                                            //       .runTransaction((tx) async {
+                                            //     DocumentSnapshot docSnapshot =
+                                            //         await tx.get(eventRef.document(
+                                            //             participants.docRef));
 
-                              if (avoidParticipants != 0) {
-                                int avoidance =
-                                    docSnapshot.data['avoidParticipants'] - 1;
-                                tx.update(
-                                    eventRef.document(participants.docRef),
-                                    {'avoidParticipants': avoidance});
-                              }
+                                            //     if (docSnapshot.exists) {
+                                            //       // if (docData.avoidParticipants !=
+                                            //       //     0) {
+                                            //       //   int avoidance = docSnapshot
+                                            //       //               .data[
+                                            //       //           'avoidParticipants'] -
+                                            //       //       1;
+                                            //       //   tx.update(
+                                            //       //       eventRef.document(
+                                            //       //           participants.docRef),
+                                            //       //       {
+                                            //       //         'avoidParticipants':
+                                            //       //             avoidance
+                                            //       //       });
+                                            //       // }
+                                            //       int newFollowerCount = docSnapshot
+                                            //                   .data[
+                                            //               'actualParticipants'] +
+                                            //           1;
 
-                              // await tx.update(
-                              //     eventRef.document(participants.docRef),
-                              //     <String, dynamic>{
-                              //       'actualParticipants':
-                              //           docSnapshot.data["actualParticipants"] +
-                              //               1,
-                              //       'avoidParticipants':
-                              //           docSnapshot.data["avoidParticipants"] -
-                              //               1,
-                              //     });
+                                            //       // Perform an update on the document
+                                            //       tx.update(
+                                            //           eventRef.document(
+                                            //               participants.docRef),
+                                            //           {
+                                            //             'actualParticipants':
+                                            //                 newFollowerCount
+                                            //           });
+                                            //     }
+                                            //   });
+                                            // }
+                                          })
+                                      : Container(),
+                                  participants.participatedStatus !=
+                                          "Not participated"
+                                      ? IconButton(
+                                          icon: Icon(Icons.dangerous,
+                                              color: Colors.red),
+                                          onPressed: () async {
+                                            String response =
+                                                await _participantServices
+                                                    .updateDataOfParticipating(
+                                                        DateTime.now()
+                                                            .toString(),
+                                                        participants
+                                                            .participantId,
+                                                        "Not participated");
+
+                                            // if (response == "Success") {
+                                            //   Firestore.instance
+                                            //       .runTransaction((tx) async {
+                                            //     DocumentSnapshot docSnapshot =
+                                            //         await tx.get(eventRef.document(
+                                            //             participants.docRef));
+
+                                            //     if (docSnapshot.exists) {
+                                            //       // if (docData.actualParticipants >
+                                            //       //     0) {
+                                            //       int actualParticipants =
+                                            //           docSnapshot.data[
+                                            //                   'actualParticipants'] -
+                                            //               1;
+                                            //       // Perform an update on the document
+                                            //       tx.update(
+                                            //           eventRef.document(
+                                            //               participants.docRef),
+                                            //           {
+                                            //             'actualParticipants':
+                                            //                 actualParticipants
+                                            //           });
+                                            //       // }
+
+                                            //       // int avoidance = docSnapshot
+                                            //       //             .data[
+                                            //       //         'avoidParticipants'] +
+                                            //       //     1;
+                                            //       // tx.update(
+                                            //       //     eventRef.document(
+                                            //       //         participants.docRef),
+                                            //       //     {
+                                            //       //       'avoidParticipants':
+                                            //       //           avoidance
+                                            //       //     });
+                                            //     }
+                                            //   });
+                                            // }
+                                          })
+                                      : Container()
+                                ],
+                              );
                             }
-                          });
-                        },
-                      )
-                    : Container(),
+                          }),
+                    ],
+                  ));
+            }
+          }));
+  // return FutureBuilder(
+  //     future: _userService.requestUserDetails(participants.uid),
+  //     builder: (context, snapshot) {
+  //       if (!snapshot.hasData) {
+  //         return Center(child: CircularProgressIndicator());
+  //       } else {
+  //         UserModel data = UserModel.fromMap(snapshot.data.data);
 
-                participants.participatedStatus != "Not participated"
-                    ? IconButton(
-                        icon: Icon(
-                          Icons.dangerous,
-                          color: Colors.red,
-                        ),
-                        onPressed: () async {
-                          await _participantServices.updateDataOfParticipating(
-                              DateTime.now().toString(),
-                              participants.participantId,
-                              "Not participated");
+  //         return ListTile(
+  //           leading: CircleAvatar(
+  //             radius: 20,
+  //             backgroundColor: Colors.grey,
+  //             backgroundImage: NetworkImage(
+  //               data.proPicUrl,
+  //             ),
+  //           ),
+  //           title: Text(data.firstName + " " + data.lastName),
+  //           subtitle: Text(data.bloodGroup),
+  //           trailing: Row(
+  //             mainAxisSize: MainAxisSize.min,
+  //             // space between two icons
+  //             children: <Widget>[
+  //               participants.participatedStatus != "Donated"
+  //                   ? IconButton(
+  //                       icon: Icon(
+  //                         Icons.done,
+  //                         color: Colors.green,
+  //                       ),
+  //                       onPressed: () async {
+  //                         await _participantServices.updateDataOfParticipating(
+  //                             DateTime.now().toString(),
+  //                             participants.participantId,
+  //                             "Donated");
 
-                          Firestore.instance.runTransaction((tx) async {
-                            DocumentSnapshot docSnapshot = await tx
-                                .get(eventRef.document(participants.docRef));
-                            // DocumentSnapshot userdDocSnapshot = await tx
-                            //     .get(userRef.document(participants.uid));
-                            // if (userdDocSnapshot.exists) {
-                            //   await tx.update(
-                            //       userRef.document(participants.uid),
-                            //       <String, dynamic>{
-                            //         "userPreviouslyDonatedOrNot": "Yes",
-                            //         "dateOfLastDonation":
-                            //             DateTime.now().toString(),
-                            //         "lastDonationDateCheck": false,
-                            //         'ifYesHowManyTimes': userdDocSnapshot
-                            //                 .data["ifYesHowManyTimes"] -
-                            //             1
-                            //       });
-                            // }
-                            if (docSnapshot.exists) {
-                              if (actualEngage != 0) {
-                                int newFollowerCount =
-                                    docSnapshot.data['actualParticipants'] - 1;
-                                // Perform an update on the document
-                                tx.update(
-                                    eventRef.document(participants.docRef),
-                                    {'actualParticipants': newFollowerCount});
-                              }
+  //                         //update actual participating count and avoid participants
+  //                         Firestore.instance.runTransaction((tx) async {
+  //                           DocumentSnapshot docSnapshot = await tx
+  //                               .get(eventRef.document(participants.docRef));
 
-                              int avoidance =
-                                  docSnapshot.data['avoidParticipants'] + 1;
-                              tx.update(eventRef.document(participants.docRef),
-                                  {'avoidParticipants': avoidance});
-                            }
-                          });
-                          // Firestore.instance.runTransaction((tx) async {
-                          //   DocumentSnapshot docSnapshot = await tx
-                          //       .get(eventRef.document(participants.docRef));
-                          //   if (actualEngage >= 0) {
-                          //     await tx.update(
-                          //         eventRef.document(participants.docRef),
-                          //         <String, dynamic>{
-                          //           'actualParticipants':
-                          //               docSnapshot.data["actualParticipants"] -
-                          //                   1,
-                          //           'avoidParticipants':
-                          //               docSnapshot.data["avoidParticipants"] +
-                          //                   1,
-                          //         });
-                          //   }
-                          // });
-                        })
-                    : Container(), // icon-1
-                // icon-2
-              ],
-            ),
-          );
-        }
-      });
+  //                           if (docSnapshot.exists) {
+  //                             if (avoidParticipants != 0) {
+  //                               int avoidance =
+  //                                   docSnapshot.data['avoidParticipants'] - 1;
+  //                               tx.update(
+  //                                   eventRef.document(participants.docRef),
+  //                                   {'avoidParticipants': avoidance});
+  //                             }
+  //                             int newFollowerCount =
+  //                                 docSnapshot.data['actualParticipants'] + 1;
+
+  //                             // Perform an update on the document
+  //                             tx.update(eventRef.document(participants.docRef),
+  //                                 {'actualParticipants': newFollowerCount});
+  //                           }
+  //                         });
+  //                       },
+  //                     )
+  //                   : Container(),
+
+  //               participants.participatedStatus != "Not participated"
+  //                   ? IconButton(
+  //                       icon: Icon(
+  //                         Icons.dangerous,
+  //                         color: Colors.red,
+  //                       ),
+  //                       onPressed: () async {
+  //                         await _participantServices.updateDataOfParticipating(
+  //                             DateTime.now().toString(),
+  //                             participants.participantId,
+  //                             "Not participated");
+
+  //                         Firestore.instance.runTransaction((tx) async {
+  //                           DocumentSnapshot docSnapshot = await tx
+  //                               .get(eventRef.document(participants.docRef));
+
+  //                           if (docSnapshot.exists) {
+  //                             if (actualEngage > 0) {
+  //                               int actualParticipants =
+  //                                   docSnapshot.data['actualParticipants'] - 1;
+  //                               // Perform an update on the document
+  //                               tx.update(
+  //                                   eventRef.document(participants.docRef),
+  //                                   {'actualParticipants': actualParticipants});
+  //                             }
+
+  //                             int avoidance =
+  //                                 docSnapshot.data['avoidParticipants'] + 1;
+  //                             tx.update(eventRef.document(participants.docRef),
+  //                                 {'avoidParticipants': avoidance});
+  //                           }
+  //                         });
+  //                       })
+  //                   : Container(), // icon-1
+  //               // icon-2
+  //             ],
+  //           ),
+  //         );
+  //       }
+  //     });
 }
 
 // import 'package:blood_collector/models/user_model.dart';

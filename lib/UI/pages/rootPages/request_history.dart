@@ -23,11 +23,11 @@ class _RequestHistoryState extends State<RequestHistory>
               isScrollable: true,
               indicatorColor: Colors.red,
               tabs: [
+                Text("Raised Request", style: TextStyle(fontSize: 16.0)),
                 Text(
                   "Donated Request",
                   style: TextStyle(fontSize: 16.0),
                 ),
-                Text("Raised Request", style: TextStyle(fontSize: 16.0)),
                 Text("Accept Request", style: TextStyle(fontSize: 16.0))
               ],
             ),
@@ -56,9 +56,9 @@ class _RequestHistoryState extends State<RequestHistory>
           // ),
           drawer: DrawerWidget(),
           body: TabBarView(children: <Widget>[
+            RaisedRequestView(),
             DonatedRequestView(),
             //users event history
-            RaisedRequestView(),
             AcceptRequestView()
           ])),
     );

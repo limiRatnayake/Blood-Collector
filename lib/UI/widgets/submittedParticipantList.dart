@@ -10,6 +10,79 @@ import 'package:provider/provider.dart';
 // import 'package:travel_budget/models/Trip.dart';
 // import 'package:travel_budget/views/detail_trip_view.dart';
 
+class SubmittedParticipantListView extends StatefulWidget {
+  final String docRef;
+
+  const SubmittedParticipantListView({Key key, this.docRef}) : super(key: key);
+
+  @override
+  _SubmittedParticipantListViewState createState() =>
+      _SubmittedParticipantListViewState();
+}
+
+class _SubmittedParticipantListViewState
+    extends State<SubmittedParticipantListView> {
+  @override
+  Widget build(BuildContext context) {
+    final UserService _userService = Provider.of<UserService>(context);
+    final EventParticipantService _participantService =
+        Provider.of<EventParticipantService>(context);
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Participant List"),
+          // actions: [FlatButton(onPressed: show, child: Text("Submit"))],
+        ),
+        body: FutureBuilder(
+            future: _participantService.getParticipantForAnEvent(widget.docRef),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                List<ParticipantModel> dataList = snapshot.data.documents
+                    .map<ParticipantModel>(
+                        (doc) => ParticipantModel.fromMap(doc.data))
+                    .toList();
+                return dataList.length > 0
+                    ? ListView.builder(
+                        itemCount: dataList.length,
+                        itemBuilder: (context, index) {
+                          ParticipantModel data = dataList[index];
+
+                          return FutureBuilder(
+                              future: _userService.requestUserDetails(data.uid),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else {
+                                  UserModel userData =
+                                      UserModel.fromMap(snapshot.data.data);
+
+                                  return ListTile(
+                                      leading: CircleAvatar(
+                                        radius: 20,
+                                        backgroundColor: Colors.grey,
+                                        backgroundImage: NetworkImage(
+                                          userData.proPicUrl,
+                                        ),
+                                      ),
+                                      title: Text(userData.firstName +
+                                          " " +
+                                          userData.lastName),
+                                      subtitle: Text(userData.bloodGroup),
+                                      trailing: Text(
+                                        data.participatedStatus,
+                                        style: TextStyle(color: Colors.green),
+                                      ));
+                                }
+                              });
+                        })
+                    : Container();
+              }
+            }));
+  }
+}
+
 Widget actualParticipantList(
   BuildContext context,
   DocumentSnapshot document,

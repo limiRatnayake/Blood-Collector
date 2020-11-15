@@ -67,13 +67,14 @@ class _DonatedRequestViewState extends State<DonatedRequestView> {
                                   participantId: data.participantId,
                                   uid: data.uid,
                                   docRef: data.docRef,
-                                  currentUser: _authServices.user.uid);
+                                  currentUser: _authServices.user.uid,
+                                  participatedStatus: data.participatedStatus);
                             }))
                     : Padding(
                         padding: EdgeInsets.all(15),
                         child: Center(
                           child: Text(
-                            "Please check again later.",
+                            "You did not participate for any events",
                             textAlign: TextAlign.center,
                           ),
                         ),

@@ -48,20 +48,30 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
   void initState() {
     // DateTime requestClose = DateTime.parse(widget.requestClose);
     // TODO: implement initState
-    super.initState();
 
-    Firestore.instance
-        .collection("events")
-        .where("requestClose", isGreaterThanOrEqualTo: DateTime.now())
-        .getDocuments()
-        .then((value) async {
-      await Firestore.instance
+    DateTime today = DateTime.now();
+    DateTime date = widget.requestClose.toDate();
+    if (today == date) {
+      Firestore.instance
           .collection("events")
           .document(widget.docRef)
           .updateData({
         "status": "Close",
       });
-    });
+    }
+    super.initState();
+    // Firestore.instance
+    //     .collection("events")
+    //     .where("requestClose", isGreaterThanOrEqualTo: DateTime.now())
+    //     .getDocuments()
+    //     .then((value) async {
+    //   await Firestore.instance
+    //       .collection("events")
+    //       .document(widget.docRef)
+    //       .updateData({
+    //     "status": "Close",
+    //   });
+    // });
   }
 
   @override
@@ -126,6 +136,15 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
                                 ),
                               ),
                               SizedBox(width: 9),
+                              widget.rejectedReason != "None"
+                                  ? Text("Rejected",
+                                      style: TextStyle(color: Colors.red))
+                                  : Container(),
+                            ],
+                          ),
+                          subtitle: Row(
+                            children: [
+                              Text("Event Status:"),
                               widget.approval == true
                                   ? Text(
                                       widget.status,
@@ -133,22 +152,8 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
                                           color: Colors.green,
                                           fontWeight: FontWeight.bold),
                                     )
-                                  : widget.rejectedReason != "None"
-                                      ? Text("Rejected",
-                                          style: TextStyle(color: Colors.red))
-                                      : Text("Approving",
-                                          style: TextStyle(color: Colors.red)),
-                            ],
-                          ),
-                          subtitle: Row(
-                            children: [
-                              // Text(
-                              //   date,
-                              //   style: TextStyle(
-                              //       fontSize: 12,
-                              //       fontWeight: FontWeight.bold,
-                              //       color: Colors.grey[500]),
-                              // ),
+                                  : Text("Approving",
+                                      style: TextStyle(color: Colors.red)),
                             ],
                           ),
                           trailing: PopupMenuButton<int>(

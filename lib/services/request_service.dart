@@ -1,6 +1,7 @@
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/request_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,9 +9,40 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class RequestAcceptenceService extends ChangeNotifier {
   Firestore _db;
   CollectionReference _ref;
+  CollectionReference _participantRef;
 
   RequestAcceptenceService() : _db = Firestore.instance {
     _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
+    _participantRef =
+        _db.collection(AppConstants.EVENTS_PARTICIPANTS_COLLECTION);
+  }
+
+  Future<String> addRequestDetails(
+    String docRef,
+    String requestStatus,
+    String requestSentOn,
+    String requesterId,
+    bool rejected,
+  ) async {
+    String message = "";
+    try {
+      DocumentReference newRef = _ref.document();
+      RequestAcceptModel reqAcceptModel = new RequestAcceptModel(
+        docRef: newRef.documentID,
+        requestStatus: requestStatus,
+        requestSentOn: requestSentOn,
+        requesterId: requesterId,
+        rejected: rejected,
+      );
+
+      await newRef.setData(reqAcceptModel.toJson());
+      message = "Success";
+      notifyListeners();
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    return message;
   }
 
   Future<DocumentSnapshot> getUserRequestDetails(

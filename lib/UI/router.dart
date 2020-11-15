@@ -2,6 +2,7 @@ import 'package:blood_collector/UI/pages/authentication/auth_view.dart';
 import 'package:blood_collector/UI/pages/authentication/forgot_password.dart';
 import 'package:blood_collector/UI/pages/authentication/signup_second_view.dart';
 import 'package:blood_collector/UI/pages/authentication/signup_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/raised_request.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -28,6 +29,9 @@ class Routers {
         return MaterialPageRoute(builder: (_) => ForgotPasswordPage());
       case AppConstants.HOME_PAGE:
         return MaterialPageRoute(builder: (_) => HomeWidgetView());
+      case AppConstants.RAISEDREQUEST_VIEW:
+        return MaterialPageRoute(builder: (_) => RaisedRequestView());
+
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(

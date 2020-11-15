@@ -63,7 +63,7 @@ class _NotificationViewState extends State<NotificationView> {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
     final EventService _eventServices = Provider.of<EventService>(context);
-
+    String category;
     return Scaffold(
       appBar: AppBar(
         title: Text("Notifications"),
@@ -136,25 +136,38 @@ class _NotificationViewState extends State<NotificationView> {
                                               NetworkImage(userData.proPicUrl),
                                         ),
                                       ),
-                                      title: Text(
-                                        notifyData.message +
-                                            " " +
-                                            "Blood Group",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      subtitle: Text(
-                                        "In" +
-                                            " " +
-                                            notifyData.hospitalName +
-                                            " " +
-                                            "\n" +
-                                            "Tap to view more",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
+                                      title: notifyData.hospitalName != ""
+                                          ? Text(
+                                              notifyData.message +
+                                                  " " +
+                                                  "Blood Group",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          : Text(notifyData.message,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold)),
+                                      subtitle: notifyData.hospitalName != ""
+                                          ? Text(
+                                              "In" +
+                                                  " " +
+                                                  notifyData.hospitalName +
+                                                  " " +
+                                                  "\n" +
+                                                  "Tap to view more",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            )
+                                          : Text(
+                                              notifyData.organizersName +
+                                                  "\n" +
+                                                  notifyData.eventHeldOn,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                              )),
                                       isThreeLine: true,
                                       trailing: IconButton(
                                           icon: Icon(Icons.delete),

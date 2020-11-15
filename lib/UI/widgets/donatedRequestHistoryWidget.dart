@@ -13,6 +13,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 class DonatedRequestPostView extends StatefulWidget {
   final String participantId;
+  final String participatedStatus;
   final String imageUrl;
   final String currentUser;
   final String uid;
@@ -27,10 +28,12 @@ class DonatedRequestPostView extends StatefulWidget {
   final String hospitalName;
   final String hospitalAddress;
   final String patientName;
+  final String status;
 
   DonatedRequestPostView({
     Key key,
     this.participantId,
+    this.participatedStatus,
     this.imageUrl,
     this.currentUser,
     this.uid,
@@ -45,6 +48,7 @@ class DonatedRequestPostView extends StatefulWidget {
     this.hospitalName,
     this.hospitalAddress,
     this.patientName,
+    this.status,
   }) : super(key: key);
   @override
   _DonatedRequestPostViewState createState() => _DonatedRequestPostViewState();
@@ -54,6 +58,7 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
   final participantRef = Firestore.instance;
   DocumentReference requestRef;
   DocumentReference requestedRef;
+  DocumentReference participatedRef;
   CollectionReference userRef;
   String participateId;
   // String participatedStatus;
@@ -66,12 +71,27 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
         .document(widget.docRef)
         .collection("requested")
         .document(widget.currentUser);
+    DateTime today = DateTime.now();
+    DateTime date = widget.requestCloseDate.toDate();
+    if (today == date) {
+      Firestore.instance
+          .collection("events")
+          .document(widget.docRef)
+          .updateData({
+        "status": "Close",
+      }).then((value) => {
+                if (widget.participatedStatus != "Donated")
+                  {
+                    Firestore.instance
+                        .collection("participants")
+                        .document(widget.participantId)
+                        .updateData({
+                      "participatedStatus": "Not Participated",
+                    })
+                  }
+              });
+    }
 
-    // requestRef.get().then((value) {
-    //   setState(() {
-    //     requestedStatus = value.data["requestStatus"];
-    //   });
-    // });
     super.initState();
     userRef = Firestore.instance.collection("users");
   }
@@ -106,15 +126,6 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
       }
     } else {
       date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
-    }
-
-    DateTime createdOn = widget.requestCloseDate.toDate();
-    DateTime currentDate = DateTime.now();
-
-    String createdOnFormat = DateFormat.yMMMEd().format(createdOn);
-
-    if (createdOn.compareTo(currentDate) > 0) {
-      print(createdOn);
     }
 
     return Container(
@@ -183,30 +194,22 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                           return (data != null &&
                                                   data.participatedStatus !=
                                                       "Cancelled")
-                                              ? data.participatedStatus !=
-                                                      "Donated"
-                                                  ? requestedStatus !=
-                                                          "Accepted"
-                                                      ? Text(
-                                                          "Accepting..",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .purpleAccent),
-                                                        )
-                                                      : requestedStatus !=
-                                                              "Rejected"
-                                                          ? Text(
-                                                              "Rejected!",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .red),
-                                                            )
-                                                          : Container()
-                                                  : Text(
-                                                      "Donated",
+                                              ? requestedStatus != "Accepted"
+                                                  ? Text(
+                                                      "Accepting..",
                                                       style: TextStyle(
-                                                          color: Colors.purple),
+                                                          color: Colors
+                                                              .purpleAccent),
                                                     )
+                                                  : requestedStatus ==
+                                                          "Rejected"
+                                                      ? Text(
+                                                          "Rejected!",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.red),
+                                                        )
+                                                      : Container()
                                               : Text(
                                                   "Cancelled",
                                                   style: TextStyle(
@@ -217,12 +220,50 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                   : Container()
                             ],
                           ),
-                          subtitle: Text(
-                            date,
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[500]),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                date,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[500]),
+                              ),
+                              FutureBuilder(
+                                  future: _participantServices
+                                      .getParticipantDetails(
+                                          widget.participantId),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    } else {
+                                      ParticipantModel data =
+                                          ParticipantModel.fromMap(
+                                              snapshot.data.data);
+                                      participatedStatus =
+                                          data.participatedStatus;
+
+                                      return (data != null &&
+                                              data.participatedStatus !=
+                                                  "Donated")
+                                          ? data.participatedStatus ==
+                                                  "Not participated"
+                                              ? Text(
+                                                  "Not participated",
+                                                  style: TextStyle(
+                                                      color: Colors.purple),
+                                                )
+                                              : Container()
+                                          : Text(
+                                              "Donated",
+                                              style: TextStyle(
+                                                  color: Colors.purple),
+                                            );
+                                    }
+                                  })
+                            ],
                           ),
                           children: [
                             ListTile(
@@ -448,7 +489,7 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                       : Text("try again later");
                 }
               }),
-          requestedStatus == "Accepted"
+          requestedStatus == "Accepted" && widget.status != "Close"
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: (participatedStatus != "Cancelled" &&
@@ -458,104 +499,104 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                           children: [
                             Text("Once you actually donated "),
                             RaisedButton(
-                                color: Colors.blueAccent,
-                                onPressed: () {
-                                  Alert(
-                                      context: context,
-                                      type: AlertType.success,
-                                      title: "Did you actually donated?",
-                                      style: AlertStyle(
-                                          isCloseButton: false,
-                                          isOverlayTapDismiss: false,
-                                          backgroundColor: Colors.black,
-                                          alertBorder: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              side: BorderSide(
-                                                  color: Colors.white)),
-                                          titleStyle: TextStyle(
-                                              color: Colors.blueAccent)),
-                                      buttons: [
-                                        DialogButton(
-                                            child: Text(
-                                              "No",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20),
-                                            ),
-                                            onPressed: () {
+                              color: Colors.blueAccent,
+                              child: Text(
+                                "Mark as Donated",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              onPressed: () {
+                                Alert(
+                                    context: context,
+                                    type: AlertType.success,
+                                    title: "Did you actually donated?",
+                                    style: AlertStyle(
+                                        isCloseButton: false,
+                                        isOverlayTapDismiss: false,
+                                        backgroundColor: Colors.black,
+                                        alertBorder: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            side: BorderSide(
+                                                color: Colors.white)),
+                                        titleStyle: TextStyle(
+                                            color: Colors.blueAccent)),
+                                    buttons: [
+                                      DialogButton(
+                                          child: Text(
+                                            "No",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          }),
+                                      DialogButton(
+                                          child: Text(
+                                            "Yes",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20),
+                                          ),
+                                          onPressed: () async {
+                                            String response =
+                                                await _participantServices
+                                                    .updateDataOfParticipating(
+                                                        DateTime.now()
+                                                            .toString(),
+                                                        widget.participantId,
+                                                        "Donated");
+                                            if (response == "Success") {
+                                              Firestore.instance.runTransaction(
+                                                  (Transaction tx) async {
+                                                DocumentSnapshot docSnapshot =
+                                                    await tx.get(
+                                                        userRef.document(widget
+                                                            .currentUser));
+                                                if (docSnapshot.exists) {
+                                                  await tx.update(
+                                                      userRef.document(
+                                                          widget.currentUser),
+                                                      <String, dynamic>{
+                                                        "userPreviouslyDonatedOrNot":
+                                                            "Yes",
+                                                        "dateOfLastDonation":
+                                                            DateTime.now()
+                                                                .toString(),
+                                                        "lastDonationDateCheck":
+                                                            false,
+                                                        'ifYesHowManyTimes':
+                                                            docSnapshot.data[
+                                                                    "ifYesHowManyTimes"] +
+                                                                1
+                                                      });
+                                                }
+                                              });
+                                              var snackBar = SnackBar(
+                                                content: Text(
+                                                    'Your last donation date is updated!',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Colors.blueGrey)),
+                                                action: SnackBarAction(
+                                                  label: 'Go',
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                SettingView()));
+                                                  },
+                                                ),
+                                              );
+                                              Scaffold.of(context)
+                                                  .showSnackBar(snackBar);
                                               Navigator.of(context).pop();
-                                            }),
-                                        DialogButton(
-                                            child: Text(
-                                              "Yes",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20),
-                                            ),
-                                            onPressed: () async {
-                                              String response =
-                                                  await _participantServices
-                                                      .updateDataOfParticipating(
-                                                          DateTime.now()
-                                                              .toString(),
-                                                          widget.participantId,
-                                                          "Donated");
-                                              if (response == "Success") {
-                                                Firestore.instance
-                                                    .runTransaction(
-                                                        (Transaction tx) async {
-                                                  DocumentSnapshot docSnapshot =
-                                                      await tx.get(userRef
-                                                          .document(widget
-                                                              .currentUser));
-                                                  if (docSnapshot.exists) {
-                                                    await tx.update(
-                                                        userRef.document(
-                                                            widget.currentUser),
-                                                        <String, dynamic>{
-                                                          "userPreviouslyDonatedOrNot":
-                                                              "Yes",
-                                                          "dateOfLastDonation":
-                                                              DateTime.now()
-                                                                  .toString(),
-                                                          "lastDonationDateCheck":
-                                                              false,
-                                                          'ifYesHowManyTimes':
-                                                              docSnapshot.data[
-                                                                      "ifYesHowManyTimes"] +
-                                                                  1
-                                                        });
-                                                  }
-                                                });
-                                                var snackBar = SnackBar(
-                                                  content: Text(
-                                                      'Your last donation date is updated!',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.blueGrey)),
-                                                  action: SnackBarAction(
-                                                    label: 'Go',
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  SettingView()));
-                                                    },
-                                                  ),
-                                                );
-                                                Scaffold.of(context)
-                                                    .showSnackBar(snackBar);
-                                                Navigator.of(context).pop();
-                                              }
-                                            })
-                                      ]).show();
-                                },
-                                child: Text(
-                                  "Mark as Donated",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                )),
+                                            }
+                                          })
+                                    ]).show();
+                              },
+                            ),
                           ],
                         )
                       : Container())

@@ -40,7 +40,7 @@ class _TimelineViewState extends State<TimelineView> {
                     var differenceInDays =
                         currentMonth.difference(lastDonatedMonth).inDays;
                     var differenceOfMonth = (differenceInDays) ~/ 30;
-                    print(differenceOfMonth);
+
                     if (differenceOfMonth >= 4) {
                       Firestore.instance
                           .collection("users")

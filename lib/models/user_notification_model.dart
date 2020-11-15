@@ -5,6 +5,9 @@ class NotificationModel {
   String notifyBy;
   String message;
   String hospitalName;
+  String organizersName;
+  String eventHeldOn;
+
   // Timestamp createdOn;
 
   NotificationModel({
@@ -14,6 +17,8 @@ class NotificationModel {
     this.notifyBy,
     this.message,
     this.hospitalName,
+    this.organizersName,
+    this.eventHeldOn,
     // this.createdOn,
   });
 
@@ -24,7 +29,9 @@ class NotificationModel {
         notifyBy =
             snapshot['notifyBy'] ?? "", //if the value is not there it is empty
         message = snapshot['message'] ?? "",
-        hospitalName = snapshot['hospitalName'] ?? "";
+        hospitalName = snapshot['hospitalName'] ?? "",
+        organizersName = snapshot['organizersName'] ?? "",
+        eventHeldOn = snapshot['eventHeldOn'] ?? "";
   // createdOn = snapshot['createdOn'] ?? null;
 
   toJson() {
@@ -35,6 +42,8 @@ class NotificationModel {
       "notifyBy": notifyBy,
       "message": message,
       "hospitalName": hospitalName,
+      "organizersName": organizersName,
+      "eventHeldOn": eventHeldOn,
       // "createdAt": createdOn
     };
   }

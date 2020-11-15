@@ -25,7 +25,7 @@ class AcceptRequestCard extends StatefulWidget {
 
 class _AcceptRequestCardState extends State<AcceptRequestCard> {
   CollectionReference eventRef;
-  // DocumentReference eventsRef;
+  DocumentReference events;
 
   Map<String, dynamic> requestData;
   bool _isReqDisabled;
@@ -36,10 +36,10 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
   @override
   void initState() {
     super.initState();
-    // eventsRef = Firestore.instance.collection("events").document(widget.docRef);
-    // eventsRef.get().then((value) {
-    //   userAccepted = value.data["userAccepted"];
-    // });
+    events = Firestore.instance.collection("events").document(widget.docRef);
+    events.get().then((value) {
+      userAccepted = value.data["userAccepted"];
+    });
     eventRef = Firestore.instance.collection("events");
   }
 

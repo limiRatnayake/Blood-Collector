@@ -1,14 +1,16 @@
-import 'package:blood_collector/UI/widgets/appTopBar.dart';
+import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreCampaignMore.dart';
 import 'package:blood_collector/UI/widgets/participantListViewWidget.dart';
-import 'package:blood_collector/UI/widgets/submitParticipants.dart';
 import 'package:blood_collector/UI/widgets/submittedParticipantList.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
+import 'package:blood_collector/services/event_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ListOfParticipantView extends StatefulWidget {
+  final String uid;
   final String docRef;
   final int totalEngage;
   final int actualEngage;
@@ -17,6 +19,7 @@ class ListOfParticipantView extends StatefulWidget {
 
   ListOfParticipantView({
     Key key,
+    this.uid,
     this.docRef,
     this.totalEngage,
     this.actualEngage,
@@ -35,6 +38,9 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
   List _allParticipants = [];
   List _resultsList = [];
   Future resultsLoaded;
+
+  EventParticipantService _participantService;
+  EventService _eventService;
   var data;
   @override
   void initState() {
@@ -46,21 +52,22 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
   }
 
   @override
+  void dispose() {
+    //clean up the listener and remove the listerner when we leave the page
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
     /**getUsersPastTripsStreamSnapshots returns a future and it's async function
      * so, it can't access in initState that's why we have to call it inhere
      * bcz we are calling firebase data 
      */
     resultsLoaded = getUsersPastTripsStreamSnapshots();
-  }
-
-  @override
-  void dispose() {
-    //clean up the listener and remove the listerner when we leave the page
-    _searchController.removeListener(_onSearchChanged);
-    _searchController.dispose();
-    super.dispose();
+    super.didChangeDependencies();
   }
 
   _onSearchChanged() {
@@ -90,12 +97,14 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
     } else {
       showSearchResults = List.from(_allParticipants);
     }
-    setState(() {
-      _resultsList = showSearchResults;
-    });
+    if (mounted) {
+      setState(() {
+        _resultsList = showSearchResults;
+      });
+    }
   }
 
-  getUsersPastTripsStreamSnapshots() async {
+  Future getUsersPastTripsStreamSnapshots() async {
     /** we are not using a futurebuilder bcz search should be done on the potential data that has loaded
      * when everytime someone is searching we do not needed to access firebase and seacrh all the documents in the firebase 
      * so, from the loaded data seach is implemented
@@ -104,122 +113,264 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
         .collection('participants')
         .where("docRef", isEqualTo: widget.docRef)
         .getDocuments();
-    setState(() {
-      //adding the document data into a list
-      _allParticipants = data.documents;
-    });
+    if (mounted) {
+      setState(() {
+        //adding the document data into a list
+        _allParticipants = data.documents;
+      });
+    }
+
     searchResultsList();
     return "Success";
   }
 
   @override
   Widget build(BuildContext context) {
-    final EventParticipantService _participantServices =
+    final EventService _eventService = Provider.of<EventService>(context);
+    final EventParticipantService _participantService =
         Provider.of<EventParticipantService>(context);
 
     return Scaffold(
-      appBar: widget.submitListStatus != "submitted"
-          ? PreferredSize(
-              preferredSize: const Size(double.infinity, kToolbarHeight),
-              child: SubmitAppTopBar(
-                title: "Settings",
-                docRef: widget.docRef,
-              ))
-          : PreferredSize(
-              preferredSize: const Size(double.infinity, kToolbarHeight),
-              child: AppBar(
-                title: Text("Actual Participant List"),
-              )),
+      appBar: AppBar(
+        title: Text("Participant List"),
+        // actions: [FlatButton(onPressed: show, child: Text("Submit"))],
+      ),
+      // appBar: widget.submitListStatus != "submitted"
+      //     ? PreferredSize(
+      //         preferredSize: const Size(double.infinity, kToolbarHeight),
+      //         child: SubmitAppTopBar(
+      //             title: "Settings", docRef: widget.docRef, uid: widget.uid))
+      //     : PreferredSize(
+      //         preferredSize: const Size(double.infinity, kToolbarHeight),
+      //         child: AppBar(
+      //           title: Text("Actual Participant List"),
+      //         )),
 
-      body: Column(
-        children: [
-          widget.submitListStatus != "submitted"
-              ? Padding(
-                  padding: const EdgeInsets.only(
-                      left: 30.0, right: 30.0, bottom: 30.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(
-                        Icons.info,
-                        color: Colors.blue.shade300,
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Flexible(
-                          child: Text(
-                        "After updating all the participant details don't forget to click the submit button",
-                        style: TextStyle(color: Colors.grey.shade700),
-                      ))
-                    ],
+      body: Builder(
+        builder: (builderContext) => Column(
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.info,
+                    color: Colors.blue.shade300,
                   ),
-                )
-              : Container(),
-
-          //search textfield
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                  hintText: "Search",
-                  prefixIcon: Icon(Icons.search, color: Colors.black),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close),
-                    color: Colors.black,
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Flexible(
+                      child: Text(
+                    "After updating all the participant details don't forget to click the submit button",
+                    style: TextStyle(color: Colors.grey.shade700),
+                  )),
+                  FlatButton(
+                    child: Text(
+                      "Submit",
+                      style: TextStyle(color: Colors.red),
+                    ),
                     onPressed: () {
-                      _searchController.clear();
+                      Alert(
+                          context: builderContext,
+                          type: AlertType.success,
+                          title:
+                              "Make sure that you have update all the users!",
+                          content: Text("You may not able to change it again!"),
+                          style: AlertStyle(
+                              backgroundColor: Colors.white,
+                              alertBorder: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  side: BorderSide(color: Colors.white)),
+                              titleStyle: TextStyle(color: Colors.blueAccent)),
+                          buttons: [
+                            DialogButton(
+                                width: 120,
+                                child: Text(
+                                  "Ok",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                                onPressed: () {
+                                  //use pop route here becuase in slider_widget it should update & come back to same page
+                                  Navigator.pop(context);
+                                }),
+                            DialogButton(
+                                child: Text("Submit"),
+                                onPressed: () async {
+                                  List<ParticipantModel> participants =
+                                      await _participantService
+                                          .getParticipantForParticularEvent(
+                                              widget.docRef);
+                                  String response;
+                                  for (var i = 0;
+                                      i < participants.length;
+                                      i++) {
+                                    // participantId = participants[i].uid;
+                                    Firestore.instance
+                                        .runTransaction((tx) async {
+                                      DocumentSnapshot docSnapshot =
+                                          await tx.get(userRef
+                                              .document(participants[i].uid));
+                                      if (docSnapshot.exists) {
+                                        int donatedCount = docSnapshot
+                                                .data['ifYesHowManyTimes'] +
+                                            1;
+
+                                        // Perform an update on the document
+                                        await tx.update(
+                                            userRef
+                                                .document(participants[i].uid),
+                                            {
+                                              "userPreviouslyDonatedOrNot":
+                                                  "Yes",
+                                              "dateOfLastDonation":
+                                                  DateTime.now().toString(),
+                                              "lastDonationDateCheck": false,
+                                              'ifYesHowManyTimes': donatedCount
+                                            });
+                                      }
+                                    });
+                                    // print(participantId);
+
+                                  }
+                                  response = await _eventService.addSubmitState(
+                                    widget.docRef,
+                                  );
+                                  if (response != "Success") {
+                                    print("Error in the submit button");
+                                  } else {
+                                    Navigator.of(context).push(
+                                        new MaterialPageRoute(
+                                            builder: (_) =>
+                                                SubmittedParticipantListView(
+                                                  docRef: widget.docRef,
+                                                )));
+                                  }
+                                })
+                          ]).show();
+
+                      // Alert(
+                      //     context: context,
+                      //     type: AlertType.success,
+                      //     title:
+                      //         "Make sure that you have update all the users!",
+                      //     content: Text(
+                      //         "You may not able to change it again!"),
+                      //     style: AlertStyle(
+                      //         backgroundColor: Colors.black,
+                      //         alertBorder: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(5),
+                      //             side: BorderSide(color: Colors.white)),
+                      //         titleStyle:
+                      //             TextStyle(color: Colors.blueAccent)),
+                      //     buttons: [
+                      //       DialogButton(
+                      //           width: 120,
+                      //           child: Text(
+                      //             "Ok",
+                      //             style: TextStyle(
+                      //                 color: Colors.white, fontSize: 20),
+                      //           ),
+                      //           onPressed: () {
+                      //             //use pop route here becuase in slider_widget it should update & come back to same page
+                      //             Navigator.pop(context);
+                      //           }),
+                      //       DialogButton(
+                      //           width: 120,
+                      //           child: Text(
+                      //             "Submit",
+                      //             style: TextStyle(
+                      //                 color: Colors.white, fontSize: 20),
+                      //           ),
+                      //           onPressed: () async {
+                      //             List<ParticipantModel> participants =
+                      //                 await _participantService
+                      //                     .getParticipantForParticularEvent(
+                      //                         widget.docRef);
+
+                      //             for (var i = 0;
+                      //                 i < participants.length;
+                      //                 i++) {
+                      //               // participantId = participants[i].uid;
+
+                      //               // print(participantId);
+                      //               String response = await _eventService
+                      //                   .addSubmitState(widget.docRef,
+                      //                       participants[i].uid);
+                      //               if (response != "Success") {
+                      //                 print("Error in the submit button");
+                      //               } else {
+                      //                     Navigator.of(context).push(
+                      // new MaterialPageRoute(
+                      //     builder: (_) =>
+                      //         SubmittedParticipantListView(
+                      //           docRef: widget.docRef,
+                      //         )));
+                      //               }
+                      //             }
+                      //           })
+                      //     ]).show();
                     },
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                    borderSide: BorderSide(width: 1, color: Colors.black),
-                  ),
-                  border: OutlineInputBorder(
-                      borderSide: new BorderSide(color: Colors.black),
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                  )
+                ],
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text("Name"),
-              Text("Participated/" + "\n" + "Not Participated"),
-            ],
-          ),
-          widget.submitListStatus != "submitted"
-              ? Expanded(
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _resultsList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return buildParticipantsList(
-                            context,
-                            _resultsList[index],
-                            eventRef,
-                            userRef,
-                            widget.totalEngage,
-                            widget.actualEngage,
-                            widget.avoidParticipants);
-                      }),
-                )
-              : Expanded(
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _resultsList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return actualParticipantList(
-                          context,
-                          _resultsList[index],
-                          eventRef,
-                        );
-                      }),
-                )
-        ],
+
+            //search textfield
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 30.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                    hintText: "Search",
+                    prefixIcon: Icon(Icons.search, color: Colors.black),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.close),
+                      color: Colors.black,
+                      onPressed: () {
+                        _searchController.clear();
+                      },
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                      borderSide: BorderSide(width: 1, color: Colors.black),
+                    ),
+                    border: OutlineInputBorder(
+                        borderSide: new BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              // crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text("Name"),
+                Text("Participated/" + "\n" + "Not Participated"),
+              ],
+            ),
+            Expanded(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _resultsList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildParticipantsList(
+                        context,
+                        _resultsList[index],
+                        eventRef,
+                        userRef,
+                        widget.docRef,
+                        widget.totalEngage,
+                        widget.actualEngage,
+                        widget.avoidParticipants);
+                  }),
+            )
+          ],
+        ),
       ),
       // body: FutureBuilder(
       //     future: _participantServices.getParticipantForAnEvent(widget.docRef),

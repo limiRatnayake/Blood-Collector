@@ -3,6 +3,7 @@ import 'package:blood_collector/UI/widgets/donatedRequestHistoryWidget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +13,15 @@ class DonatedRequestedGetEvents extends StatefulWidget {
   final String uid;
   final String docRef;
   final String currentUser;
+  final String participatedStatus;
 
   DonatedRequestedGetEvents(
-      {Key key, this.participantId, this.uid, this.docRef, this.currentUser})
+      {Key key,
+      this.participantId,
+      this.uid,
+      this.docRef,
+      this.currentUser,
+      this.participatedStatus})
       : super(key: key);
   @override
   _DonatedRequestedGetEventsState createState() =>
@@ -41,6 +48,7 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                 child: data.category != "request"
                     ? DonatedCampaignPostView(
                         participantId: widget.participantId,
+                        participatedStatus: widget.participatedStatus,
                         imageUrl: data.imageUrl,
                         uid: data.uid,
                         docRef: data.docRef,
@@ -55,9 +63,11 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         requestCloseDate: data.requestClose,
                         placeName: data.placeName,
                         placeAddress: data.placeAddress,
-                        currentUser: widget.currentUser)
+                        currentUser: widget.currentUser,
+                        submitListStatus: data.submitListStatus)
                     : DonatedRequestPostView(
                         participantId: widget.participantId,
+                        participatedStatus: widget.participatedStatus,
                         imageUrl: data.imageUrl,
                         uid: data.uid,
                         docRef: data.docRef,
@@ -71,6 +81,7 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         hospitalName: data.hospitalName,
                         hospitalAddress: data.hospitalAddress,
                         patientName: data.patientName,
+                        status: data.status,
                         currentUser: widget.currentUser,
                       ));
           }

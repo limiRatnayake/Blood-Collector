@@ -13,6 +13,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 class DonatedCampaignPostView extends StatefulWidget {
   final String participantId;
+  final String participatedStatus;
   final String imageUrl;
   final String uid;
   final String docRef;
@@ -28,10 +29,12 @@ class DonatedCampaignPostView extends StatefulWidget {
   final Timestamp requestCloseDate;
   final String placeName;
   final String placeAddress;
+  final String submitListStatus;
 
   DonatedCampaignPostView({
     Key key,
     this.participantId,
+    this.participatedStatus,
     this.imageUrl,
     this.uid,
     this.docRef,
@@ -47,6 +50,7 @@ class DonatedCampaignPostView extends StatefulWidget {
     this.requestCloseDate,
     this.placeName,
     this.placeAddress,
+    this.submitListStatus,
   }) : super(key: key);
   @override
   _DonatedCampaignPostViewState createState() =>
@@ -59,18 +63,19 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
 
   String participateId;
   String participatedStatus;
+
   String cancelParticipatedStatus;
 
   @override
   void initState() {
     //get the document reference of the Participants collection
-    participantRef
-        .collection("participants")
-        .getDocuments()
-        .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
-              participateId = element.documentID;
-              participatedStatus = element['participatedStatus'];
-            }));
+    // participantRef
+    //     .collection("participants")
+    //     .getDocuments()
+    //     .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
+    //           participateId = element.documentID;
+    //           participatedStatus = element['participatedStatus'];
+    //         }));
     eventRef = Firestore.instance.collection("events");
     super.initState();
   }
@@ -182,12 +187,26 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                   : Container()
                             ],
                           ),
-                          subtitle: Text(
-                            date,
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[500]),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                date,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[500]),
+                              ),
+                              widget.submitListStatus == "submitted"
+                                  ? Text(
+                                      widget.participatedStatus,
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green[500]),
+                                    )
+                                  : Container(),
+                            ],
                           ),
                           children: [
                             ListTile(
@@ -232,7 +251,9 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                               Icon(Icons.arrow_drop_down),
                               PopupMenuButton<int>(
                                 itemBuilder: (context) => [
-                                  cancelParticipatedStatus != "Cancelled"
+                                  cancelParticipatedStatus != "Cancelled" &&
+                                          widget.participatedStatus ==
+                                              "participating"
                                       ? PopupMenuItem(
                                           value: 1,
                                           child: Text(

@@ -3,6 +3,7 @@ import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/preventDooubleTap.dart';
 import 'package:blood_collector/UI/widgets/slider_campaign_widget.dart';
 import 'package:blood_collector/UI/widgets/slider_request_widget.dart';
+import 'package:blood_collector/UI/widgets/submittedParticipantList.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -150,20 +151,29 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                     color: Colors.black,
                                   ),
                                   onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ListOfParticipantView(
-                                                    docRef: widget.docRef,
-                                                    totalEngage: data
-                                                        .totalParticipants,
-                                                    actualEngage:
-                                                        data.actualParticipants,
-                                                    avoidParticipants:
-                                                        data.avoidParticipants,
-                                                    submitListStatus: data
-                                                        .submitListStatus)));
+                                    data.submitListStatus != "submitted"
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ListOfParticipantView(
+                                                        uid: widget.uid,
+                                                        docRef: widget.docRef,
+                                                        totalEngage: data
+                                                            .totalParticipants,
+                                                        actualEngage: data
+                                                            .actualParticipants,
+                                                        avoidParticipants: data
+                                                            .avoidParticipants,
+                                                        submitListStatus: data
+                                                            .submitListStatus)))
+                                        : Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SubmittedParticipantListView(
+                                                      docRef: widget.docRef,
+                                                    )));
                                   },
                                 ),
                                 Divider(
