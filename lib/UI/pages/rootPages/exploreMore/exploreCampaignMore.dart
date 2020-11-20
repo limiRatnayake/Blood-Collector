@@ -178,9 +178,9 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                   },
                                 ),
                                 ListTile(
-                                  leading: Icon(Icons.person),
+                                  leading: Icon(Icons.analytics),
                                   title: Text(
-                                    "View Insights",
+                                    "Analytics",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                   trailing: Icon(
