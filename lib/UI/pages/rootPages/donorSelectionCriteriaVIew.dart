@@ -175,7 +175,7 @@ class _DonorSelectionCriteriaPageState
               },
             ),
           ),
-        ),
+        )
       ],
     );
   }
@@ -580,6 +580,7 @@ class _DonorSelectionCriteriaPageState
               } else {
                 UserModel data = UserModel.fromMap(snapshot.data.data);
                 birthDate = data.birthDate;
+
                 return ListView(children: <Widget>[
                   Container(
                     child: SingleChildScrollView(
@@ -599,8 +600,10 @@ class _DonorSelectionCriteriaPageState
                               SizedBox(height: 10),
                               //using two fields because if user never donated before dateOfLastDonation should be null
                               //once they really donated it should be updated
+                              data.dateOfLastDonation != ''
+                                  ? _dateOfLastDonation(data.dateOfLastDonation)
+                                  : _dateOfLastDonationIsNull(),
 
-                              _dateOfLastDonation(data.dateOfLastDonation),
                               SizedBox(height: 10),
                               _medicallyAdvised(data.medicallyAdvised),
                               SizedBox(height: 10),

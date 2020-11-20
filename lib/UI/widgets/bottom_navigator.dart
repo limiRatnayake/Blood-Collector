@@ -31,20 +31,19 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
     return Scaffold(
         body: _children[_currentTab],
         bottomNavigationBar: BottomNavigationBar(
-            fixedColor: Colors.black,
+            fixedColor: Colors.red[600],
             type: BottomNavigationBarType.fixed,
             currentIndex: _currentTab,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                title: Text('Home'),
+                label: 'Home',
               ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.list), title: Text('Request List')),
+                  icon: Icon(Icons.list), label: 'Request List'),
+              BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.map), title: Text('Map')),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), title: Text('Settings')),
+                  icon: Icon(Icons.settings), label: 'Settings'),
             ],
             onTap: onTappedBar));
   }

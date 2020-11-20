@@ -174,7 +174,7 @@ class _PostViewState extends State<PostView> {
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       _isLiked();
 
                       likeRef.get().then((value) => {
@@ -184,19 +184,33 @@ class _PostViewState extends State<PostView> {
                                 if (value.data.keys.contains(widget.docRef))
                                   {
                                     Firestore.instance
-                                        .runTransaction((Transaction tx) async {
+                                        .runTransaction((tx) async {
                                       DocumentSnapshot docSnapshot =
                                           await tx.get(
                                               eventRef.document(widget.docRef));
                                       if (docSnapshot.exists) {
+                                        int newFollowerCount =
+                                            docSnapshot.data['likes'] - 1;
+                                        // Perform an update on the document
                                         await tx.update(
                                             eventRef.document(widget.docRef),
-                                            <String, dynamic>{
-                                              'likes':
-                                                  docSnapshot.data["likes"] - 1
-                                            });
+                                            {'likes': newFollowerCount});
                                       }
-                                    }),
+                                    })
+                                    // Firestore.instance
+                                    //     .runTransaction((Transaction tx) async {
+                                    //   DocumentSnapshot docSnapshot =
+                                    //       await tx.get(
+                                    //           eventRef.document(widget.docRef));
+                                    //   if (docSnapshot.exists) {
+                                    //     await tx.update(
+                                    //         eventRef.document(widget.docRef),
+                                    //         <String, dynamic>{
+                                    //           'likes':
+                                    //               docSnapshot.data["likes"] - 1
+                                    //         });
+                                    //   }
+                                    // }),
                                   },
                                 likeRef.delete(),
                                 setState(() {
@@ -207,18 +221,30 @@ class _PostViewState extends State<PostView> {
                               }
                             else
                               {
-                                Firestore.instance
-                                    .runTransaction((Transaction tx) async {
+                                Firestore.instance.runTransaction((tx) async {
                                   DocumentSnapshot docSnapshot = await tx
                                       .get(eventRef.document(widget.docRef));
                                   if (docSnapshot.exists) {
+                                    int newFollowerCount =
+                                        docSnapshot.data['likes'] + 1;
+                                    // Perform an update on the document
                                     await tx.update(
                                         eventRef.document(widget.docRef),
-                                        <String, dynamic>{
-                                          'likes': docSnapshot.data["likes"] + 1
-                                        });
+                                        {'likes': newFollowerCount});
                                   }
                                 }),
+                                // Firestore.instance
+                                //     .runTransaction((Transaction tx) async {
+                                //   DocumentSnapshot docSnapshot = await tx
+                                //       .get(eventRef.document(widget.docRef));
+                                //   if (docSnapshot.exists) {
+                                //     await tx.update(
+                                //         eventRef.document(widget.docRef),
+                                //         <String, dynamic>{
+                                //           'likes': docSnapshot.data["likes"] + 1
+                                //         });
+                                //   }
+                                // }),
                                 likeRef.setData({widget.docRef: true}),
                                 setState(() {
                                   likeRef.get().then((value) {
@@ -300,30 +326,29 @@ class _PostViewState extends State<PostView> {
                             savedEventData.containsValue(widget.docRef)
                         ? Icon(Icons.bookmark)
                         : Icon(Icons.bookmark_border),
-                    onPressed: () {
+                    onPressed: () async {
                       _isSaved();
 
-                      savedEventRef.get().then((value) => {
+                      await savedEventRef.get().then((value) => {
                             if (value.data != null)
                               {
                                 print("like ref is nt null"),
                                 if (value.data.values.contains(widget.docRef))
                                   {
                                     Firestore.instance
-                                        .runTransaction((Transaction tx) async {
+                                        .runTransaction((tx) async {
                                       DocumentSnapshot docSnapshot =
                                           await tx.get(
                                               eventRef.document(widget.docRef));
                                       if (docSnapshot.exists) {
+                                        int newFollowerCount =
+                                            docSnapshot.data['savedEvents'] - 1;
+                                        // Perform an update on the document
                                         await tx.update(
                                             eventRef.document(widget.docRef),
-                                            <String, dynamic>{
-                                              'savedEvents': docSnapshot
-                                                      .data["savedEvents"] -
-                                                  1
-                                            });
+                                            {'savedEvents': newFollowerCount});
                                       }
-                                    }),
+                                    })
                                   },
                                 savedEventRef.delete(),
                                 setState(() {
@@ -334,18 +359,16 @@ class _PostViewState extends State<PostView> {
                               }
                             else
                               {
-                                Firestore.instance
-                                    .runTransaction((Transaction tx) async {
+                                Firestore.instance.runTransaction((tx) async {
                                   DocumentSnapshot docSnapshot = await tx
                                       .get(eventRef.document(widget.docRef));
                                   if (docSnapshot.exists) {
+                                    int newFollowerCount =
+                                        docSnapshot.data['savedEvents'] + 1;
+                                    // Perform an update on the document
                                     await tx.update(
                                         eventRef.document(widget.docRef),
-                                        <String, dynamic>{
-                                          'savedEvents':
-                                              docSnapshot.data["savedEvents"] +
-                                                  1
-                                        });
+                                        {'savedEvents': newFollowerCount});
                                   }
                                 }),
                                 savedEventRef.setData({

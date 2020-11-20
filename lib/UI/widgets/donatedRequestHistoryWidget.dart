@@ -71,9 +71,13 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
         .document(widget.docRef)
         .collection("requested")
         .document(widget.currentUser);
+
     DateTime today = DateTime.now();
-    DateTime date = widget.requestCloseDate.toDate();
-    if (today == date) {
+    final dateFormat = DateFormat('yyyy-MM-dd').format(today);
+    final closeDate =
+        DateFormat('yyyy-MM-dd').format(widget.requestCloseDate.toDate());
+
+    if (dateFormat == closeDate) {
       Firestore.instance
           .collection("events")
           .document(widget.docRef)
@@ -194,22 +198,27 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                           return (data != null &&
                                                   data.participatedStatus !=
                                                       "Cancelled")
-                                              ? requestedStatus != "Accepted"
-                                                  ? Text(
-                                                      "Accepting..",
-                                                      style: TextStyle(
-                                                          color: Colors
-                                                              .purpleAccent),
-                                                    )
-                                                  : requestedStatus ==
-                                                          "Rejected"
-                                                      ? Text(
-                                                          "Rejected!",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.red),
-                                                        )
-                                                      : Container()
+                                              ? Column(
+                                                  children: [
+                                                    requestedStatus == "Sent"
+                                                        ? Text(
+                                                            "Accepting..",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .purpleAccent),
+                                                          )
+                                                        : Container(),
+                                                    requestedStatus ==
+                                                            "Rejected"
+                                                        ? Text(
+                                                            "Rejected!",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.red),
+                                                          )
+                                                        : Container()
+                                                  ],
+                                                )
                                               : Text(
                                                   "Cancelled",
                                                   style: TextStyle(
@@ -245,22 +254,32 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                       participatedStatus =
                                           data.participatedStatus;
 
-                                      return (data != null &&
-                                              data.participatedStatus !=
-                                                  "Donated")
-                                          ? data.participatedStatus ==
-                                                  "Not participated"
-                                              ? Text(
-                                                  "Not participated",
-                                                  style: TextStyle(
-                                                      color: Colors.purple),
-                                                )
-                                              : Container()
-                                          : Text(
-                                              "Donated",
-                                              style: TextStyle(
-                                                  color: Colors.purple),
-                                            );
+                                      return data != null
+                                          ? Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                data.participatedStatus ==
+                                                        "Not Participated"
+                                                    ? Text(
+                                                        "Not participated",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.green),
+                                                      )
+                                                    : Container(),
+                                                data.participatedStatus ==
+                                                        "Donated"
+                                                    ? Text(
+                                                        "Donated",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.purple),
+                                                      )
+                                                    : Container()
+                                              ],
+                                            )
+                                          : Container();
                                     }
                                   })
                             ],

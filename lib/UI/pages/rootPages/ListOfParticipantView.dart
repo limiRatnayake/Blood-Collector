@@ -221,7 +221,7 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
                                             1;
 
                                         // Perform an update on the document
-                                        await tx.update(
+                                        tx.update(
                                             userRef
                                                 .document(participants[i].uid),
                                             {

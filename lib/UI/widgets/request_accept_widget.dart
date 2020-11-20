@@ -79,7 +79,7 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                                     color: Colors.blue,
                                     onPressed: () async {
                                       if (widget.requestStatus != "Accepted") {
-                                        Firestore.instance.runTransaction(
+                                        await Firestore.instance.runTransaction(
                                             (Transaction tx) async {
                                           DocumentSnapshot docSnapshot =
                                               await tx.get(eventRef
@@ -162,7 +162,7 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                                 onPressed: () async {
                                   if (widget.requestStatus != "Rejected") {
                                     if (userAccepted > 0) {
-                                      Firestore.instance.runTransaction(
+                                      await Firestore.instance.runTransaction(
                                           (Transaction tx) async {
                                         DocumentSnapshot docSnapshot =
                                             await tx.get(eventRef

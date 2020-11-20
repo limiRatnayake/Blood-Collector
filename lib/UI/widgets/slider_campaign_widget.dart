@@ -275,22 +275,13 @@ class _CampaignIntroSliderWidgetState extends State<CampaignIntroSliderWidget> {
                                     data.firstName + " " + data.lastName;
                                 String response =
                                     await _participantService.addParticipants(
-                                        _user, widget.docRef, userName);
-                                // Firestore.instance
-                                //     .runTransaction((Transaction tx) async {
-                                //   DocumentSnapshot docSnapshot = await tx
-                                //       .get(eventRef.document(widget.docRef));
-                                //   if (docSnapshot.exists) {
-                                //     await tx.update(
-                                //         eventRef.document(widget.docRef),
-                                //         <String, dynamic>{
-                                //           'totalParticipants': docSnapshot
-                                //                   .data["totalParticipants"] +
-                                //               1
-                                //         });
-                                //   }
-                                // });
-                                Firestore.instance.runTransaction((tx) async {
+                                        _user,
+                                        widget.docRef,
+                                        userName,
+                                        data.bloodGroup);
+
+                                await Firestore.instance
+                                    .runTransaction((tx) async {
                                   DocumentSnapshot docSnapshot = await tx
                                       .get(eventRef.document(widget.docRef));
                                   if (docSnapshot.exists) {
@@ -298,7 +289,7 @@ class _CampaignIntroSliderWidgetState extends State<CampaignIntroSliderWidget> {
                                         docSnapshot.data['totalParticipants'] +
                                             1;
                                     // Perform an update on the document
-                                    tx.update(
+                                    await tx.update(
                                         eventRef.document(widget.docRef), {
                                       'totalParticipants': newFollowerCount
                                     });

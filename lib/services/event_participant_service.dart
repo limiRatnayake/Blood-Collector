@@ -19,8 +19,8 @@ class EventParticipantService extends ChangeNotifier {
     _userRef = _db.collection(AppConstants.USERS_COLLECTION);
   }
 
-  Future<String> addParticipants(
-      FirebaseUser user, String docRef, String userName) async {
+  Future<String> addParticipants(FirebaseUser user, String docRef,
+      String userName, String bloodGroup) async {
     String message = "";
     try {
       DocumentReference newRef = _ref.document();
@@ -29,6 +29,7 @@ class EventParticipantService extends ChangeNotifier {
           participantId: newRef.documentID,
           docRef: docRef,
           uid: user.uid,
+          bloodGroup: bloodGroup,
           participantName: userName,
           participatedStatus: "participating",
           lastModifyDate: DateTime.now().toString());
@@ -223,17 +224,6 @@ class EventParticipantService extends ChangeNotifier {
     try {
       DocumentReference participantRef = _ref.document(participantId);
 
-      // Firestore.instance.runTransaction((Transaction tx) async {
-      //   DocumentSnapshot docSnapshot = await tx.get(_userRef.document(uid));
-      //   if (docSnapshot.exists) {
-      //     await tx.update(_userRef.document(uid), <String, dynamic>{
-      //       "userPreviouslyDonatedOrNot": "Yes",
-      //       "dateOfLastDonation": date,
-      //       "lastDonationDateCheck": false,
-      //       'ifYesHowManyTimes': docSnapshot.data["ifYesHowManyTimes"] + 1
-      //     });
-      //   }
-      // });
       await participantRef.updateData(
           {"participatedStatus": participatedStatus, "lastModifyDate": date});
 

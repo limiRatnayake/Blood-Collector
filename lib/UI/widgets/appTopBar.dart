@@ -20,9 +20,10 @@ class _AppTopBarState extends State<AppTopBar> {
     return PreferredSize(
       preferredSize: const Size(double.infinity, kToolbarHeight),
       child: AppBar(
+        iconTheme: new IconThemeData(color: Colors.red[600]),
         title: Text(
           widget.title,
-          style: TextStyle(color: Colors.redAccent),
+          style: TextStyle(color: Colors.red[600]),
         ),
         actions: <Widget>[appBarIcon()],
       ),
@@ -45,7 +46,7 @@ class _AppTopBarState extends State<AppTopBar> {
               children: [
                 IconButton(
                   icon: Icon(Icons.notifications),
-                  color: Colors.grey,
+                  color: Colors.red[600],
                   iconSize: 30,
                   onPressed: () {
                     Navigator.push(

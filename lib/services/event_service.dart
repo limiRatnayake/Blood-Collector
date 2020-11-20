@@ -12,12 +12,14 @@ class EventService extends ChangeNotifier {
   Firestore _db;
   CollectionReference _ref;
   CollectionReference _userRef;
+  CollectionReference _insightsRef;
   CollectionReference _participantsRef;
   FirebaseStorage _storageRef = FirebaseStorage.instance;
 
   EventService() : _db = Firestore.instance {
     _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
     _userRef = _db.collection(AppConstants.USERS_COLLECTION);
+    _insightsRef = _db.collection(AppConstants.INSIGHTS);
     _participantsRef =
         _db.collection(AppConstants.EVENTS_PARTICIPANTS_COLLECTION);
   }
@@ -143,6 +145,23 @@ class EventService extends ChangeNotifier {
         .orderBy("requestClose", descending: false)
         .orderBy("createdAt", descending: true)
         .getDocuments();
+  }
+
+  Future<QuerySnapshot> filterEvents(String area, String filter) async {
+    var query = _ref
+        .where("approved", isEqualTo: true)
+        .where("requestClose", isGreaterThanOrEqualTo: DateTime.now())
+        .orderBy("requestClose", descending: false)
+        .orderBy("createdAt", descending: true);
+
+    if (area != '') {
+      query = query.where("area", isEqualTo: area);
+    }
+    if (filter == "Requests") {
+      query = query.where("category", isEqualTo: "request");
+    }
+
+    return await query.getDocuments();
   }
 
   Future<QuerySnapshot> getUserEvents(String uid) {
@@ -286,6 +305,7 @@ class EventService extends ChangeNotifier {
     String message = "";
     try {
       DocumentReference newRef = _ref.document(docRef);
+
       var actualParticipants = await _participantsRef
           .where("docRef", isEqualTo: docRef)
           .where("participatedStatus", isEqualTo: "Donated")
@@ -294,17 +314,12 @@ class EventService extends ChangeNotifier {
           .where("docRef", isEqualTo: docRef)
           .where("participatedStatus", isEqualTo: "Not participated")
           .getDocuments();
+
       newRef.updateData({
         "actualParticipants": actualParticipants.documents.length,
         "avoidParticipants": avoidParticipants.documents.length,
         "submitListStatus": "submitted"
       });
-      // newRef.updateData(
-      //     {"avoidParticipants": avoidParticipants.documents.length});
-
-      // await newRef.updateData({
-      //   "submitListStatus": "submitted",
-      // });
 
       message = "Success";
     } catch (error) {
@@ -345,6 +360,12 @@ class EventService extends ChangeNotifier {
       print(error);
     }
     notifyListeners();
+  }
+
+  //get insights info
+  Future<QuerySnapshot> getInsights() {
+    //create a composite index in firebase console
+    return _insightsRef.getDocuments();
   }
 
   // Future<void> setPostLikes(String docRef, String uid, bool isLiked) async {

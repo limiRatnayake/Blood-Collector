@@ -77,45 +77,6 @@ Widget buildParticipantsList(
                                                         participants
                                                             .participantId,
                                                         "Donated");
-                                            // if (response == "Success") {
-                                            //   //update actual participating count and avoid participants
-                                            //   Firestore.instance
-                                            //       .runTransaction((tx) async {
-                                            //     DocumentSnapshot docSnapshot =
-                                            //         await tx.get(eventRef.document(
-                                            //             participants.docRef));
-
-                                            //     if (docSnapshot.exists) {
-                                            //       // if (docData.avoidParticipants !=
-                                            //       //     0) {
-                                            //       //   int avoidance = docSnapshot
-                                            //       //               .data[
-                                            //       //           'avoidParticipants'] -
-                                            //       //       1;
-                                            //       //   tx.update(
-                                            //       //       eventRef.document(
-                                            //       //           participants.docRef),
-                                            //       //       {
-                                            //       //         'avoidParticipants':
-                                            //       //             avoidance
-                                            //       //       });
-                                            //       // }
-                                            //       int newFollowerCount = docSnapshot
-                                            //                   .data[
-                                            //               'actualParticipants'] +
-                                            //           1;
-
-                                            //       // Perform an update on the document
-                                            //       tx.update(
-                                            //           eventRef.document(
-                                            //               participants.docRef),
-                                            //           {
-                                            //             'actualParticipants':
-                                            //                 newFollowerCount
-                                            //           });
-                                            //     }
-                                            //   });
-                                            // }
                                           })
                                       : Container(),
                                   participants.participatedStatus !=
@@ -132,45 +93,6 @@ Widget buildParticipantsList(
                                                         participants
                                                             .participantId,
                                                         "Not participated");
-
-                                            // if (response == "Success") {
-                                            //   Firestore.instance
-                                            //       .runTransaction((tx) async {
-                                            //     DocumentSnapshot docSnapshot =
-                                            //         await tx.get(eventRef.document(
-                                            //             participants.docRef));
-
-                                            //     if (docSnapshot.exists) {
-                                            //       // if (docData.actualParticipants >
-                                            //       //     0) {
-                                            //       int actualParticipants =
-                                            //           docSnapshot.data[
-                                            //                   'actualParticipants'] -
-                                            //               1;
-                                            //       // Perform an update on the document
-                                            //       tx.update(
-                                            //           eventRef.document(
-                                            //               participants.docRef),
-                                            //           {
-                                            //             'actualParticipants':
-                                            //                 actualParticipants
-                                            //           });
-                                            //       // }
-
-                                            //       // int avoidance = docSnapshot
-                                            //       //             .data[
-                                            //       //         'avoidParticipants'] +
-                                            //       //     1;
-                                            //       // tx.update(
-                                            //       //     eventRef.document(
-                                            //       //         participants.docRef),
-                                            //       //     {
-                                            //       //       'avoidParticipants':
-                                            //       //           avoidance
-                                            //       //     });
-                                            //     }
-                                            //   });
-                                            // }
                                           })
                                       : Container()
                                 ],

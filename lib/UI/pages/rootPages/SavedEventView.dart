@@ -95,23 +95,30 @@ class _SavedEventViewState extends State<SavedEventView> {
                     (doc) => SavedEventModel.fromMap(doc.data))
                 .toList();
 
-            return SliverPadding(
-              padding: EdgeInsets.only(left: 15, right: 15),
-              sliver: SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: (2 / 3),
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    var data = dataList[index];
+            return dataList.length > 0
+                ? SliverPadding(
+                    padding: EdgeInsets.only(left: 15, right: 15),
+                    sliver: SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: (2 / 3),
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          var data = dataList[index];
 
-                    return SaveEventTile(docRef: data.docRef);
-                  },
-                  childCount: dataList.length,
-                ),
-              ),
-            );
+                          return SaveEventTile(docRef: data.docRef);
+                        },
+                        childCount: dataList.length,
+                      ),
+                    ),
+                  )
+                : SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 15),
+                      child: Center(child: Text("No saved events found")),
+                    ),
+                  );
           }
         });
   }

@@ -4,6 +4,7 @@ import 'package:blood_collector/UI/widgets/preventDooubleTap.dart';
 import 'package:blood_collector/UI/widgets/slider_campaign_widget.dart';
 import 'package:blood_collector/UI/widgets/slider_request_widget.dart';
 import 'package:blood_collector/UI/widgets/submittedParticipantList.dart';
+import 'package:blood_collector/UI/widgets/viewInsights.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -174,6 +175,25 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                                     SubmittedParticipantListView(
                                                       docRef: widget.docRef,
                                                     )));
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.person),
+                                  title: Text(
+                                    "View Insights",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  trailing: Icon(
+                                    Icons.arrow_right,
+                                    color: Colors.black,
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => TaskHomePage(
+                                                  docRef: widget.docRef,
+                                                )));
                                   },
                                 ),
                                 Divider(

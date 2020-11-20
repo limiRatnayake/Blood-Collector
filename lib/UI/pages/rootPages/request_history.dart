@@ -18,7 +18,11 @@ class _RequestHistoryState extends State<RequestHistory>
       length: 3,
       child: Scaffold(
           appBar: AppBar(
-            title: Text("Request List"),
+            iconTheme: new IconThemeData(color: Colors.red[600]),
+            title: Text(
+              "Request List",
+              style: TextStyle(color: Colors.red[600]),
+            ),
             bottom: TabBar(
               isScrollable: true,
               indicatorColor: Colors.red,
