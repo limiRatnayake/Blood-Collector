@@ -192,8 +192,9 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => TaskHomePage(
-                                                  docRef: widget.docRef,
-                                                )));
+                                                docRef: widget.docRef,
+                                                submitStatus:
+                                                    data.submitListStatus)));
                                   },
                                 ),
                                 Divider(

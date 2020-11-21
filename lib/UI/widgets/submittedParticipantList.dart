@@ -1,3 +1,4 @@
+import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreCampaignMore.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
@@ -30,7 +31,6 @@ class _SubmittedParticipantListViewState
     return Scaffold(
         appBar: AppBar(
           title: Text("Participant List"),
-          // actions: [FlatButton(onPressed: show, child: Text("Submit"))],
         ),
         body: FutureBuilder(
             future: _participantService.getParticipantForAnEvent(widget.docRef),

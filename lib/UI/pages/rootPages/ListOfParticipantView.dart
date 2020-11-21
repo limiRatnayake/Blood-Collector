@@ -1,6 +1,5 @@
 import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreCampaignMore.dart';
 import 'package:blood_collector/UI/widgets/participantListViewWidget.dart';
-import 'package:blood_collector/UI/widgets/submittedParticipantList.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/event_service.dart';
@@ -205,23 +204,19 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
                                       await _participantService
                                           .getParticipantForParticularEvent(
                                               widget.docRef);
-                                  String response;
                                   for (var i = 0;
                                       i < participants.length;
                                       i++) {
-                                    // participantId = participants[i].uid;
-                                    Firestore.instance
+                                    await Firestore.instance
                                         .runTransaction((tx) async {
                                       DocumentSnapshot docSnapshot =
                                           await tx.get(userRef
                                               .document(participants[i].uid));
                                       if (docSnapshot.exists) {
                                         int donatedCount = docSnapshot
-                                                .data['ifYesHowManyTimes'] +
-                                            1;
+                                            .data['ifYesHowManyTimes'];
 
-                                        // Perform an update on the document
-                                        tx.update(
+                                        await tx.update(
                                             userRef
                                                 .document(participants[i].uid),
                                             {
@@ -230,24 +225,24 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
                                               "dateOfLastDonation":
                                                   DateTime.now().toString(),
                                               "lastDonationDateCheck": false,
-                                              'ifYesHowManyTimes': donatedCount
+                                              'ifYesHowManyTimes':
+                                                  donatedCount + 1
                                             });
                                       }
                                     });
-                                    // print(participantId);
-
                                   }
-                                  response = await _eventService.addSubmitState(
+                                  String response =
+                                      await _eventService.addSubmitState(
                                     widget.docRef,
                                   );
                                   if (response != "Success") {
                                     print("Error in the submit button");
                                   } else {
-                                    Navigator.of(context).push(
-                                        new MaterialPageRoute(
-                                            builder: (_) =>
-                                                SubmittedParticipantListView(
+                                    Navigator.of(context)
+                                        .push(new MaterialPageRoute(
+                                            builder: (_) => ExploreCampaignMore(
                                                   docRef: widget.docRef,
+                                                  uid: widget.uid,
                                                 )));
                                   }
                                 })
