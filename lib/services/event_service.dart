@@ -12,6 +12,7 @@ class EventService extends ChangeNotifier {
   Firestore _db;
   CollectionReference _ref;
   CollectionReference _userRef;
+  CollectionReference _sentRequestRef;
   CollectionReference _insightsRef;
   CollectionReference _participantsRef;
   FirebaseStorage _storageRef = FirebaseStorage.instance;
@@ -141,6 +142,7 @@ class EventService extends ChangeNotifier {
     //create a composite index in firebase console
     return _ref
         .where("approved", isEqualTo: true)
+        .where("status", isEqualTo: "Open")
         .where("requestClose", isGreaterThanOrEqualTo: DateTime.now())
         .orderBy("requestClose", descending: false)
         .orderBy("createdAt", descending: true)
@@ -150,6 +152,7 @@ class EventService extends ChangeNotifier {
   Future<QuerySnapshot> filterEvents(String area, String filter) async {
     var query = _ref
         .where("approved", isEqualTo: true)
+        .where("status", isEqualTo: "Open")
         .where("requestClose", isGreaterThanOrEqualTo: DateTime.now())
         .orderBy("requestClose", descending: false)
         .orderBy("createdAt", descending: true);
@@ -280,6 +283,23 @@ class EventService extends ChangeNotifier {
     String message = "";
     try {
       DocumentReference newRef = _ref.document(docRef);
+      var participantRef =
+          _participantsRef.where("docRef", isEqualTo: docRef).getDocuments();
+      var requestSentRef =
+          _ref.document(docRef).collection("requested").getDocuments();
+
+      participantRef.then((QuerySnapshot snapshot) =>
+          snapshot.documents.forEach((participants) {
+            _participantsRef.document(participants.documentID).delete();
+          }));
+      requestSentRef.then((QuerySnapshot snapshot) =>
+          snapshot.documents.forEach((userRequests) {
+            _ref
+                .document(docRef)
+                .collection("requested")
+                .document(userRequests.documentID)
+                .delete();
+          }));
       _ref
           .where("requestClose",
               isGreaterThanOrEqualTo: DateTime.now().toString())
@@ -331,15 +351,22 @@ class EventService extends ChangeNotifier {
   }
 
 //delete an event
+
   Future<String> deleteEvent(String docRef) async {
     String message = "";
     try {
       _ref.document(docRef).delete();
-      //getting the refference and file name
-      // StorageReference storageReference =
-      // await _storageRef.getReferenceFromUrl(imgUrl);
-      //delete the image into the firebase storage
-      // await storageReference.delete();
+      var likesRef = _ref.document(docRef).collection("likes").getDocuments();
+
+      likesRef.then((QuerySnapshot snapshot) =>
+          snapshot.documents.forEach((userRequests) {
+            _ref
+                .document(docRef)
+                .collection("likes")
+                .document(userRequests.documentID)
+                .delete();
+          }));
+
       message = "Success";
     } catch (error) {
       print(error);

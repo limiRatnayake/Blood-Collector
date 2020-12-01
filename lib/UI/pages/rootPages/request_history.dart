@@ -17,6 +17,7 @@ class _RequestHistoryState extends State<RequestHistory>
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+          backgroundColor: Colors.grey.withOpacity(0.3),
           appBar: AppBar(
             iconTheme: new IconThemeData(color: Colors.red[600]),
             title: Text(

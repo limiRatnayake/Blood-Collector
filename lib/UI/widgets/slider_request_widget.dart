@@ -284,12 +284,11 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
 
   void calculateAge() {
     var selectedYear = DateTime.parse(birthDate);
-    print(selectedYear);
+
     var currentYear = DateTime.now().year;
-    print(selectedYear);
+
     setState(() {
       age = (currentYear - selectedYear.year).toInt();
-      print(age);
     });
   }
 
@@ -301,8 +300,6 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
 
   @override
   void initState() {
-    print(widget.currentUser);
-
     requestedRef = Firestore.instance
         .collection("events")
         .document(widget.docRef)
@@ -337,10 +334,16 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                 birthDate = data.birthDate;
 
                 return IntroductionScreen(
+                  done: Text(
+                    "Go test",
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
+                  globalBackgroundColor: Colors.white,
                   pages: getPages(),
                   onDone: () {
                     calculateAge();
-                    print(age);
+
                     if ((data.userPreviouslyDonatedOrNot == "No" ||
                             data.lastDonationDateCheck == true) &&
                         data.medicallyAdvised == "No" &&
@@ -352,19 +355,18 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                         data.undergoneSurgery == "No") {
                       setState(() {
                         availability = true;
-                        print(availability);
+                        // print(availability);
                       });
                     } else {
                       setState(() {
                         availability = false;
-                        print(availability);
+                        // print(availability);
                       });
                     }
                     print(availability);
+                    print(age);
 
-                    if (availability == false) {
-                      //can't donate
-
+                    if (availability == false || age < 18 || age > 55) {
                       Alert(
                               context: context,
                               title: "Can't donate",
@@ -386,21 +388,20 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                               titleStyle: TextStyle(color: Colors.blueAccent)),
                           buttons: [
                             DialogButton(
-                                width: 120,
                                 child: Text(
                                   "Cancel",
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
+                                      color: Colors.white, fontSize: 15),
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 }),
                             DialogButton(
-                                width: 130,
+                                // width: MediaQuery.of(context).size.width * 100,
                                 child: Text(
                                   "Send a Request",
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
+                                      color: Colors.white, fontSize: 15),
                                 ),
                                 onPressed: () async {
                                   String userName =
@@ -413,7 +414,8 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                                           "sent",
                                           requestSentOn,
                                           widget.currentUser,
-                                          false);
+                                          false,
+                                          data.bloodGroup);
 
                                   if (response != "Success") {
                                     AlertDialog(
@@ -465,12 +467,7 @@ class _CampaignIntroSliderWidgetState extends State<RequestIntroSliderWidget> {
                           ]).show();
                     }
                   },
-                  done: Text(
-                    "Go test",
-                    style: TextStyle(
-                        color: Colors.red, fontWeight: FontWeight.bold),
-                  ),
-                  globalBackgroundColor: Colors.white,
+
                   // showSkipButton: true,
                   // skip: const Text("Skip"),
                 );

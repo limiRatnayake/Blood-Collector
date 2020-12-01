@@ -23,5 +23,6 @@ class AppConstants {
   static const String EVENTS_PARTICIPANTS_COLLECTION = "participants";
   static const String TOKENS_COLLECTION = "deviceTokens";
   static const String NOTIFICATION_COLLECTION = "notifications";
+  static const String REQUESTEDSENT = "request_sent";
   static const String INSIGHTS = "insights";
 }

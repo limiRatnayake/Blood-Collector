@@ -64,7 +64,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     'Kalutara',
     'Kegalle',
     'Kilinochchi',
-    'Kuruneala',
+    'Kurunegala',
     'Mannar',
     'Matara',
     'Monaragala',

@@ -1,3 +1,4 @@
+import 'package:blood_collector/UI/pages/rootPages/calenderAddPage.dart';
 import 'package:blood_collector/UI/widgets/slider_campaign_widget.dart';
 import 'package:blood_collector/UI/widgets/slider_request_widget.dart';
 import 'package:blood_collector/models/event_model.dart';
@@ -165,6 +166,15 @@ class _ViewRequestDetailsState extends State<ViewRequestDetails> {
                     );
                   }
                 }),
+          ),
+          SliverToBoxAdapter(
+            child: IconButton(
+              icon: Icon(Icons.remove),
+              onPressed: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MyApp()));
+              },
+            ),
           ),
           SliverList(
               delegate: SliverChildListDelegate(<Widget>[

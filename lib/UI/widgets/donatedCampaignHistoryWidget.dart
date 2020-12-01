@@ -68,14 +68,6 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
 
   @override
   void initState() {
-    //get the document reference of the Participants collection
-    // participantRef
-    //     .collection("participants")
-    //     .getDocuments()
-    //     .then((QuerySnapshot snapshot) => snapshot.documents.forEach((element) {
-    //           participateId = element.documentID;
-    //           participatedStatus = element['participatedStatus'];
-    //         }));
     eventRef = Firestore.instance.collection("events");
     super.initState();
   }

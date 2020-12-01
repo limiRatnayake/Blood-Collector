@@ -41,9 +41,7 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
             return Center(child: CircularProgressIndicator());
           } else {
             EventModel data = EventModel.fromMap(snapshot.data.data);
-            // var getRequestCloseDate = DateTime.parse(data.requestClose);
-            // String requestCloseDate =
-            //     DateFormat('yMd').format(data.requestClose);
+
             return Center(
                 child: data.category != "request"
                     ? DonatedCampaignPostView(
@@ -71,6 +69,7 @@ class _DonatedRequestedGetEventsState extends State<DonatedRequestedGetEvents> {
                         imageUrl: data.imageUrl,
                         uid: data.uid,
                         docRef: data.docRef,
+                        userPhoneNumber: data.userPhoneNumber,
                         description: data.description,
                         createdAt: data.createdAt,
                         category: data.category,

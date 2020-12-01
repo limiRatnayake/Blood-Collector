@@ -203,6 +203,12 @@ class _CampaignIntroSliderWidgetState extends State<CampaignIntroSliderWidget> {
               birthDate = data.birthDate;
 
               return IntroductionScreen(
+                done: Text(
+                  "Donate",
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+                globalBackgroundColor: Colors.white,
                 pages: getPages(),
                 onDone: () {
                   calculateAge();
@@ -228,9 +234,7 @@ class _CampaignIntroSliderWidgetState extends State<CampaignIntroSliderWidget> {
                   }
                   print(availability);
 
-                  if (availability == false) {
-                    //can't donate
-
+                  if (availability == false || age < 18 || age > 55) {
                     Alert(
                       context: context,
                       title: "Can't donate",
@@ -241,11 +245,6 @@ class _CampaignIntroSliderWidgetState extends State<CampaignIntroSliderWidget> {
                         context: context,
                         type: AlertType.info,
                         title: "Would you like to donate blood!",
-                        // content: Container(
-                        //     child: Text(
-                        //         "Go to your settings and change the location permission!",
-                        //         style: TextStyle(
-                        //             fontSize: 15, color: Colors.white))),
                         style: AlertStyle(
                             backgroundColor: Colors.black,
                             alertBorder: RoundedRectangleBorder(
@@ -315,12 +314,7 @@ class _CampaignIntroSliderWidgetState extends State<CampaignIntroSliderWidget> {
                         ]).show();
                   }
                 },
-                done: Text(
-                  "Donate",
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-                globalBackgroundColor: Colors.white,
+
                 // showSkipButton: true,
                 // skip: const Text("Skip"),
               );

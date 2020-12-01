@@ -45,20 +45,30 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
   @override
   Widget build(BuildContext context) {
     final EventService _eventServices = Provider.of<EventService>(context);
-    final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
 
     return Scaffold(
+      backgroundColor: Colors.white.withOpacity(0.8),
       appBar: AppBar(
-        // actionsIconTheme: null,
         iconTheme: IconThemeData(color: Colors.black),
-
         title: Text("Request Explore"),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Card(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Color(0xffA22447).withOpacity(.05),
+                      offset: Offset(0, 1),
+                      blurRadius: 20,
+                      spreadRadius: 3)
+                ]),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -90,74 +100,74 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                   SizedBox(
                     height: 8.0,
                   ),
-                  Container(
-                    child: FutureBuilder(
-                        future:
-                            _eventServices.requestEventsDetails(widget.docRef),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Center(child: CircularProgressIndicator());
-                          } else {
-                            EventModel data =
-                                EventModel.fromMap(snapshot.data.data);
-                            DateTime requestClose = data.requestClose.toDate();
-                            String requestCloseDate =
-                                DateFormat('yMd').format(requestClose);
+                  FutureBuilder(
+                      future:
+                          _eventServices.requestEventsDetails(widget.docRef),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(child: CircularProgressIndicator());
+                        } else {
+                          EventModel data =
+                              EventModel.fromMap(snapshot.data.data);
+                          DateTime requestClose = data.requestClose.toDate();
+                          String requestCloseDate =
+                              DateFormat('yMd').format(requestClose);
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                ListTile(
-                                  leading: Icon(Icons.opacity),
-                                  title: Text("Organizered By"),
-                                  subtitle: Text(
-                                    data.nameOftheOrganizer,
-                                    style: TextStyle(color: Colors.red),
-                                  ),
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              ListTile(
+                                leading: Icon(Icons.opacity),
+                                title: Text("Organizered By"),
+                                subtitle: Text(
+                                  data.nameOftheOrganizer,
+                                  style: TextStyle(color: Colors.red),
                                 ),
-                                ListTile(
-                                  leading: Icon(Icons.access_time),
-                                  title: Text("Time"),
-                                  subtitle:
-                                      Text(data.startTime + " " + data.endTime),
-                                ),
-                                ListTile(
-                                    leading: Icon(Icons.event_available),
-                                    title: Text("When they need blood"),
-                                    subtitle: Text(requestCloseDate)),
-                                ListTile(
-                                  leading: Icon(Icons.local_hospital),
-                                  title: Text("Place Name"),
-                                  subtitle: Text(data.placeName),
-                                ),
-                                ListTile(
-                                  leading: Icon(Icons.location_on),
-                                  title: Text("Place Address"),
-                                  subtitle: Text(data.placeAddress),
-                                ),
-                                ListTile(
-                                  leading: Icon(Icons.phone),
-                                  title: Text("Organizer Contact Number"),
-                                  subtitle: Text(data.orgernizerConatctNo),
-                                  // trailing: Text(data.userPhoneNumber),
-                                ),
-                                ListTile(
-                                  leading: Icon(Icons.person),
-                                  title: Text(
-                                    "Participant List",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  trailing: Icon(
-                                    Icons.arrow_right,
-                                    color: Colors.black,
-                                  ),
-                                  onTap: () {
-                                    data.submitListStatus != "submitted"
-                                        ? Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ListOfParticipantView(
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.access_time),
+                                title: Text("Time"),
+                                subtitle:
+                                    Text(data.startTime + " " + data.endTime),
+                              ),
+                              ListTile(
+                                  leading: Icon(Icons.event_available),
+                                  title: Text("When they need blood"),
+                                  subtitle: Text(requestCloseDate)),
+                              ListTile(
+                                leading: Icon(Icons.local_hospital),
+                                title: Text("Place Name"),
+                                subtitle: Text(data.placeName),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.location_on),
+                                title: Text("Place Address"),
+                                subtitle: Text(data.placeAddress),
+                              ),
+                              ListTile(
+                                leading: Icon(Icons.phone),
+                                title: Text("Organizer Contact Number"),
+                                subtitle: Text(data.orgernizerConatctNo),
+                                // trailing: Text(data.userPhoneNumber),
+                              ),
+
+                              Divider(
+                                height: 1,
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  FlatButton.icon(
+                                      onPressed: () {
+                                        data.submitListStatus != "submitted"
+                                            ? Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => ListOfParticipantView(
                                                         uid: widget.uid,
                                                         docRef: widget.docRef,
                                                         totalEngage: data
@@ -168,139 +178,197 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                                             .avoidParticipants,
                                                         submitListStatus: data
                                                             .submitListStatus)))
-                                        : Navigator.push(
+                                            : Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SubmittedParticipantListView(
+                                                          docRef: widget.docRef,
+                                                        )));
+                                      },
+                                      icon: Icon(
+                                        Icons.supervised_user_circle,
+                                        color: Colors.blue,
+                                      ),
+                                      label: Text(
+                                        "Participant List",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                  FlatButton.icon(
+                                      onPressed: () {
+                                        Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    SubmittedParticipantListView(
-                                                      docRef: widget.docRef,
-                                                    )));
-                                  },
-                                ),
-                                ListTile(
-                                  leading: Icon(Icons.analytics),
-                                  title: Text(
-                                    "Analytics",
-                                    style: TextStyle(color: Colors.black),
+                                                    TaskHomePage(
+                                                        docRef: widget.docRef,
+                                                        submitStatus: data
+                                                            .submitListStatus)));
+                                      },
+                                      icon: Icon(
+                                        Icons.analytics_rounded,
+                                        color: Colors.blue,
+                                      ),
+                                      label: Text(
+                                        "Insights",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                ],
+                              ),
+
+                              // ListTile(
+                              //   leading: Icon(Icons.person),
+                              //   title: Text(
+                              //     "Participant List",
+                              //     style: TextStyle(color: Colors.black),
+                              //   ),
+                              //   trailing: Icon(
+                              //     Icons.arrow_right,
+                              //     color: Colors.black,
+                              //   ),
+                              //   onTap: () {
+                              //     data.submitListStatus != "submitted"
+                              //         ? Navigator.push(
+                              //             context,
+                              //             MaterialPageRoute(
+                              //                 builder: (context) =>
+                              //                     ListOfParticipantView(
+                              //                         uid: widget.uid,
+                              //                         docRef: widget.docRef,
+                              //                         totalEngage:
+                              //                             data.totalParticipants,
+                              //                         actualEngage:
+                              //                             data.actualParticipants,
+                              //                         avoidParticipants:
+                              //                             data.avoidParticipants,
+                              //                         submitListStatus:
+                              //                             data.submitListStatus)))
+                              //         : Navigator.push(
+                              //             context,
+                              //             MaterialPageRoute(
+                              //                 builder: (context) =>
+                              //                     SubmittedParticipantListView(
+                              //                       docRef: widget.docRef,
+                              //                     )));
+                              //   },
+                              // ),
+                              // ListTile(
+                              //   leading: Icon(Icons.analytics),
+                              //   title: Text(
+                              //     "Analytics",
+                              //     style: TextStyle(color: Colors.black),
+                              //   ),
+                              //   trailing: Icon(
+                              //     Icons.arrow_right,
+                              //     color: Colors.black,
+                              //   ),
+                              //   onTap: () {
+                              //     Navigator.push(
+                              //         context,
+                              //         MaterialPageRoute(
+                              //             builder: (context) => TaskHomePage(
+                              //                 docRef: widget.docRef,
+                              //                 submitStatus:
+                              //                     data.submitListStatus)));
+                              //   },
+                              // ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Divider(
+                                height: 1,
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(data.likes.toString()),
+                                      RichText(
+                                          text: TextSpan(children: [
+                                        WidgetSpan(
+                                          child: Icon(Icons.favorite, size: 20),
+                                        ),
+                                        TextSpan(
+                                            text: " Likes",
+                                            style:
+                                                TextStyle(color: Colors.black)),
+                                      ]))
+                                    ],
                                   ),
-                                  trailing: Icon(
-                                    Icons.arrow_right,
-                                    color: Colors.black,
+                                  Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(data.savedEvents.toString()),
+                                      RichText(
+                                          text: TextSpan(children: [
+                                        WidgetSpan(
+                                          child: Icon(Icons.bookmark, size: 20),
+                                        ),
+                                        TextSpan(
+                                            text: " Saved",
+                                            style:
+                                                TextStyle(color: Colors.black)),
+                                      ]))
+                                    ],
                                   ),
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => TaskHomePage(
-                                                docRef: widget.docRef,
-                                                submitStatus:
-                                                    data.submitListStatus)));
-                                  },
-                                ),
-                                Divider(
-                                  height: 1,
-                                ),
-                                Card(
-                                    child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(data.likes.toString()),
-                                            RichText(
-                                                text: TextSpan(children: [
-                                              WidgetSpan(
-                                                child: Icon(Icons.favorite,
-                                                    size: 20),
-                                              ),
-                                              TextSpan(
-                                                  text: " Likes",
-                                                  style: TextStyle(
-                                                      color: Colors.black)),
-                                            ]))
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(data.savedEvents.toString()),
-                                            RichText(
-                                                text: TextSpan(children: [
-                                              WidgetSpan(
-                                                child: Icon(Icons.bookmark,
-                                                    size: 20),
-                                              ),
-                                              TextSpan(
-                                                  text: " Saved",
-                                                  style: TextStyle(
-                                                      color: Colors.black)),
-                                            ]))
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(data.totalParticipants
-                                                .toString()),
-                                            Text("Total Engage"),
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(data.actualParticipants
-                                                .toString()),
-                                            Text("Actual Engage"),
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(data.avoidParticipants
-                                                .toString()),
-                                            Text("Avoidance"),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ))
-                              ],
-                            );
-                          }
-                        }),
-                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(data.totalParticipants.toString()),
+                                      Text("Total Engage"),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(data.actualParticipants.toString()),
+                                      Text("Actual Engage"),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(data.avoidParticipants.toString()),
+                                      Text("Avoidance"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                            ],
+                          );
+                        }
+                      }),
                 ],
               ),
             ),
-            SizedBox(
-              height: 15.0,
-            ),
-          ],
+          ),
         ),
       ),
-      // bottomSheet: Padding(
-      //   padding: const EdgeInsets.all(8.0),
-      //   child: PreventDoubleTap(),
-      // ),
     );
   }
 }

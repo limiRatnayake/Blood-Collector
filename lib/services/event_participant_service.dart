@@ -45,14 +45,14 @@ class EventParticipantService extends ChangeNotifier {
   }
 
   Future<String> addRequestEventParticipants(
-    FirebaseUser user,
-    String docRef,
-    String userName,
-    String requestStatus,
-    String requestSentOn,
-    String requesterId,
-    bool rejected,
-  ) async {
+      FirebaseUser user,
+      String docRef,
+      String userName,
+      String requestStatus,
+      String requestSentOn,
+      String requesterId,
+      bool rejected,
+      String bloodGroup) async {
     String message = "";
     try {
       DocumentReference newRef = _ref.document();
@@ -61,6 +61,7 @@ class EventParticipantService extends ChangeNotifier {
 
       ParticipantModel participantModel = new ParticipantModel(
           participantId: newRef.documentID,
+          bloodGroup: bloodGroup,
           docRef: docRef,
           uid: user.uid,
           participantName: userName,

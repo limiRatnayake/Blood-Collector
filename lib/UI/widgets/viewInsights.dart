@@ -216,7 +216,7 @@ class _TaskHomePageState extends State<TaskHomePage> {
                           });
                         } else if (age >= 35 && age <= 44) {
                           setState(() {
-                            // thirtyFiveToFortyFour = thirtyFiveToFortyFour + 1;
+                            thirtyFiveToFortyFour = thirtyFiveToFortyFour + 1;
                           });
                         } else if (age >= 45 && age <= 54) {
                           setState(() {
@@ -224,7 +224,7 @@ class _TaskHomePageState extends State<TaskHomePage> {
                           });
                         } else if (age >= 55 && age <= 60) {
                           setState(() {
-                            // fiftyFiveToSixty = fiftyFiveToSixty + 1;
+                            fiftyFiveToSixty = fiftyFiveToSixty + 1;
                           });
                         }
                       }));

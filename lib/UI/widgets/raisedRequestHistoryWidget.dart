@@ -167,15 +167,25 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
                                       fontWeight: FontWeight.w700),
                                 ),
                               ),
-                              PopupMenuItem(
-                                value: 2,
-                                child: Text(
-                                  "Delete",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              ),
+                              widget.status != "Close"
+                                  ? PopupMenuItem(
+                                      value: 2,
+                                      child: Text(
+                                        "Cancel the Event",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                    )
+                                  : PopupMenuItem(
+                                      value: 2,
+                                      child: Text(
+                                        "Delete the Event",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                    )
                             ],
                             onSelected: (value) {
                               switch (value) {
@@ -201,64 +211,134 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
                                   break;
                                 case 2:
                                   {
-                                    Alert(
-                                        context: context,
-                                        type: AlertType.success,
-                                        title:
-                                            "Are you sure you want to delete this event?",
-                                        style: AlertStyle(
-                                            isCloseButton: false,
-                                            isOverlayTapDismiss: false,
-                                            backgroundColor: Colors.black,
-                                            alertBorder: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                side: BorderSide(
-                                                    color: Colors.white)),
-                                            titleStyle: TextStyle(
-                                                color: Colors.blueAccent)),
-                                        buttons: [
-                                          DialogButton(
-                                              child: Text(
-                                                "No",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              }),
-                                          DialogButton(
-                                              child: Text(
-                                                "Yes",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20),
-                                              ),
-                                              onPressed: () async {
-                                                String response =
-                                                    await _eventServices
-                                                        .deleteEvent(
-                                                            widget.docRef);
-                                                if (response == "Success") {
-                                                  var snackBar = SnackBar(
-                                                    content: Text(
-                                                        'Your event is Successfully deleted',
-                                                        style: TextStyle(
-                                                            color: Colors
-                                                                .blueGrey)),
-                                                  );
-                                                  if (widget.imageUrl != null) {
-                                                    _eventServices
-                                                        .deleteEventImage(
-                                                            widget.imageUrl);
-                                                  }
-                                                  Scaffold.of(context)
-                                                      .showSnackBar(snackBar);
-                                                  Navigator.of(context).pop();
-                                                }
-                                              })
-                                        ]).show();
+                                    widget.status != "Close"
+                                        ? Alert(
+                                            context: context,
+                                            type: AlertType.success,
+                                            title:
+                                                "Are you sure you want to cancel this event?",
+                                            style: AlertStyle(
+                                                isCloseButton: false,
+                                                isOverlayTapDismiss: false,
+                                                backgroundColor: Colors.black,
+                                                alertBorder:
+                                                    RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        side: BorderSide(
+                                                            color:
+                                                                Colors.white)),
+                                                titleStyle: TextStyle(
+                                                    color: Colors.blueAccent)),
+                                            buttons: [
+                                                DialogButton(
+                                                    child: Text(
+                                                      "No",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    }),
+                                                DialogButton(
+                                                    child: Text(
+                                                      "Yes",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20),
+                                                    ),
+                                                    onPressed: () async {
+                                                      String response =
+                                                          await _eventServices
+                                                              .updateEventCloseStatus(
+                                                                  widget
+                                                                      .docRef);
+                                                      if (response ==
+                                                          "Success") {
+                                                        var snackBar = SnackBar(
+                                                          content: Text(
+                                                              'Your event is Successfully closed',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .blueGrey)),
+                                                        );
+                                                        Scaffold.of(context)
+                                                            .showSnackBar(
+                                                                snackBar);
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }
+                                                    })
+                                              ]).show()
+                                        : Alert(
+                                            context: context,
+                                            type: AlertType.success,
+                                            title:
+                                                "Are you sure you want to delete this event?",
+                                            style: AlertStyle(
+                                                isCloseButton: false,
+                                                isOverlayTapDismiss: false,
+                                                backgroundColor: Colors.black,
+                                                alertBorder: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    side: BorderSide(
+                                                        color: Colors.white)),
+                                                titleStyle: TextStyle(
+                                                    color: Colors.blueAccent)),
+                                            buttons: [
+                                                DialogButton(
+                                                    child: Text(
+                                                      "No",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    }),
+                                                DialogButton(
+                                                    child: Text(
+                                                      "Yes",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20),
+                                                    ),
+                                                    onPressed: () async {
+                                                      String response =
+                                                          await _eventServices
+                                                              .deleteEvent(
+                                                                  widget
+                                                                      .docRef);
+                                                      if (response ==
+                                                          "Success") {
+                                                        var snackBar = SnackBar(
+                                                          content: Text(
+                                                              'Your event is Successfully deleted',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .blueGrey)),
+                                                        );
+                                                        if (widget.imageUrl !=
+                                                            null) {
+                                                          _eventServices
+                                                              .deleteEventImage(
+                                                                  widget
+                                                                      .imageUrl);
+                                                        }
+                                                        Scaffold.of(context)
+                                                            .showSnackBar(
+                                                                snackBar);
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }
+                                                    })
+                                              ]).show();
                                   }
                                   break;
                               }
@@ -317,6 +397,7 @@ class _RaisedRequestedPostViewState extends State<RaisedRequestedPostView> {
               ),
             ],
           ),
+
           // Image.asset()
         ],
       ),
