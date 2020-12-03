@@ -1,9 +1,11 @@
-// import 'package:blood_collector/UI/widgets/post_view.dart';
+//librarys
 import 'dart:async';
+//pages
 import 'package:blood_collector/UI/pages/rootPages/create_post_view.dart';
+
+//packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
@@ -20,9 +22,6 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   final format = DateFormat("HH:mm");
   final dateFormat = DateFormat("yyyy-MM-dd");
 
-  TextEditingController _campaignStartDate = TextEditingController();
-  TextEditingController _campaignEndDate = TextEditingController();
-  TextEditingController _campaignCloseOn = TextEditingController();
   TextEditingController _placeAddressController = TextEditingController();
 
   List<Marker> myMarker = [];

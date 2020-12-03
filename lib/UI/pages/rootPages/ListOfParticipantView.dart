@@ -1,8 +1,11 @@
+//pages
 import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreCampaignMore.dart';
 import 'package:blood_collector/UI/widgets/participantListViewWidget.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/event_service.dart';
+
+//packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

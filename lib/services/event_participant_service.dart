@@ -1,10 +1,11 @@
+//models & shared widgets
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/models/request_model.dart';
-import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
+
+//packages
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventParticipantService extends ChangeNotifier {

@@ -1,10 +1,7 @@
+//packages
 import 'package:flutter/material.dart';
 
 class FilterChoiceChipWidget extends StatefulWidget {
-  // final List<String> reportList;
-
-  // FilterChoiceChipWidget(this.reportList);
-
   @override
   _FilterChoiceChipWidgetState createState() =>
       new _FilterChoiceChipWidgetState();

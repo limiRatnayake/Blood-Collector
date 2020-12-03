@@ -1,11 +1,12 @@
+//pages
 import 'package:blood_collector/UI/widgets/donatedCampaignHistoryWidget.dart';
 import 'package:blood_collector/UI/widgets/donatedRequestHistoryWidget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+//packages
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DonatedRequestedGetEvents extends StatefulWidget {

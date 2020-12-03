@@ -1,9 +1,11 @@
+//pages
 import 'package:blood_collector/UI/widgets/savedEventWidget.dart';
-import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/save_event_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+
+//packages
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:flutter_widget_guide/utils.dart';

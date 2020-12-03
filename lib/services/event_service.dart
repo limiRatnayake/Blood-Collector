@@ -1,25 +1,25 @@
+//librarys
 import 'dart:io';
 
+//models & shared widgets
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
+
+//packages
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventService extends ChangeNotifier {
   Firestore _db;
   CollectionReference _ref;
-  CollectionReference _userRef;
-  CollectionReference _sentRequestRef;
   CollectionReference _insightsRef;
   CollectionReference _participantsRef;
   FirebaseStorage _storageRef = FirebaseStorage.instance;
 
   EventService() : _db = Firestore.instance {
     _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
-    _userRef = _db.collection(AppConstants.USERS_COLLECTION);
     _insightsRef = _db.collection(AppConstants.INSIGHTS);
     _participantsRef =
         _db.collection(AppConstants.EVENTS_PARTICIPANTS_COLLECTION);

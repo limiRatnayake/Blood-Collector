@@ -1,15 +1,12 @@
-import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreCampaignMore.dart';
+//pages
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
+//packages
 import 'package:provider/provider.dart';
-// import 'package:travel_budget/models/Trip.dart';
-// import 'package:travel_budget/views/detail_trip_view.dart';
 
 class SubmittedParticipantListView extends StatefulWidget {
   final String docRef;

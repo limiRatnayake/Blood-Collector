@@ -1,9 +1,9 @@
-import 'package:blood_collector/models/event_model.dart';
+//models & shared widgets
 import 'package:blood_collector/models/request_model.dart';
 import 'package:blood_collector/shared/appConstant.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
+//packages
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RequestAcceptenceService extends ChangeNotifier {

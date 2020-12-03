@@ -1,20 +1,19 @@
+//pages
 import 'package:blood_collector/UI/pages/rootPages/donorSelectionCriteriaVIew.dart';
 import 'package:blood_collector/UI/pages/rootPages/editPassword_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
-import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/services/user_service.dart';
-import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:flutter/material.dart';
-
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
+
+//packages
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 

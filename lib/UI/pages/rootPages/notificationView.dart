@@ -1,5 +1,5 @@
+//pages
 import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
-import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_notification_model.dart';
 import 'package:blood_collector/models/user_model.dart';
@@ -7,11 +7,12 @@ import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+
+//packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class NotificationView extends StatefulWidget {

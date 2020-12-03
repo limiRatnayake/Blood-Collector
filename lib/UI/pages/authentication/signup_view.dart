@@ -1,18 +1,19 @@
+//library
 import 'dart:async';
 
+//pages
 import 'package:blood_collector/UI/pages/authentication/signup_second_view.dart';
-import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
+
+//packages
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -61,7 +62,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   DateTime currentTime = DateTime.now();
 
-  TextEditingController _birthDate = TextEditingController();
   TextEditingController _userAddressController = TextEditingController();
 
   //import fluttertoast pub dev package - 5sec toast
@@ -123,13 +123,14 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _firstNameTextField() {
     return Container(
+      height: MediaQuery.of(context).size.height * 0.07,
       width: double.infinity,
-      height: 58,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration:
               inputDecoration.copyWith(hintText: "Enter First Name here"),
           keyboardType: TextInputType.text,
@@ -146,12 +147,14 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _lastNameTextField() {
     return Container(
+      height: MediaQuery.of(context).size.height * 0.07,
       width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration:
               inputDecoration.copyWith(hintText: "Enter Last Name here"),
           keyboardType: TextInputType.text,
@@ -205,17 +208,19 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _birthDateSelector() {
     return Container(
+      height: MediaQuery.of(context).size.height * 0.07,
       width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
         child: DateTimeField(
+          autovalidate: _formValidate,
           format: dateFormat,
           decoration: InputDecoration(
               border: InputBorder.none,
               suffixIcon: Icon(Icons.calendar_today, color: Colors.black),
-              hintText: "Event Closing Date"),
+              hintText: "Select your birthdate"),
           onShowPicker: (context, currentValue) {
             return showDatePicker(
                 context: context,
@@ -233,47 +238,24 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-  // Widget _birthDateSelector() {
-  //   return Container(
-  //     width: double.infinity,
-  //     margin: EdgeInsets.symmetric(horizontal: 30.0),
-  //     decoration: boxDecoration,
-  //     child: Padding(
-  //       padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
-  //       child: TextFormField(
-  //         controller: _birthDate,
-  //         decoration: inputDecoration.copyWith(
-  //             hintText: "mm/dd/yyyy",
-  //             suffixIcon: Icon(
-  //               Icons.calendar_today,
-  //               color: Colors.black,
-  //             )),
-  //         validator: (value) => value.isEmpty ? 'Name should be filled' : null,
-  //         onTap: () async {
-  //           FocusScope.of(context).requestFocus(new FocusNode());
-
-  //           _selectBDate(context, _birthDate);
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _bloodGroupTextField() {
     return Container(
       width: double.infinity,
-      height: 66,
+      height: MediaQuery.of(context).size.height * 0.08,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: DropdownButtonFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           value: _bloodGroup,
           decoration: InputDecoration(
-              hintText: 'Blood Type',
-              hintStyle: TextStyle(
-                  fontSize: 16.0, fontFamily: "Roboto", color: Colors.black54),
-              enabledBorder: InputBorder.none),
+            hintText: 'Blood Type',
+            hintStyle: TextStyle(
+                fontSize: 16.0, fontFamily: "Roboto", color: Colors.black54),
+            enabledBorder: InputBorder.none,
+          ),
           validator: validateBloodGroup,
           onChanged: (value) {
             setState(() {
@@ -295,22 +277,34 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _mobileNoField() {
     return Container(
       width: double.infinity,
-      height: 58,
+      height: MediaQuery.of(context).size.height * 0.07,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-        child: TextFormField(
-          decoration: inputDecoration.copyWith(
-            hintText: "Enter Mobile Number here",
-          ),
-          keyboardType: TextInputType.phone,
-          validator: validateMobile,
-          onChanged: (val) {
-            setState(() {
-              mobileNo = val;
-            });
-          },
+        child: Row(
+          children: [
+            Text(
+              "+94 | ",
+              style: TextStyle(color: Colors.grey[800], fontSize: 15),
+            ),
+            Expanded(
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: inputDecoration.copyWith(
+                  hintText: "Enter Mobile Number here",
+                ),
+                keyboardType: TextInputType.phone,
+                validator: validateMobile,
+                onChanged: (val) {
+                  setState(() {
+                    mobileNo = "+94" + val;
+                    print(mobileNo);
+                  });
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -335,47 +329,49 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         Container(
           width: double.infinity,
-          height: 58,
+          height: MediaQuery.of(context).size.height * 0.08,
           margin: EdgeInsets.symmetric(horizontal: 30.0),
           decoration: boxDecoration,
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: TextFormField(
-              enabled: false,
-              controller: _userAddressController,
-              decoration: InputDecoration(
-                  errorStyle: TextStyle(color: Theme.of(context).errorColor),
-                  hintText: "eg:15/8, Sirisena Rad, Dehiwala",
-                  hintStyle: TextStyle(
-                    fontSize: 16.0,
-                    fontFamily: "Roboto",
-                  ),
-                  enabledBorder: InputBorder.none),
-              validator: (value) =>
-                  value.isEmpty ? ' Select from the map' : null,
-            ),
+                onTap: () {
+                  _mapdialogContent(context);
+                },
+                readOnly: true,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: _userAddressController,
+                decoration: InputDecoration(
+                    errorStyle: TextStyle(color: Theme.of(context).errorColor),
+                    hintText: "eg:15/8, Sirisena Rad, Dehiwala",
+                    hintStyle: TextStyle(
+                      fontSize: 16.0,
+                      fontFamily: "Roboto",
+                    ),
+                    enabledBorder: InputBorder.none),
+                validator: validateMapTextField),
           ),
         ),
       ],
     );
   }
 
-  Widget _googleMapModal() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 35.0),
-          child: FlatButton(
-              color: Colors.blueAccent[200],
-              child: Text("Choose From Map"),
-              onPressed: () {
-                _mapdialogContent(context);
-              }),
-        ),
-      ],
-    );
-  }
+  // Widget _googleMapModal() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.end,
+  //     children: [
+  //       Padding(
+  //         padding: const EdgeInsets.only(right: 35.0),
+  //         child: FlatButton(
+  //             color: Colors.blueAccent[200],
+  //             child: Text("Choose From Map"),
+  //             onPressed: () {
+  //               _mapdialogContent(context);
+  //             }),
+  //       ),
+  //     ],
+  //   );
+  // }
 
 //updating the current instance - buildcontext
   void _mapdialogContent(BuildContext context) {
@@ -475,12 +471,13 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _emailTextField() {
     return Container(
       width: double.infinity,
-      height: 58,
+      height: MediaQuery.of(context).size.height * 0.07,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: inputDecoration.copyWith(hintText: "Email Address"),
           keyboardType: TextInputType.emailAddress,
           validator: validateEmailAddress,
@@ -497,7 +494,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _passwordField() {
     return Container(
       width: double.infinity,
-      // height: 58,
+      height: MediaQuery.of(context).size.height * 0.08,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
@@ -506,7 +503,7 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             Expanded(
               child: TextFormField(
-                // controller: _passController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: inputDecoration.copyWith(
                   hintText: "Password",
                 ),
@@ -544,6 +541,7 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             Expanded(
               child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: inputDecoration.copyWith(
                   hintText: "Confirm Password",
                 ),
@@ -565,330 +563,260 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AuthServices _authService = Provider.of<AuthServices>(context);
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomPadding: false,
-        backgroundColor: Colors.white,
-        body: ListView(children: <Widget>[
-          //logo
-          Center(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: 180.0,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                            child: Center(
-                          child: Image.asset("assets/logo_name.png"),
-                        )),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-              ],
-            ),
-          ),
-          Container(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: Form(
-                  key: _formKey,
-                  autovalidate: _formValidate,
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      backgroundColor: Colors.white,
+      body: ListView(children: <Widget>[
+        //logo
+        Center(
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 180.0,
+                child: Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "First Name",
-                              style: TextStyle(
-                                  fontFamily: 'Roboto', fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                      _firstNameTextField(),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Last Name",
-                              style: TextStyle(
-                                  fontFamily: 'Roboto', fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10.0),
-                      _lastNameTextField(),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Select a gender",
-                              style: TextStyle(
-                                  fontFamily: 'Roboto', fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                      _genderRadioButton(),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Select Date of Birth",
-                              style: TextStyle(
-                                  fontFamily: 'Roboto', fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                      _birthDateSelector(),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Select Blood Type",
-                              style: TextStyle(
-                                  fontFamily: 'Roboto', fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                      _bloodGroupTextField(),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Mobile Number",
-                              style: TextStyle(
-                                  fontFamily: 'Roboto', fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                      _mobileNoField(),
-                      SizedBox(height: 10.0),
-                      _placeAddressTextField(),
-                      _googleMapModal(),
-                      // _postalAddressField(),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Email Address",
-                              style: TextStyle(
-                                  fontFamily: 'Roboto', fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                      _emailTextField(),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Password",
-                              style: TextStyle(
-                                  fontFamily: 'Roboto', fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                      _passwordField(),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 45.0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Confirm Password",
-                              style: TextStyle(
-                                  fontFamily: 'Roboto', fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                      _confirmPasswordField(),
-                      SizedBox(height: 20.0),
                       Container(
-                        width: double.infinity,
-                        height: 58,
-                        margin: EdgeInsets.symmetric(horizontal: 30.0),
-                        decoration: boxDecoration,
-                        child: ButtonTheme(
-                          child: RaisedButton(
-                            elevation: 0.0,
-                            child: Text("CONTINUE",
-                                style: TextStyle(
-                                    fontFamily: "Roboto",
-                                    fontSize: 18.0,
-                                    color: Colors.black)),
-                            textColor: Colors.black,
-                            color: Colors.red.withOpacity(0.9),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25.5)),
-                            onPressed: () {
-                              calculateAge();
-
-                              if (_formKey.currentState.validate()) {
-                                setState(() {
-                                  _errorMessage = "";
-                                  _isLoading = true;
-                                  disabled = false;
-                                });
-                                var route = new MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      SignUpSecondPage(
-                                          email: email,
-                                          confirmPassword: confirmPassword,
-                                          uid: uid,
-                                          firstName: firstName,
-                                          lastName: lastName,
-                                          birthDate: birthDate,
-                                          gender: gender,
-                                          mobileNo: mobileNo,
-                                          bloodGroup: bloodGroup,
-                                          address: address,
-                                          userAddLat: userAddLat,
-                                          userAddLng: userAddLng,
-                                          proPicUrl: proPicUrl,
-                                          disabled: disabled,
-                                          age: age),
-                                );
-                                Navigator.of(context).push(route);
-                                //   String response =
-                                //       await _authService.createUser(
-                                //           email,
-                                //           confirmPassword,
-                                //           uid,
-                                //           firstName,
-                                //           lastName,
-                                //           birthDate,
-                                //           gender,
-                                //           mobileNo,
-                                //           bloodGroup,
-                                //           address,
-                                //           userAddLat,
-                                //           userAddLng,
-                                //           proPicUrl,
-                                //           disabled);
-                                //   if (response != "Success") {
-                                //     setState(() {
-                                //       _isLoading = false;
-                                //       _errorMessage = response;
-                                //     });
-                                //   } else {
-                                //     Alert(
-                                //         context: context,
-                                //         type: AlertType.success,
-                                //         title:
-                                //             "Your are Successfully signup!",
-                                //         desc:
-                                //             "Please Verify Your Email Before Sign in",
-                                //         style: AlertStyle(
-                                //             isCloseButton: false,
-                                //             // backgroundColor: Colors.black,
-                                //             descStyle: TextStyle(
-                                //                 fontWeight: FontWeight
-                                //                     .bold),
-                                //             alertBorder:
-                                //                 RoundedRectangleBorder(
-                                //                     borderRadius:
-                                //                         BorderRadius
-                                //                             .circular(5),
-                                //                     side: BorderSide(
-                                //                         color:
-                                //                             Colors.white)),
-                                //             titleStyle: TextStyle(
-                                //                 color: Colors.blueAccent)),
-                                //         buttons: [
-                                //           DialogButton(
-                                //               width: 120,
-                                //               child: Text(
-                                //                 "ok",
-                                //                 style: TextStyle(
-                                //                     color: Colors.white,
-                                //                     fontSize: 20),
-                                //               ),
-                                //               onPressed: () {
-                                //                 Navigator
-                                //                     .pushReplacementNamed(
-                                //                   context,
-                                //                   AppConstants.SIGN_IN,
-                                //                 );
-                                //               })
-                                //         ]).show();
-                                //     setState(() {
-                                //       _isLoading = false;
-                                //     });
-                                //   }
-                                // } else {
-                                //   setState(() {
-                                //     _formValidate = true;
-                                //   });
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      // Container(
-                      //     child: Center(
-                      //         child: Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: <Widget>[
-                      //     Text(
-                      //       "If you already have an account !  ",
-                      //       style:
-                      //           TextStyle(fontSize: 15.0, fontFamily: "Roboto"),
-                      //     ),
-                      //     FlatButton.icon(
-                      //       icon: Icon(Icons.person),
-                      //       label: Text('Sign In'),
-                      //       onPressed: () {
-                      //         Navigator.pushReplacementNamed(
-                      //           context,
-                      //           AppConstants.SIGN_IN,
-                      //         );
-                      //       },
-                      //     )
-                      //   ],
-                      // )))
+                          child: Center(
+                        child: Image.asset("assets/logo_name.png"),
+                      )),
                     ],
                   ),
                 ),
               ),
+              SizedBox(
+                height: 10.0,
+              ),
+            ],
+          ),
+        ),
+        Container(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Form(
+                key: _formKey,
+                // autovalidate: _formValidate,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "First Name",
+                            style:
+                                TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    _firstNameTextField(),
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Last Name",
+                            style:
+                                TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    _lastNameTextField(),
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Select a gender",
+                            style:
+                                TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _genderRadioButton(),
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Select Date of Birth",
+                            style:
+                                TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _birthDateSelector(),
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Select Blood Type",
+                            style:
+                                TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _bloodGroupTextField(),
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Mobile Number",
+                            style:
+                                TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _mobileNoField(),
+                    SizedBox(height: 10.0),
+                    _placeAddressTextField(),
+                    // _googleMapModal(),
+                    // _postalAddressField(),
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Email Address",
+                            style:
+                                TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _emailTextField(),
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Password",
+                            style:
+                                TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _passwordField(),
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Confirm Password",
+                            style:
+                                TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    _confirmPasswordField(),
+                    SizedBox(height: 20.0),
+                    Container(
+                      width: double.infinity,
+                      height: 58,
+                      margin: EdgeInsets.symmetric(horizontal: 30.0),
+                      decoration: boxDecoration,
+                      child: ButtonTheme(
+                        child: RaisedButton(
+                          elevation: 0.0,
+                          child: Text("CONTINUE",
+                              style: TextStyle(
+                                  fontFamily: "Roboto",
+                                  fontSize: 18.0,
+                                  color: Colors.black)),
+                          textColor: Colors.black,
+                          color: Colors.red.withOpacity(0.9),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25.5)),
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              calculateAge();
+                              setState(() {
+                                _errorMessage = "";
+                                _isLoading = true;
+                                disabled = false;
+                              });
+                              var route = new MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SignUpSecondPage(
+                                        email: email,
+                                        confirmPassword: confirmPassword,
+                                        uid: uid,
+                                        firstName: firstName,
+                                        lastName: lastName,
+                                        birthDate: birthDate,
+                                        gender: gender,
+                                        mobileNo: mobileNo,
+                                        bloodGroup: bloodGroup,
+                                        address: address,
+                                        userAddLat: userAddLat,
+                                        userAddLng: userAddLng,
+                                        proPicUrl: proPicUrl,
+                                        disabled: disabled,
+                                        age: age),
+                              );
+                              Navigator.of(context).push(route);
+                            } else {
+                              setState(() {
+                                _formValidate = true;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    Container(
+                        child: Center(
+                            child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "If you already have an account !  ",
+                          style:
+                              TextStyle(fontSize: 15.0, fontFamily: "Roboto"),
+                        ),
+                        FlatButton.icon(
+                          icon: Icon(Icons.person),
+                          label: Text('Sign In'),
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              AppConstants.SIGN_IN,
+                            );
+                          },
+                        )
+                      ],
+                    )))
+                  ],
+                ),
+              ),
             ),
           ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 
@@ -922,6 +850,14 @@ class _SignUpPageState extends State<SignUpPage> {
     return null;
   }
 
+  String validateMapTextField(String value) {
+    if (value.isEmpty) {
+      return "Select from the map";
+    }
+
+    return null;
+  }
+
   String dateTimeValidator(DateTime dateTime) {
     if (dateTime == null) {
       return "Date Time Required";
@@ -937,12 +873,14 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   String validateMobile(String value) {
+    // String pattern = r'(^(?:[+0]9)?[0-9]{10}$)';
+
     String pattern = r'(^[0-9]*$)';
     RegExp regExp = RegExp(pattern);
-    if (value.length != 10) {
-      return 'Mobile Number must be of 10 digit';
+    if (value.length != 9) {
+      return 'Please enter mobile number';
     } else if (!regExp.hasMatch(value)) {
-      return "Name must be a-z and A-Z";
+      return "Enter Valid Phone Number";
     }
     return null;
   }

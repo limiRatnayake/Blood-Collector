@@ -1,20 +1,20 @@
+//librarys
 import 'dart:async';
 import 'dart:io';
 
+//pages
 import 'package:blood_collector/UI/pages/rootPages/editEmailAdd_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/editUserAddressView.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/user_service.dart';
-import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
+
+//packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocoder/geocoder.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 import 'package:intl/intl.dart';
@@ -277,10 +277,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                                     SizedBox(
                                       height: 10.0,
                                     ),
-                                     SizedBox(
+                                    SizedBox(
                                       height: 10.0,
                                     ),
-                                    
                                     Card(
                                         margin: EdgeInsets.symmetric(
                                             horizontal: 15.0),
@@ -381,7 +380,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                                           onChanged: (value) {
                                             setState(() {
                                               userPhoneNumber = value;
-                                           
                                             });
                                           },
                                         ),
@@ -501,7 +499,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                         EditEmailAddressView()));
                                           },
                                         )),
-                                    
                                     SizedBox(
                                       height: 10.0,
                                     ),

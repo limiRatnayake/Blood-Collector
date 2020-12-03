@@ -1,3 +1,4 @@
+//pages
 import 'package:blood_collector/UI/pages/rootPages/editProfileView.dart';
 import 'package:blood_collector/UI/widgets/filterChoiceChipWidget.dart';
 import 'package:blood_collector/UI/widgets/filterOptionsWidget.dart';
@@ -5,13 +6,13 @@ import 'package:blood_collector/UI/widgets/postWidget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:flutter/material.dart';
-
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
+
+//packages
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 

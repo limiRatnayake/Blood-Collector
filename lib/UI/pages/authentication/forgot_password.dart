@@ -1,12 +1,12 @@
-import 'package:blood_collector/UI/pages/authentication/signin_view.dart';
+//pages
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:blood_collector/shared/decoration_constant.dart';
+
+//packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:provider/provider.dart';
 
 class ForgotPasswordPage extends StatefulWidget {

@@ -1,9 +1,9 @@
-import 'package:blood_collector/models/user_model.dart';
-import 'package:blood_collector/services/auth.dart';
+//pages
 import 'package:blood_collector/services/user_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+//packages
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';

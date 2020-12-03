@@ -1,8 +1,10 @@
-import 'package:blood_collector/UI/pages/rootPages/HomeTimelineView.dart';
+//pages
 import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
 import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:blood_collector/UI/pages/rootPages/timelineView.dart';
+
+//packages
 import 'package:flutter/material.dart';
 
 class BottomNavigationWidget extends StatefulWidget {

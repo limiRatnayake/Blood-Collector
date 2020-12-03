@@ -1,10 +1,11 @@
-import 'package:blood_collector/UI/pages/rootPages/editCampaignView.dart';
-import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
+//pages
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
-import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
+
+//packages
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -273,6 +274,15 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                           fontWeight: FontWeight.w700),
                                     ),
                                   ),
+                                  PopupMenuItem(
+                                    value: 3,
+                                    child: Text(
+                                      "Add to Calender",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
                                 ],
                                 onSelected: (value) {
                                   switch (value) {
@@ -457,6 +467,35 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                       break;
                                     case 2:
                                       {}
+                                      break;
+                                    case 3:
+                                      {
+                                        DateTime endDate =
+                                            widget.requestCloseDate.toDate();
+
+                                        print(endDate);
+                                        Event event = Event(
+                                          title: 'Participating on' +
+                                              " " +
+                                              widget.nameOftheOrganizer +
+                                              " " +
+                                              "blood campaign",
+                                          description: widget.description,
+                                          location: widget.placeAddress,
+                                          startDate: DateTime.now(),
+                                          endDate: endDate,
+                                          allDay: false,
+                                        );
+
+                                        Add2Calendar.addEvent2Cal(event)
+                                            .then((success) {
+                                          Scaffold.of(context).showSnackBar(
+                                              SnackBar(
+                                                  content: Text(success
+                                                      ? 'Success'
+                                                      : 'Error')));
+                                        });
+                                      }
                                       break;
                                   }
                                 },

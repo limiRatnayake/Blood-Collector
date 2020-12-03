@@ -1,13 +1,13 @@
+//pages
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:blood_collector/shared/decoration_constant.dart';
+
+//packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:blood_collector/shared/decoration_constant.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -39,7 +39,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget _emailTextField() {
     return Container(
       width: double.infinity,
-      height: 58,
+      height: MediaQuery.of(context).size.height * 0.08,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration, //import from shared
       child: Padding(
@@ -65,7 +65,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget _passwordTextField() {
     return Container(
       width: double.infinity,
-      // height: 58,
+      height: MediaQuery.of(context).size.height * 0.08,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       decoration: boxDecoration,
       child: Padding(
@@ -74,7 +74,6 @@ class _SignInPageState extends State<SignInPage> {
           children: [
             Expanded(
               child: TextFormField(
-                // controller: _passController,
                 decoration: inputDecoration.copyWith(
                   hintText: "Password",
                 ),
@@ -106,216 +105,217 @@ class _SignInPageState extends State<SignInPage> {
     PushNotificationService _pushNotificationService =
         PushNotificationService();
 
-    return SafeArea(
-      child: Scaffold(
-          resizeToAvoidBottomPadding: false,
-          backgroundColor: Colors.white,
-          body: ListView(
-            children: <Widget>[
-              Center(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: 280.0,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              child: Center(
-                                child: Image.asset("assets/logo_name.png"),
-                              ),
-                            )
-                          ],
-                        ),
+    return Scaffold(
+        resizeToAvoidBottomPadding: false,
+        backgroundColor: Colors.white,
+        body: ListView(
+          children: <Widget>[
+            Center(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: 280.0,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            child: Center(
+                              child: Image.asset("assets/logo_name.png"),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    Container(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: Form(
-                            key: _formKey,
-                            autovalidate: _formValidate,
-                            child: Column(
-                              children: <Widget>[
-                                _emailTextField(),
-                                SizedBox(
-                                  height: 25.0,
-                                ),
-                                _passwordTextField(),
-                                SizedBox(
-                                  height: 25.0,
-                                ),
-                                new Center(
-                                    widthFactor: double.infinity,
-                                    child: InkWell(
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Container(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom),
+                        child: Form(
+                          key: _formKey,
+                          autovalidate: _formValidate,
+                          child: Column(
+                            children: <Widget>[
+                              _emailTextField(),
+                              SizedBox(
+                                height: 25.0,
+                              ),
+                              _passwordTextField(),
+                              SizedBox(
+                                height: 25.0,
+                              ),
+                              new Center(
+                                  widthFactor: double.infinity,
+                                  child: InkWell(
+                                    child: Text(
+                                      "Forgot Password ?",
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                    onTap: () {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        AppConstants.FORGOT_PASSWORD,
+                                      );
+                                    },
+                                  )),
+                              SizedBox(
+                                height: 20.0,
+                              ),
+                              _errorMessage != null
+                                  ? Container(
+                                      padding: EdgeInsets.only(bottom: 10),
+                                      width: double.infinity,
                                       child: Text(
-                                        "Forgot Password ?",
-                                        style: TextStyle(fontSize: 15),
+                                        _errorMessage,
+                                        style:
+                                            TextStyle(color: Colors.redAccent),
+                                        textAlign: TextAlign.center,
                                       ),
-                                      onTap: () {
-                                        Navigator.pushReplacementNamed(
-                                          context,
-                                          AppConstants.FORGOT_PASSWORD,
-                                        );
-                                      },
-                                    )),
-                                SizedBox(
-                                  height: 20.0,
-                                ),
-                                _errorMessage != null
-                                    ? Container(
-                                        padding: EdgeInsets.only(bottom: 10),
-                                        width: double.infinity,
-                                        child: Text(
-                                          _errorMessage,
-                                          style: TextStyle(
-                                              color: Colors.redAccent),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      )
-                                    : Container(),
-                                _isLoading
-                                    ? Center(
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : Container(
-                                        width: double.infinity,
-                                        height: 58,
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 30.0),
-                                        decoration: boxDecoration,
-                                        child: ButtonTheme(
-                                          child: RaisedButton(
-                                            elevation: 0.0,
-                                            child: Text("SIGNUP",
-                                                style: TextStyle(
-                                                    fontFamily: "Roboto",
-                                                    fontSize: 18.0,
-                                                    color: Colors.black)),
-                                            textColor: Colors.black,
-                                            color: Colors.red.withOpacity(0.9),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        25.5)),
-                                            onPressed: () async {
-                                              if (_formKey.currentState
-                                                  .validate()) {
+                                    )
+                                  : Container(),
+                              _isLoading
+                                  ? Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Container(
+                                      width: double.infinity,
+                                      height: 58,
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 30.0),
+                                      decoration: boxDecoration,
+                                      child: ButtonTheme(
+                                        child: RaisedButton(
+                                          elevation: 0.0,
+                                          child: Text("SIGNUP",
+                                              style: TextStyle(
+                                                  fontFamily: "Roboto",
+                                                  fontSize: 18.0,
+                                                  color: Colors.black)),
+                                          textColor: Colors.black,
+                                          color: Colors.red.withOpacity(0.9),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(25.5)),
+                                          onPressed: () async {
+                                            if (_formKey.currentState
+                                                .validate()) {
+                                              setState(() {
+                                                _errorMessage = "";
+                                                _isLoading = true;
+                                              });
+
+                                              String response =
+                                                  await _authService.signIn(
+                                                      email, password);
+
+                                              if (response != "Success") {
                                                 setState(() {
-                                                  _errorMessage = "";
-                                                  _isLoading = true;
+                                                  _isLoading = false;
+                                                  _errorMessage = response;
                                                 });
-
-                                                String response =
-                                                    await _authService.signIn(
-                                                        email, password);
-
-                                                if (response != "Success") {
-                                                  setState(() {
-                                                    _isLoading = false;
-                                                    _errorMessage = response;
-                                                  });
-                                                } else {
-                                                  _pushNotificationService
-                                                      .getDeviceToken(
-                                                          _authService.user.uid,
-                                                          context);
-                                                  Alert(
-                                                      context: context,
-                                                      type: AlertType.success,
-                                                      title:
-                                                          "You are Successfully login",
-                                                      style: AlertStyle(
-                                                        isCloseButton: false,
-
-                                                        // backgroundColor:
-                                                        //     Colors.black,
-                                                        alertBorder:
-                                                            RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5),
-                                                                side: BorderSide(
-                                                                    color: Colors
-                                                                        .white)),
-                                                        // titleStyle: TextStyle(
-                                                        //     color: Colors
-                                                        //         .white)
-                                                      ),
-                                                      buttons: [
-                                                        DialogButton(
-                                                            width: 120,
-                                                            child: Text(
-                                                              "ok",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 20),
-                                                            ),
-                                                            onPressed: () {
-                                                              Navigator
-                                                                  .pushReplacementNamed(
-                                                                context,
-                                                                AppConstants
-                                                                    .HOME_PAGE,
-                                                              );
-                                                            })
-                                                      ]).show();
-                                                  setState(() {
-                                                    _isLoading = false;
-                                                  });
-                                                }
                                               } else {
+                                                _pushNotificationService
+                                                    .getDeviceToken(
+                                                        _authService.user.uid,
+                                                        context);
+                                                Alert(
+                                                    context: context,
+                                                    type: AlertType.success,
+                                                    title:
+                                                        "You are Successfully login",
+                                                    style: AlertStyle(
+                                                      isCloseButton: false,
+
+                                                      // backgroundColor:
+                                                      //     Colors.black,
+                                                      alertBorder:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                              side: BorderSide(
+                                                                  color: Colors
+                                                                      .white)),
+                                                      // titleStyle: TextStyle(
+                                                      //     color: Colors
+                                                      //         .white)
+                                                    ),
+                                                    buttons: [
+                                                      DialogButton(
+                                                          width: 120,
+                                                          child: Text(
+                                                            "ok",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 20),
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator
+                                                                .pushReplacementNamed(
+                                                              context,
+                                                              AppConstants
+                                                                  .HOME_PAGE,
+                                                            );
+                                                          })
+                                                    ]).show();
                                                 setState(() {
-                                                  _formValidate = true;
+                                                  _isLoading = false;
                                                 });
                                               }
-                                            },
-                                          ),
-                                        )),
-                                SizedBox(height: 33.0),
-                                Container(
-                                    child: Center(
-                                        child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
+                                            } else {
+                                              setState(() {
+                                                _formValidate = true;
+                                              });
+                                            }
+                                          },
+                                        ),
+                                      )),
+                              SizedBox(height: 33.0),
+                              Container(
+                                  child: Center(
+                                      child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Flexible(
+                                    child: Text(
                                       "Don't you have and account ?  ",
                                       style: TextStyle(
                                           fontSize: 15.0, fontFamily: "Roboto"),
                                     ),
-                                    FlatButton.icon(
-                                      icon: Icon(Icons.person),
-                                      label: Text('Sign Up'),
-                                      onPressed: () {
-                                        Navigator.pushReplacementNamed(
-                                          context,
-                                          AppConstants.SIGN_UP,
-                                        );
-                                      },
-                                    )
-                                  ],
-                                )))
-                              ],
-                            ),
+                                  ),
+                                  FlatButton.icon(
+                                    icon: Icon(Icons.person),
+                                    label: Text('Sign Up'),
+                                    onPressed: () {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        AppConstants.SIGN_UP,
+                                      );
+                                    },
+                                  )
+                                ],
+                              )))
+                            ],
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          )),
-    ); //Scaffold
+            ),
+          ],
+        )); //Scaffold
   }
 
   String validatePassword(String value) {

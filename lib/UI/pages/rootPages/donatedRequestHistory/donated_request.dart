@@ -1,15 +1,13 @@
+// pages
 import 'package:blood_collector/UI/pages/rootPages/donatedRequestHistory/donatedRequestPostWidget.dart';
-import 'package:blood_collector/UI/widgets/raisedRequestHistoryWidget.dart';
-import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_participant_service.dart';
-import 'package:blood_collector/services/event_service.dart';
+
+//packages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DonatedRequestView extends StatefulWidget {
@@ -38,7 +36,6 @@ class _DonatedRequestViewState extends State<DonatedRequestView> {
 
   @override
   Widget build(BuildContext context) {
-    final EventService _eventServices = Provider.of<EventService>(context);
     final AuthServices _authServices = Provider.of<AuthServices>(context);
     final EventParticipantService _participantServices =
         Provider.of<EventParticipantService>(context);

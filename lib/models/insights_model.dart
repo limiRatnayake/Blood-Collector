@@ -1,27 +1,3 @@
-// class InsightsModel {
-//   final String taskDetails;
-//   final String colorVal;
-//   final int taskVal;
-
-//   InsightsModel({
-//     this.taskDetails,
-//     this.colorVal,
-//     this.taskVal,
-//   });
-
-//   InsightsModel.fromMap(Map snapshot)
-//       : taskDetails = snapshot['taskDetails'] ?? null,
-//         colorVal = snapshot['colorVal'] ?? null,
-//         taskVal = snapshot['taskVal'] ?? null;
-
-//   toJson() {
-//     return {
-//       "taskDetails": taskDetails,
-//       "colorVal": colorVal,
-//       "taskVal": taskVal,
-//     };
-//   }
-// }
 class InsightsModel {
   final String details;
   final String color;

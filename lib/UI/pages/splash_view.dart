@@ -1,10 +1,13 @@
+//library
 import 'dart:async';
 
+//pages
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
+
+//packages
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -88,13 +91,12 @@ class _SplashPageState extends State<SplashPage> {
   _loadingApp() {
     _authServices.getCurrentFirebaseUser().then((user) {
       // print(user.isEmailVerified);
-     
+
       if (user == null) {
         Navigator.pushReplacementNamed(context, AppConstants.AUTH);
       } else if (user != null && !user.isEmailVerified) {
         Navigator.pushReplacementNamed(context, AppConstants.AUTH);
-      }
-       else {
+      } else {
         Navigator.pushReplacementNamed(context, AppConstants.HOME_PAGE);
         //  Navigator.pushReplacementNamed(context, AppConstants.USER_STATE);
       }

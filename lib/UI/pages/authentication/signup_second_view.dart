@@ -1,11 +1,12 @@
+//pages
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
+
+//packages
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -86,12 +87,13 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
         ),
         Container(
           width: double.infinity,
-          height: 66,
+          height: MediaQuery.of(context).size.height * 0.08,
           margin: EdgeInsets.symmetric(horizontal: 30.0),
           decoration: boxDecoration,
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               value: answer,
               decoration: InputDecoration(enabledBorder: InputBorder.none),
               validator: validateDropdowns,
@@ -131,6 +133,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: TextFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               decoration:
                   inputDecoration.copyWith(hintText: "Enter How many times"),
               keyboardType: TextInputType.text,
@@ -213,6 +216,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               value: answer,
               decoration: InputDecoration(enabledBorder: InputBorder.none),
               validator: validateDropdowns,
@@ -252,6 +256,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               value: answer,
               decoration: InputDecoration(enabledBorder: InputBorder.none),
               validator: validateDropdowns,
@@ -303,6 +308,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               value: answer,
               decoration: InputDecoration(
                   hintText: 'Blood Type',
@@ -351,6 +357,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               value: answer,
               decoration: InputDecoration(
                   hintText: 'Blood Type',
@@ -399,6 +406,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               value: answer,
               decoration: InputDecoration(
                   hintText: 'Blood Type',
@@ -447,6 +455,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               value: answer,
               decoration: InputDecoration(enabledBorder: InputBorder.none),
               validator: validateDropdowns,
@@ -489,6 +498,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: DropdownButtonFormField(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               value: answer,
               decoration: InputDecoration(enabledBorder: InputBorder.none),
               validator: validateDropdowns,
@@ -532,252 +542,247 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
       }
     }
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.black),
-        ),
-        resizeToAvoidBottomPadding: false,
-        backgroundColor: Colors.white,
-        body: ListView(children: <Widget>[
-          //logo
-          Center(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: 180.0,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                            child: Center(
-                          child: Image.asset("assets/logo_name.png"),
-                        )),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-              ],
-            ),
-          ),
-          Container(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: Form(
-                  key: _formKey,
-                  autovalidate: _formValidate,
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      resizeToAvoidBottomPadding: false,
+      backgroundColor: Colors.white,
+      body: ListView(children: <Widget>[
+        //logo
+        Center(
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 180.0,
+                child: Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      _userPreviouslyDonatedOrNot(),
-                      SizedBox(height: 10),
-                      userPreviouslyDonatedOrNot == "Yes"
-                          ? _ifYesHowManyTimes()
-                          : SizedBox(),
-                      SizedBox(height: 10),
-                      userPreviouslyDonatedOrNot == "Yes"
-                          ? _dateOfLastDonation()
-                          : SizedBox(),
-                      SizedBox(height: 10),
-                      _medicallyAdvised(),
-                      SizedBox(height: 10),
-                      _vaildIdentitiyCardCheck(),
-                      SizedBox(height: 10),
-                      _freeFromRiskBehaviour(),
-                      SizedBox(height: 10),
-                      _freeFromSeriousCondition(),
-                      SizedBox(height: 10),
-                      _travelAbroad(),
-                      SizedBox(height: 10),
-                      _presentMedialTreatment(),
-                      SizedBox(height: 10),
-                      _undergoneSurgery(),
-                      SizedBox(height: 20.0),
-                      _errorMessage != null
-                          ? Container(
-                              padding: EdgeInsets.only(bottom: 10),
-                              width: double.infinity,
-                              child: Text(
-                                _errorMessage,
-                                style: TextStyle(color: Colors.redAccent),
-                                textAlign: TextAlign.center,
-                              ),
-                            )
-                          : Container(),
-                      _isLoading
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : Container(
-                              width: double.infinity,
-                              height: 58,
-                              margin: EdgeInsets.symmetric(horizontal: 30.0),
-                              decoration: boxDecoration,
-                              child: ButtonTheme(
-                                child: RaisedButton(
-                                  elevation: 0.0,
-                                  child: Text("SIGNUP",
-                                      style: TextStyle(
-                                          fontFamily: "Roboto",
-                                          fontSize: 18.0,
-                                          color: Colors.black)),
-                                  textColor: Colors.black,
-                                  color: Colors.red.withOpacity(0.9),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(25.5)),
-                                  onPressed: () async {
-                                    lastDonateMonthsDifferent();
-                                    // if ((userPreviouslyDonatedOrNot == "No" ||
-                                    //         lastDonationDateCheck == true) &&
-                                    //     (widget.age > 18 && widget.age < 55) &&
-                                    //     medicallyAdvised == "No" &&
-                                    //     vaildIdentitiyCardCheck == "Yes" &&
-                                    //     freeFromRiskBehaviour == "Yes" &&
-                                    //     freeFromSeriousCondition == "No" &&
-                                    //     travelAbroad == "No" &&
-                                    //     presentMedialTreatment == "No" &&
-                                    //     undergoneSurgery == "No") {
-                                    //   setState(() {
-                                    //     availability = true;
-                                    //     print(availability);
-                                    //   });
-                                    // } else {
-                                    //   setState(() {
-                                    //     availability = false;
-                                    //     print(availability);
-                                    //   });
-                                    // }
-
-                                    if (_formKey.currentState.validate()) {
-                                      setState(() {
-                                        _errorMessage = "";
-                                        _isLoading = true;
-                                        // disabled = false;
-                                      });
-                                      String response =
-                                          await _authService.createUser(
-                                              widget.email,
-                                              widget.confirmPassword,
-                                              widget.uid,
-                                              widget.firstName,
-                                              widget.lastName,
-                                              widget.birthDate,
-                                              widget.gender,
-                                              widget.mobileNo,
-                                              widget.bloodGroup,
-                                              widget.address,
-                                              widget.userAddLat,
-                                              widget.userAddLng,
-                                              widget.proPicUrl,
-                                              widget.disabled,
-                                              userPreviouslyDonatedOrNot,
-                                              ifYesHowManyTimes ?? 0,
-                                              dateOfLastDonation,
-                                              medicallyAdvised,
-                                              vaildIdentitiyCardCheck,
-                                              freeFromRiskBehaviour,
-                                              freeFromSeriousCondition,
-                                              travelAbroad,
-                                              presentMedialTreatment,
-                                              undergoneSurgery,
-                                              lastDonationDateCheck,
-                                              widget.age);
-                                      if (response != "Success") {
-                                        setState(() {
-                                          _isLoading = false;
-                                          _errorMessage = response;
-                                        });
-                                      } else {
-                                        Alert(
-                                            context: context,
-                                            type: AlertType.success,
-                                            title:
-                                                "Your are Successfully signup!",
-                                            desc:
-                                                "Please Verify Your Email Before Sign in",
-                                            style: AlertStyle(
-                                                isCloseButton: false,
-                                                // backgroundColor: Colors.black,
-                                                descStyle: TextStyle(
-                                                    fontWeight: FontWeight
-                                                        .bold),
-                                                alertBorder:
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        side: BorderSide(
-                                                            color:
-                                                                Colors.white)),
-                                                titleStyle: TextStyle(
-                                                    color: Colors.blueAccent)),
-                                            buttons: [
-                                              DialogButton(
-                                                  width: 120,
-                                                  child: Text(
-                                                    "ok",
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 20),
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator
-                                                        .pushReplacementNamed(
-                                                      context,
-                                                      AppConstants.SIGN_IN,
-                                                    );
-                                                  })
-                                            ]).show();
-                                        setState(() {
-                                          _isLoading = false;
-                                        });
-                                      }
-                                    } else {
-                                      setState(() {
-                                        _formValidate = true;
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
                       Container(
                           child: Center(
-                              child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "If you already have an account !  ",
-                            style:
-                                TextStyle(fontSize: 15.0, fontFamily: "Roboto"),
-                          ),
-                          FlatButton.icon(
-                            icon: Icon(Icons.person),
-                            label: Text('Sign In'),
-                            onPressed: () {
-                              Navigator.pushReplacementNamed(
-                                context,
-                                AppConstants.SIGN_IN,
-                              );
-                            },
-                          )
-                        ],
-                      )))
+                        child: Image.asset("assets/logo_name.png"),
+                      )),
                     ],
                   ),
                 ),
               ),
+              SizedBox(
+                height: 10.0,
+              ),
+            ],
+          ),
+        ),
+        Container(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Form(
+                key: _formKey,
+                autovalidate: _formValidate,
+                child: Column(
+                  children: <Widget>[
+                    _userPreviouslyDonatedOrNot(),
+                    SizedBox(height: 10),
+                    userPreviouslyDonatedOrNot == "Yes"
+                        ? _ifYesHowManyTimes()
+                        : SizedBox(),
+                    SizedBox(height: 10),
+                    userPreviouslyDonatedOrNot == "Yes"
+                        ? _dateOfLastDonation()
+                        : SizedBox(),
+                    SizedBox(height: 10),
+                    _medicallyAdvised(),
+                    SizedBox(height: 10),
+                    _vaildIdentitiyCardCheck(),
+                    SizedBox(height: 10),
+                    _freeFromRiskBehaviour(),
+                    SizedBox(height: 10),
+                    _freeFromSeriousCondition(),
+                    SizedBox(height: 10),
+                    _travelAbroad(),
+                    SizedBox(height: 10),
+                    _presentMedialTreatment(),
+                    SizedBox(height: 10),
+                    _undergoneSurgery(),
+                    SizedBox(height: 20.0),
+                    _errorMessage != null
+                        ? Container(
+                            padding: EdgeInsets.only(bottom: 10),
+                            width: double.infinity,
+                            child: Text(
+                              _errorMessage,
+                              style: TextStyle(color: Colors.redAccent),
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        : Container(),
+                    _isLoading
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Container(
+                            width: double.infinity,
+                            height: 58,
+                            margin: EdgeInsets.symmetric(horizontal: 30.0),
+                            decoration: boxDecoration,
+                            child: ButtonTheme(
+                              child: RaisedButton(
+                                elevation: 0.0,
+                                child: Text("SIGNUP",
+                                    style: TextStyle(
+                                        fontFamily: "Roboto",
+                                        fontSize: 18.0,
+                                        color: Colors.black)),
+                                textColor: Colors.black,
+                                color: Colors.red.withOpacity(0.9),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25.5)),
+                                onPressed: () async {
+                                  lastDonateMonthsDifferent();
+                                  // if ((userPreviouslyDonatedOrNot == "No" ||
+                                  //         lastDonationDateCheck == true) &&
+                                  //     (widget.age > 18 && widget.age < 55) &&
+                                  //     medicallyAdvised == "No" &&
+                                  //     vaildIdentitiyCardCheck == "Yes" &&
+                                  //     freeFromRiskBehaviour == "Yes" &&
+                                  //     freeFromSeriousCondition == "No" &&
+                                  //     travelAbroad == "No" &&
+                                  //     presentMedialTreatment == "No" &&
+                                  //     undergoneSurgery == "No") {
+                                  //   setState(() {
+                                  //     availability = true;
+                                  //     print(availability);
+                                  //   });
+                                  // } else {
+                                  //   setState(() {
+                                  //     availability = false;
+                                  //     print(availability);
+                                  //   });
+                                  // }
+
+                                  if (_formKey.currentState.validate()) {
+                                    setState(() {
+                                      _errorMessage = "";
+                                      _isLoading = true;
+                                      // disabled = false;
+                                    });
+                                    String response =
+                                        await _authService.createUser(
+                                            widget.email,
+                                            widget.confirmPassword,
+                                            widget.uid,
+                                            widget.firstName,
+                                            widget.lastName,
+                                            widget.birthDate,
+                                            widget.gender,
+                                            widget.mobileNo,
+                                            widget.bloodGroup,
+                                            widget.address,
+                                            widget.userAddLat,
+                                            widget.userAddLng,
+                                            widget.proPicUrl,
+                                            widget.disabled,
+                                            userPreviouslyDonatedOrNot,
+                                            ifYesHowManyTimes ?? 0,
+                                            dateOfLastDonation,
+                                            medicallyAdvised,
+                                            vaildIdentitiyCardCheck,
+                                            freeFromRiskBehaviour,
+                                            freeFromSeriousCondition,
+                                            travelAbroad,
+                                            presentMedialTreatment,
+                                            undergoneSurgery,
+                                            lastDonationDateCheck,
+                                            widget.age);
+                                    if (response != "Success") {
+                                      setState(() {
+                                        _isLoading = false;
+                                        _errorMessage = response;
+                                      });
+                                    } else {
+                                      Alert(
+                                          context: context,
+                                          type: AlertType.success,
+                                          title:
+                                              "Your are Successfully signup!",
+                                          desc:
+                                              "Please Verify Your Email Before Sign in",
+                                          style: AlertStyle(
+                                              isCloseButton: false,
+                                              // backgroundColor: Colors.black,
+                                              descStyle: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                              alertBorder:
+                                                  RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      side: BorderSide(
+                                                          color: Colors.white)),
+                                              titleStyle: TextStyle(
+                                                  color: Colors.blueAccent)),
+                                          buttons: [
+                                            DialogButton(
+                                                width: 120,
+                                                child: Text(
+                                                  "ok",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 20),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                    context,
+                                                    AppConstants.SIGN_IN,
+                                                  );
+                                                })
+                                          ]).show();
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                    }
+                                  } else {
+                                    setState(() {
+                                      _formValidate = true;
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                    Container(
+                        child: Center(
+                            child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "If you already have an account !  ",
+                          style:
+                              TextStyle(fontSize: 15.0, fontFamily: "Roboto"),
+                        ),
+                        FlatButton.icon(
+                          icon: Icon(Icons.person),
+                          label: Text('Sign In'),
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              AppConstants.SIGN_IN,
+                            );
+                          },
+                        )
+                      ],
+                    )))
+                  ],
+                ),
+              ),
             ),
           ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 

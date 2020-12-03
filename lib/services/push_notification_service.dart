@@ -1,10 +1,11 @@
+//library
 import 'dart:io';
 
-import 'package:blood_collector/models/event_model.dart';
-import 'package:blood_collector/models/user_notification_model.dart';
+//models & shared widgets
 import 'package:blood_collector/shared/appConstant.dart';
+
+//packages
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -15,11 +16,9 @@ class PushNotificationService extends ChangeNotifier {
   // Firestore _db = Firestore.instance;
   String uid;
   CollectionReference _userRef;
-  CollectionReference _notificationRef;
 
   PushNotificationService() : _db = Firestore.instance {
     _userRef = _db.collection(AppConstants.USERS_COLLECTION);
-    _notificationRef = _db.collection(AppConstants.NOTIFICATION_COLLECTION);
   }
   //get device token from user login to homescreen
   Future getDeviceToken(String uid, BuildContext context) async {

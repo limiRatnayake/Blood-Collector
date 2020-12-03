@@ -1,8 +1,8 @@
+//pages
 import 'package:blood_collector/UI/pages/rootPages/add_details_view.dart';
-
-import 'package:flutter/material.dart';
-
 import 'package:blood_collector/UI/widgets/bottom_navigator.dart';
+//packages
+import 'package:flutter/material.dart';
 
 class HomeWidgetView extends StatefulWidget {
   @override

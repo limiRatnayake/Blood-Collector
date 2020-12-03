@@ -1,9 +1,8 @@
-import 'package:blood_collector/models/user_model.dart';
-import 'package:blood_collector/services/push_notification_service.dart';
-import 'package:blood_collector/services/user_service.dart';
+//pages
 import 'package:blood_collector/shared/appConstant.dart';
+
+//packages
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AuthPage extends StatefulWidget {
   @override
