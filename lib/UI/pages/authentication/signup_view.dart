@@ -13,7 +13,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -284,10 +283,6 @@ class _SignUpPageState extends State<SignUpPage> {
         padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
         child: Row(
           children: [
-            Text(
-              "+94 | ",
-              style: TextStyle(color: Colors.grey[800], fontSize: 15),
-            ),
             Expanded(
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -298,8 +293,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 validator: validateMobile,
                 onChanged: (val) {
                   setState(() {
-                    mobileNo = "+94" + val;
-                    print(mobileNo);
+                    mobileNo = val;
                   });
                 },
               ),
@@ -875,9 +869,9 @@ class _SignUpPageState extends State<SignUpPage> {
   String validateMobile(String value) {
     // String pattern = r'(^(?:[+0]9)?[0-9]{10}$)';
 
-    String pattern = r'(^[0-9]*$)';
+    String pattern = r'(^[0-9]{10}$)';
     RegExp regExp = RegExp(pattern);
-    if (value.length != 9) {
+    if (value.isEmpty) {
       return 'Please enter mobile number';
     } else if (!regExp.hasMatch(value)) {
       return "Enter Valid Phone Number";

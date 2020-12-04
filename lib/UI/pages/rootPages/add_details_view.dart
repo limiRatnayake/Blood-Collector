@@ -13,32 +13,30 @@ class RequestView extends StatefulWidget {
 class _RequestViewState extends State<RequestView> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: DefaultTabController(
-        length: 2,
-        child: WillPopScope(
-          onWillPop: _onBackPressed,
-          child: Scaffold(
-            appBar: AppBar(
-              iconTheme: IconThemeData(color: Colors.black),
-              backgroundColor: Colors.grey[200],
-              bottom: TabBar(
-                indicatorColor: Colors.black,
-                indicatorWeight: 3.0,
-                labelColor: Colors.black,
-                tabs: <Widget>[
-                  Tab(text: 'Request Blood'),
-                  Tab(text: 'Add Campaigns')
-                ],
-              ),
-              title: Text(
-                ' Add Details',
-                style: TextStyle(fontFamily: "Roboto", color: Colors.black),
-              ),
+    return DefaultTabController(
+      length: 2,
+      child: WillPopScope(
+        onWillPop: _onBackPressed,
+        child: Scaffold(
+          appBar: AppBar(
+            iconTheme: IconThemeData(color: Colors.black),
+            backgroundColor: Colors.grey[200],
+            bottom: TabBar(
+              indicatorColor: Colors.black,
+              indicatorWeight: 3.0,
+              labelColor: Colors.black,
+              tabs: <Widget>[
+                Tab(text: 'Request Blood'),
+                Tab(text: 'Add Campaigns')
+              ],
             ),
-            body: TabBarView(
-              children: <Widget>[RequestBloodView(), AddCampaignsView()],
+            title: Text(
+              ' Add Details',
+              style: TextStyle(fontFamily: "Roboto", color: Colors.black),
             ),
+          ),
+          body: TabBarView(
+            children: <Widget>[RequestBloodView(), AddCampaignsView()],
           ),
         ),
       ),

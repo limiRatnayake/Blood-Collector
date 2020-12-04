@@ -259,7 +259,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                 fontFamily: "Roboto",
               ),
               enabledBorder: InputBorder.none),
-          validator: validateFormData,
+          validator: validatePatientName,
           onChanged: (value) {
             patientName = value;
           },
@@ -927,13 +927,24 @@ class _RequestBloodViewState extends State<RequestBloodView> {
     return null;
   }
 
+  String validatePatientName(String value) {
+    String pattern = r'^[a-zA-Z \.]+$';
+    RegExp regExp = RegExp(pattern);
+    if (value.length == 0) {
+      return "This feild is required ";
+    } else if (!regExp.hasMatch(value)) {
+      return "Name must be a-z and A-Z";
+    }
+    return null;
+  }
+
   String validateBloodUnit(String value) {
-    String pattern = r'(^[0-9]*$)';
+    String pattern = r'(^[0-9]$)';
     RegExp regExp = RegExp(pattern);
     if (value.isEmpty) {
       return 'This feild is requried!!';
     } else if (!regExp.hasMatch(value)) {
-      return "Name must be numeric vaue";
+      return "Enter valid number(0-9)";
     }
     return null;
   }
