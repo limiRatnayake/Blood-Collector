@@ -202,6 +202,7 @@ class _SettingViewState extends State<SettingView> {
                                       Container(
                                         //get from constants
                                         decoration: settingData,
+
                                         padding: const EdgeInsets.all(10),
                                         child: Column(
                                             mainAxisAlignment:
@@ -228,6 +229,7 @@ class _SettingViewState extends State<SettingView> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
+                                              Container(),
                                               Text(
                                                 data.ifYesHowManyTimes
                                                     .toString(),
@@ -278,38 +280,6 @@ class _SettingViewState extends State<SettingView> {
                   ],
                 ),
               ),
-              // Card(
-              // child: GridView.count(
-              //     shrinkWrap: true,
-              //     crossAxisCount: 2,
-              //     childAspectRatio: 2.0,
-              //     padding: const EdgeInsets.all(10.0),
-              //     mainAxisSpacing: 10.0,
-              //     crossAxisSpacing: 10.0,
-              //     children: <Widget>[
-              //       Container(
-              //         padding: const EdgeInsets.all(10),
-              //         child: const Text("He'd have you all unravel at the"),
-              //         color: Colors.teal[100],
-              //       ),
-              //       Container(
-              //         padding: const EdgeInsets.all(8),
-              //         child: const Text('Heed not the rabble'),
-              //         color: Colors.teal[200],
-              //       ),
-              //       Container(
-              //         padding: const EdgeInsets.all(8),
-              //         child: const Text('Sound of screams but the'),
-              //         color: Colors.teal[300],
-              //       ),
-              //       Container(
-              //         padding: const EdgeInsets.all(8),
-              //         child: const Text('Who scream'),
-              //         color: Colors.teal[400],
-              //       ),
-              //     ]),
-              // ),
-
               Card(
                 child: Column(children: <Widget>[
                   ListTile(
@@ -360,36 +330,6 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ]),
               ),
-
-              // Card(
-              //   child: Column(
-              //     children: <Widget>[
-              //       ListTile(
-              //         title: Text("FAQ's"),
-              //         onTap: () {},
-              //       ),
-              //       ListTile(
-              //         title: Text("How to use"),
-              //         onTap: () {},
-              //       ),
-              //       ListTile(
-              //         title: Text("Terms of services"),
-              //         onTap: () {},
-              //       ),
-              //       ListTile(
-              //         title: Text("Privacy Policy"),
-              //         onTap: () {},
-              //       ),
-              //       ListTile(
-              //           title: Text("Log Out"),
-              //           onTap: () async {
-              //             await _authServices.logOut();
-              //             Navigator.pushReplacementNamed(
-              //                 context, AppConstants.SPLASH);
-              //           }),
-              //     ],
-              //   ),
-              // )
             ],
           ),
         ),

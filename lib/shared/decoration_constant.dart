@@ -10,7 +10,15 @@ BoxDecoration boxDecoration = BoxDecoration(
           offset: Offset(3, 6)) //BoxShadow
     ]);
 BoxDecoration settingData = BoxDecoration(
-    color: Colors.white,
+    gradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        Colors.red[300],
+        Colors.white,
+      ],
+    ),
+    // color: Colors.red[100],
     borderRadius: BorderRadius.circular(10.0),
     boxShadow: [
       BoxShadow(
