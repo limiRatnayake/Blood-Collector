@@ -19,24 +19,27 @@ class _RequestViewState extends State<RequestView> {
         onWillPop: _onBackPressed,
         child: Scaffold(
           appBar: AppBar(
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: IconThemeData(color: Colors.red),
             backgroundColor: Colors.grey[200],
             bottom: TabBar(
               indicatorColor: Colors.black,
               indicatorWeight: 3.0,
               labelColor: Colors.black,
               tabs: <Widget>[
+                Tab(text: 'Add Campaigns'),
                 Tab(text: 'Request Blood'),
-                Tab(text: 'Add Campaigns')
               ],
             ),
             title: Text(
-              ' Add Details',
-              style: TextStyle(fontFamily: "Roboto", color: Colors.black),
+              'Add Details',
+              style: TextStyle(fontFamily: "Roboto", color: Colors.red),
             ),
           ),
           body: TabBarView(
-            children: <Widget>[RequestBloodView(), AddCampaignsView()],
+            children: <Widget>[
+              AddCampaignsView(),
+              RequestBloodView(),
+            ],
           ),
         ),
       ),

@@ -114,6 +114,8 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
     data = await Firestore.instance
         .collection('participants')
         .where("docRef", isEqualTo: widget.docRef)
+        //until update to notEqual
+
         .getDocuments();
     if (mounted) {
       setState(() {
@@ -147,7 +149,6 @@ class _ListOfParticipantViewState extends State<ListOfParticipantView> {
       //         child: AppBar(
       //           title: Text("Actual Participant List"),
       //         )),
-
       body: Builder(
         builder: (builderContext) => Column(
           children: [

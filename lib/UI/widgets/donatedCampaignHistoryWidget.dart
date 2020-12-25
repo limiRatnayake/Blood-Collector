@@ -265,24 +265,17 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                                 fontWeight: FontWeight.w700),
                                           ),
                                         ),
-                                  PopupMenuItem(
-                                    value: 2,
-                                    child: Text(
-                                      "Mark as Interested",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 3,
-                                    child: Text(
-                                      "Add to Calender",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ),
+                                  cancelParticipatedStatus != "Cancelled"
+                                      ? PopupMenuItem(
+                                          value: 2,
+                                          child: Text(
+                                            "Add to Calender",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        )
+                                      : null
                                 ],
                                 onSelected: (value) {
                                   switch (value) {
@@ -465,10 +458,8 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                                       })
                                                 ]).show();
                                       break;
+
                                     case 2:
-                                      {}
-                                      break;
-                                    case 3:
                                       {
                                         DateTime endDate =
                                             widget.requestCloseDate.toDate();

@@ -2,15 +2,12 @@
 import 'dart:async';
 
 //pages
-import 'package:blood_collector/UI/pages/rootPages/viewCampaignDetails.dart';
-import 'package:blood_collector/UI/pages/rootPages/viewRequestDetails.dart';
 import 'package:blood_collector/UI/widgets/appTopBar.dart';
 import 'package:blood_collector/UI/widgets/drawer_widget.dart';
+import 'package:blood_collector/UI/widgets/map%20cards/campaign_card.dart';
+import 'package:blood_collector/UI/widgets/map%20cards/request_card.dart';
 import 'package:blood_collector/models/event_model.dart';
-import 'package:blood_collector/models/user_model.dart';
-import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
-import 'package:blood_collector/services/user_service.dart';
 
 //packages
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,9 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MapView extends StatefulWidget {
   @override
@@ -28,27 +23,19 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
-  AuthServices _authService;
-  UserService _userService;
-
   bool mapToggle = false;
   double zoomVal = 1.0;
   var currentLocation;
   // GoogleMapController mapController;
   Completer<GoogleMapController> _controller = Completer();
   var events = [];
-  // List<Marker> _markers = <Marker>[];
+
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  Set<Circle> circles;
   BitmapDescriptor customIcon;
-  // void _onMapCreated(controller) {
-  //   setState(() {
-  //     mapController = controller;
-  //   });
-  // }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 //lock the portrait mode otherwise it is hard to scroll through the map
     SystemChrome.setPreferredOrientations([
@@ -67,6 +54,7 @@ class _MapViewState extends State<MapView> {
         });
       }
     });
+
     BitmapDescriptor.fromAssetImage(
             ImageConfiguration(size: Size(0, 5)), 'assets/location-pin.png')
         .then((d) {
@@ -87,9 +75,6 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-    _authService = Provider.of<AuthServices>(context);
-    _userService = Provider.of<UserService>(context);
-
     return Scaffold(
         backgroundColor: Colors.grey.withOpacity(0.3),
         appBar: PreferredSize(
@@ -109,9 +94,10 @@ class _MapViewState extends State<MapView> {
                     initialCameraPosition: CameraPosition(
                         target: LatLng(currentLocation.latitude,
                             currentLocation.longitude),
-                        zoom: 17),
+                        zoom: 12),
                     markers: Set<Marker>.of(markers.values),
-                    myLocationEnabled: false,
+
+                    myLocationEnabled: true,
                     zoomGesturesEnabled: true,
                     zoomControlsEnabled: false,
                   )
@@ -272,99 +258,21 @@ class _MapViewState extends State<MapView> {
       String userLName,
       Timestamp requestClose,
       String hospitalName) {
-    _userService = Provider.of<UserService>(context);
     var lat = double.parse(hospitalLat);
     var long = double.parse(hospitalLong);
-    DateTime createdOn = requestClose.toDate();
-    var requestCloseFormat = DateFormat.yMMMEd().format(createdOn);
-    // var createdOnFormat =
-    //     DateFormat.yMMMEd().add_jm().format(createdOn);
+
     return GestureDetector(
         onTap: () {
           _goToLocationOnTap(lat, long);
         },
-        child: Container(
-          alignment: Alignment.bottomLeft,
-          width: MediaQuery.of(context).size.width * 0.75,
-          child: Card(
-            child: FutureBuilder(
-                future: _userService.requestUserDetails(uid),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(child: CircularProgressIndicator());
-                  } else {
-                    UserModel data = UserModel.fromMap(snapshot.data.data);
-
-                    return data != null
-                        ? ListTile(
-                            leading: CircleAvatar(
-                              radius: 25,
-                              backgroundImage: NetworkImage(data.proPicUrl),
-                            ),
-                            title: Text(data.firstName + " " + data.lastName),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text("Close on: " +
-                                    " " +
-                                    requestCloseFormat.toString()),
-                                Text(
-                                  hospitalName,
-                                  style: TextStyle(fontSize: 11),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    FlatButton.icon(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ViewRequestDetails(
-                                                          docRef: docRef,
-                                                          uid: uid,
-                                                          image: imageUrl,
-                                                          currentUser:
-                                                              _authService
-                                                                  .user.uid)));
-                                        },
-                                        icon: Icon(
-                                          Icons.remove_red_eye,
-                                          color: Colors.grey[600],
-                                        ),
-                                        label: Text(
-                                          "View",
-                                          style: TextStyle(fontSize: 12),
-                                        )),
-                                    FlatButton.icon(
-                                        onPressed: () {
-                                          _launchMapUrl(hospitalName);
-                                        },
-                                        icon: Icon(
-                                          Icons.near_me,
-                                          color: Colors.grey[600],
-                                        ),
-                                        label: Text(
-                                          "Navigate",
-                                          style: TextStyle(fontSize: 12),
-                                        )),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            trailing: imageUrl != ""
-                                ? Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.fitHeight,
-                                  )
-                                : null)
-                        : Text("try again later");
-                  }
-                }),
-          ),
-        ));
+        child: MapRequestCard(
+            docRef: docRef,
+            uid: uid,
+            imageUrl: imageUrl,
+            hospitalLat: hospitalLat,
+            hospitalLng: hospitalLong,
+            requestClose: requestClose,
+            hospitalName: hospitalName));
   }
 
   Widget _campaignBoxes(
@@ -385,89 +293,13 @@ class _MapViewState extends State<MapView> {
         onTap: () {
           _goToLocationOnTap(lat, long);
         },
-        child: Container(
-          alignment: Alignment.bottomLeft,
-          width: MediaQuery.of(context).size.width - 60,
-          child: Card(
-            child: FutureBuilder(
-                future: _userService.requestUserDetails(uid),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(child: CircularProgressIndicator());
-                  } else {
-                    UserModel data = UserModel.fromMap(snapshot.data.data);
-
-                    return data != null
-                        ? ListTile(
-                            leading: GestureDetector(
-                              child: CircleAvatar(
-                                radius: 20,
-                                backgroundImage: NetworkImage(data.proPicUrl),
-                              ),
-                            ),
-                            title: Text(nameOftheOrganizer),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text("Campaign StartOn: " +
-                                    " " +
-                                    pickUpStartDate),
-                                Text(
-                                  placeAddress,
-                                  style: TextStyle(fontSize: 11),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    FlatButton.icon(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ViewCampaignDetails(
-                                                          docRef: docRef,
-                                                          uid: uid,
-                                                          image: imageUrl,
-                                                          currentUser:
-                                                              _authService
-                                                                  .user.uid)));
-                                        },
-                                        icon: Icon(
-                                          Icons.remove_red_eye,
-                                          color: Colors.grey[600],
-                                        ),
-                                        label: Text(
-                                          "View",
-                                          style: TextStyle(fontSize: 12),
-                                        )),
-                                    FlatButton.icon(
-                                        onPressed: () {
-                                          _launchMapUrl(placeAddress);
-                                        },
-                                        icon: Icon(
-                                          Icons.near_me,
-                                          color: Colors.grey[600],
-                                        ),
-                                        label: Text(
-                                          "Navigate",
-                                          style: TextStyle(fontSize: 12),
-                                        )),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            trailing: imageUrl != ""
-                                ? Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.fitHeight,
-                                  )
-                                : null)
-                        : Text("try again later");
-                  }
-                }),
-          ),
+        child: MapCampaignCard(
+          docRef: docRef,
+          uid: uid,
+          imageUrl: imageUrl,
+          nameOftheOrganizer: nameOftheOrganizer,
+          placeAddress: placeAddress,
+          pickUpStartDate: pickUpStartDate,
         ));
   }
 
@@ -483,7 +315,7 @@ class _MapViewState extends State<MapView> {
 
   Widget _zoomFunction() {
     return Align(
-      alignment: Alignment.topRight,
+      alignment: Alignment.topLeft,
       child: Column(
         children: [
           //zoomin button
@@ -491,7 +323,7 @@ class _MapViewState extends State<MapView> {
               icon: Icon(
                 Icons.zoom_in,
                 color: Color(0xff6200ee),
-                size: 30,
+                size: 35,
               ),
               onPressed: () {
                 _zoomIn(zoomVal);
@@ -502,7 +334,7 @@ class _MapViewState extends State<MapView> {
               icon: Icon(
                 Icons.zoom_out,
                 color: Color(0xff6200ee),
-                size: 30,
+                size: 35,
               ),
               onPressed: () {
                 _zoomOut(zoomVal);
@@ -525,15 +357,5 @@ class _MapViewState extends State<MapView> {
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(currentLocation.latitude, currentLocation.longitude),
         zoom: zoomVal)));
-  }
-
-  void _launchMapUrl(String placeAddress) async {
-    final mapUrl =
-        'https://www.google.com/maps/search/?api=1&query=$placeAddress';
-    if (await canLaunch(mapUrl)) {
-      await launch(mapUrl);
-    } else {
-      throw 'Could not launch $mapUrl';
-    }
   }
 }

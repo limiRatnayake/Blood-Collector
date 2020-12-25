@@ -14,7 +14,7 @@ BoxDecoration settingData = BoxDecoration(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        Colors.red[300],
+        Colors.red[100],
         Colors.white,
       ],
     ),

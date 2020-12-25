@@ -142,7 +142,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                                 context: context,
                                                 type: AlertType.info,
                                                 title:
-                                                    "Please save your image before removing!",
+                                                    "No profile picture to remove!",
                                                 style: AlertStyle(
                                                     isCloseButton: false,
                                                     backgroundColor: Colors

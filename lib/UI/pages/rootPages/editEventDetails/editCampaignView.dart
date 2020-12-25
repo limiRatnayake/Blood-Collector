@@ -160,6 +160,20 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                       },
                                     ),
                                   ),
+                                  data.imageUrl != ""
+                                      ? Container(
+                                          alignment: Alignment.topRight,
+                                          child: FlatButton.icon(
+                                            label: Text("Delete"),
+                                            icon: Icon(Icons.delete),
+                                            onPressed: () async {
+                                              await _eventServices
+                                                  .editEventImage(data.imageUrl,
+                                                      data.docRef);
+                                            },
+                                          ),
+                                        )
+                                      : Container(),
                                   SizedBox(height: 10),
                                   Card(
                                     margin:

@@ -268,62 +268,6 @@ class _RequestBloodViewState extends State<RequestBloodView> {
     );
   }
 
-  Widget _userLNameDeatils() {
-    return Container(
-      width: double.infinity,
-      height: 58,
-      margin: EdgeInsets.symmetric(horizontal: 15.0),
-      decoration: _boxDecoration(),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-        child: TextFormField(
-          controller: userLNameController,
-          decoration: InputDecoration(
-              hintText: "Last Name",
-              hintStyle: TextStyle(
-                fontSize: 16.0,
-                fontFamily: "Roboto",
-              ),
-              enabledBorder: InputBorder.none),
-          validator: validateFormData,
-          onChanged: (value) {
-            value = userLNameController.text;
-            userLName = value;
-            print(userLName);
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _userPhoneNumber() {
-    return Container(
-      width: double.infinity,
-      height: 58,
-      margin: EdgeInsets.symmetric(horizontal: 15.0),
-      decoration: _boxDecoration(),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-        child: TextFormField(
-          controller: userPhoneNoController,
-          decoration: InputDecoration(
-              hintText: "Phone number",
-              hintStyle: TextStyle(
-                fontSize: 16.0,
-                fontFamily: "Roboto",
-              ),
-              enabledBorder: InputBorder.none),
-          keyboardType: TextInputType.phone,
-          validator: validateMobile,
-          onChanged: (value) {
-            value = userPhoneNoController.text;
-            userPhoneNumber = value;
-          },
-        ),
-      ),
-    );
-  }
-
   Widget _notifyUrbansCheckList() {
     return Container(
         width: double.infinity,
@@ -344,8 +288,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
   void _submitTheForm() {
     final _form = _formKey.currentState;
 
-    if (_form.validate() && hospitalName != null) {
-      print('Form is vaild');
+    if (_form.validate()) {
       var route = new MaterialPageRoute(
         builder: (BuildContext context) => CreatePostView(
             bloodGroup: bloodGroup,
@@ -385,7 +328,8 @@ class _RequestBloodViewState extends State<RequestBloodView> {
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
-            autovalidate: _formValidate,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            // autovalidate: _formValidate,
             child: Column(
               children: <Widget>[
                 Padding(
@@ -614,18 +558,9 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                       'Select One',
                     ),
                     isExpanded: true,
-                    validator: (value) {
-                      if (value == null) {
-                        return "Select the hospital";
-                      }
-                    },
+                    validator: (value) =>
+                        value == null ? 'Select the hospital' : null,
                     onChanged: (hospitalValue) {
-                      print(hospitalValue);
-                      final snackBar = SnackBar(
-                        content: Text('Selected Hospital is $hospitalValue',
-                            style: TextStyle(color: Colors.blueGrey)),
-                      );
-                      Scaffold.of(context).showSnackBar(snackBar);
                       for (var i = 0; i < hospitalItems.length; i++) {
                         if (hospitalValue == hospitalItems[i].bloodBankName) {
                           addressController.text =
@@ -635,8 +570,6 @@ class _RequestBloodViewState extends State<RequestBloodView> {
 
                           //assign to parameters of CreatePostView class
                           hospitalAddress = addressController.text;
-                          // hospitalLat = addressLatController.text;
-                          // hospitalLng = addressLngController.text;
                         }
                       }
                       setState(() {

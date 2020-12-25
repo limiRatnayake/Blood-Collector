@@ -27,7 +27,7 @@ class _SubmittedParticipantListViewState
         Provider.of<EventParticipantService>(context);
     return Scaffold(
         appBar: AppBar(
-          title: Text("Participant List"),
+          title: Text("Submitted Participant List"),
         ),
         body: FutureBuilder(
             future: _participantService.getParticipantForAnEvent(widget.docRef),

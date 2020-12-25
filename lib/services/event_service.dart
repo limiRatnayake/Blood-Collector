@@ -305,9 +305,7 @@ class EventService extends ChangeNotifier {
               isGreaterThanOrEqualTo: DateTime.now().toString())
           .getDocuments()
           .then((value) async {
-        await newRef.updateData({
-          "status": "Close",
-        });
+        await newRef.updateData({"status": "Close", "totalParticipants": 0});
       });
 
       message = "Success";
@@ -383,6 +381,22 @@ class EventService extends ChangeNotifier {
           await _storageRef.getReferenceFromUrl(imgUrl);
       //delete the image into the firebase storage
       await storageReference.delete();
+    } catch (error) {
+      print(error);
+    }
+    notifyListeners();
+  }
+
+  Future<void> editEventImage(String imgUrl, String docRef) async {
+    try {
+      //getting the refference and file name
+      StorageReference storageReference =
+          await _storageRef.getReferenceFromUrl(imgUrl);
+      //delete the image into the firebase storage
+      await storageReference.delete();
+      DocumentReference newRef = _ref.document(docRef);
+      await newRef
+          .updateData({"imageUrl": "", "imageName": "", "imageExtention": ""});
     } catch (error) {
       print(error);
     }

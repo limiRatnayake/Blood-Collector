@@ -1,5 +1,5 @@
 //pages
-import 'package:blood_collector/UI/pages/rootPages/editCampaignView.dart';
+import 'package:blood_collector/UI/pages/rootPages/editEventDetails/editCampaignView.dart';
 import 'package:blood_collector/UI/pages/rootPages/editRequestView.dart';
 import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreCampaignMore.dart';
 import 'package:blood_collector/UI/pages/rootPages/exploreMore/exploreRequestsMore.dart';

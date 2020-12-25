@@ -217,8 +217,8 @@ class _SettingViewState extends State<SettingView> {
                                               Text(
                                                 "Blood Group",
                                                 style: TextStyle(
-                                                    fontSize: 10,
-                                                    color: Colors.grey),
+                                                    fontSize: 12,
+                                                    color: Colors.black45),
                                               )
                                             ]),
                                       ),
@@ -238,8 +238,8 @@ class _SettingViewState extends State<SettingView> {
                                               Text(
                                                 "Total Donations",
                                                 style: TextStyle(
-                                                    fontSize: 10,
-                                                    color: Colors.grey),
+                                                    fontSize: 12,
+                                                    color: Colors.black45),
                                               )
                                             ]),
                                       ),
@@ -264,8 +264,8 @@ class _SettingViewState extends State<SettingView> {
                                               Text(
                                                 "Last Donation Date",
                                                 style: TextStyle(
-                                                    fontSize: 10,
-                                                    color: Colors.grey),
+                                                    fontSize: 12,
+                                                    color: Colors.black45),
                                               )
                                             ]),
                                       ),

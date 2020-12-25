@@ -1,4 +1,5 @@
 //pages
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
 import 'package:blood_collector/models/participant_model.dart';
 import 'package:blood_collector/models/request_model.dart';
@@ -346,15 +347,18 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                                 fontWeight: FontWeight.w700),
                                           ),
                                         ),
-                                  PopupMenuItem(
-                                    value: 2,
-                                    child: Text(
-                                      "Mark as Interested",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ),
+                                  participatedStatus != "Cancelled"
+                                      ? PopupMenuItem(
+                                          value: 2,
+                                          child: Text(
+                                            "Add to Calender",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        )
+                                      : PopupMenuItem(
+                                          value: 2, child: Container()),
                                 ],
                                 onSelected: (value) {
                                   switch (value) {
@@ -494,7 +498,31 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                                 ]).show();
                                       break;
                                     case 2:
-                                      {}
+                                      {
+                                        DateTime endDate =
+                                            widget.requestCloseDate.toDate();
+
+                                        print(endDate);
+                                        Event event = Event(
+                                          title: "Donating to " +
+                                              widget.patientName +
+                                              " request",
+                                          description: widget.description,
+                                          location: widget.hospitalAddress,
+                                          startDate: DateTime.now(),
+                                          endDate: endDate,
+                                          allDay: false,
+                                        );
+
+                                        Add2Calendar.addEvent2Cal(event)
+                                            .then((success) {
+                                          Scaffold.of(context).showSnackBar(
+                                              SnackBar(
+                                                  content: Text(success
+                                                      ? 'Success'
+                                                      : 'Error')));
+                                        });
+                                      }
                                       break;
                                   }
                                 },

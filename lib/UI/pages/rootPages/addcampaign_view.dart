@@ -23,6 +23,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   final dateFormat = DateFormat("yyyy-MM-dd");
 
   TextEditingController _placeAddressController = TextEditingController();
+  TextEditingController _requestCloseDate = TextEditingController();
 
   List<Marker> myMarker = [];
   String nameOfTheOrOrganizer;
@@ -195,7 +196,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                           hintStyle:
                               TextStyle(fontSize: 14.0, fontFamily: "Roboto"),
                           enabledBorder: InputBorder.none),
-                      validator: validateDistricts,
+                      validator: validateAreaSelection,
                       onChanged: (value) {
                         selectAreaType(value);
                         setState(() {
@@ -385,6 +386,12 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
               onChanged: (value) {
                 setState(() {
                   pickUpEndDate = DateFormat('yyyy-MM-dd').format(value);
+
+                  DateTime nextDay = value.add(Duration(days: 1));
+                  String requestCloseOnDate =
+                      DateFormat('yyyy-MM-dd').format(nextDay);
+                  _requestCloseDate.text = requestCloseOnDate;
+                  requestCloseOn = requestCloseOn = Timestamp.fromDate(nextDay);
                 });
               },
             ),
@@ -501,7 +508,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     );
   }
 
-  Widget _availableDateTextField() {
+  Widget _requestCloseDateTxtField() {
     return Column(
       children: <Widget>[
         Padding(
@@ -524,30 +531,42 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
           margin: EdgeInsets.symmetric(horizontal: 15.0),
           decoration: _boxDecoration(),
           child: Padding(
-            padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
-            child: DateTimeField(
-              format: dateFormat,
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  suffixIcon: Icon(Icons.calendar_today, color: Colors.black),
-                  hintText: "Event Closing Date"),
-              onShowPicker: (context, currentValue) {
-                return showDatePicker(
-                    context: context,
-                    firstDate: DateTime.now().subtract(Duration(days: 0)),
-                    initialDate: currentValue ?? DateTime.now(),
-                    lastDate: DateTime(2100));
-              },
-              validator: dateTimeValidator,
-              onChanged: (value) {
-                setState(() {
-                  requestCloseOn = Timestamp.fromDate(value);
-
-                  // requestCloseOn = DateFormat('yyyy-MM-dd').format(value);
-                });
-              },
-            ),
-          ),
+              padding: const EdgeInsets.only(top: 4, left: 25, right: 16),
+              child: TextFormField(
+                enabled: false,
+                controller: _requestCloseDate,
+                decoration: InputDecoration(
+                    errorStyle: TextStyle(color: Theme.of(context).errorColor),
+                    hintText: "Request Close date",
+                    hintStyle: TextStyle(
+                      fontSize: 16.0,
+                      fontFamily: "Roboto",
+                    ),
+                    enabledBorder: InputBorder.none),
+              )
+              // child: DateTimeField(
+              //   format: dateFormat,
+              //   decoration: InputDecoration(
+              //       border: InputBorder.none,
+              //       suffixIcon: Icon(Icons.calendar_today, color: Colors.black),
+              //       hintText: "Event Closing Date"),
+              //   onShowPicker: (context, currentValue) {
+              //     return showDatePicker(
+              //         context: context,
+              //         firstDate: DateTime.now().subtract(Duration(days: 0)),
+              //         initialDate: currentValue ?? DateTime.now(),
+              //         lastDate: DateTime(2100));
+              //   },
+              //   validator: dateTimeValidator,
+              //   onChanged: (value) {
+              //     setState(() {
+              //       requestCloseOn = Timestamp.fromDate(value);
+              //       print(requestCloseOn);
+              //       // requestCloseOn = DateFormat('yyyy-MM-dd').format(value);
+              //     });
+              //   },
+              // ),
+              ),
         ),
       ],
     );
@@ -911,7 +930,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                 SizedBox(
                   height: 10.0,
                 ),
-                _availableDateTextField(),
+                _requestCloseDateTxtField(),
                 SizedBox(
                   height: 30.0,
                 ),
@@ -998,8 +1017,15 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
   }
 
   String validateDistricts(String value) {
-    if (value == "Select a districts") {
+    if (value == "Select districts") {
       return 'Please select a districts';
+    }
+    return null;
+  }
+
+  String validateAreaSelection(String value) {
+    if (value == "Select a area") {
+      return 'Please select an area';
     }
     return null;
   }
