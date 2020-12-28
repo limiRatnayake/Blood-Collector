@@ -827,7 +827,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                     height: 58,
                     margin: EdgeInsets.symmetric(horizontal: 15.0),
                     child: CheckboxListTile(
-                      title: Text("Yes, visible it"),
+                      title: Text("Yes, visible mobile number to public"),
                       value: _visibleState,
                       onChanged: (value) {
                         setState(() {

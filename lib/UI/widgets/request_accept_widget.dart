@@ -14,13 +14,15 @@ class AcceptRequestCard extends StatefulWidget {
   final String requestSentOn;
   final String requestStatus;
   final String requesterId;
+  final String participantsID;
 
   AcceptRequestCard(
       {Key key,
       this.requesterId,
       this.docRef,
       this.requestSentOn,
-      this.requestStatus})
+      this.requestStatus,
+      this.participantsID})
       : super(key: key);
   @override
   _AcceptRequestCardState createState() => _AcceptRequestCardState();
@@ -82,7 +84,7 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                                     color: Colors.blue,
                                     onPressed: () async {
                                       if (widget.requestStatus != "Accepted") {
-                                        await Firestore.instance.runTransaction(
+                                        Firestore.instance.runTransaction(
                                             (Transaction tx) async {
                                           DocumentSnapshot docSnapshot =
                                               await tx.get(eventRef
@@ -101,11 +103,12 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                                         });
                                         String response =
                                             await _requestsServices
-                                                .updateRequests(
-                                                    widget.docRef,
-                                                    widget.requesterId,
-                                                    "Accepted",
-                                                    false);
+                                                .updateAcceptRequests(
+                                          widget.docRef,
+                                          widget.requesterId,
+                                          "Accepted",
+                                          false,
+                                        );
                                         if (response != "Success") {
                                           final snackBar = SnackBar(
                                             content: Text(
@@ -183,12 +186,13 @@ class _AcceptRequestCardState extends State<AcceptRequestCard> {
                                       });
                                     }
 
-                                    String response =
-                                        await _requestsServices.updateRequests(
+                                    String response = await _requestsServices
+                                        .updateRejectedRequests(
                                             widget.docRef,
                                             widget.requesterId,
                                             "Rejected",
-                                            true);
+                                            true,
+                                            widget.participantsID);
                                     if (response != "Success") {
                                       final snackBar = SnackBar(
                                         content: Text(

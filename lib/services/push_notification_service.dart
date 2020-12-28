@@ -101,6 +101,7 @@ class PushNotificationService extends ChangeNotifier {
     return _userRef
         .document(uid)
         .collection("user_notification")
+        .orderBy("sentOn", descending: false)
         .getDocuments();
   }
 

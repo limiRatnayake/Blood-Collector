@@ -206,27 +206,14 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                           return (data != null &&
                                                   data.participatedStatus !=
                                                       "Cancelled")
-                                              ? Column(
-                                                  children: [
-                                                    requestedStatus == "Sent"
-                                                        ? Text(
-                                                            "Accepting..",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .purpleAccent),
-                                                          )
-                                                        : Container(),
-                                                    requestedStatus ==
-                                                            "Rejected"
-                                                        ? Text(
-                                                            "Rejected!",
-                                                            style: TextStyle(
-                                                                color:
-                                                                    Colors.red),
-                                                          )
-                                                        : Container()
-                                                  ],
-                                                )
+                                              ? requestedStatus == "Sent"
+                                                  ? Text(
+                                                      "Accepting..",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .purpleAccent),
+                                                    )
+                                                  : Container()
                                               : Text(
                                                   "Cancelled",
                                                   style: TextStyle(

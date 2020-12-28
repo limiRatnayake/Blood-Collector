@@ -68,9 +68,8 @@ class RequestAcceptenceService extends ChangeNotifier {
           .documents;
 
       for (int x = 0; x < events.length; x++) {
-        docRef = events[0].reference.documentID;
-        // docId = events[x].documentID;
-        // print(docId);
+        docRef = events[x].reference.documentID;
+
         List<DocumentSnapshot> requests = (await _ref
                 .document(docRef)
                 .collection("requested")
@@ -93,31 +92,15 @@ class RequestAcceptenceService extends ChangeNotifier {
   }
 
   //update subcollection
-  Future updateRequests(String docRef, String requsterId, String requestStatus,
-      bool rejectedStatus) async {
+  Future updateAcceptRequests(
+    String docRef,
+    String requsterId,
+    String requestStatus,
+    bool rejectedStatus,
+  ) async {
     String message = "";
     // String docRef;
     try {
-      // List<DocumentSnapshot> events =
-      //     (await _ref.where("category", isEqualTo: "request").getDocuments())
-      //         .documents;
-      // for (int x = 0; x < events.length; x++) {
-      //   //to get the event documentID
-      //   docRef = events[0].reference.documentID;
-      //   _ref
-      //       .document(docRef)
-      //       .collection("requested")
-      //       .getDocuments()
-      //       .then((res) {
-      //     res.documents.forEach((result) {
-      //       _ref
-      //           .document(docRef)
-      //           .collection("requested")
-      //           .document(requsterId)
-      //           .updateData({"requestStatus": requestStatus});
-      //     });
-      //   });
-      // }
       _ref
           .document(docRef)
           .collection("requested")
@@ -125,6 +108,29 @@ class RequestAcceptenceService extends ChangeNotifier {
           .updateData(
               {"requestStatus": requestStatus, "rejected": rejectedStatus});
 
+      message = "Success";
+    } catch (error) {
+      print(error);
+      if (error != null && error.message != null) message = error.message;
+    }
+    notifyListeners();
+    return message;
+  }
+
+  Future updateRejectedRequests(String docRef, String requsterId,
+      String requestStatus, bool rejectedStatus, String participantsID) async {
+    String message = "";
+    // String docRef;
+    try {
+      _ref
+          .document(docRef)
+          .collection("requested")
+          .document(requsterId)
+          .updateData(
+              {"requestStatus": requestStatus, "rejected": rejectedStatus});
+      _participantRef
+          .document(participantsID)
+          .updateData({"participatedStatus": "Cancelled"});
       message = "Success";
     } catch (error) {
       print(error);

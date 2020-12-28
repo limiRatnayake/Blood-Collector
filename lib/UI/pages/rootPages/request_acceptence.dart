@@ -2,7 +2,6 @@
 import 'package:blood_collector/UI/widgets/request_accept_widget.dart';
 import 'package:blood_collector/models/request_model.dart';
 import 'package:blood_collector/services/auth.dart';
-import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/request_service.dart';
 
 //packages
@@ -19,9 +18,9 @@ class _AcceptRequestViewState extends State<AcceptRequestView> {
   @override
   Widget build(BuildContext context) {
     final AuthServices _authServices = Provider.of<AuthServices>(context);
-    final EventService _eventServices = Provider.of<EventService>(context);
     final RequestAcceptenceService _requestServices =
         Provider.of<RequestAcceptenceService>(context);
+
     return Scaffold(
       body: Container(
         // padding: EdgeInsets.only(left: 10, right: 10, top: 45),
@@ -43,13 +42,13 @@ class _AcceptRequestViewState extends State<AcceptRequestView> {
                                   itemBuilder: (context, index) {
                                     RequestAcceptModel data =
                                         requestsItems[index];
-
+                                    print(data.requesterId);
                                     return AcceptRequestCard(
-                                      docRef: data.docRef,
-                                      requesterId: data.requesterId,
-                                      requestSentOn: data.requestSentOn,
-                                      requestStatus: data.requestStatus,
-                                    );
+                                        docRef: data.docRef,
+                                        requesterId: data.requesterId,
+                                        requestSentOn: data.requestSentOn,
+                                        requestStatus: data.requestStatus,
+                                        participantsID: data.participantsID);
                                   }))
                         ],
                       )
