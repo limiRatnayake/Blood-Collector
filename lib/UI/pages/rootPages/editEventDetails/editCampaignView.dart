@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:io';
 
 //pages
-import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
+import 'package:blood_collector/UI/pages/rootPages/requestHistoryList/request_history.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/shared/decoration_constant.dart';
@@ -91,7 +91,7 @@ class _EditCampaignViewState extends State<EditCampaignView> {
                                     child: CircularProgressIndicator());
                               } else {
                                 EventModel data =
-                                    EventModel.fromMap(snapshot.data.data);
+                                    EventModel.fromMap(snapshot.data.data());
                                 return Column(children: <Widget>[
                                   Card(
                                     margin:

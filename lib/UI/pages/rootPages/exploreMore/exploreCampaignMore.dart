@@ -1,13 +1,8 @@
-import 'package:blood_collector/UI/pages/rootPages/ListOfParticipantView.dart';
-import 'package:blood_collector/UI/widgets/appTopBar.dart';
-import 'package:blood_collector/UI/widgets/preventDooubleTap.dart';
-import 'package:blood_collector/UI/widgets/slider_campaign_widget.dart';
-import 'package:blood_collector/UI/widgets/slider_request_widget.dart';
-import 'package:blood_collector/UI/widgets/submittedParticipantList.dart';
-import 'package:blood_collector/UI/widgets/viewInsights.dart';
+import 'package:blood_collector/UI/widgets/participantList/ListOfParticipantView.dart';
+import 'package:blood_collector/UI/widgets/participantList/submittedParticipantList.dart';
+import 'package:blood_collector/UI/widgets/insights/viewInsights.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
-import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -80,7 +75,7 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                           return Center(child: CircularProgressIndicator());
                         } else {
                           UserModel data =
-                              UserModel.fromMap(snapshot.data.data);
+                              UserModel.fromMap(snapshot.data.data());
                           return ListTile(
                             leading: CircleAvatar(
                               radius: 30,
@@ -108,7 +103,7 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                           return Center(child: CircularProgressIndicator());
                         } else {
                           EventModel data =
-                              EventModel.fromMap(snapshot.data.data);
+                              EventModel.fromMap(snapshot.data.data());
                           DateTime requestClose = data.requestClose.toDate();
                           String requestCloseDate =
                               DateFormat('yMd').format(requestClose);

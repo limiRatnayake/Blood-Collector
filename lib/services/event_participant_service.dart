@@ -9,32 +9,32 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventParticipantService extends ChangeNotifier {
-  Firestore _db;
+  FirebaseFirestore _db;
   CollectionReference _ref;
   CollectionReference _userRef;
   CollectionReference _eventRef;
 
-  EventParticipantService() : _db = Firestore.instance {
+  EventParticipantService() : _db = FirebaseFirestore.instance {
     _eventRef = _db.collection(AppConstants.EVENTS_COLLECTION);
     _ref = _db.collection(AppConstants.EVENTS_PARTICIPANTS_COLLECTION);
     _userRef = _db.collection(AppConstants.USERS_COLLECTION);
   }
 
-  Future<String> addParticipants(FirebaseUser user, String docRef,
-      String userName, String bloodGroup) async {
+  Future<String> addParticipants(
+      User user, String docRef, String userName, String bloodGroup) async {
     String message = "";
     try {
-      DocumentReference newRef = _ref.document();
+      DocumentReference newRef = _ref.doc();
 
       ParticipantModel participantModel = new ParticipantModel(
-          participantId: newRef.documentID,
+          participantId: newRef.id,
           docRef: docRef,
           uid: user.uid,
           bloodGroup: bloodGroup,
           participantName: userName,
           participatedStatus: "participating",
           lastModifyDate: DateTime.now().toString());
-      await newRef.setData(participantModel.toJson());
+      await newRef.set(participantModel.toJson());
 
       message = "Success";
       notifyListeners();
@@ -46,7 +46,7 @@ class EventParticipantService extends ChangeNotifier {
   }
 
   Future<String> addRequestEventParticipants(
-      FirebaseUser user,
+      User user,
       String docRef,
       String userName,
       String requestStatus,
@@ -56,28 +56,28 @@ class EventParticipantService extends ChangeNotifier {
       String bloodGroup) async {
     String message = "";
     try {
-      DocumentReference newRef = _ref.document();
+      DocumentReference newRef = _ref.doc();
       DocumentReference requestRef =
-          _eventRef.document(docRef).collection("requested").document(user.uid);
+          _eventRef.doc(docRef).collection("requested").doc(user.uid);
 
       ParticipantModel participantModel = new ParticipantModel(
-          participantId: newRef.documentID,
+          participantId: newRef.id,
           bloodGroup: bloodGroup,
           docRef: docRef,
           uid: user.uid,
           participantName: userName,
           participatedStatus: "participating",
           lastModifyDate: DateTime.now().toString());
-      await newRef.setData(participantModel.toJson());
+      await newRef.set(participantModel.toJson());
       RequestAcceptModel reqAcceptModel = new RequestAcceptModel(
           docRef: docRef,
           requestStatus: requestStatus,
           requestSentOn: requestSentOn,
           requesterId: requesterId,
           rejected: rejected,
-          participantsID: newRef.documentID);
+          participantsID: newRef.id);
 
-      await requestRef.setData(reqAcceptModel.toJson());
+      await requestRef.set(reqAcceptModel.toJson());
 
       message = "Success";
       notifyListeners();
@@ -90,7 +90,7 @@ class EventParticipantService extends ChangeNotifier {
 
 //get user participanted events to history
   Future<QuerySnapshot> getParticipant(String uid) {
-    return _ref.where("uid", isEqualTo: uid).getDocuments();
+    return _ref.where("uid", isEqualTo: uid).get();
   }
 
   Future<List<ParticipantModel>> getParticipantForParticularEvent(
@@ -99,11 +99,11 @@ class EventParticipantService extends ChangeNotifier {
       List<DocumentSnapshot> snapshot = (await _ref
               .where("docRef", isEqualTo: docRef)
               .where("participatedStatus", isEqualTo: "Donated")
-              .getDocuments())
-          .documents;
+              .get())
+          .docs;
 
       List<ParticipantModel> eventParticipants = snapshot
-          .map<ParticipantModel>((doc) => ParticipantModel.fromMap(doc.data))
+          .map<ParticipantModel>((doc) => ParticipantModel.fromMap(doc.data()))
           .toList();
 
       return eventParticipants;
@@ -115,7 +115,7 @@ class EventParticipantService extends ChangeNotifier {
 
 //get information of a particular particpant
   Future<DocumentSnapshot> getParticipantDetails(String participantId) async {
-    DocumentSnapshot postSnapshot = (await _ref.document(participantId).get());
+    DocumentSnapshot postSnapshot = (await _ref.doc(participantId).get());
     notifyListeners();
     return postSnapshot;
   }
@@ -124,7 +124,7 @@ class EventParticipantService extends ChangeNotifier {
   Future<String> deleteAParticipant(String participantId) async {
     String message = "";
     try {
-      _ref.document(participantId).delete();
+      _ref.doc(participantId).delete();
 
       message = "Success";
     } catch (error) {
@@ -191,11 +191,14 @@ class EventParticipantService extends ChangeNotifier {
   // }
 
   Future<QuerySnapshot> getParticipantForAnEvent(String docRef) {
-    return _ref.where("docRef", isEqualTo: docRef).getDocuments();
+    return _ref
+        .where("docRef", isEqualTo: docRef)
+        .where("participatedStatus", isNotEqualTo: "Cancelled")
+        .get();
   }
 
   Future<DocumentSnapshot> participantDetails(String participantId) async {
-    DocumentSnapshot postSnapshot = (await _ref.document(participantId).get());
+    DocumentSnapshot postSnapshot = (await _ref.doc(participantId).get());
     notifyListeners();
     return postSnapshot;
   }
@@ -205,9 +208,9 @@ class EventParticipantService extends ChangeNotifier {
       String participantId, String participatedStatus) async {
     String message = "";
     try {
-      DocumentReference participantRef = _ref.document(participantId);
+      DocumentReference participantRef = _ref.doc(participantId);
 
-      await participantRef.updateData(
+      await participantRef.update(
           {"participatedStatus": participatedStatus, "lastModifyDate": date});
 
       message = "Success";
@@ -224,9 +227,9 @@ class EventParticipantService extends ChangeNotifier {
       String date, String participantId, String participatedStatus) async {
     String message = "";
     try {
-      DocumentReference participantRef = _ref.document(participantId);
+      DocumentReference participantRef = _ref.doc(participantId);
 
-      await participantRef.updateData(
+      await participantRef.update(
           {"participatedStatus": participatedStatus, "lastModifyDate": date});
 
       message = "Success";

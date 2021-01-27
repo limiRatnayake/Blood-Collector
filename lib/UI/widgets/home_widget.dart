@@ -1,5 +1,5 @@
 //pages
-import 'package:blood_collector/UI/pages/rootPages/add_details_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/createEvent/add_details_view.dart';
 import 'package:blood_collector/UI/widgets/bottom_navigator.dart';
 //packages
 import 'package:flutter/material.dart';

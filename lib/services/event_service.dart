@@ -12,13 +12,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventService extends ChangeNotifier {
-  Firestore _db;
+  FirebaseFirestore _db;
   CollectionReference _ref;
   CollectionReference _insightsRef;
   CollectionReference _participantsRef;
   FirebaseStorage _storageRef = FirebaseStorage.instance;
 
-  EventService() : _db = Firestore.instance {
+  EventService() : _db = FirebaseFirestore.instance {
     _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
     _insightsRef = _db.collection(AppConstants.INSIGHTS);
     _participantsRef =
@@ -26,7 +26,7 @@ class EventService extends ChangeNotifier {
   }
 
   Future<String> addEvent(
-    FirebaseUser user,
+    User user,
     String bloodGroup,
     String replacementAvailability,
     String unitsOfBlood,
@@ -61,9 +61,9 @@ class EventService extends ChangeNotifier {
   ) async {
     String message = "";
     try {
-      DocumentReference newRef = _ref.document();
+      DocumentReference newRef = _ref.doc();
       EventModel eventModel = new EventModel(
-          docRef: newRef.documentID,
+          docRef: newRef.id,
           bloodGroup: bloodGroup,
           replacementAvailability: replacementAvailability,
           unitsOfBlood: unitsOfBlood,
@@ -109,7 +109,7 @@ class EventService extends ChangeNotifier {
           status: "Open",
           submitListStatus: "still not");
 
-      await newRef.setData(eventModel.toJson());
+      await newRef.set(eventModel.toJson());
       message = "Success";
       notifyListeners();
     } catch (error) {
@@ -126,12 +126,12 @@ class EventService extends ChangeNotifier {
   ) async {
     String imgUrl = "";
     //getting the refference and file name
-    StorageReference storageReference = _storageRef.ref().child(
+    Reference storageReference = _storageRef.ref().child(
         '${AppConstants.STORSGE_IMAGE_PATH}/${uuid}/${uuid + extention}');
     //upload the image into the firebase storage
-    StorageUploadTask uploadTask = storageReference.putFile(imageFile);
+    await storageReference.putFile(imageFile);
     //check whether it is completed
-    await uploadTask.onComplete;
+    // await uploadTask.onComplete;
     imgUrl = await storageReference.getDownloadURL();
 
     notifyListeners(); //notify or update anybody that listen to state chnages
@@ -146,7 +146,7 @@ class EventService extends ChangeNotifier {
         .where("requestClose", isGreaterThanOrEqualTo: DateTime.now())
         .orderBy("requestClose", descending: false)
         .orderBy("createdAt", descending: true)
-        .getDocuments();
+        .get();
   }
 
   Future<QuerySnapshot> filterEvents(String area, String filter) async {
@@ -164,21 +164,21 @@ class EventService extends ChangeNotifier {
       query = query.where("category", isEqualTo: "request");
     }
 
-    return await query.getDocuments();
+    return await query.get();
   }
 
   Future<QuerySnapshot> getUserEvents(String uid) {
-    return _ref.where("uid", isEqualTo: uid).getDocuments();
+    return _ref.where("uid", isEqualTo: uid).get();
   }
 
   Future<DocumentSnapshot> requestEventsDetails(String docRef) async {
-    DocumentSnapshot postSnapshot = (await _ref.document(docRef).get());
+    DocumentSnapshot postSnapshot = (await _ref.doc(docRef).get());
     notifyListeners();
     return postSnapshot;
   }
 
   Future<DocumentSnapshot> getSavedEvents(String docRef) async {
-    DocumentSnapshot postSnapshot = (await _ref.document(docRef).get());
+    DocumentSnapshot postSnapshot = (await _ref.doc(docRef).get());
     notifyListeners();
     return postSnapshot;
   }
@@ -203,9 +203,9 @@ class EventService extends ChangeNotifier {
   ) async {
     String message = "";
     try {
-      DocumentReference newRef = _ref.document(docRef);
+      DocumentReference newRef = _ref.doc(docRef);
 
-      await newRef.updateData({
+      await newRef.update({
         "bloodGroup": bloodGroup,
         "replacementAvailability": replacementAvailability,
         "unitsOfBlood": unitsOfBlood,
@@ -251,9 +251,9 @@ class EventService extends ChangeNotifier {
   ) async {
     String message = "";
     try {
-      DocumentReference newRef = _ref.document(docRef);
+      DocumentReference newRef = _ref.doc(docRef);
 
-      await newRef.updateData({
+      await newRef.update({
         "description": description,
         "imageName": imageName,
         "imageExtention": imageExtention,
@@ -282,30 +282,29 @@ class EventService extends ChangeNotifier {
   Future<String> updateEventCloseStatus(String docRef) async {
     String message = "";
     try {
-      DocumentReference newRef = _ref.document(docRef);
+      DocumentReference newRef = _ref.doc(docRef);
       var participantRef =
-          _participantsRef.where("docRef", isEqualTo: docRef).getDocuments();
-      var requestSentRef =
-          _ref.document(docRef).collection("requested").getDocuments();
+          _participantsRef.where("docRef", isEqualTo: docRef).get();
+      var requestSentRef = _ref.doc(docRef).collection("requested").get();
 
-      participantRef.then((QuerySnapshot snapshot) =>
-          snapshot.documents.forEach((participants) {
-            _participantsRef.document(participants.documentID).delete();
-          }));
-      requestSentRef.then((QuerySnapshot snapshot) =>
-          snapshot.documents.forEach((userRequests) {
-            _ref
-                .document(docRef)
-                .collection("requested")
-                .document(userRequests.documentID)
-                .delete();
-          }));
+      participantRef.then(
+          (QuerySnapshot snapshot) => snapshot.docs.forEach((participants) {
+                _participantsRef.doc(participants.id).delete();
+              }));
+      requestSentRef.then(
+          (QuerySnapshot snapshot) => snapshot.docs.forEach((userRequests) {
+                _ref
+                    .doc(docRef)
+                    .collection("requested")
+                    .doc(userRequests.id)
+                    .delete();
+              }));
       _ref
           .where("requestClose",
               isGreaterThanOrEqualTo: DateTime.now().toString())
-          .getDocuments()
+          .get()
           .then((value) async {
-        await newRef.updateData({"status": "Close", "totalParticipants": 0});
+        await newRef.update({"status": "Close", "totalParticipants": 0});
       });
 
       message = "Success";
@@ -322,20 +321,20 @@ class EventService extends ChangeNotifier {
   ) async {
     String message = "";
     try {
-      DocumentReference newRef = _ref.document(docRef);
+      DocumentReference newRef = _ref.doc(docRef);
 
       var actualParticipants = await _participantsRef
           .where("docRef", isEqualTo: docRef)
           .where("participatedStatus", isEqualTo: "Donated")
-          .getDocuments();
+          .get();
       var avoidParticipants = await _participantsRef
           .where("docRef", isEqualTo: docRef)
           .where("participatedStatus", isEqualTo: "Not participated")
-          .getDocuments();
+          .get();
 
-      newRef.updateData({
-        "actualParticipants": actualParticipants.documents.length,
-        "avoidParticipants": avoidParticipants.documents.length,
+      newRef.update({
+        "actualParticipants": actualParticipants.docs.length,
+        "avoidParticipants": avoidParticipants.docs.length,
         "submitListStatus": "submitted"
       });
 
@@ -353,16 +352,12 @@ class EventService extends ChangeNotifier {
   Future<String> deleteEvent(String docRef) async {
     String message = "";
     try {
-      _ref.document(docRef).delete();
-      var likesRef = _ref.document(docRef).collection("likes").getDocuments();
+      _ref.doc(docRef).delete();
+      var likesRef = _ref.doc(docRef).collection("likes").get();
 
       likesRef.then((QuerySnapshot snapshot) =>
-          snapshot.documents.forEach((userRequests) {
-            _ref
-                .document(docRef)
-                .collection("likes")
-                .document(userRequests.documentID)
-                .delete();
+          snapshot.docs.forEach((userRequests) {
+            _ref.doc(docRef).collection("likes").doc(userRequests.id).delete();
           }));
 
       message = "Success";
@@ -377,8 +372,7 @@ class EventService extends ChangeNotifier {
   Future<void> deleteEventImage(String imgUrl) async {
     try {
       //getting the refference and file name
-      StorageReference storageReference =
-          await _storageRef.getReferenceFromUrl(imgUrl);
+      Reference storageReference = _storageRef.ref(imgUrl);
       //delete the image into the firebase storage
       await storageReference.delete();
     } catch (error) {
@@ -390,13 +384,12 @@ class EventService extends ChangeNotifier {
   Future<void> editEventImage(String imgUrl, String docRef) async {
     try {
       //getting the refference and file name
-      StorageReference storageReference =
-          await _storageRef.getReferenceFromUrl(imgUrl);
+      Reference storageReference = _storageRef.ref(imgUrl);
       //delete the image into the firebase storage
       await storageReference.delete();
-      DocumentReference newRef = _ref.document(docRef);
+      DocumentReference newRef = _ref.doc(docRef);
       await newRef
-          .updateData({"imageUrl": "", "imageName": "", "imageExtention": ""});
+          .update({"imageUrl": "", "imageName": "", "imageExtention": ""});
     } catch (error) {
       print(error);
     }
@@ -406,7 +399,7 @@ class EventService extends ChangeNotifier {
   //get insights info
   Future<QuerySnapshot> getInsights() {
     //create a composite index in firebase console
-    return _insightsRef.getDocuments();
+    return _insightsRef.get();
   }
 
   // Future<void> setPostLikes(String docRef, String uid, bool isLiked) async {

@@ -232,8 +232,6 @@ class _SignInPageState extends State<SignInPage> {
                                                     style: AlertStyle(
                                                       isCloseButton: false,
 
-                                                      // backgroundColor:
-                                                      //     Colors.black,
                                                       alertBorder:
                                                           RoundedRectangleBorder(
                                                               borderRadius:

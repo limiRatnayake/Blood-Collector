@@ -1,7 +1,3 @@
-import 'package:blood_collector/UI/widgets/appTopBar.dart';
-import 'package:blood_collector/UI/widgets/preventDooubleTap.dart';
-import 'package:blood_collector/UI/widgets/slider_campaign_widget.dart';
-import 'package:blood_collector/UI/widgets/slider_request_widget.dart';
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
@@ -67,7 +63,7 @@ class _ExploreRequestsMoreState extends State<ExploreRequestsMore> {
                           return Center(child: CircularProgressIndicator());
                         } else {
                           UserModel data =
-                              UserModel.fromMap(snapshot.data.data);
+                              UserModel.fromMap(snapshot.data.data());
                           return ListTile(
                             leading: CircleAvatar(
                               radius: 30,
@@ -96,7 +92,7 @@ class _ExploreRequestsMoreState extends State<ExploreRequestsMore> {
                             return Center(child: CircularProgressIndicator());
                           } else {
                             EventModel data =
-                                EventModel.fromMap(snapshot.data.data);
+                                EventModel.fromMap(snapshot.data.data());
                             DateTime requestClose = data.requestClose.toDate();
                             String requestCloseDate =
                                 DateFormat('yMd').format(requestClose);

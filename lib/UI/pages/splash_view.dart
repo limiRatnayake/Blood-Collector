@@ -94,7 +94,7 @@ class _SplashPageState extends State<SplashPage> {
 
       if (user == null) {
         Navigator.pushReplacementNamed(context, AppConstants.AUTH);
-      } else if (user != null && !user.isEmailVerified) {
+      } else if (user != null && !user.emailVerified) {
         Navigator.pushReplacementNamed(context, AppConstants.AUTH);
       } else {
         Navigator.pushReplacementNamed(context, AppConstants.HOME_PAGE);

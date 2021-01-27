@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RequestAcceptenceService extends ChangeNotifier {
-  Firestore _db;
+  FirebaseFirestore _db;
   CollectionReference _ref;
   CollectionReference _participantRef;
 
-  RequestAcceptenceService() : _db = Firestore.instance {
+  RequestAcceptenceService() : _db = FirebaseFirestore.instance {
     _ref = _db.collection(AppConstants.EVENTS_COLLECTION);
     _participantRef =
         _db.collection(AppConstants.EVENTS_PARTICIPANTS_COLLECTION);
@@ -26,16 +26,16 @@ class RequestAcceptenceService extends ChangeNotifier {
   ) async {
     String message = "";
     try {
-      DocumentReference newRef = _ref.document();
+      DocumentReference newRef = _ref.doc();
       RequestAcceptModel reqAcceptModel = new RequestAcceptModel(
-        docRef: newRef.documentID,
+        docRef: newRef.id,
         requestStatus: requestStatus,
         requestSentOn: requestSentOn,
         requesterId: requesterId,
         rejected: rejected,
       );
 
-      await newRef.setData(reqAcceptModel.toJson());
+      await newRef.set(reqAcceptModel.toJson());
       message = "Success";
       notifyListeners();
     } catch (error) {
@@ -47,11 +47,8 @@ class RequestAcceptenceService extends ChangeNotifier {
 
   Future<DocumentSnapshot> getUserRequestDetails(
       String uid, String docRef) async {
-    DocumentSnapshot postSnapshot = (await _ref
-        .document(docRef)
-        .collection("requested")
-        .document(uid)
-        .get());
+    DocumentSnapshot postSnapshot =
+        (await _ref.doc(docRef).collection("requested").doc(uid).get());
     notifyListeners();
     return postSnapshot;
   }
@@ -64,22 +61,22 @@ class RequestAcceptenceService extends ChangeNotifier {
       List<DocumentSnapshot> events = (await _ref
               .where("category", isEqualTo: "request")
               .where("uid", isEqualTo: currentUser)
-              .getDocuments())
-          .documents;
+              .get())
+          .docs;
 
       for (int x = 0; x < events.length; x++) {
-        docRef = events[x].reference.documentID;
+        docRef = events[x].reference.id;
 
         List<DocumentSnapshot> requests = (await _ref
-                .document(docRef)
+                .doc(docRef)
                 .collection("requested")
                 .where("rejected", isEqualTo: false)
-                .getDocuments())
-            .documents;
+                .get())
+            .docs;
 
         _requestsList = requests
             .map<RequestAcceptModel>(
-                (doc) => RequestAcceptModel.fromMap(doc.data))
+                (doc) => RequestAcceptModel.fromMap(doc.data()))
             .toList();
       }
 
@@ -102,11 +99,10 @@ class RequestAcceptenceService extends ChangeNotifier {
     // String docRef;
     try {
       _ref
-          .document(docRef)
+          .doc(docRef)
           .collection("requested")
-          .document(requsterId)
-          .updateData(
-              {"requestStatus": requestStatus, "rejected": rejectedStatus});
+          .doc(requsterId)
+          .update({"requestStatus": requestStatus, "rejected": rejectedStatus});
 
       message = "Success";
     } catch (error) {
@@ -123,14 +119,13 @@ class RequestAcceptenceService extends ChangeNotifier {
     // String docRef;
     try {
       _ref
-          .document(docRef)
+          .doc(docRef)
           .collection("requested")
-          .document(requsterId)
-          .updateData(
-              {"requestStatus": requestStatus, "rejected": rejectedStatus});
+          .doc(requsterId)
+          .update({"requestStatus": requestStatus, "rejected": rejectedStatus});
       _participantRef
-          .document(participantsID)
-          .updateData({"participatedStatus": "Cancelled"});
+          .doc(participantsID)
+          .update({"participatedStatus": "Cancelled"});
       message = "Success";
     } catch (error) {
       print(error);

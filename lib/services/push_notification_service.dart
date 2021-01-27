@@ -12,12 +12,12 @@ import 'package:flutter/material.dart';
 class PushNotificationService extends ChangeNotifier {
   //initialize the firebase cloud messaging
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  Firestore _db;
+  FirebaseFirestore _db;
   // Firestore _db = Firestore.instance;
   String uid;
   CollectionReference _userRef;
 
-  PushNotificationService() : _db = Firestore.instance {
+  PushNotificationService() : _db = FirebaseFirestore.instance {
     _userRef = _db.collection(AppConstants.USERS_COLLECTION);
   }
   //get device token from user login to homescreen
@@ -40,29 +40,29 @@ class PushNotificationService extends ChangeNotifier {
     Map<String, dynamic> tokenData;
     String tokenId;
     List<DocumentSnapshot> tokenSnapshot = (await _userRef
-            .document(uid)
+            .doc(uid)
             .collection(AppConstants.TOKENS_COLLECTION)
-            .getDocuments())
-        .documents;
+            .get())
+        .docs;
 
     for (int x = 0; x < tokenSnapshot.length; x++) {
-      tokenId = tokenSnapshot[0].reference.documentID;
+      tokenId = tokenSnapshot[x].reference.id;
     }
 
     DocumentReference tokenRef = _userRef
-        .document(uid)
+        .doc(uid)
         .collection(AppConstants.TOKENS_COLLECTION)
-        .document(tokenId);
+        .doc(tokenId);
 
     tokenRef.get().then((value) async {
       print(fcmToken);
-      tokenData = value.data;
+      tokenData = value.data();
       if (tokenData != null && tokenData.containsValue(fcmToken)) {
         print("It already containes");
       } else {
         if (fcmToken != null) {
           var tokens =
-              _userRef.document(uid).collection(AppConstants.TOKENS_COLLECTION);
+              _userRef.doc(uid).collection(AppConstants.TOKENS_COLLECTION);
 
           await tokens.add({
             'token': fcmToken,

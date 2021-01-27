@@ -687,7 +687,7 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                                             widget.disabled,
                                             userPreviouslyDonatedOrNot,
                                             ifYesHowManyTimes ?? 0,
-                                            dateOfLastDonation,
+                                            dateOfLastDonation ?? "",
                                             medicallyAdvised,
                                             vaildIdentitiyCardCheck,
                                             freeFromRiskBehaviour,

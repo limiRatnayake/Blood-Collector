@@ -1,8 +1,8 @@
 //pages
-import 'package:blood_collector/UI/pages/rootPages/savedEventView.dart';
-import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
-import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
-import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
+import 'package:blood_collector/UI/pages/rootPages/bookmarkedEvents/savedEventView.dart';
+import 'package:blood_collector/UI/pages/rootPages/mapView/map_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/requestHistoryList/request_history.dart';
+import 'package:blood_collector/UI/pages/rootPages/userProfileSetting/settingView.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/user_service.dart';
@@ -41,7 +41,7 @@ class DrawerWidget extends StatelessWidget {
                             return Center(child: CircularProgressIndicator());
                           } else {
                             UserModel data =
-                                UserModel.fromMap(snapshot.data.data);
+                                UserModel.fromMap(snapshot.data.data());
                             return Column(
                               children: <Widget>[
                                 CircleAvatar(

@@ -1,5 +1,5 @@
 //pages
-import 'package:blood_collector/UI/pages/rootPages/notificationView.dart';
+import 'package:blood_collector/UI/pages/rootPages/notificationView/notificationView.dart';
 import 'package:blood_collector/models/user_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/user_service.dart';
@@ -43,7 +43,7 @@ class _AppTopBarState extends State<AppTopBar> {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           } else {
-            UserModel data = UserModel.fromMap(snapshot.data.data);
+            UserModel data = UserModel.fromMap(snapshot.data.data());
 
             return Stack(
               children: [

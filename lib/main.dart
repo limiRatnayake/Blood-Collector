@@ -8,12 +8,17 @@ import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/services/request_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 //packages
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+const debug = true;
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // await FlutterDownloader.initialize(debug: debug);
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 

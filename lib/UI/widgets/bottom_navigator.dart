@@ -1,8 +1,8 @@
 //pages
-import 'package:blood_collector/UI/pages/rootPages/map_view.dart';
-import 'package:blood_collector/UI/pages/rootPages/request_history.dart';
-import 'package:blood_collector/UI/pages/rootPages/settingView.dart';
-import 'package:blood_collector/UI/pages/rootPages/timelineView.dart';
+import 'package:blood_collector/UI/pages/rootPages/mapView/map_view.dart';
+import 'package:blood_collector/UI/pages/rootPages/requestHistoryList/request_history.dart';
+import 'package:blood_collector/UI/pages/rootPages/userProfileSetting/settingView.dart';
+import 'package:blood_collector/UI/pages/rootPages/eventTimeline/timelineView.dart';
 
 //packages
 import 'package:flutter/material.dart';

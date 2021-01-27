@@ -14,24 +14,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseStorage _storageRef = FirebaseStorage.instance;
-  Firestore _db;
+  FirebaseFirestore _db;
   CollectionReference _ref;
   UserModel _userDetails;
 
-  UserService() : _db = Firestore.instance {
+  UserService() : _db = FirebaseFirestore.instance {
     _ref = _db.collection(AppConstants.USERS_COLLECTION);
   }
 
   UserModel get userDetails => _userDetails;
 
   Future<DocumentSnapshot> requestUserDetails(String uid) async {
-    DocumentSnapshot postSnapshot = (await _ref.document(uid).get());
+    DocumentSnapshot postSnapshot = (await _ref.doc(uid).get());
     notifyListeners();
     return postSnapshot;
   }
 
   Future<QuerySnapshot> getSavedEvents(String uid) {
-    return _ref.document(uid).collection("savedEvents").getDocuments();
+    return _ref.doc(uid).collection("savedEvents").get();
   }
   // Future<List<UserModel>> getUsersForParticipantList(String uid) async {
   //   try {
@@ -62,9 +62,9 @@ class UserService extends ChangeNotifier {
   ) async {
     String message = "";
     try {
-      DocumentReference newRef = _ref.document(uid);
+      DocumentReference newRef = _ref.doc(uid);
 
-      await newRef.updateData({
+      await newRef.update({
         "firstName": firstName,
         "lastName": lastName,
         "address": address,
@@ -90,12 +90,12 @@ class UserService extends ChangeNotifier {
   ) async {
     String proPicUrl = "";
     //getting the refference and file name
-    StorageReference storageReference = _storageRef.ref().child(
+    Reference storageReference = _storageRef.ref().child(
         '${AppConstants.STORSGE_PROFILE_PIC_PATH}/${uuid}/${uuid + extention}');
     //upload the image into the firebase storage
-    StorageUploadTask uploadTask = storageReference.putFile(imageFile);
-    //check whether it is completed
-    await uploadTask.onComplete;
+    await storageReference.putFile(imageFile);
+    // //check whether it is completed
+    // await uploadTask.;
     proPicUrl = await storageReference.getDownloadURL();
 
     notifyListeners();
@@ -106,16 +106,15 @@ class UserService extends ChangeNotifier {
     String message = "";
 
     try {
-      var firebaseUser = await _auth.currentUser();
+      var firebaseUser = _auth.currentUser;
       //getting the refference and file name
-      StorageReference storageReference =
-          await _storageRef.getReferenceFromUrl(imgUrl);
+      Reference storageReference = _storageRef.ref(imgUrl);
       //delete the image into the firebase storage
       await storageReference.delete();
 
-      DocumentReference newRef = _ref.document(firebaseUser.uid);
+      DocumentReference newRef = _ref.doc(firebaseUser.uid);
 
-      await newRef.updateData({
+      await newRef.update({
         "proPicUrl": proPicUrl,
       });
       message = "Deleted";
@@ -129,9 +128,9 @@ class UserService extends ChangeNotifier {
   }
 
   Future<bool> vaildatePassword(String password) async {
-    var firebaseUser = await _auth.currentUser();
+    var firebaseUser = _auth.currentUser;
 
-    var authCredentials = EmailAuthProvider.getCredential(
+    var authCredentials = EmailAuthProvider.credential(
         email: firebaseUser.email, password: password);
     try {
       var authResult =
@@ -158,9 +157,9 @@ class UserService extends ChangeNotifier {
       bool lastDonationDateCheck) async {
     String message = "";
     try {
-      DocumentReference newRef = _ref.document(uid);
+      DocumentReference newRef = _ref.doc(uid);
 
-      await newRef.updateData({
+      await newRef.update({
         "userPreviouslyDonatedOrNot": userPreviouslyDonatedOrNot,
         "ifYesHowManyTimes": ifYesHowManyTimes,
         "dateOfLastDonation": dateOfLastDonation,
@@ -185,7 +184,7 @@ class UserService extends ChangeNotifier {
   Future<String> updateEmail(String email) async {
     String message = "";
     try {
-      var firebaseUser = await _auth.currentUser();
+      var firebaseUser = _auth.currentUser;
       firebaseUser
           .updateEmail(email)
           .then((value) => firebaseUser.sendEmailVerification())
@@ -193,9 +192,9 @@ class UserService extends ChangeNotifier {
         print(e);
       });
 
-      DocumentReference newRef = _ref.document(firebaseUser.uid);
+      DocumentReference newRef = _ref.doc(firebaseUser.uid);
 
-      await newRef.updateData({
+      await newRef.update({
         "email": email,
       });
 
@@ -211,7 +210,7 @@ class UserService extends ChangeNotifier {
   Future<String> updatePassword(String password) async {
     String message = "";
     try {
-      var firebaseUser = await _auth.currentUser();
+      var firebaseUser = _auth.currentUser;
       firebaseUser.updatePassword(password);
 
       message = "Success";
@@ -227,11 +226,11 @@ class UserService extends ChangeNotifier {
       String address, String latitude, String longitude) async {
     String message = "";
     try {
-      var firebaseUser = await _auth.currentUser();
+      var firebaseUser = _auth.currentUser;
 
-      DocumentReference newRef = _ref.document(firebaseUser.uid);
+      DocumentReference newRef = _ref.doc(firebaseUser.uid);
 
-      await newRef.updateData({
+      await newRef.update({
         "address": address,
         "userAddLat": latitude,
         "userAddLng": longitude

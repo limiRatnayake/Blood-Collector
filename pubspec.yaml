@@ -19,19 +19,21 @@ environment:
 dependencies:
    flutter_launcher_icons: ^0.8.1
    #firebase
-
-   firebase_auth: ^0.15.3+1
+   firebase_auth: ^0.18.4+1
    provider: ^4.0.1
-   cloud_firestore: ^0.13.0+1
-   firebase_storage: ^3.1.6
-   firebase_messaging: ^6.0.16
+   cloud_firestore: ^0.14.4
+   firebase_storage: ^5.2.0
+   firebase_messaging: ^7.0.3
+   firebase_core: ^0.5.0
+   intl: ^0.16.1
+   flutter_downloader: ^1.4.4
 
    #other
    cupertino_icons: ^0.1.2
    after_layout: ^1.0.7+2
    curved_navigation_bar: ^0.3.1
    splashscreen: ^1.2.0
-   intl: ^0.15.8
+
    dropdown_formfield: ^0.1.1
    dotted_border: ^1.0.5
    image_picker: ^0.6.7+1

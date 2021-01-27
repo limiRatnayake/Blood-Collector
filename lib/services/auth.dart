@@ -9,18 +9,18 @@ import 'package:flutter/cupertino.dart';
 
 class AuthServices extends ChangeNotifier {
   final FirebaseAuth _auth;
-  FirebaseUser _user;
+  User _user;
 
   AuthServices() : _auth = FirebaseAuth.instance {
-    _auth.onAuthStateChanged.listen(_onAuthStateChange); // get the auth changes
+    _auth.authStateChanges().listen(_onAuthStateChange); // get the auth changes
   }
 
   //Create a collection as user in cloud firestore
   //CollectionReference is used to get document, adding document etc
   final CollectionReference _ref =
-      Firestore.instance.collection(AppConstants.USERS_COLLECTION);
+      FirebaseFirestore.instance.collection(AppConstants.USERS_COLLECTION);
 
-  FirebaseUser get user => _user;
+  User get user => _user;
 
 //signup with email and password and register
   Future<String> createUser(
@@ -52,11 +52,11 @@ class AuthServices extends ChangeNotifier {
       int age) async {
     String message = "";
     try {
-      AuthResult result = await _auth.createUserWithEmailAndPassword(
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      FirebaseUser user = result.user;
+      User user = result.user;
       //DocumentReference refer to the document location in database
-      DocumentReference newRef = _ref.document(user.uid);
+      DocumentReference newRef = _ref.doc(user.uid);
       await user.sendEmailVerification();
       UserModel userMod = new UserModel(
           uid: user.uid,
@@ -87,7 +87,7 @@ class AuthServices extends ChangeNotifier {
           lastDonationDateCheck: lastDonationDateCheck);
 
       //create a new document for the user with the uid
-      await newRef.setData(userMod.toJson());
+      await newRef.set(userMod.toJson());
       message = "Success";
       // return user;
     } catch (error) {
@@ -102,18 +102,15 @@ class AuthServices extends ChangeNotifier {
   Future<String> signIn(String email, String password) async {
     String message = "";
     try {
-      FirebaseUser _user = (await _auth.signInWithEmailAndPassword(
+      User _user = (await _auth.signInWithEmailAndPassword(
               email: email, password: password))
           .user;
-      if (_user.isEmailVerified) {
+      if (_user.emailVerified) {
         message = "Success";
       } else {
         message = "Please Verify Your Email";
       }
-      // message = "Success";
-      print(_user.isEmailVerified);
-      // return message;
-    } catch (error) {
+    } on FirebaseAuthException catch (error) {
       if (error != null && error.message != null) {
         message = error.message;
       }
@@ -137,8 +134,8 @@ class AuthServices extends ChangeNotifier {
   // }
 
   //get current user
-  Future<FirebaseUser> getCurrentFirebaseUser() async {
-    FirebaseUser user = await _auth.currentUser();
+  Future<User> getCurrentFirebaseUser() async {
+    User user = _auth.currentUser;
     return user;
   }
 
@@ -160,7 +157,7 @@ class AuthServices extends ChangeNotifier {
   }
 
   //Check auth chnages
-  Future<void> _onAuthStateChange(FirebaseUser firebaseUser) async {
+  Future<void> _onAuthStateChange(User firebaseUser) async {
     print(firebaseUser);
     if (firebaseUser == null) {
       print("No UserModel");
@@ -171,10 +168,10 @@ class AuthServices extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> resetPassword(String email) async {
+  Future<String> resetPassword(String emailAddress) async {
     String message = "";
     try {
-      await _auth.sendPasswordResetEmail(email: email);
+      await _auth.sendPasswordResetEmail(email: emailAddress);
       return message = "Success";
     } catch (error) {
       print(error);
