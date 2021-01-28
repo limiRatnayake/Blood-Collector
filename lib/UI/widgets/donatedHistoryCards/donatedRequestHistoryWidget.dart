@@ -66,7 +66,9 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
   DocumentReference requestedRef;
   DocumentReference participatedRef;
   CollectionReference userRef;
+  CollectionReference eventRef;
   String participateId;
+  String unitOfBlood;
   // String participatedStatus;
   String participatedStatus;
   String requestedStatus;
@@ -104,6 +106,7 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
 
     super.initState();
     userRef = FirebaseFirestore.instance.collection("users");
+    eventRef = FirebaseFirestore.instance.collection("events");
   }
 
   @override
@@ -113,9 +116,12 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
         Provider.of<EventParticipantService>(context);
     final RequestAcceptenceService _requestServices =
         Provider.of<RequestAcceptenceService>(context);
+
     String date;
+    bool _bloodUnitsValidate = false;
     DateTime requestClose = widget.requestCloseDate.toDate();
     String requestCloseDate = DateFormat('yMd').format(requestClose);
+    TextEditingController _unitofBloodDonated = TextEditingController();
 
     //get the event created date
     var checkedTime = DateTime.parse(widget.createdAt);
@@ -543,7 +549,7 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                     style: AlertStyle(
                                         isCloseButton: false,
                                         isOverlayTapDismiss: false,
-                                        backgroundColor: Colors.black,
+                                        // backgroundColor: Colors.black,
                                         alertBorder: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(5),
@@ -570,6 +576,11 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                                 fontSize: 20),
                                           ),
                                           onPressed: () async {
+                                            setState(() {
+                                              _unitofBloodDonated.text.isEmpty
+                                                  ? _bloodUnitsValidate = true
+                                                  : _bloodUnitsValidate = false;
+                                            });
                                             String response =
                                                 await _participantServices
                                                     .updateDataOfParticipating(
@@ -599,7 +610,25 @@ class _DonatedRequestPostViewState extends State<DonatedRequestPostView> {
                                                         'ifYesHowManyTimes':
                                                             docSnapshot.data()[
                                                                     "ifYesHowManyTimes"] +
-                                                                1
+                                                                1,
+                                                      });
+                                                }
+                                              });
+                                              FirebaseFirestore.instance
+                                                  .runTransaction(
+                                                      (Transaction tx) async {
+                                                DocumentSnapshot docSnapshot =
+                                                    await tx.get(eventRef
+                                                        .doc(widget.docRef));
+                                                if (docSnapshot.exists) {
+                                                  tx.update(
+                                                      eventRef
+                                                          .doc(widget.docRef),
+                                                      <String, dynamic>{
+                                                        'unitsFilled': docSnapshot
+                                                                    .data()[
+                                                                "unitsFilled"] +
+                                                            1,
                                                       });
                                                 }
                                               });

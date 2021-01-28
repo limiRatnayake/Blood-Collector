@@ -60,25 +60,27 @@ class _PostViewState extends State<PostView> {
 
   @override
   void initState() {
-    likeRef = FirebaseFirestore.instance
-        .collection("events")
-        .doc(widget.docRef)
-        .collection("likes")
-        .doc(widget.currentUser);
-    savedEventRef = FirebaseFirestore.instance
-        .collection("users")
-        .doc(widget.currentUser)
-        .collection("savedEvents")
-        .doc(widget.docRef);
+    // likeRef = FirebaseFirestore.instance
+    //     .collection("events")
+    //     .doc(widget.docRef)
+    //     .collection("likes")
+    //     .doc(widget.currentUser);
+
+    // savedEventRef = FirebaseFirestore.instance
+    //     .collection("users")
+    //     .doc(widget.currentUser)
+    //     .collection("savedEvents")
+    //     .doc(widget.docRef);
 
     super.initState();
-    likeRef.get().then((value) {
-      likeData = value.data();
-    });
-    savedEventRef.get().then((value) {
-      savedEventData = value.data();
-    });
-    eventRef = FirebaseFirestore.instance.collection("events");
+    // likeRef.get().then((value) {
+    //   likeData = value.data();
+    // });
+
+    // savedEventRef.get().then((value) {
+    //   savedEventData = value.data();
+    // });
+    // eventRef = FirebaseFirestore.instance.collection("events");
   }
 
   @override
@@ -109,6 +111,25 @@ class _PostViewState extends State<PostView> {
     } else {
       date = DateFormat('yMd').format(checkedTime) + " " + roughTimeString;
     }
+    setState(() {
+      likeRef = FirebaseFirestore.instance
+          .collection("events")
+          .doc(widget.docRef)
+          .collection("likes")
+          .doc(widget.currentUser);
+      savedEventRef = FirebaseFirestore.instance
+          .collection("users")
+          .doc(widget.currentUser)
+          .collection("savedEvents")
+          .doc(widget.docRef);
+      likeRef.get().then((value) {
+        likeData = value.data();
+      });
+      savedEventRef.get().then((value) {
+        savedEventData = value.data();
+      });
+      eventRef = FirebaseFirestore.instance.collection("events");
+    });
 
     return Container(
         child: Card(

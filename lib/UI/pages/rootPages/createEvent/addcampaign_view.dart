@@ -448,7 +448,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                     },
                     onChanged: (val) {
                       setState(() {
-                        String formattedTime = DateFormat.Hm().format(val);
+                        String formattedTime = DateFormat.jm().format(val);
 
                         startTime = formattedTime;
                       });
@@ -490,7 +490,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                       },
                       onChanged: (val) {
                         setState(() {
-                          String formattedTime = DateFormat.Hm().format(val);
+                          String formattedTime = DateFormat.jm().format(val);
                           endTime = formattedTime;
                         });
                       },

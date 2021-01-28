@@ -67,6 +67,7 @@ class EventService extends ChangeNotifier {
           bloodGroup: bloodGroup,
           replacementAvailability: replacementAvailability,
           unitsOfBlood: unitsOfBlood,
+          unitsFilled: 0,
           requestClose: requestClose,
           hospitalName: hospitalName,
           hospitalAddress: hospitalAddress,

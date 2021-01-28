@@ -28,6 +28,7 @@ class _TimelineViewState extends State<TimelineView> {
   String selectedFilter;
   String selectedArea = 'All';
   String currentUser;
+  List<EventModel> dataList;
 
   _updateSelectedValues(String selectValue) async {
     print(selectValue);
@@ -139,9 +140,10 @@ class _TimelineViewState extends State<TimelineView> {
               ),
             );
           } else {
-            List<EventModel> dataList = snapshot.data.documents
+            dataList = snapshot.data.documents
                 .map<EventModel>((doc) => EventModel.fromMap(doc.data()))
                 .toList();
+
             return dataList.length > 0
                 ? SliverPadding(
                     padding: EdgeInsets.only(left: 5, right: 5),

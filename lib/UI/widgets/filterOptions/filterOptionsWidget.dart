@@ -1,10 +1,14 @@
 //packages
+import 'package:blood_collector/models/event_model.dart';
 import 'package:flutter/material.dart';
 
 class FilterOptions extends StatefulWidget {
   final ValueChanged<String> parentAction;
 
-  const FilterOptions({Key key, this.parentAction}) : super(key: key);
+  const FilterOptions({
+    Key key,
+    this.parentAction,
+  }) : super(key: key);
   @override
   _FilterOptionsState createState() => _FilterOptionsState();
 }

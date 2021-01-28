@@ -6,6 +6,7 @@ class EventModel {
   String bloodGroup;
   String replacementAvailability;
   String unitsOfBlood;
+  int unitsFilled;
   Timestamp requestClose;
   String hospitalName;
   String hospitalAddress;
@@ -53,6 +54,7 @@ class EventModel {
       this.bloodGroup,
       this.replacementAvailability,
       this.unitsOfBlood,
+      this.unitsFilled,
       this.requestClose,
       this.hospitalName,
       this.hospitalAddress,
@@ -101,6 +103,7 @@ class EventModel {
         replacementAvailability = snapshot['replacementAvailability'] ??
             "", //if the value is not there it is empty
         unitsOfBlood = snapshot['unitsOfBlood'] ?? "",
+        unitsFilled = snapshot['unitsFilled'] ?? 0,
         requestClose = snapshot['requestClose'] ?? null,
         hospitalName = snapshot['hospitalName'] ?? "",
         hospitalAddress = snapshot['hospitalAddress'] ?? "",
@@ -149,6 +152,7 @@ class EventModel {
       "bloodGroup": bloodGroup,
       "replacementAvailability": replacementAvailability,
       "unitsOfBlood": unitsOfBlood,
+      "unitsFilled": unitsFilled,
       "requestClose": requestClose,
       "hospitalName": hospitalName,
       "hospitalAddress": hospitalAddress,

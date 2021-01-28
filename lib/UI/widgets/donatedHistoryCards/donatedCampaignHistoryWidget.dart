@@ -149,35 +149,32 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                 ),
                               ),
                               SizedBox(width: 9),
-                              widget.participantId != null
-                                  ? FutureBuilder(
-                                      future: _participantServices
-                                          .getParticipantDetails(
-                                              widget.participantId),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return Center(
-                                              child:
-                                                  CircularProgressIndicator());
-                                        } else {
-                                          ParticipantModel data =
-                                              ParticipantModel.fromMap(
-                                                  snapshot.data.data());
-                                          cancelParticipatedStatus =
-                                              data.participatedStatus;
+                              FutureBuilder(
+                                  future: _participantServices
+                                      .getParticipantDetails(
+                                          widget.participantId),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                          child: CircularProgressIndicator());
+                                    } else {
+                                      ParticipantModel data =
+                                          ParticipantModel.fromMap(
+                                              snapshot.data.data());
+                                      cancelParticipatedStatus =
+                                          data.participatedStatus;
 
-                                          return (data != null &&
-                                                  data.participatedStatus !=
-                                                      "Cancelled")
-                                              ? Container()
-                                              : Text(
-                                                  "Cancelled",
-                                                  style: TextStyle(
-                                                      color: Colors.red),
-                                                );
-                                        }
-                                      })
-                                  : Container()
+                                      return (data != null &&
+                                              data.participatedStatus !=
+                                                  "Cancelled")
+                                          ? Container()
+                                          : Text(
+                                              "Cancelled",
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            );
+                                    }
+                                  })
                             ],
                           ),
                           subtitle: Column(
