@@ -280,24 +280,24 @@ class _FilterChoiceChipWidgetState extends State<FilterChoiceChipWidget> {
                 ),
               ]),
             ),
-            // Positioned(
-            //   // left: 5.0,
-            //   child: GestureDetector(
-            //     onTap: () {
-            //       Navigator.of(context).pop();
-            //     },
-            //     child: Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Align(
-            //         alignment: Alignment.topRight,
-            //         child: CircleAvatar(
-            //           backgroundColor: Colors.black.withOpacity(0.5),
-            //           child: Icon(Icons.close, size: 25.0, color: Colors.white),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            Positioned(
+              // left: 5.0,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black.withOpacity(0.5),
+                      child: Icon(Icons.close, size: 25.0, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ));
   }
