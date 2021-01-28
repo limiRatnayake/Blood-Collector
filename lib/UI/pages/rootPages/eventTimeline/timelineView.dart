@@ -28,6 +28,7 @@ class _TimelineViewState extends State<TimelineView> {
   String selectedFilter;
   String selectedArea = 'All';
   String currentUser;
+  String resultValue;
 
   _updateSelectedValues(String selectValue) async {
     print(selectValue);
@@ -41,6 +42,7 @@ class _TimelineViewState extends State<TimelineView> {
             return FilterChoiceChipWidget();
           });
     }
+
     setState(() {
       selectedArea = result;
       selectedFilter = selectValue;
@@ -114,10 +116,33 @@ class _TimelineViewState extends State<TimelineView> {
                 height: MediaQuery.of(context).size.width * 0.12,
                 //filter the events according to selections
                 child: FilterOptions(
+                  resultValue: resultValue,
                   parentAction: _updateSelectedValues,
                 )),
           ),
         ),
+        selectedFilter == "Campaigns"
+            ? SliverPadding(
+                padding: const EdgeInsets.all(10.0),
+                sliver: SliverToBoxAdapter(
+                  child: Container(
+                      alignment: Alignment.topLeft,
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Filter As ',
+                          style: TextStyle(fontSize: 20, color: Colors.black),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: selectedArea,
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      )),
+                ),
+              )
+            : SliverToBoxAdapter(
+                child: Container(),
+              ),
         postView()
       ]),
     );
@@ -171,3 +196,20 @@ class _TimelineViewState extends State<TimelineView> {
         });
   }
 }
+
+//  Container(
+//                                   padding: EdgeInsets.all(10),
+//                                   alignment: Alignment.topLeft,
+//                                   child: RichText(
+//                                     text: TextSpan(
+//                                       text: 'Filter As ',
+//                                       style: TextStyle(
+//                                           fontSize: 20, color: Colors.black),
+//                                       children: <TextSpan>[
+//                                         TextSpan(
+//                                             text: selectedArea,
+//                                             style: TextStyle(
+//                                                 fontWeight: FontWeight.bold)),
+//                                       ],
+//                                     ),
+//                                   )),

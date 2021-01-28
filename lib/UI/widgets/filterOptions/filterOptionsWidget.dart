@@ -1,10 +1,13 @@
 //packages
+import 'package:device_calendar/device_calendar.dart';
 import 'package:flutter/material.dart';
 
 class FilterOptions extends StatefulWidget {
   final ValueChanged<String> parentAction;
+  final String resultValue;
 
-  const FilterOptions({Key key, this.parentAction}) : super(key: key);
+  const FilterOptions({Key key, this.parentAction, this.resultValue})
+      : super(key: key);
   @override
   _FilterOptionsState createState() => _FilterOptionsState();
 }
@@ -33,7 +36,7 @@ class _FilterOptionsState extends State<FilterOptions> {
           backgroundColor: Colors.red[50],
           selectedColor: Colors.red[300],
           autofocus: true,
-          selected: selectedChoice == item,
+          selected: (selectedChoice == item),
           onSelected: (selected) {
             setState(() {
               selectedChoice = item;
