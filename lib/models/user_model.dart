@@ -13,7 +13,6 @@ class UserModel {
   String email;
   String proPicUrl;
   bool disabled;
-  int age;
 
   int notificationCount;
   String userPreviouslyDonatedOrNot;
@@ -43,7 +42,6 @@ class UserModel {
     this.email,
     this.proPicUrl,
     this.disabled,
-    this.age,
     this.notificationCount,
     this.userPreviouslyDonatedOrNot,
     this.ifYesHowManyTimes,
@@ -74,7 +72,6 @@ class UserModel {
         email = snapshot['email'] ?? "",
         proPicUrl = snapshot['proPicUrl'] ?? "",
         disabled = snapshot['disabled'] ?? "",
-        age = snapshot['age'] ?? 0,
         notificationCount = snapshot['notificationCount'] ?? 0,
         userPreviouslyDonatedOrNot =
             snapshot['userPreviouslyDonatedOrNot'] ?? "",
@@ -105,7 +102,6 @@ class UserModel {
       "userAddLng": userAddLng,
       "proPicUrl": proPicUrl,
       "disabled": disabled,
-      "age": age,
       "notificationCount": notificationCount,
       "userPreviouslyDonatedOrNot": userPreviouslyDonatedOrNot,
       "ifYesHowManyTimes": ifYesHowManyTimes,

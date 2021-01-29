@@ -40,7 +40,6 @@ class _SignUpPageState extends State<SignUpPage> {
   String userAddLng;
   String proPicUrl =
       'https://firebasestorage.googleapis.com/v0/b/final-year-project-a89ff.appspot.com/o/profile_picture%2Fblank_proPic.jpg?alt=media&token=e33110a2-a94a-4405-9fbc-e3bc4ba3c292';
-  int age = 0;
 
   bool disabled;
 
@@ -99,15 +98,6 @@ class _SignUpPageState extends State<SignUpPage> {
   void something(String value) {
     setState(() {
       _bloodGroup = value;
-    });
-  }
-
-  void calculateAge() {
-    selectedYear = DateTime.parse(birthDate);
-    var currentYear = DateTime.now().year;
-    setState(() {
-      age = (currentYear - selectedYear.year).toInt();
-      print(age);
     });
   }
 
@@ -747,7 +737,6 @@ class _SignUpPageState extends State<SignUpPage> {
                               borderRadius: BorderRadius.circular(25.5)),
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
-                              calculateAge();
                               setState(() {
                                 _errorMessage = "";
                                 _isLoading = true;
@@ -756,21 +745,21 @@ class _SignUpPageState extends State<SignUpPage> {
                               var route = new MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     SignUpSecondPage(
-                                        email: email,
-                                        confirmPassword: confirmPassword,
-                                        uid: uid,
-                                        firstName: firstName,
-                                        lastName: lastName,
-                                        birthDate: birthDate,
-                                        gender: gender,
-                                        mobileNo: mobileNo,
-                                        bloodGroup: bloodGroup,
-                                        address: address,
-                                        userAddLat: userAddLat,
-                                        userAddLng: userAddLng,
-                                        proPicUrl: proPicUrl,
-                                        disabled: disabled,
-                                        age: age),
+                                  email: email,
+                                  confirmPassword: confirmPassword,
+                                  uid: uid,
+                                  firstName: firstName,
+                                  lastName: lastName,
+                                  birthDate: birthDate,
+                                  gender: gender,
+                                  mobileNo: mobileNo,
+                                  bloodGroup: bloodGroup,
+                                  address: address,
+                                  userAddLat: userAddLat,
+                                  userAddLng: userAddLng,
+                                  proPicUrl: proPicUrl,
+                                  disabled: disabled,
+                                ),
                               );
                               Navigator.of(context).push(route);
                             } else {

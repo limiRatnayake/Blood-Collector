@@ -24,7 +24,7 @@ class SignUpSecondPage extends StatefulWidget {
   final String userAddLat;
   final String userAddLng;
   final String proPicUrl;
-  final int age;
+
   final bool disabled;
 
   SignUpSecondPage(
@@ -42,7 +42,6 @@ class SignUpSecondPage extends StatefulWidget {
       this.userAddLat,
       this.userAddLng,
       this.proPicUrl,
-      this.age,
       this.disabled})
       : super(key: key);
   @override
@@ -671,32 +670,32 @@ class _SignUpSecondPageState extends State<SignUpSecondPage> {
                                     });
                                     String response =
                                         await _authService.createUser(
-                                            widget.email,
-                                            widget.confirmPassword,
-                                            widget.uid,
-                                            widget.firstName,
-                                            widget.lastName,
-                                            widget.birthDate,
-                                            widget.gender,
-                                            widget.mobileNo,
-                                            widget.bloodGroup,
-                                            widget.address,
-                                            widget.userAddLat,
-                                            widget.userAddLng,
-                                            widget.proPicUrl,
-                                            widget.disabled,
-                                            userPreviouslyDonatedOrNot,
-                                            ifYesHowManyTimes ?? 0,
-                                            dateOfLastDonation ?? "",
-                                            medicallyAdvised,
-                                            vaildIdentitiyCardCheck,
-                                            freeFromRiskBehaviour,
-                                            freeFromSeriousCondition,
-                                            travelAbroad,
-                                            presentMedialTreatment,
-                                            undergoneSurgery,
-                                            lastDonationDateCheck,
-                                            widget.age);
+                                      widget.email,
+                                      widget.confirmPassword,
+                                      widget.uid,
+                                      widget.firstName,
+                                      widget.lastName,
+                                      widget.birthDate,
+                                      widget.gender,
+                                      widget.mobileNo,
+                                      widget.bloodGroup,
+                                      widget.address,
+                                      widget.userAddLat,
+                                      widget.userAddLng,
+                                      widget.proPicUrl,
+                                      widget.disabled,
+                                      userPreviouslyDonatedOrNot,
+                                      ifYesHowManyTimes ?? 0,
+                                      dateOfLastDonation ?? "",
+                                      medicallyAdvised,
+                                      vaildIdentitiyCardCheck,
+                                      freeFromRiskBehaviour,
+                                      freeFromSeriousCondition,
+                                      travelAbroad,
+                                      presentMedialTreatment,
+                                      undergoneSurgery,
+                                      lastDonationDateCheck,
+                                    );
                                     if (response != "Success") {
                                       setState(() {
                                         _isLoading = false;

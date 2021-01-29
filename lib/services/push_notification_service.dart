@@ -6,6 +6,7 @@ import 'package:blood_collector/shared/appConstant.dart';
 
 //packages
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,6 @@ class PushNotificationService extends ChangeNotifier {
     this.uid = uid;
     if (Platform.isIOS) {
       _firebaseMessaging.onIosSettingsRegistered.listen((data) {
-        print(data);
         _saveDeviceToken();
       });
       _firebaseMessaging
@@ -37,6 +37,7 @@ class PushNotificationService extends ChangeNotifier {
 
   _saveDeviceToken() async {
     String fcmToken = await _firebaseMessaging.getToken();
+
     Map<String, dynamic> tokenData;
     String tokenId;
     List<DocumentSnapshot> tokenSnapshot = (await _userRef
@@ -55,10 +56,11 @@ class PushNotificationService extends ChangeNotifier {
         .doc(tokenId);
 
     tokenRef.get().then((value) async {
-      print(fcmToken);
       tokenData = value.data();
+      print(tokenData);
       if (tokenData != null && tokenData.containsValue(fcmToken)) {
         print("It already containes");
+        await updateTokens(tokenId, fcmToken);
       } else {
         if (fcmToken != null) {
           var tokens =
@@ -71,6 +73,18 @@ class PushNotificationService extends ChangeNotifier {
           });
         }
       }
+    });
+  }
+
+  Future<void> updateTokens(String tokenID, String tokens) async {
+    var tokens = _userRef
+        .doc(uid)
+        .collection(AppConstants.TOKENS_COLLECTION)
+        .doc(tokenID);
+    await tokens.update({
+      'token': tokens,
+      'createdAt': FieldValue.serverTimestamp(),
+      'platform': Platform.operatingSystem
     });
   }
 
@@ -99,10 +113,10 @@ class PushNotificationService extends ChangeNotifier {
 
   Future<QuerySnapshot> getUserNotifications(String uid) {
     return _userRef
-        .document(uid)
+        .doc(uid)
         .collection("user_notification")
         .orderBy("sentOn", descending: false)
-        .getDocuments();
+        .get();
   }
 
 //delete a notification from the us
@@ -110,9 +124,9 @@ class PushNotificationService extends ChangeNotifier {
     String message = "";
     try {
       _userRef
-          .document(uid)
+          .doc(uid)
           .collection("user_notification")
-          .document(userNotifyId)
+          .doc(userNotifyId)
           .delete();
 
       message = "Success";
