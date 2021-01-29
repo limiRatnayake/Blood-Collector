@@ -6,9 +6,9 @@ import 'package:blood_collector/shared/appConstant.dart';
 
 //packages
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class PushNotificationService extends ChangeNotifier {
   //initialize the firebase cloud messaging
@@ -26,6 +26,7 @@ class PushNotificationService extends ChangeNotifier {
     this.uid = uid;
     if (Platform.isIOS) {
       _firebaseMessaging.onIosSettingsRegistered.listen((data) {
+        print(data);
         _saveDeviceToken();
       });
       _firebaseMessaging
@@ -38,55 +39,63 @@ class PushNotificationService extends ChangeNotifier {
   _saveDeviceToken() async {
     String fcmToken = await _firebaseMessaging.getToken();
 
-    Map<String, dynamic> tokenData;
-    String tokenId;
-    List<DocumentSnapshot> tokenSnapshot = (await _userRef
-            .doc(uid)
-            .collection(AppConstants.TOKENS_COLLECTION)
-            .get())
-        .docs;
+    // Save the initial token to the database
+    await saveToken(fcmToken);
 
-    for (int x = 0; x < tokenSnapshot.length; x++) {
-      tokenId = tokenSnapshot[x].reference.id;
-    }
-
-    DocumentReference tokenRef = _userRef
-        .doc(uid)
-        .collection(AppConstants.TOKENS_COLLECTION)
-        .doc(tokenId);
-
-    tokenRef.get().then((value) async {
-      tokenData = value.data();
-      print(tokenData);
-      if (tokenData != null && tokenData.containsValue(fcmToken)) {
-        print("It already containes");
-        await updateTokens(tokenId, fcmToken);
-      } else {
-        if (fcmToken != null) {
-          var tokens =
-              _userRef.doc(uid).collection(AppConstants.TOKENS_COLLECTION);
-
-          await tokens.add({
-            'token': fcmToken,
-            'createdAt': FieldValue.serverTimestamp(),
-            'platform': Platform.operatingSystem
-          });
-        }
-      }
-    });
+    // Any time the token refreshes, store this in the database too.
+    _firebaseMessaging.onTokenRefresh.listen(saveToken);
   }
 
-  Future<void> updateTokens(String tokenID, String tokens) async {
-    var tokens = _userRef
+  Future<void> saveToken(String token) async {
+    var tokenRef = await _userRef
         .doc(uid)
         .collection(AppConstants.TOKENS_COLLECTION)
-        .doc(tokenID);
-    await tokens.update({
-      'token': tokens,
+        .doc(token)
+        .set({
+      'tokens': token,
       'createdAt': FieldValue.serverTimestamp(),
       'platform': Platform.operatingSystem
     });
   }
+
+  // _saveDeviceToken() async {
+  //   String fcmToken = await _firebaseMessaging.getToken();
+  //   Map<String, dynamic> tokenData;
+  //   String tokenId;
+  //   List<DocumentSnapshot> tokenSnapshot = (await _userRef
+  //           .doc(uid)
+  //           .collection(AppConstants.TOKENS_COLLECTION)
+  //           .get())
+  //       .docs;
+
+  //   for (int x = 0; x < tokenSnapshot.length; x++) {
+  //     tokenId = tokenSnapshot[x].reference.id;
+  //   }
+
+  //   DocumentReference tokenRef = _userRef
+  //       .doc(uid)
+  //       .collection(AppConstants.TOKENS_COLLECTION)
+  //       .doc(tokenId);
+
+  //   tokenRef.get().then((value) async {
+  //     print(fcmToken);
+  //     tokenData = value.data();
+  //     if (tokenData != null && tokenData.containsValue(fcmToken)) {
+  //       print("It already containes");
+  //     } else {
+  //       if (fcmToken != null) {
+  //         var tokens =
+  //             _userRef.doc(uid).collection(AppConstants.TOKENS_COLLECTION);
+
+  //         await tokens.add({
+  //           'token': fcmToken,
+  //           'createdAt': FieldValue.serverTimestamp(),
+  //           'platform': Platform.operatingSystem
+  //         });
+  //       }
+  //     }
+  //   });
+  // }
 
   // Future<void> addNotification(
   //   String message,
@@ -113,10 +122,10 @@ class PushNotificationService extends ChangeNotifier {
 
   Future<QuerySnapshot> getUserNotifications(String uid) {
     return _userRef
-        .doc(uid)
+        .document(uid)
         .collection("user_notification")
         .orderBy("sentOn", descending: false)
-        .get();
+        .getDocuments();
   }
 
 //delete a notification from the us
@@ -124,9 +133,9 @@ class PushNotificationService extends ChangeNotifier {
     String message = "";
     try {
       _userRef
-          .doc(uid)
+          .document(uid)
           .collection("user_notification")
-          .doc(userNotifyId)
+          .document(userNotifyId)
           .delete();
 
       message = "Success";
