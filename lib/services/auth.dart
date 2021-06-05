@@ -119,20 +119,6 @@ class AuthServices extends ChangeNotifier {
     return message;
   }
 
-  // Future<FirebaseUser> signIn(String email, String password) async {
-  //   try {
-  //     _user = (await _auth.signInWithEmailAndPassword(
-  //             email: email, password: password))
-  //         .user;
-
-  //     print("Sign in" + _user.displayName);
-  //   } catch (error) {
-  //     print(error);
-  //   }
-  //   notifyListeners();
-  //   return null;
-  // }
-
   //get current user
   Future<User> getCurrentFirebaseUser() async {
     User user = _auth.currentUser;
@@ -158,7 +144,6 @@ class AuthServices extends ChangeNotifier {
 
   //Check auth chnages
   Future<void> _onAuthStateChange(User firebaseUser) async {
-    print(firebaseUser);
     if (firebaseUser == null) {
       print("No UserModel");
     } else {

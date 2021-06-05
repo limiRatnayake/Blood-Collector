@@ -59,8 +59,7 @@ class _SignUpPageState extends State<SignUpPage> {
   var selectedYear;
 
   DateTime currentTime = DateTime.now();
-
-  TextEditingController _userAddressController = TextEditingController();
+  TextEditingController _placeAddressController = TextEditingController();
 
   //import fluttertoast pub dev package - 5sec toast
   void showToastError() {
@@ -98,6 +97,15 @@ class _SignUpPageState extends State<SignUpPage> {
   void something(String value) {
     setState(() {
       _bloodGroup = value;
+    });
+  }
+
+  getAddressLatLng(getAddress) async {
+    final addresses = await Geocoder.local.findAddressesFromQuery(getAddress);
+    var value = addresses.first;
+    setState(() {
+      userAddLat = value.coordinates.latitude.toString();
+      userAddLng = value.coordinates.longitude.toString();
     });
   }
 
@@ -295,161 +303,31 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _placeAddressTextField() {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 45.0),
-          child: Row(
-            children: <Widget>[
-              Text(
-                "Postal Address",
-                style: TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+    return Container(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height * 0.07,
+      margin: EdgeInsets.symmetric(horizontal: 30.0),
+      decoration: boxDecoration,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
+        child: TextFormField(
+          // enabled: false,
+          controller: _placeAddressController,
+          decoration: InputDecoration(
+              errorStyle: TextStyle(color: Theme.of(context).errorColor),
+              hintText: "eg:15/8, Sirisena Rad, Dehiwala",
+              hintStyle: TextStyle(
+                fontSize: 16.0,
+                fontFamily: "Roboto",
               ),
-            ],
-          ),
+              enabledBorder: InputBorder.none),
+          validator: (value) => value.isEmpty ? 'Enter the address' : null,
+          onChanged: (value) async {
+            address = value;
+          },
         ),
-        SizedBox(
-          height: 8.0,
-        ),
-        Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height * 0.08,
-          margin: EdgeInsets.symmetric(horizontal: 30.0),
-          decoration: boxDecoration,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
-            child: TextFormField(
-                onTap: () {
-                  _mapdialogContent(context);
-                },
-                readOnly: true,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _userAddressController,
-                decoration: InputDecoration(
-                    errorStyle: TextStyle(color: Theme.of(context).errorColor),
-                    hintText: "eg:15/8, Sirisena Rad, Dehiwala",
-                    hintStyle: TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "Roboto",
-                    ),
-                    enabledBorder: InputBorder.none),
-                validator: validateMapTextField),
-          ),
-        ),
-      ],
+      ),
     );
-  }
-
-  // Widget _googleMapModal() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.end,
-  //     children: [
-  //       Padding(
-  //         padding: const EdgeInsets.only(right: 35.0),
-  //         child: FlatButton(
-  //             color: Colors.blueAccent[200],
-  //             child: Text("Choose From Map"),
-  //             onPressed: () {
-  //               _mapdialogContent(context);
-  //             }),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-//updating the current instance - buildcontext
-  void _mapdialogContent(BuildContext context) {
-    Completer<GoogleMapController> _controller = Completer();
-    getSetAddress(Coordinates coordinates) async {
-      final addresses =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      setState(() {
-        // _resultAddress = addresses.first.addressLine;
-        //get the selelcted position into textfeild
-        _userAddressController.text = addresses.first.addressLine;
-        address = _userAddressController.text;
-      });
-    }
-
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          //build a statefulbuilder to run the setState
-          return StatefulBuilder(builder: (context, setState) {
-            return Dialog(
-                elevation: 0.0,
-                backgroundColor: Colors.transparent,
-                child: Stack(children: <Widget>[
-                  GoogleMap(
-                    //use this controller to set markers or move camera around
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    markers: _markerLocation != null
-                        ? [
-                            Marker(
-                                markerId: MarkerId("Tap Location"),
-                                position: _markerLocation),
-                          ].toSet()
-                        : null,
-                    myLocationEnabled: true,
-                    //create default camera positiion to a target
-                    initialCameraPosition: CameraPosition(
-                        target: LatLng(6.927079, 79.861244), zoom: 18),
-                    onTap: (location) {
-                      setState(() {
-                        _markerLocation = location;
-                      });
-                    },
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: FlatButton.icon(
-                        label: Text("Selected Position"),
-                        icon: Icon(Icons.location_on),
-                        color: Colors.blue,
-                        onPressed: () {
-                          setState(() {
-                            if (_markerLocation != null) {
-                              getSetAddress(Coordinates(
-                                  _markerLocation.latitude,
-                                  _markerLocation.longitude));
-                              Navigator.of(context).pop();
-                              userAddLat = _markerLocation.latitude.toString();
-                              userAddLng = _markerLocation.longitude.toString();
-                            } else {
-                              showToastError();
-                            }
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: 5.0,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.black.withOpacity(0.5),
-                            child: Icon(Icons.close,
-                                size: 25.0, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]));
-          });
-        });
   }
 
   Widget _emailTextField() {
@@ -672,9 +550,19 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     _mobileNoField(),
                     SizedBox(height: 10.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "Address",
+                            style:
+                                TextStyle(fontFamily: 'Roboto', fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
                     _placeAddressTextField(),
-                    // _googleMapModal(),
-                    // _postalAddressField(),
                     SizedBox(height: 10.0),
                     Padding(
                       padding: const EdgeInsets.only(left: 45.0),
@@ -736,6 +624,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25.5)),
                           onPressed: () {
+                            getAddressLatLng(address);
+
                             if (_formKey.currentState.validate()) {
                               setState(() {
                                 _errorMessage = "";

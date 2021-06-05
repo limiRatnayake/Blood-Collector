@@ -4,7 +4,6 @@ import 'package:blood_collector/UI/pages/rootPages/viewTimelineEvents/viewReques
 import 'package:blood_collector/models/event_model.dart';
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
-import 'package:blood_collector/services/user_service.dart';
 
 //packages
 import 'package:flutter/foundation.dart';
@@ -19,14 +18,12 @@ class SaveEventTile extends StatefulWidget {
 }
 
 class _SaveEventTileState extends State<SaveEventTile> {
-  UserService _userService;
   EventService _eventServices;
   AuthServices _authService;
 
   String category;
   @override
   Widget build(BuildContext context) {
-    _userService = Provider.of<UserService>(context);
     _authService = Provider.of<AuthServices>(context);
 
     _eventServices = Provider.of<EventService>(context);

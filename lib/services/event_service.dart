@@ -146,11 +146,11 @@ class EventService extends ChangeNotifier {
         .where("status", isEqualTo: "Open")
         .where("requestClose", isGreaterThanOrEqualTo: DateTime.now())
         .orderBy("requestClose", descending: false)
-        .orderBy("createdAt", descending: true)
+        .orderBy("createdAt", descending: false)
         .get();
   }
 
-  Future<QuerySnapshot> filterEvents(String area, String filter) async {
+  Future<QuerySnapshot> filterEvents(String area, String filter) {
     var query = _ref
         .where("approved", isEqualTo: true)
         .where("status", isEqualTo: "Open")
@@ -164,8 +164,8 @@ class EventService extends ChangeNotifier {
     if (filter == "Requests") {
       query = query.where("category", isEqualTo: "request");
     }
-
-    return await query.get();
+    var getQuery = query.get();
+    return getQuery;
   }
 
   Future<QuerySnapshot> getUserEvents(String uid) {

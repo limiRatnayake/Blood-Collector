@@ -18,6 +18,7 @@ class UserService extends ChangeNotifier {
   CollectionReference _ref;
   UserModel _userDetails;
 
+//build a contructor and assign varibles
   UserService() : _db = FirebaseFirestore.instance {
     _ref = _db.collection(AppConstants.USERS_COLLECTION);
   }
@@ -33,21 +34,6 @@ class UserService extends ChangeNotifier {
   Future<QuerySnapshot> getSavedEvents(String uid) {
     return _ref.doc(uid).collection("savedEvents").get();
   }
-  // Future<List<UserModel>> getUsersForParticipantList(String uid) async {
-  //   try {
-  //     List<DocumentSnapshot> snapshot =
-  //         (await _ref.where("uid", isEqualTo: uid).getDocuments()).documents;
-
-  //     List<UserModel> users = snapshot
-  //         .map<UserModel>((doc) => UserModel.fromMap(doc.data))
-  //         .toList();
-
-  //     return users;
-  //   } catch (e) {
-  //     print(e);
-  //     return null;
-  //   }
-  // }
 
   Future<String> updateUserProfile(
     String uid,

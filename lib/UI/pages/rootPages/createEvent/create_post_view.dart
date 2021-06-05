@@ -4,7 +4,6 @@ import 'dart:io';
 //pages
 import 'package:blood_collector/services/auth.dart';
 import 'package:blood_collector/services/event_service.dart';
-import 'package:blood_collector/services/push_notification_service.dart';
 import 'package:blood_collector/shared/appConstant.dart';
 
 //packages
@@ -150,9 +149,8 @@ class _PostViewState extends State<CreatePostView> {
     //get parameter type FirebaseUser
     User _user = Provider.of<AuthServices>(context).user;
     EventService _eventService = Provider.of<EventService>(context);
-    PushNotificationService _pushNotificationService =
-        PushNotificationService();
 
+    print(widget.placeLat);
     return SafeArea(
         child: Scaffold(
       resizeToAvoidBottomPadding: false,

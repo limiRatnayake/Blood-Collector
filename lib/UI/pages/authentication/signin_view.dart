@@ -23,7 +23,6 @@ class _SignInPageState extends State<SignInPage> {
 
   bool _isLoading = false;
   bool _formValidate = false;
-
   String email = '';
   String password = '';
   String error = '';
@@ -150,7 +149,7 @@ class _SignInPageState extends State<SignInPage> {
                               SizedBox(
                                 height: 25.0,
                               ),
-                              new Center(
+                              Center(
                                   widthFactor: double.infinity,
                                   child: InkWell(
                                     child: Text(
@@ -231,7 +230,6 @@ class _SignInPageState extends State<SignInPage> {
                                                         "You are Successfully login",
                                                     style: AlertStyle(
                                                       isCloseButton: false,
-
                                                       alertBorder:
                                                           RoundedRectangleBorder(
                                                               borderRadius:
@@ -241,9 +239,6 @@ class _SignInPageState extends State<SignInPage> {
                                                               side: BorderSide(
                                                                   color: Colors
                                                                       .white)),
-                                                      // titleStyle: TextStyle(
-                                                      //     color: Colors
-                                                      //         .white)
                                                     ),
                                                     buttons: [
                                                       DialogButton(

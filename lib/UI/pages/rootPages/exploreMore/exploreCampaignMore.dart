@@ -26,16 +26,10 @@ class ExploreCampaignMore extends StatefulWidget {
 
 //timeline card
 class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
-  final participantRef = Firestore.instance;
+  final participantRef = FirebaseFirestore.instance;
   bool participated = false;
   String participateId;
   bool inclueInParticipantList;
-
-  _isParticipated() {
-    setState(() {
-      participated = !participated;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +139,6 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                 subtitle: Text(data.orgernizerConatctNo),
                                 // trailing: Text(data.userPhoneNumber),
                               ),
-
                               Divider(
                                 height: 1,
                               ),
@@ -212,63 +205,6 @@ class _ExploreCampaignMoreState extends State<ExploreCampaignMore> {
                                       )),
                                 ],
                               ),
-
-                              // ListTile(
-                              //   leading: Icon(Icons.person),
-                              //   title: Text(
-                              //     "Participant List",
-                              //     style: TextStyle(color: Colors.black),
-                              //   ),
-                              //   trailing: Icon(
-                              //     Icons.arrow_right,
-                              //     color: Colors.black,
-                              //   ),
-                              //   onTap: () {
-                              //     data.submitListStatus != "submitted"
-                              //         ? Navigator.push(
-                              //             context,
-                              //             MaterialPageRoute(
-                              //                 builder: (context) =>
-                              //                     ListOfParticipantView(
-                              //                         uid: widget.uid,
-                              //                         docRef: widget.docRef,
-                              //                         totalEngage:
-                              //                             data.totalParticipants,
-                              //                         actualEngage:
-                              //                             data.actualParticipants,
-                              //                         avoidParticipants:
-                              //                             data.avoidParticipants,
-                              //                         submitListStatus:
-                              //                             data.submitListStatus)))
-                              //         : Navigator.push(
-                              //             context,
-                              //             MaterialPageRoute(
-                              //                 builder: (context) =>
-                              //                     SubmittedParticipantListView(
-                              //                       docRef: widget.docRef,
-                              //                     )));
-                              //   },
-                              // ),
-                              // ListTile(
-                              //   leading: Icon(Icons.analytics),
-                              //   title: Text(
-                              //     "Analytics",
-                              //     style: TextStyle(color: Colors.black),
-                              //   ),
-                              //   trailing: Icon(
-                              //     Icons.arrow_right,
-                              //     color: Colors.black,
-                              //   ),
-                              //   onTap: () {
-                              //     Navigator.push(
-                              //         context,
-                              //         MaterialPageRoute(
-                              //             builder: (context) => TaskHomePage(
-                              //                 docRef: widget.docRef,
-                              //                 submitStatus:
-                              //                     data.submitListStatus)));
-                              //   },
-                              // ),
                               SizedBox(
                                 height: 15,
                               ),

@@ -327,28 +327,6 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                                                                 "Cancelled");
                                                         if (response ==
                                                             "Success") {
-                                                          // Firestore.instance
-                                                          //     .runTransaction(
-                                                          //         (tx) async {
-                                                          //   DocumentSnapshot
-                                                          //       docSnapshot =
-                                                          //       await tx.get(eventRef
-                                                          //           .document(widget
-                                                          //               .docRef));
-                                                          //   if (docSnapshot
-                                                          //       .exists) {
-                                                          //     await tx.update(
-                                                          //         eventRef
-                                                          //             .document(
-                                                          //                 widget
-                                                          //                     .docRef),
-                                                          //         <String, dynamic>{
-                                                          //           'totalParticipants':
-                                                          //               docSnapshot.data["totalParticipants"] -
-                                                          //                   1
-                                                          //         });
-                                                          //   }
-                                                          // });
                                                           FirebaseFirestore
                                                               .instance
                                                               .runTransaction(
@@ -494,27 +472,6 @@ class _DonatedCampaignPostViewState extends State<DonatedCampaignPostView> {
                       : Text("try again later");
                 }
               }),
-
-          // ButtonBar(
-          //   alignment: MainAxisAlignment.spaceEvenly,
-          //   children: [
-          //     Row(
-          //       children: [
-          //         IconButton(
-          //           icon: Icon(Icons.explore),
-          //           onPressed: () {},
-          //         ),
-          //         Text(
-          //           "Explore More",
-          //           style: TextStyle(
-          //               fontSize: 15,
-          //               fontWeight: FontWeight.bold,
-          //               color: Colors.grey[800]),
-          //         ),
-          //       ],
-          //     ),
-          //   ],
-          // ),
         ],
       ),
     ));

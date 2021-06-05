@@ -15,6 +15,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class TimelineView extends StatefulWidget {
   @override
@@ -50,8 +51,9 @@ class _TimelineViewState extends State<TimelineView> {
 
   @override
   void initState() {
-    //ask for the user loaction
     User user = FirebaseAuth.instance.currentUser;
+
+    //update user donor months
     FirebaseFirestore.instance
         .collection("users")
         .doc(user.uid)
@@ -72,6 +74,7 @@ class _TimelineViewState extends State<TimelineView> {
               .update({"lastDonationDateCheck": true});
         }
       }
+      //ask for the user loaction
       if (result["address"] == "") {
         Future<Null>.delayed(Duration.zero, () {
           Scaffold.of(context).showSnackBar(
@@ -132,12 +135,7 @@ class _TimelineViewState extends State<TimelineView> {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return SliverToBoxAdapter(
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 15),
-                  child: Text("No saved events found"),
-                ),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             );
           } else {
             dataList = snapshot.data.documents

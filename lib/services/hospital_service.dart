@@ -13,9 +13,6 @@ class HospitalDetailsServices extends ChangeNotifier {
   HospitalDetailsServices() : _db = FirebaseFirestore.instance {
     _ref = _db.collection(AppConstants.HOSPITALS_COLLECTION);
   }
-//  Future<QuerySnapshot> getHospitals() {
-//     return _ref.getDocuments();
-//   }
 
   Future<List<HospitalListModel>> getHospitals() async {
     try {

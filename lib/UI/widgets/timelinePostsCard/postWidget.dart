@@ -60,27 +60,7 @@ class _PostViewState extends State<PostView> {
 
   @override
   void initState() {
-    // likeRef = FirebaseFirestore.instance
-    //     .collection("events")
-    //     .doc(widget.docRef)
-    //     .collection("likes")
-    //     .doc(widget.currentUser);
-
-    // savedEventRef = FirebaseFirestore.instance
-    //     .collection("users")
-    //     .doc(widget.currentUser)
-    //     .collection("savedEvents")
-    //     .doc(widget.docRef);
-
     super.initState();
-    // likeRef.get().then((value) {
-    //   likeData = value.data();
-    // });
-
-    // savedEventRef.get().then((value) {
-    //   savedEventData = value.data();
-    // });
-    // eventRef = FirebaseFirestore.instance.collection("events");
   }
 
   @override

@@ -27,8 +27,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
 
   List<Marker> myMarker = [];
   String nameOfTheOrOrganizer;
-  LatLng _markerLocation;
-  // String _resultAddress;
+
   DateTime currentDate = DateTime.now();
   TimeOfDay currentTime = TimeOfDay.now();
   String pickUpStartDate;
@@ -53,28 +52,6 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
     "Select districts",
     "Colombo",
     'Kandy',
-    'Galle',
-    'Ampara',
-    'Anuradhapura',
-    'Badulla',
-    'Batticaloa',
-    'Gampaha',
-    'Hambantota',
-    'Jaffna',
-    'Kalutara',
-    'Kegalle',
-    'Kilinochchi',
-    'Kurunegala',
-    'Mannar',
-    'Matara',
-    'Monaragala',
-    'Mullativu',
-    'Nuwara Eliya',
-    'Polonnaruwa',
-    'Puttalam',
-    'Ratnapura',
-    'Trincomalee',
-    'Vavuniya',
   ];
 
   List<String> _colomboArea = [
@@ -126,6 +103,16 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
         gravity: ToastGravity.TOP,
         backgroundColor: Colors.grey[200],
         textColor: Colors.red);
+  }
+
+//get lat and lng from the address
+  getAddressLatLng(getAddress) async {
+    final addresses = await Geocoder.local.findAddressesFromQuery(getAddress);
+    var value = addresses.first;
+    setState(() {
+      placeLat = value.coordinates.latitude.toString();
+      placeLng = value.coordinates.longitude.toString();
+    });
   }
 
   Widget _districtsTextField() {
@@ -489,6 +476,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                         return DateTimeField.convert(time);
                       },
                       onChanged: (val) {
+                        print(val);
                         setState(() {
                           String formattedTime = DateFormat.jm().format(val);
                           endTime = formattedTime;
@@ -641,7 +629,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
           child: Padding(
             padding: const EdgeInsets.only(top: 4, left: 24, right: 16),
             child: TextFormField(
-              enabled: false,
+              // enabled: false,
               controller: _placeAddressController,
               decoration: InputDecoration(
                   errorStyle: TextStyle(color: Theme.of(context).errorColor),
@@ -653,121 +641,16 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                   enabledBorder: InputBorder.none),
               validator: (value) =>
                   value.isEmpty ? ' Select from the map' : null,
+              onChanged: (value) {
+                organizePlaceAddress = value;
+
+                getAddressLatLng(organizePlaceAddress);
+              },
             ),
           ),
         ),
       ],
     );
-  }
-
-  Widget _googleMapModal() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 15.0),
-          child: FlatButton(
-              color: Colors.blueAccent[200],
-              child: Text("Choose From Map"),
-              onPressed: () {
-                _mapdialogContent(context);
-              }),
-        ),
-      ],
-    );
-  }
-
-//updating the current instance - buildcontext
-  void _mapdialogContent(BuildContext context) {
-    Completer<GoogleMapController> _controller = Completer();
-    getSetAddress(Coordinates coordinates) async {
-      final addresses =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      setState(() {
-        // _resultAddress = addresses.first.addressLine;
-        //get the selelcted position into textfeild
-        _placeAddressController.text = addresses.first.addressLine;
-        organizePlaceAddress = _placeAddressController.text;
-      });
-    }
-
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          //build a statefulbuilder to run the setState
-          return StatefulBuilder(builder: (context, setState) {
-            return Dialog(
-                elevation: 0.0,
-                backgroundColor: Colors.transparent,
-                child: Stack(children: <Widget>[
-                  GoogleMap(
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    markers: _markerLocation != null
-                        ? [
-                            Marker(
-                                markerId: MarkerId("Tap Location"),
-                                position: _markerLocation),
-                          ].toSet()
-                        : null,
-                    myLocationEnabled: true,
-                    initialCameraPosition: CameraPosition(
-                        target: LatLng(6.927079, 79.861244), zoom: 18),
-                    onTap: (location) {
-                      setState(() {
-                        _markerLocation = location;
-                      });
-                    },
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: FlatButton.icon(
-                        label: Text("Selected Position"),
-                        icon: Icon(Icons.location_on),
-                        color: Colors.blue,
-                        onPressed: () {
-                          setState(() {
-                            if (_markerLocation != null) {
-                              getSetAddress(Coordinates(
-                                  _markerLocation.latitude,
-                                  _markerLocation.longitude));
-                              Navigator.of(context).pop();
-                              placeLat = _markerLocation.latitude.toString();
-                              placeLng = _markerLocation.longitude.toString();
-                            } else {
-                              showToastError();
-                            }
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: 5.0,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.black.withOpacity(0.5),
-                            child: Icon(Icons.close,
-                                size: 25.0, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]));
-          });
-        });
   }
 
   Widget _conatctTextFeild() {
@@ -853,6 +736,8 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
 
   void _submitTheForm() {
     final _form = _formKey.currentState;
+    //get latitude and longtitude vlues from address
+
     if (_form.validate()) {
       print('Form is vaild');
 
@@ -927,7 +812,7 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
                 SizedBox(
                   height: 10.0,
                 ),
-                _googleMapModal(),
+                // _googleMapModal(),
                 SizedBox(
                   height: 10.0,
                 ),
@@ -968,24 +853,6 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
         ),
       ),
     );
-  }
-
-  Future<Null> _selectDate(context, ctrl) async {
-    DateFormat dateFormat = DateFormat('yyyy-MM-dd');
-    DateTime _selectedDate =
-        ctrl.text != "" ? dateFormat.parse(ctrl.text) : DateTime.now();
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: _selectedDate,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != _selectedDate)
-      ctrl.text = DateFormat('yyyy-MM-dd').format(picked);
-    setState(() {
-      pickUpStartDate = ctrl.text;
-      pickUpEndDate = ctrl.text;
-      requestCloseOn = ctrl.text;
-    });
   }
 
   String validateTextFeild(String value) {
@@ -1035,3 +902,26 @@ class _AddCampaignsViewState extends State<AddCampaignsView> {
 //A collection of objects in which each object can occur only once.
 
 // That is, for each object of the element type, the object is either considered to be in the set, or to not be in the set.
+
+// 'Galle',
+// 'Ampara',
+// 'Anuradhapura',
+// 'Badulla',
+// 'Batticaloa',
+// 'Gampaha',
+// 'Hambantota',
+// 'Jaffna',
+// 'Kalutara',
+// 'Kegalle',
+// 'Kilinochchi',
+// 'Kurunegala',
+// 'Mannar',
+// 'Matara',
+// 'Monaragala',
+// 'Mullativu',
+// 'Nuwara Eliya',
+// 'Polonnaruwa',
+// 'Puttalam',
+// 'Ratnapura',
+// 'Trincomalee',
+// 'Vavuniya',

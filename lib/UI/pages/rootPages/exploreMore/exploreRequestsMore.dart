@@ -29,16 +29,9 @@ class _ExploreRequestsMoreState extends State<ExploreRequestsMore> {
   String participateId;
   bool inclueInParticipantList;
 
-  _isParticipated() {
-    setState(() {
-      participated = !participated;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final EventService _eventServices = Provider.of<EventService>(context);
-    final AuthServices _authServices = Provider.of<AuthServices>(context);
     final UserService _userService = Provider.of<UserService>(context);
 
     return Scaffold(

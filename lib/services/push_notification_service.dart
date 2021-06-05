@@ -58,74 +58,12 @@ class PushNotificationService extends ChangeNotifier {
     });
   }
 
-  // _saveDeviceToken() async {
-  //   String fcmToken = await _firebaseMessaging.getToken();
-  //   Map<String, dynamic> tokenData;
-  //   String tokenId;
-  //   List<DocumentSnapshot> tokenSnapshot = (await _userRef
-  //           .doc(uid)
-  //           .collection(AppConstants.TOKENS_COLLECTION)
-  //           .get())
-  //       .docs;
-
-  //   for (int x = 0; x < tokenSnapshot.length; x++) {
-  //     tokenId = tokenSnapshot[x].reference.id;
-  //   }
-
-  //   DocumentReference tokenRef = _userRef
-  //       .doc(uid)
-  //       .collection(AppConstants.TOKENS_COLLECTION)
-  //       .doc(tokenId);
-
-  //   tokenRef.get().then((value) async {
-  //     print(fcmToken);
-  //     tokenData = value.data();
-  //     if (tokenData != null && tokenData.containsValue(fcmToken)) {
-  //       print("It already containes");
-  //     } else {
-  //       if (fcmToken != null) {
-  //         var tokens =
-  //             _userRef.doc(uid).collection(AppConstants.TOKENS_COLLECTION);
-
-  //         await tokens.add({
-  //           'token': fcmToken,
-  //           'createdAt': FieldValue.serverTimestamp(),
-  //           'platform': Platform.operatingSystem
-  //         });
-  //       }
-  //     }
-  //   });
-  // }
-
-  // Future<void> addNotification(
-  //   String message,
-  //   String bloodGroup,
-  //   FirebaseUser user,
-  // ) async {
-  //   try {
-  //     final now = DateTime.now();
-  //     final tomorrow = new DateTime(now.year, now.month, now.day + 1);
-  //     DocumentReference newRef = _notificationRef.document();
-  //     NotificationModel notification = NotificationModel(
-  //         notificationId: newRef.documentID,
-  //         uid: user.uid,
-  //         message: message,
-  //         bloodGroup: bloodGroup,
-  //         createdAt: now.toString(),
-  //         closeOn: tomorrow.toString());
-  //     await newRef.setData(notification.toJson());
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  //   notifyListeners();
-  // }
-
   Future<QuerySnapshot> getUserNotifications(String uid) {
     return _userRef
-        .document(uid)
+        .doc(uid)
         .collection("user_notification")
         .orderBy("sentOn", descending: false)
-        .getDocuments();
+        .get();
   }
 
 //delete a notification from the us
@@ -133,9 +71,9 @@ class PushNotificationService extends ChangeNotifier {
     String message = "";
     try {
       _userRef
-          .document(uid)
+          .doc(uid)
           .collection("user_notification")
-          .document(userNotifyId)
+          .doc(userNotifyId)
           .delete();
 
       message = "Success";

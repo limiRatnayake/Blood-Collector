@@ -2,7 +2,6 @@
 import 'package:blood_collector/UI/widgets/bookmarkView/savedEventWidget.dart';
 import 'package:blood_collector/models/save_event_model.dart';
 import 'package:blood_collector/services/auth.dart';
-import 'package:blood_collector/services/event_service.dart';
 import 'package:blood_collector/services/user_service.dart';
 
 //packages
@@ -17,14 +16,13 @@ class SavedEventView extends StatefulWidget {
 
 class _SavedEventViewState extends State<SavedEventView> {
   UserService _userService;
-  EventService _eventServices;
+
   AuthServices _authService;
   @override
   Widget build(BuildContext context) {
     _userService = Provider.of<UserService>(context);
     _authService = Provider.of<AuthServices>(context);
 
-    _eventServices = Provider.of<EventService>(context);
     return Scaffold(
       body: Container(
           child: CustomScrollView(
@@ -38,42 +36,6 @@ class _SavedEventViewState extends State<SavedEventView> {
           getImagesList()
         ],
       )),
-      // body: CustomScrollView(
-      //   slivers: <Widget>[
-      //     ///First sliver is the App Bar
-      //     // SliverAppBar(
-      //     //   ///Properties of app bar
-      //     //   backgroundColor: Colors.white,
-      //     //   floating: false,
-      //     //   pinned: true,
-      //     //   expandedHeight: 200.0,
-      //     getImagesList()
-      //     //   ///Properties of the App Bar when it is expanded
-      //     //   flexibleSpace: FlexibleSpaceBar(
-      //     //     centerTitle: true,
-      //     //     title: Text(
-      //     //       "SliverGrid Widget",
-      //     //       style: TextStyle(
-      //     //         color: Colors.black87,
-      //     //         fontSize: 20.0,
-      //     //         fontWeight: FontWeight.bold,
-      //     //         // fontFamily: Utils.ubuntuRegularFont
-      //     //       ),
-      //     //     ),
-      //     //     background: Container(
-      //     //       decoration: BoxDecoration(
-      //     //         border: Border(
-      //     //           top: BorderSide(
-      //     //             color: Colors.black26,
-      //     //             width: 1.0,
-      //     //           ),
-      //     //         ),
-      //     //       ),
-      //     //     ),
-      //     //   ),
-      //     // ),
-      //   ],
-      // ),
     );
   }
 
@@ -83,6 +45,7 @@ class _SavedEventViewState extends State<SavedEventView> {
         future: _userService.getSavedEvents(_authService.user.uid),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
+            //conatins a single box widget
             return SliverToBoxAdapter(
               child: Center(
                 child: Padding(

@@ -581,52 +581,6 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                   ),
                 ),
               ),
-
-              // Container(
-              //   margin: EdgeInsets.symmetric(horizontal: 15.0),
-              //   decoration: _boxDecoration(),
-              //   child: Padding(
-              //     padding: const EdgeInsets.only(top: 7, left: 24, right: 16),
-              //     child: DropdownButtonFormField(
-              //       items: dropDownItems,
-              //       validator: (value) =>
-              //           value == null ? 'field required' : null,
-              //       decoration: InputDecoration(
-              //         hintText: 'Select a Hospital ',
-              //         hintStyle:
-              //             TextStyle(fontSize: 16.0, fontFamily: "Roboto"),
-              //         enabledBorder: InputBorder.none,
-              //       ),
-              //       onChanged: (hospitalValue) {
-              //         print(hospitalValue);
-              //         final snackBar = SnackBar(
-              //           content: Text('Selected Hospital is $hospitalValue',
-              //               style: TextStyle(color: Colors.blueGrey)),
-              //         );
-              //         Scaffold.of(context).showSnackBar(snackBar);
-
-              //         for (var i = 0; i < hospitalItems.length; i++) {
-              //           if (hospitalValue == hospitalItems[i].bloodBankName) {
-              //             addressController.text =
-              //                 hospitalItems[i].bloodBankAddress;
-              //             hospitalLat = hospitalItems[i].hospitalLatitude;
-              //             hospitalLng = hospitalItems[i].hospitalLongitude;
-
-              //             //assign to parameters of CreatePostView class
-              //             hospitalAddress = addressController.text;
-              //             // hospitalLat = addressLatController.text;
-              //             // hospitalLng = addressLngController.text;
-              //           }
-              //         }
-              //         setState(() {
-              //           selectedHospital = hospitalValue;
-              //           hospitalName = selectedHospital;
-              //         });
-              //       },
-              //       value: selectedHospital,
-              //     ),
-              //   ),
-              // ),
               SizedBox(
                 height: 15.0,
               ),
@@ -731,11 +685,7 @@ class _RequestBloodViewState extends State<RequestBloodView> {
                           enabledBorder: InputBorder.none),
                       validator: validateFormData,
                       onChanged: (value) {
-                        // value = userLNameController.text;
                         userFName = value;
-                        // setState(() {
-                        //   userFName = data.firstName;
-                        // });
                       },
                     ),
                   ),

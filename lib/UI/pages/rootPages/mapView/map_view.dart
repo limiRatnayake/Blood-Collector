@@ -26,12 +26,13 @@ class _MapViewState extends State<MapView> {
   bool mapToggle = false;
   double zoomVal = 1.0;
   var currentLocation;
-  // GoogleMapController mapController;
+
+//A way to produce Future objects and to complete them later with a value or error.
   Completer<GoogleMapController> _controller = Completer();
   var events = [];
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  Set<Circle> circles;
+
   BitmapDescriptor customIcon;
 
   @override
@@ -159,9 +160,9 @@ class _MapViewState extends State<MapView> {
               .distanceBetween(currentLocation.latitude,
                   currentLocation.longitude, placeLat, placeLng)
               .then((calDist) {
-            //5km distance events
+            //10km distance events
             if (mounted) {
-              if (calDist / 1000 < 5) {
+              if (calDist / 1000 < 10) {
                 setState(() {
                   events.add(
                     campaignData.docs[i].id,
